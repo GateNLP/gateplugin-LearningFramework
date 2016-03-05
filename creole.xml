@@ -7,32 +7,10 @@
 
 >
   <JAR scan="true">gateplugin-LearningFramework.jar</JAR>
+  <JAR>lib-static/snakeyaml-1.16.jar</JAR> 
   <IVY>build/ivy.xml</IVY>
   <JAR>lib-static/commons-cli-1.4-modified.jar</JAR>
   <JAR>lib-static/libsvm.jar</JAR>
   <JAR>lib-static/mallet.jar</JAR>
-  <!--
-  <JAR>lib/commons-cli-1.4-modified.jar</JAR> 
-  <JAR>lib/bsh.jar</JAR>
-  <JAR>lib/colt-1.2.0.jar</JAR>
-  <JAR>lib/fastutil-6.5.1.5.jar</JAR>
-  <JAR>lib/grmm-deps.jar</JAR>
-  <JAR>lib/jdom-1.0.jar</JAR>
-  <JAR>lib/jgrapht-0.6.0.jar</JAR>
-  <JAR>lib/junit-4.12.jar</JAR>
-  <JAR>lib/jwnl-1.3.jar</JAR> 
-  <JAR>lib/libsvm.jar</JAR>
-  <JAR>lib/mallet.jar</JAR>
-  <JAR>lib/mallet-deps.jar</JAR>
-  <JAR>lib/mtj-0.9.9.jar</JAR>
-  <JAR>lib/openjgraph.jar</JAR>
-  <JAR>lib/semantic-vectors-2.4.jar</JAR>
-  <JAR>lib/simmetrics.jar</JAR>
-  <JAR>lib/snakeyaml-1.16.jar</JAR>
-  <JAR>lib/sspace-2.0.4.jar</JAR>
-  <JAR>lib/trove4j-3.0.3.jar</JAR>
-  <JAR>lib/trove-2.0.2.jar</JAR>
-  <JAR>lib/weka.jar</JAR>
-  -->
 
 </CREOLE-DIRECTORY>

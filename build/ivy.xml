@@ -12,6 +12,10 @@
   </configurations>
 
   <dependencies defaultconf="*->master(default),runtime(default)" >
+    <!-- YAML is not found in the GUI during runtine of the LF when added this way, but added as a 
+         static jar all is fine.
+    <dependency org="org.yaml" name="snakeyaml" rev="1.16" />
+    -->
     <dependency org="org.beanshell" name="bsh" rev="2.0b4"/>
     <dependency org="jgrapht" name="jgrapht" rev="0.6.0"/>
     <dependency org="jgrapht" name="jgrapht" rev="0.6.0"/>
@@ -20,7 +24,6 @@
     <dependency org="com.googlecode.matrix-toolkits-java" name="mtj" rev="0.9.14"/>
     <dependency org="org.jdom" name="jdom" rev="1.1"/>
     <dependency org="nz.ac.waikato.cms.weka" name="weka-dev" rev="3.7.13"/>
-    <dependency org="org.yaml" name="snakeyaml" rev="1.17" />
   </dependencies>
 </ivy-module>
 
