@@ -1,0 +1,24 @@
+Index: src/main/java/org/apache/commons/cli/DefaultParser.java
+===================================================================
+--- src/main/java/org/apache/commons/cli/DefaultParser.java	(revision 1728877)
++++ src/main/java/org/apache/commons/cli/DefaultParser.java	(working copy)
+@@ -43,6 +43,10 @@
+      */
+     protected boolean stopAtNonOption;
+ 
++    protected boolean ignoreUnknownOptions = false;
++
++    public void setIgnoreUnknownOptions(boolean flag) { ignoreUnknownOptions = flag; }
++
+     /** The token currently processed. */
+     protected String currentToken;
+  
+@@ -342,7 +346,7 @@
+      */
+     private void handleUnknownToken(String token) throws ParseException
+     {
+-        if (token.startsWith("-") && token.length() > 1 && !stopAtNonOption)
++        if (token.startsWith("-") && token.length() > 1 && !stopAtNonOption && !ignoreUnknownOptions)
+         {
+             throw new UnrecognizedOptionException("Unrecognized option: " + token, token);
+         }

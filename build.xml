@@ -1,0 +1,156 @@
+<project name="gateplugin-LearningFramework" basedir="."  default="build"  xmlns:ivy="antlib:org.apache.ivy.ant" >
+  <!-- Prevent Ant from warning about includeantruntime not being set -->
+  <property name="build.sysclasspath" value="ignore" />
+
+  <property file="build.properties" />
+  <!-- Name of the plugin -->
+  <property name="plugin.name" value="LearningFramework"/>
+
+  <!-- Make environment variables available -->
+  <property environment="env" />
+
+  <!-- If environment variable GATE_HOME is set, use it for
+       gate.home (unless it was already set in build.properties -->
+  <condition property="gate.home" value="${env.GATE_HOME}">
+    <isset property="env.GATE_HOME"/>
+  </condition>
+
+  <!-- If gate.home is not set from build.properties or the 
+       environment variable GATE_HOME, assume that this
+       plugin is in GATE Developer's plugin directory -->
+  <property name="gate.home" location="../.." />
+
+
+  <property name="gate.lib" location="${gate.home}/lib" />
+  <property name="gate.jar" location="${gate.home}/bin/gate.jar" />
+  <property name="src.dir" location="src" />
+  <property name="classes.dir" location="classes" />
+  <property name="doc.dir" location="doc" />
+  <property name="build.dir" location="build" />
+  <property name="javadoc.dir" location="${doc.dir}/javadoc" />
+  <property name="jar.location" location="gateplugin-${plugin.name}.jar" />
+
+  <!-- Ivy setup -->
+  <property name="ivy.dir" location="build" />
+  <path id="ivy.lib.path">
+      <fileset file="${gate.home}/build/lib/ivy.jar" />
+  </path>
+  <taskdef resource="org/apache/ivy/ant/antlib.xml"
+                   uri="antlib:org.apache.ivy.ant"
+                   classpathref="ivy.lib.path"/>
+
+
+  <target name="initivy">
+    <!-- <ivy:configure file="${build.dir}/ivysettings.xml"/> -->
+    <!-- <ivy:retrieve sync="true" file="${build.dir}/ivy.xml" pattern="${libDir}/[artifact]-[revision].[ext]" /> -->
+    <ivy:retrieve file="${build.dir}/ivy.xml"/> 
+    <!-- <ivy:report todir="${ivy.dir}/ivy-report" /> -->
+    <ivy:cachepath pathid="ivylibs"/>
+  </target>
+
+  <target name="prepare" depends="initivy">
+    <mkdir dir="${classes.dir}" />
+    
+  <!-- Path to compile - includes gate.jar and GATE/lib/*.jar -->
+  <path id="gate.classpath">
+    <pathelement location="${gate.jar}" />
+    <fileset dir="${gate.lib}">
+      <include name="**/*.jar" />
+      <include name="**/*.zip" />
+    </fileset>
+  </path>
+  
+  <!-- GATE classes plus local lib jars -->
+  <path id="compile.classpath">
+    <path refid="gate.classpath" />
+    <path refid="ivylibs" />
+    <fileset dir="lib"> 
+      <include name="*.jar"/>
+    </fileset>
+    <fileset dir="lib-static">
+      <include name="*.jar"/>
+    </fileset>
+  </path>
+ 
+  <path id="run.classpath">
+    <path refid="compile.classpath" />
+    <pathelement location="${jar.location}" />
+  </path>
+  </target>
+
+  <!-- compile the source -->
+  <target name="compile" depends="prepare">
+    <javac classpathref="compile.classpath"
+           srcdir="${src.dir}"
+           destdir="${classes.dir}"
+           deprecation="true"
+           debug="true"
+           debuglevel="lines,source"
+           source="1.7" 
+           target="1.7">
+     </javac>
+  </target>
+
+  <!-- TODO: separate compile, classpath etc. for the whole testing stuff,
+       but at the moment, it is just part of everything else -->
+  
+  <!-- TODO: make testing use the separate testing jar etc. -->
+  <target name="test" depends="jar">
+    <junit fork="true">
+      <classpath refid="run.classpath" />
+      <formatter type="brief" usefile="false" />
+      <formatter type="brief" usefile="true" />
+      <formatter type="xml" />
+      <test name="gate.plugin.learningframework.tests.SuiteAllTests" />
+    </junit>
+    <delete file="info.yaml"/>
+    <delete file="lf.model"/>
+    <delete file="pipe.pipe"/>
+  </target>
+
+  <!-- Build JavaDoc documentation -->
+  <target name="doc.prepare">
+    <mkdir dir="${javadoc.dir}" />
+  </target>
+
+  <target name="javadoc" depends="doc.prepare">
+    <javadoc destdir="${javadoc.dir}" packagenames="*"
+             classpathref="compile.classpath"
+             encoding="UTF-8"
+             windowtitle="${plugin.name} JavaDoc"
+             source="1.6">
+      <sourcepath>
+        <pathelement location="${src.dir}" />
+      </sourcepath>
+      <link href="http://docs.oracle.com/javase/6/docs/api/" />
+      <link href="http://gate.ac.uk/gate/doc/javadoc/" />
+    </javadoc>
+  </target>
+
+
+  <!-- create the JAR file -->
+  <target name="jar" depends="compile" >
+    <jar destfile="${jar.location}"
+         update="false"
+         basedir="${classes.dir}" />
+  </target>
+
+  <!-- remove the generated .class files -->
+  <target name="clean.classes" >
+    <delete dir="${classes.dir}" />
+  </target>
+
+  <!-- Clean up - remove .class and .jar files -->
+  <target name="clean" depends="clean.classes" >
+    <delete file="${jar.location}" />
+  </target>
+
+  <!-- Targets used by the main GATE build file:
+         build: build the plugin - just calls "jar" target
+         test : run the unit tests - there aren't any
+         distro.prepare: remove intermediate files that shouldn't be in the
+                         distribution
+  -->
+  <target name="build" depends="jar" />
+  <target name="distro.prepare" depends="clean.classes" />
+</project>

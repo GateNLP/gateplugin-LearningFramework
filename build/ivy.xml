@@ -1,0 +1,26 @@
+<ivy-module version="2.0">
+
+  <info
+    organisation="uk.ac.gate"
+    module="gate-plugin-learningframework"
+    revision="2.0-SNAPSHOT">
+    <description homepage="https://github.com/GateNLP/gateplugin-LearningFramework/" />
+  </info>
+
+  <configurations>
+    <conf name="default" />
+  </configurations>
+
+  <dependencies defaultconf="*->master(default),runtime(default)" >
+    <dependency org="org.beanshell" name="bsh" rev="2.0b4"/>
+    <dependency org="jgrapht" name="jgrapht" rev="0.6.0"/>
+    <dependency org="jgrapht" name="jgrapht" rev="0.6.0"/>
+    <dependency org="net.sf.jwordnet" name="jwnl" rev="1.4_rc3"/>
+    <dependency org="net.sf.trove4j" name="trove4j" rev="2.0.2"/>
+    <dependency org="com.googlecode.matrix-toolkits-java" name="mtj" rev="0.9.14"/>
+    <dependency org="org.jdom" name="jdom" rev="1.1"/>
+    <dependency org="nz.ac.waikato.cms.weka" name="weka-dev" rev="3.7.13"/>
+    <dependency org="org.yaml" name="snakeyaml" rev="1.17" />
+  </dependencies>
+</ivy-module>
+
