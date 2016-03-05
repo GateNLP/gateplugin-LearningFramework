@@ -8,6 +8,9 @@
 >
   <JAR scan="true">gateplugin-LearningFramework.jar</JAR>
   <IVY>build/ivy.xml</IVY>
+  <JAR>lib-static/commons-cli-1.4-modified.jar</JAR>
+  <JAR>lib-static/libsvm.jar</JAR>
+  <JAR>lib-static/mallet.jar</JAR>
   <!--
   <JAR>lib/commons-cli-1.4-modified.jar</JAR> 
   <JAR>lib/bsh.jar</JAR>

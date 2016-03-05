@@ -7,6 +7,9 @@
       <gate.util.persistence.PersistenceManager-URLHolder>
         <urlString>$relpath$../..</urlString>
       </gate.util.persistence.PersistenceManager-URLHolder>
+      <gate.util.persistence.PersistenceManager-URLHolder>
+        <urlString>$gatehome$plugins/Groovy</urlString>
+      </gate.util.persistence.PersistenceManager-URLHolder>
     </localList>
     <collectionType>java.util.ArrayList</collectionType>
   </urlList>
@@ -15,14 +18,14 @@
       <docList>
         <gate.util.persistence.LRPersistence>
           <resourceType>gate.corpora.DocumentImpl</resourceType>
-          <resourceName>ionosphere_gate.xml_00011</resourceName>
+          <resourceName>abalone_gate.xml</resourceName>
           <initParams class="gate.util.persistence.MapPersistence">
             <mapType>gate.util.SimpleFeatureMapImpl</mapType>
             <localMap>
               <entry>
                 <string>sourceUrl</string>
                 <gate.util.persistence.PersistenceManager-URLHolder>
-                  <urlString>$relpath$ionosphere_gate.xml</urlString>
+                  <urlString>$relpath$abalone_gate.xml</urlString>
                 </gate.util.persistence.PersistenceManager-URLHolder>
               </entry>
               <entry>
@@ -62,7 +65,7 @@
         </gate.util.persistence.LRPersistence>
       </docList>
       <resourceType>gate.corpora.CorpusImpl</resourceType>
-      <resourceName>Corpus for ionosphere_gate.xml_00011</resourceName>
+      <resourceName>Corpus for abalone_gate.xml</resourceName>
       <initParams class="gate.util.persistence.MapPersistence">
         <mapType>gate.util.SimpleFeatureMapImpl</mapType>
         <localMap>
@@ -141,13 +144,25 @@
               <mapType>gate.util.SimpleFeatureMapImpl</mapType>
               <localMap>
                 <entry>
-                  <string>algorithmJavaClass</string>
+                  <string>targetFeature</string>
+                  <string>target</string>
+                </entry>
+                <entry>
+                  <string>identifierFeature</string>
                   <string></string>
+                </entry>
+                <entry>
+                  <string>trainingAlgorithm</string>
+                  <gate.plugin.learningframework.engines.AlgorithmRegression>WEKA_RG_ADDITIVE_REGRESSION</gate.plugin.learningframework.engines.AlgorithmRegression>
+                </entry>
+                <entry>
+                  <string>algorithmJavaClass</string>
+                  <null/>
                 </entry>
                 <entry>
                   <string>dataDirectory</string>
                   <gate.util.persistence.PersistenceManager-URLHolder>
-                    <urlString>$relpath$model-wekanb</urlString>
+                    <urlString>$relpath$model-wekaar</urlString>
                   </gate.util.persistence.PersistenceManager-URLHolder>
                 </entry>
                 <entry>
@@ -164,27 +179,7 @@
                 </entry>
                 <entry>
                   <string>algorithmParameters</string>
-                  <null/>
-                </entry>
-                <entry>
-                  <string>inputASName</string>
                   <string></string>
-                </entry>
-                <entry>
-                  <string>sequenceSpan</string>
-                  <string></string>
-                </entry>
-                <entry>
-                  <string>targetFeature</string>
-                  <string>class</string>
-                </entry>
-                <entry>
-                  <string>identifierFeature</string>
-                  <null/>
-                </entry>
-                <entry>
-                  <string>trainingAlgorithm</string>
-                  <gate.plugin.learningframework.engines.AlgorithmClassification>WEKA_CL_NAIVE_BAYES</gate.plugin.learningframework.engines.AlgorithmClassification>
                 </entry>
                 <entry>
                   <string>featureSpecURL</string>
@@ -193,13 +188,17 @@
                   </gate.util.persistence.PersistenceManager-URLHolder>
                 </entry>
                 <entry>
+                  <string>inputASName</string>
+                  <string></string>
+                </entry>
+                <entry>
                   <string>scaleFeatures</string>
                   <gate.plugin.learningframework.ScalingMethod>NONE</gate.plugin.learningframework.ScalingMethod>
                 </entry>
               </localMap>
             </runtimeParams>
-            <resourceType>gate.plugin.learningframework.LF_TrainClassification</resourceType>
-            <resourceName>LF_TrainClassification</resourceName>
+            <resourceType>gate.plugin.learningframework.LF_TrainRegression</resourceType>
+            <resourceName>LearningFrameworkTrain</resourceName>
             <initParams class="gate.util.persistence.MapPersistence">
               <mapType>gate.util.SimpleFeatureMapImpl</mapType>
               <localMap/>
@@ -221,7 +220,7 @@
       <collectionType>java.util.ArrayList</collectionType>
     </prList>
     <resourceType>gate.creole.ConditionalSerialAnalyserController</resourceType>
-    <resourceName>testLF-train-wekanb2</resourceName>
+    <resourceName>train-wekaar</resourceName>
     <initParams class="gate.util.persistence.MapPersistence">
       <mapType>gate.util.SimpleFeatureMapImpl</mapType>
       <localMap/>
