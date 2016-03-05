@@ -34,7 +34,7 @@ import java.io.File;
  */
 @CreoleResource(
         name = "LF_TrainClassification",
-        helpURL = "",
+        helpURL = "https://github.com/GateNLP/gateplugin-LearningFramework/wiki/LF_TrainClassification",
         comment = "Train a machine learning model for classification")
 public class LF_TrainClassification extends LF_TrainBase {
 
@@ -62,8 +62,7 @@ public class LF_TrainClassification extends LF_TrainBase {
 
   @RunTime
   @Optional
-  @CreoleParameter(comment = "The algorithm to be used for training. Ignored at "
-          + "application time.")
+  @CreoleParameter(comment = "The algorithm to be used for training the classifier")
   public void setTrainingAlgorithm(AlgorithmClassification algo) {
     this.trainingAlgorithm = algo;
   }
@@ -76,7 +75,7 @@ public class LF_TrainClassification extends LF_TrainBase {
 
   @RunTime
   @Optional
-  @CreoleParameter(comment = "The class of the training algorithm to use, only used if SPECIFY_CLASS is selected")
+  @CreoleParameter(comment = "The Java class of the training algorithm to use, only used if SPECIFY_CLASS is selected")
   public void setAlgorithmJavaClass(String className) {
     algorithmJavaClass = className;
   }
@@ -101,8 +100,7 @@ public class LF_TrainClassification extends LF_TrainBase {
 
   @RunTime
   @Optional
-  @CreoleParameter(comment = "For classification, the feature "
-          + "containing the class. Ignored for NER, where type only is used.")
+  @CreoleParameter(comment = "The feature containing the class label")
   public void setTargetFeature(String classFeature) {
     this.targetFeature = classFeature;
   }
@@ -122,7 +120,7 @@ public class LF_TrainClassification extends LF_TrainBase {
   @Optional
   @CreoleParameter(comment = "For sequence learners, an annotation type "
           + "defining a meaningful sequence span. Ignored by non-sequence "
-          + "learners. Needs to be in the input AS.")
+          + "learners.")
   public void setSequenceSpan(String seq) {
     this.sequenceSpan = seq;
   }

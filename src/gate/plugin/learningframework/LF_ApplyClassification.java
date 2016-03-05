@@ -18,7 +18,6 @@ import org.apache.log4j.Logger;
 import gate.AnnotationSet;
 import gate.Controller;
 import gate.Document;
-import gate.creole.ExecutionInterruptedException;
 import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.Optional;
@@ -32,8 +31,8 @@ import gate.util.GateRuntimeException;
  * Training, evaluation and application of ML in GATE.</p>
  */
 @CreoleResource(name = "LF_ApplyClassification",
-        helpURL = "",
-        comment = "Apply a trained machine learning model for classification")
+        helpURL = "https://github.com/GateNLP/gateplugin-LearningFramework/wiki/LF_ApplyClassification",
+        comment = "Apply a trained classification model to documents")
 public class LF_ApplyClassification extends LearningFrameworkPRBase {
 
   /**
@@ -66,8 +65,7 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
   @RunTime
   @CreoleParameter(defaultValue = "0.0", comment = "The minimum "
           + "confidence/probability for including "
-          + "an annotation at application time. In the case of NER, the confidence "
-          + "threshold is applied to the average for the entire entity.")
+          + "an annotation at application time.")
   public void setConfidenceThreshold(Double confidenceThreshold) {
     this.confidenceThreshold = confidenceThreshold;
   }
@@ -78,11 +76,10 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
 
   protected String targetFeature;
 
-  // TODO: we want to get rid of this and read this name from the info file!!
   @RunTime
   @Optional
   @CreoleParameter(comment = "Name of class feature to add to the original "
-          + "instance annotations",
+          + "instance annotations. Default is the name that was used for training.",
           defaultValue = "")
   public void setTargetFeature(String name) {
     targetFeature = name;
@@ -98,7 +95,7 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
   @Optional
   @CreoleParameter(comment = "For sequence learners, an annotation type "
           + "defining a meaningful sequence span. Ignored by non-sequence "
-          + "learners. Needs to be in the input AS.")
+          + "learners. ")
   public void setSequenceSpan(String seq) {
     sequenceSpan = seq;
   }

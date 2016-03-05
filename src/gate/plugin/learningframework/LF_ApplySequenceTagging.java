@@ -30,9 +30,9 @@ import gate.util.GateRuntimeException;
  * <p>
  * Training, evaluation and application of ML in GATE.</p>
  */
-@CreoleResource(name = "LF_ApplyClassification",
-        helpURL = "",
-        comment = "Apply a trained machine learning model for classification")
+@CreoleResource(name = "LF_ApplySequenceTagging",
+        helpURL = "https://github.com/GateNLP/gateplugin-LearningFramework/wiki/LF_ApplySequenceTagging",
+        comment = "Apply a trained sequence tagging model to documents")
 public class LF_ApplySequenceTagging extends LearningFrameworkPRBase {
 
   /**

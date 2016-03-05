@@ -22,7 +22,6 @@ import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
-import gate.plugin.learningframework.engines.AlgorithmKind;
 import gate.plugin.learningframework.engines.Engine;
 import gate.util.GateRuntimeException;
 
@@ -31,8 +30,8 @@ import gate.util.GateRuntimeException;
  * Training, evaluation and application of ML in GATE.</p>
  */
 @CreoleResource(name = "LF_ApplyRegression",
-        helpURL = "",
-        comment = "Apply a trained machine learning model for regression")
+        helpURL = "https://github.com/GateNLP/gateplugin-LearningFramework/wiki/LF_ApplyRegression",
+        comment = "Apply a trained regression model to documents")
 public class LF_ApplyRegression extends LearningFrameworkPRBase {
 
   /**
@@ -55,25 +54,6 @@ public class LF_ApplyRegression extends LearningFrameworkPRBase {
     return this.outputASName;
   }
 
-  /**
-   * The confidence threshold for applying an annotation. In the case of NER, the confidence
-   * threshold is applied to the average for the entire entity.
-   *
-   */
-  private Double confidenceThreshold;
-
-  @RunTime
-  @CreoleParameter(defaultValue = "0.0", comment = "The minimum "
-          + "confidence/probability for including "
-          + "an annotation at application time. In the case of NER, the confidence "
-          + "threshold is applied to the average for the entire entity.")
-  public void setConfidenceThreshold(Double confidenceThreshold) {
-    this.confidenceThreshold = confidenceThreshold;
-  }
-
-  public Double getConfidenceThreshold() {
-    return this.confidenceThreshold;
-  }
 
   protected String targetFeature;
 

@@ -36,7 +36,7 @@ import gate.util.GateRuntimeException;
  */
 @CreoleResource(
         name = "LF_TrainSequenceTagging",
-        helpURL = "",
+        helpURL = "https://github.com/GateNLP/gateplugin-LearningFramework/wiki/LF_TrainSequenceTagging",
         comment = "Train a machine learning model for sequence tagging")
 public class LF_TrainSequenceTagging extends LF_TrainBase {
 
@@ -98,7 +98,7 @@ public class LF_TrainSequenceTagging extends LF_TrainBase {
   @Optional
   @CreoleParameter(comment = "For sequence learners, an annotation type "
           + "defining a meaningful sequence span. Ignored by non-sequence "
-          + "learners. Needs to be in the input AS.")
+          + "learners.")
   public void setSequenceSpan(String seq) {
     this.sequenceSpan = seq;
   }

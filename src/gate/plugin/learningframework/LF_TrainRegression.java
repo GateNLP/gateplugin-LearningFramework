@@ -34,7 +34,7 @@ import java.io.File;
  */
 @CreoleResource(
         name = "LF_TrainRegression",
-        helpURL = "",
+        helpURL = "https://github.com/GateNLP/gateplugin-LearningFramework/wiki/LF_TrainRegression",
         comment = "Train a machine learning model for regression")
 public class LF_TrainRegression extends LF_TrainBase {
 
@@ -75,7 +75,7 @@ public class LF_TrainRegression extends LF_TrainBase {
 
   @RunTime
   @Optional
-  @CreoleParameter(comment = "The class of the training algorithm to use, only used if SPECIFY_CLASS is selected")
+  @CreoleParameter(comment = "The Java class of the training algorithm to use, only used if SPECIFY_CLASS is selected")
   public void setAlgorithmJavaClass(String className) {
     algorithmJavaClass = className;
   }

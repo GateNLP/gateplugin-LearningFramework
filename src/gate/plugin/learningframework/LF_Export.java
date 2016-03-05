@@ -22,10 +22,8 @@ import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
 import gate.plugin.learningframework.data.CorpusRepresentation;
-import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletSeq;
-import gate.plugin.learningframework.engines.AlgorithmClassification;
 import gate.plugin.learningframework.engines.Engine;
 import gate.plugin.learningframework.features.FeatureSpecification;
 import gate.plugin.learningframework.features.TargetType;
@@ -38,8 +36,8 @@ import java.io.File;
  */
 @CreoleResource(
         name = "LF_Export",
-        helpURL = "",
-        comment = "Train a machine learning model for classification")
+        helpURL = "https://github.com/GateNLP/gateplugin-LearningFramework/wiki/LF_Export",
+        comment = "Export training instances in various formats for external training and analysis")
 public class LF_Export extends LF_ExportBase {
   private static final long serialVersionUID = -420477191226830002L;
   
@@ -79,7 +77,7 @@ public class LF_Export extends LF_ExportBase {
 
   @RunTime
   @Optional
-  @CreoleParameter(comment = "If specified, export as classification or regression problem.")
+  @CreoleParameter(comment = "If specified, export as classification or regression problem (currently required).")
   public void setTargetFeature(String classFeature) {
     this.targetFeature = classFeature;
   }
@@ -91,7 +89,7 @@ public class LF_Export extends LF_ExportBase {
   protected String classAnnotationType;
   @Optional
   @RunTime
-  @CreoleParameter(comment = "Annotation type indicating the class for sequence tagging problems.")
+  @CreoleParameter(comment = "Annotation type indicating the class for sequence tagging problems (not yet supported).")
   public void setClassAnnotationType(String classType) {
     this.classAnnotationType = classType;
   }
@@ -102,7 +100,7 @@ public class LF_Export extends LF_ExportBase {
 
   protected TargetType targetType;
   @RunTime
-  @CreoleParameter(comment = "Target type if classification or regression problem")
+  @CreoleParameter(comment = "Target type: classification or regression problem?")
   public void setTargetType(TargetType val) { targetType = val; }
   public TargetType getTargetType() { return targetType; }
   
@@ -119,9 +117,7 @@ public class LF_Export extends LF_ExportBase {
 
   @RunTime
   @Optional
-  @CreoleParameter(comment = "For sequence learners, an annotation type "
-          + "defining a meaningful sequence span. Ignored by non-sequence "
-          + "learners. Needs to be in the input AS.")
+  @CreoleParameter(comment = "Sequence tagging export is not yet supported")
   public void setSequenceSpan(String seq) {
     this.sequenceSpan = seq;
   }
