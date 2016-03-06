@@ -21,7 +21,6 @@ import gate.AnnotationSet;
 import gate.Document;
 import gate.Factory;
 import gate.FeatureMap;
-import gate.plugin.learningframework.Globals;
 import gate.plugin.learningframework.features.FeatureExtraction;
 import gate.util.InvalidOffsetException;
 import java.util.HashMap;

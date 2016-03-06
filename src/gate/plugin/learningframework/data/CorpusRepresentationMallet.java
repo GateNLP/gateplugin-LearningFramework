@@ -68,7 +68,7 @@ public abstract class CorpusRepresentationMallet extends CorpusRepresentation {
     fi.startGrowth();    
   }
     
-  public void save(File directory) {
+  public void savePipe(File directory) {
     File outFile = new File(directory,"pipe.pipe");
     ObjectOutputStream oos = null;
     try {

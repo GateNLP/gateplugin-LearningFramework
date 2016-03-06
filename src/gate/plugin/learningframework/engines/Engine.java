@@ -130,7 +130,7 @@ public abstract class Engine {
     // Then delegate to the engine to save the model
     saveModel(directory);
     // finally save the Mallet corpus representation
-    corpusRepresentationMallet.save(directory);
+    corpusRepresentationMallet.savePipe(directory);
   }
   
   

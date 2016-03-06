@@ -8,10 +8,12 @@ package gate.plugin.learningframework.data;
 
 import gate.plugin.learningframework.ScalingMethod;
 import gate.plugin.learningframework.Exporter;
+import gate.plugin.learningframework.engines.Info;
 import gate.plugin.learningframework.features.FeatureInfo;
 import gate.plugin.learningframework.mallet.LFPipe;
 import gate.util.GateRuntimeException;
 import java.io.File;
+import java.util.ArrayList;
 
 /**
  * The base class of all classes that handle the representation of instances.
@@ -57,6 +59,35 @@ public abstract class CorpusRepresentation {
       // we should do this by reflection somehow ...
       throw new GateRuntimeException("Export method not yet implemented: "+action);
     }
+    // In addition to the actual data file exported by the methods above,
+    // always also export the pipe and a template info file!
+    Info info = new Info();
+    info.algorithmClass = "gate.plugin.learningframework.engines.AlgorithmClassification";
+    info.algorithmName = "WEKA_CL_NAIVE_BAYES";
+    info.classAnnotationType = "null";
+    LFPipe lfpipe = (LFPipe)crm.getPipe();
+    if(lfpipe.getTargetAlphabet()==null) {
+      info.classLabels = null;
+    } else {
+      //info.classLabels = lfpipe.getTargetAlphabet().toArray(); 
+      Object[] objs = lfpipe.getTargetAlphabet().toArray();
+      info.nrTargetValues = objs.length;
+      ArrayList<String> labels = new ArrayList<String>();
+      for(Object obj : objs) { labels.add(obj.toString()); }
+      info.classLabels = labels;
+    }
+    info.nrTrainingDimensions = lfpipe.getDataAlphabet().size();
+    info.nrTrainingDocuments = 0;
+    info.nrTrainingInstances = crm.getRepresentationMallet().size();
+    info.targetFeature = "class";
+    info.task = "CLASSIFIER";
+    info.trainerClass = "weka.classifiers.bayes.NaiveBayes";
+    info.trainingCorpusName = "";
+    info.engineClass = "gate.plugin.learningframework.engines.EngineWeka";
+    info.modelClass = " weka.classifiers.bayes.NaiveBayes";
+    info.save(directory);
+    // finally save the Mallet corpus representation
+    crm.savePipe(directory);
   }
   
   

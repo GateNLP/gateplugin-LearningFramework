@@ -79,63 +79,6 @@
           <runMode>1</runMode>
           <featureName></featureName>
           <featureValue></featureValue>
-          <pr class="gate.util.persistence.PRPersistence">
-            <runtimeParams class="gate.util.persistence.MapPersistence">
-              <mapType>gate.util.SimpleFeatureMapImpl</mapType>
-              <localMap>
-                <entry>
-                  <string>setsToKeep</string>
-                  <gate.util.persistence.CollectionPersistence>
-                    <localList>
-                      <string>Key</string>
-                      <null/>
-                    </localList>
-                    <collectionType>java.util.ArrayList</collectionType>
-                  </gate.util.persistence.CollectionPersistence>
-                </entry>
-                <entry>
-                  <string>keepOriginalMarkupsAS</string>
-                  <boolean>true</boolean>
-                </entry>
-                <entry>
-                  <string>corpus</string>
-                  <null/>
-                </entry>
-                <entry>
-                  <string>setsToRemove</string>
-                  <gate.util.persistence.CollectionPersistence>
-                    <localList>
-                      <string>LearningFramework</string>
-                    </localList>
-                    <collectionType>java.util.ArrayList</collectionType>
-                  </gate.util.persistence.CollectionPersistence>
-                </entry>
-                <entry>
-                  <string>annotationTypes</string>
-                  <null/>
-                </entry>
-                <entry>
-                  <string>document</string>
-                  <null/>
-                </entry>
-              </localMap>
-            </runtimeParams>
-            <resourceType>gate.creole.annotdelete.AnnotationDeletePR</resourceType>
-            <resourceName>Reset:LearningFramework</resourceName>
-            <initParams class="gate.util.persistence.MapPersistence">
-              <mapType>gate.util.SimpleFeatureMapImpl</mapType>
-              <localMap/>
-            </initParams>
-            <features class="gate.util.persistence.MapPersistence">
-              <mapType>gate.util.SimpleFeatureMapImpl</mapType>
-              <localMap/>
-            </features>
-          </pr>
-        </gate.util.persistence.AnalyserRunningStrategyPersistence>
-        <gate.util.persistence.AnalyserRunningStrategyPersistence>
-          <runMode>1</runMode>
-          <featureName></featureName>
-          <featureValue></featureValue>
           <pr class="gate.util.persistence.LanguageAnalyserPersistence">
             <runtimeParams class="gate.util.persistence.MapPersistence">
               <mapType>gate.util.SimpleFeatureMapImpl</mapType>
@@ -163,6 +106,10 @@
                   <null/>
                 </entry>
                 <entry>
+                  <string>targetType</string>
+                  <gate.plugin.learningframework.features.TargetType>NOMINAL</gate.plugin.learningframework.features.TargetType>
+                </entry>
+                <entry>
                   <string>algorithmParameters</string>
                   <null/>
                 </entry>
@@ -172,7 +119,7 @@
                 </entry>
                 <entry>
                   <string>sequenceSpan</string>
-                  <null/>
+                  <string></string>
                 </entry>
                 <entry>
                   <string>targetFeature</string>
@@ -184,7 +131,7 @@
                 </entry>
                 <entry>
                   <string>identifierFeature</string>
-                  <string></string>
+                  <null/>
                 </entry>
                 <entry>
                   <string>featureSpecURL</string>
@@ -199,7 +146,7 @@
               </localMap>
             </runtimeParams>
             <resourceType>gate.plugin.learningframework.LF_Export</resourceType>
-            <resourceName>LF_Export 00008</resourceName>
+            <resourceName>LF_Export</resourceName>
             <initParams class="gate.util.persistence.MapPersistence">
               <mapType>gate.util.SimpleFeatureMapImpl</mapType>
               <localMap/>
@@ -215,8 +162,7 @@
     </strategiesList>
     <prList class="gate.util.persistence.CollectionPersistence">
       <localList>
-        <gate.util.persistence.PRPersistence reference="../../../strategiesList/localList/gate.util.persistence.AnalyserRunningStrategyPersistence/pr"/>
-        <gate.util.persistence.LanguageAnalyserPersistence reference="../../../strategiesList/localList/gate.util.persistence.AnalyserRunningStrategyPersistence[2]/pr"/>
+        <gate.util.persistence.LanguageAnalyserPersistence reference="../../../strategiesList/localList/gate.util.persistence.AnalyserRunningStrategyPersistence/pr"/>
       </localList>
       <collectionType>java.util.ArrayList</collectionType>
     </prList>
