@@ -7,9 +7,9 @@ package gate.plugin.learningframework.engines;
 
 import cc.mallet.types.Alphabet;
 import cc.mallet.types.Instance;
-import cc.mallet.types.InstanceList;
 import gate.Annotation;
 import gate.AnnotationSet;
+import gate.plugin.learningframework.EvaluationMethod;
 import gate.plugin.learningframework.GateClassification;
 import gate.plugin.learningframework.data.CorpusRepresentationLibSVM;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
@@ -32,15 +32,6 @@ import libsvm.svm_problem;
  */
 public class EngineLibSVM extends Engine {
 
-  @Override
-  public Object evaluateHoldout(InstanceList instances, double portion, int reapeats, String parms) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
-  @Override
-  public Object evaluateXVal(InstanceList instances, int k, String parms) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
 
   @Override
   public void loadModel(File directory, String parms) {
@@ -53,18 +44,14 @@ public class EngineLibSVM extends Engine {
     }
   }
 
-  @Override
-  public void trainModel(String parms) {
-    // 1) calculate the default parameter values that depend on the data
+  private svm_parameter makeSvmParms(String parms) {
     int nrIndepFeatures = corpusRepresentationMallet.getRepresentationMallet().getDataAlphabet().size();
     double defaultGamma = 1.0 / nrIndepFeatures;
-
-    // 2) create all the necessary parameters. In addition to the libsvm parameters documented here
+    // Parse all the necessary parameters. see
     // https://www.csie.ntu.edu.tw/~cjlin/libsvm/
-    // we also support the additional parameter -S/seed <integer> to set the random seed (default is 1)
     Parms ps = new Parms(parms, "s:svm_type:i", "t:kernel_type:i", "d:degree:i", "g:gamma:d",
             "r:coef0:d", "c:cost:d", "n:nu:d", "e:epsilon:d", "m:cachesize:i", "h:shrinking:i",
-            "b:probability_estimates:i", "S:seed:i");
+            "b:probability_estimates:i");
     svm_parameter svmparms = new svm_parameter();
     // we use 0 as the default for classification
     svmparms.svm_type = (int) ps.getValueOrElse("svm_type", 0);
@@ -94,7 +81,6 @@ public class EngineLibSVM extends Engine {
     svmparms.cache_size = (int) ps.getValueOrElse("cachesize", 100);
     svmparms.shrinking = (int) ps.getValueOrElse("shrinking", 1);
     svmparms.probability = (int) ps.getValueOrElse("probability_estimates", 1); // THIS ONE DIFFERS FROM SVMLIB DEFAULT!
-    int seed = (int) ps.getValueOrElse("seed", 1);
     // for the weights, we need a different strategy: our Parms class cannot parse arbitrary 
     // numbered options so we have to do it ourselves here
     List<Double> weights = new ArrayList<Double>();
@@ -140,7 +126,22 @@ public class EngineLibSVM extends Engine {
         svmparms.weight_label = idxs;
       }
     }
-    System.err.println("SVM parms used: "+libsvmParmsAsString(svmparms));
+    return svmparms;
+  }
+  
+  
+  @Override
+  public void trainModel(String parms) {
+
+    // 1) calculate the default parameter values that depend on the data
+    //int nrIndepFeatures = corpusRepresentationMallet.getRepresentationMallet().getDataAlphabet().size();
+    //double defaultGamma = 1.0 / nrIndepFeatures;
+
+    // we also support the additional parameter -S/seed <integer> to set the random seed (default is 1)
+    Parms ps = new Parms("S:seed:i");
+    svm_parameter svmparms = makeSvmParms(parms);
+    int seed = (int) ps.getValueOrElse("seed", 1);
+    System.err.println("SVM parms used: (seed="+seed+") "+libsvmParmsAsString(svmparms));
     svm_set_print_string_function(new svm_print_interface() {
       @Override
       public void print(String string) {
@@ -276,6 +277,70 @@ public class EngineLibSVM extends Engine {
     }
     sb.append("}");
     return sb.toString();
+  }
+
+  /**
+   * Perform an evaluation.
+   * 
+   * 
+   * @param algorithmParameters
+   * @param evaluationMethod
+   * @param numberOfFolds
+   * @param trainingFraction
+   * @param numberOfRepeats
+   * @param doStratification
+   * @return 
+   */
+  @Override
+  public EvaluationResult evaluate(String algorithmParameters, 
+          EvaluationMethod evaluationMethod, int numberOfFolds, double trainingFraction, 
+          int numberOfRepeats, boolean doStratification) {
+    if(doStratification) {
+      throw new GateRuntimeException("LibSVM Evaluation does not support stratification!");
+    }
+    if(numberOfRepeats > 1) {
+      throw new GateRuntimeException("LibSVM Evaluation does not support numberOfRepeats > 1 yet!");
+    }
+    EvaluationResult result = null;
+    if(algorithm instanceof AlgorithmClassification) {
+      if(evaluationMethod == EvaluationMethod.CROSSVALIDATION) {
+        EvaluationResultClXval resultXval = new EvaluationResultClXval();
+        resultXval.nrFolds = numberOfFolds;
+        resultXval.nrRepeats = numberOfRepeats;
+        resultXval.stratified = doStratification;
+        
+        svm_parameter svmparms = makeSvmParms(algorithmParameters);
+        Parms ps = new Parms("S:seed:i");
+        // TODO: figure out if this has actually any impact on the randomization
+        // used for the crossvaliation!
+        int seed = (int) ps.getValueOrElse("seed", 1);
+        libsvm.svm.rand.setSeed(seed);
+        
+        svm_problem svmprob = CorpusRepresentationLibSVM.getFromMallet(corpusRepresentationMallet);
+        
+        double target[] = new double[svmprob.l];
+
+        libsvm.svm.svm_cross_validation(svmprob, svmparms, numberOfFolds, target);
+        int nrCorrect = 0;
+        int nrIncorrect = 0;
+        for(int i=0; i<target.length; i++) {
+          if(target[i] == svmprob.y[i]) {
+            nrCorrect++;
+          } else {
+            nrIncorrect++;
+          }
+        }
+        resultXval.nrCorrect = nrCorrect;
+        resultXval.nrIncorrect = nrIncorrect;
+        resultXval.accuracyEstimate = ((double)nrCorrect) / target.length;
+        result = resultXval;        
+      } else {
+        result = new EvaluationResultClHO();
+      }
+    } else {
+      throw new GateRuntimeException("Evaluation for Regression not implemented yet");
+    }
+    return result;
   }
 
 }

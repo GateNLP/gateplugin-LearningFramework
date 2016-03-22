@@ -10,6 +10,7 @@ import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import gate.Annotation;
 import gate.AnnotationSet;
+import gate.plugin.learningframework.EvaluationMethod;
 import gate.plugin.learningframework.GateClassification;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
 import gate.plugin.learningframework.data.CorpusRepresentationWeka;
@@ -37,8 +38,8 @@ import weka.core.Instances;
 public class EngineWeka extends Engine {
   
   
-  @Override
-  public Object evaluateHoldout(InstanceList instances, double portion, int repeats, String parms) {
+  // TODO: this needs to get adapted to the new more general evaluate method!
+  public Evaluation evaluateHoldout(double portion, int repeats, String parms) {
     // Get the parameters 
     // -s/-seed <int> : seed, default 0
     // -S/-nostratify : switch off stratification if we evaluate classification
@@ -87,8 +88,8 @@ public class EngineWeka extends Engine {
     }
   }
 
-  @Override
-  public Object evaluateXVal(InstanceList instances, int k, String parms) {
+  // TODO: this needs to get adapted to the new more general evaluate method!
+  public Evaluation evaluateXVal(int k, String parms) {
     Parms opts = new Parms(parms,"s:seed:i","S:nostratify:b");
     int seed = (int)opts.getValueOrElse("seed", 0);
     boolean noStratify = (boolean)opts.getValueOrElse("nostratify", 0);
@@ -291,6 +292,38 @@ public class EngineWeka extends Engine {
         // ignore
       }
     }
+  }
+
+  @Override
+  public EvaluationResult evaluate(String algorithmParameters, EvaluationMethod evaluationMethod, int numberOfFolds, double trainingFraction, int numberOfRepeats, boolean doStratification) {
+    EvaluationResult ret = null;
+    if(evaluationMethod == EvaluationMethod.CROSSVALIDATION) {
+      Evaluation eval = evaluateXVal(numberOfFolds, algorithmParameters);
+      if(algorithm instanceof AlgorithmClassification) {
+        EvaluationResultClXval e = new EvaluationResultClXval();
+        e.internalEvaluationResult = eval;
+        e.accuracyEstimate = 1.0 - eval.errorRate();
+        e.nrFolds = numberOfFolds;   
+        e.nrRepeats = numberOfRepeats;
+        ret = e;
+      } else {
+        throw new GateRuntimeException("Weka evaluation: not implemented for regression yet!");
+      }
+    } else {
+      // TODO: check if classification or regression!!
+      Evaluation eval = evaluateHoldout(trainingFraction, numberOfRepeats, algorithmParameters);
+      if(algorithm instanceof AlgorithmClassification) {
+        EvaluationResultClHO e = new EvaluationResultClHO();
+        e.internalEvaluationResult = eval;
+        e.accuracyEstimate = 1.0 - eval.errorRate();
+        e.trainingFraction = trainingFraction;
+        e.nrRepeats = numberOfRepeats;
+        ret = e;
+      } else {
+        throw new GateRuntimeException("Weka evaluation: not implemented for regression yet!");
+      }      
+    }
+    return ret;
   }
 
 }

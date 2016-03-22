@@ -6,6 +6,7 @@ import gate.Annotation;
 import gate.AnnotationSet;
 import gate.Document;
 import gate.creole.ResourceInstantiationException;
+import gate.plugin.learningframework.EvaluationMethod;
 import gate.plugin.learningframework.GateClassification;
 import gate.plugin.learningframework.ScalingMethod;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
@@ -13,6 +14,7 @@ import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
 import gate.plugin.learningframework.engines.AlgorithmClassification;
 import gate.plugin.learningframework.engines.AlgorithmRegression;
 import gate.plugin.learningframework.engines.Engine;
+import gate.plugin.learningframework.engines.EvaluationResultClXval;
 import gate.plugin.learningframework.features.FeatureInfo;
 import gate.plugin.learningframework.features.FeatureSpecification;
 import gate.plugin.learningframework.features.TargetType;
@@ -22,11 +24,8 @@ import gate.util.GateException;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.List;
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.junit.BeforeClass;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -114,6 +113,37 @@ public class TestEngineLibSVM {
     
   }
   
+  @Test
+  public void testEngineLibSvmEvalClass() throws MalformedURLException, ResourceInstantiationException {
+    File configFile = new File("tests/cl-ionosphere/feats.xml");
+    FeatureSpecification spec = new FeatureSpecification(configFile);
+    FeatureInfo featureInfo = spec.getFeatureInfo();
+    CorpusRepresentationMalletTarget crm = new CorpusRepresentationMalletTarget(featureInfo, ScalingMethod.NONE, TargetType.NOMINAL);
+    Engine engine = Engine.createEngine(AlgorithmClassification.LIBSVM_CL, "", crm);
+    System.err.println("TestEngineLibSVM-testEngineLibSvmEvalClass: have engine "+engine);
+    
+    // load the document and run xcross validation evaluation
+    Document doc = loadDocument(new File("tests/cl-ionosphere/ionosphere_gate.xml"));
+    
+    AnnotationSet instanceAS = doc.getAnnotations().get("Mention");
+    AnnotationSet sequenceAS = null;
+    AnnotationSet inputAS = doc.getAnnotations();
+    AnnotationSet classAS = null;
+    String targetFeature = "class";
+    String nameFeature = null;
+    crm.add(instanceAS, sequenceAS, inputAS, classAS, targetFeature, TargetType.NOMINAL, nameFeature);
+    System.err.println("added instances, number of instances now: "+crm.getRepresentationMallet().size());
+
+    // method parameters: algparameters, method, folds, fraction, repeats, stratification
+    EvaluationResultClXval res = (EvaluationResultClXval)engine.evaluate("-c 1000 -g 0.02", EvaluationMethod.CROSSVALIDATION, 10, 0.66, 1, false);
+    System.err.println("TESTS-EVALUATION1: "+res);
+    assertEquals(0.9088, res.accuracyEstimate,0.0001);
+    res = (EvaluationResultClXval)engine.evaluate("-c 10 -g 0.1", EvaluationMethod.CROSSVALIDATION, 10, 0.66, 1, false);
+    System.err.println("TESTS-EVALUATION2: "+res);
+    assertEquals(0.9515, res.accuracyEstimate,0.0001);
+  }
+  
+
   
   @Test
   public void testEngineLibSVMRegression1() throws MalformedURLException, ResourceInstantiationException {

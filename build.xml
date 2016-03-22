@@ -43,7 +43,8 @@
   <target name="initivy">
     <!-- <ivy:configure file="${build.dir}/ivysettings.xml"/> -->
     <!-- <ivy:retrieve sync="true" file="${build.dir}/ivy.xml" pattern="${libDir}/[artifact]-[revision].[ext]" /> -->
-    <ivy:retrieve file="${build.dir}/ivy.xml"/> 
+    <!-- <ivy:retrieve file="${build.dir}/ivy.xml"/> -->
+    <ivy:resolve file="${build.dir}/ivy.xml"/>
     <!-- <ivy:report todir="${ivy.dir}/ivy-report" /> -->
     <ivy:cachepath pathid="ivylibs"/>
   </target>

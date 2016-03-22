@@ -19,6 +19,7 @@ import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import gate.Annotation;
 import gate.AnnotationSet;
+import gate.plugin.learningframework.EvaluationMethod;
 import gate.plugin.learningframework.GateClassification;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletSeq;
 import static gate.plugin.learningframework.engines.Engine.FILENAME_MODEL;
@@ -231,15 +232,6 @@ public class EngineMalletSeq extends EngineMallet {
     return gcs;
   }
 
-  @Override
-  public Object evaluateHoldout(InstanceList instances, double portion, int reapeats, String parms) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
-  @Override
-  public Object evaluateXVal(InstanceList instances, int k, String parms) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
 
   @Override
   protected void loadMalletCorpusRepresentation(File directory) {
@@ -269,6 +261,11 @@ public class EngineMalletSeq extends EngineMallet {
         }
       }
     }
+  }
+
+  @Override
+  public EvaluationResult evaluate(String algorithmParameters, EvaluationMethod evaluationMethod, int numberOfFolds, double trainingFraction, int numberOfRepeats, boolean doStratification) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
   
 

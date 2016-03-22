@@ -9,6 +9,7 @@ package gate.plugin.learningframework.engines;
 import cc.mallet.types.Alphabet;
 import cc.mallet.types.InstanceList;
 import gate.AnnotationSet;
+import gate.plugin.learningframework.EvaluationMethod;
 import gate.plugin.learningframework.GateClassification;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.mallet.LFPipe;
@@ -193,6 +194,8 @@ public abstract class Engine {
    */
   public abstract void trainModel(String parms);
   
+  public abstract EvaluationResult evaluate(String algorithmParameters,EvaluationMethod evaluationMethod,int numberOfFolds,double trainingFraction,int numberOfRepeats,boolean doStratification);
+  
   protected void updateInfo() {
     info.nrTrainingInstances = corpusRepresentationMallet.getRepresentationMallet().size();
     info.nrTrainingDimensions = corpusRepresentationMallet.getRepresentationMallet().getDataAlphabet().size();    
@@ -220,19 +223,6 @@ public abstract class Engine {
   public abstract List<GateClassification> classify(
           AnnotationSet instanceAS, AnnotationSet inputAS,
           AnnotationSet sequenceAS, String parms);
-  
-  /**
-   * Perform the native Holdout evaluation using the given portion size.
-   * Implementations may return some object that represents the evaluation result or just
-   * log the results.
-   * @param instances
-   * @param portion
-   * @param parms
-   * @return 
-   */
-  public abstract Object evaluateHoldout(InstanceList instances, double portion, int repeats, String parms);
-  
-  public abstract Object evaluateXVal(InstanceList instances, int k, String parms);
   
   public abstract void initializeAlgorithm(Algorithm algorithm, String parms);
   
