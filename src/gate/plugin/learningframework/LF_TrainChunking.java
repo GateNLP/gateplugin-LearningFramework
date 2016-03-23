@@ -198,7 +198,7 @@ public class LF_TrainChunking extends LF_TrainBase {
 
   @Override
   protected void finishedNoDocument(Controller c, Throwable t) {
-    logger.error("Processing finished, but no documents seen, cannot train!");
+    logger.error("Processing finished, but got an error or no documents seen, cannot train!");
   }
 
   @Override

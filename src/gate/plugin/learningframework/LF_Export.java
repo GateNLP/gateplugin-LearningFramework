@@ -182,16 +182,20 @@ public class LF_Export extends LF_ExportBase {
       sequenceAS = inputAS.get(getSequenceSpan());
     }
     AnnotationSet classAnnots = null;
-    if(haveSequenceAlg) {
+    if(haveSequenceProblem) {
       classAnnots = inputAS.get(getClassAnnotationType());
     }
     // the classAS is always null for the classification task!
     // the nameFeatureName is always null for now!
     String nameFeatureName = null;
     if(haveSequenceAlg) {      
-      corpusRepresentationSeq.add(instanceAS, sequenceAS, inputAS, classAnnots, null, targetType, nameFeatureName);
+      corpusRepresentationSeq.add(instanceAS, sequenceAS, inputAS, classAnnots, classAnnots, targetType, nameFeatureName);
     } else {
-      corpusRepresentationClass.add(instanceAS, sequenceAS, inputAS, null, getTargetFeature(), targetType, nameFeatureName);
+      if(haveSequenceProblem) {
+        corpusRepresentationClass.add(instanceAS, sequenceAS, inputAS, null, getTargetFeature(), targetType, nameFeatureName);
+      } else {
+        corpusRepresentationClass.add(instanceAS, sequenceAS, inputAS, null, getTargetFeature(), targetType, nameFeatureName);
+      }
     }
   }
 
@@ -200,7 +204,6 @@ public class LF_Export extends LF_ExportBase {
     File outDir = Files.fileFromURL(getDataDirectory());
     if(!haveSequenceAlg) { 
       corpusRepresentationClass.addScaling(getScaleFeatures());
-      System.err.println("EXPORTING AS CLASS");
       CorpusRepresentation.export(corpusRepresentationClass, exporter, outDir, getAlgorithmParameters());
     } else {
       CorpusRepresentation.export(corpusRepresentationSeq, exporter, outDir, getAlgorithmParameters());
@@ -209,7 +212,7 @@ public class LF_Export extends LF_ExportBase {
 
   @Override
   protected void finishedNoDocument(Controller c, Throwable t) {
-    logger.error("Processing finished, but no documents seen, cannot train!");
+    logger.error("Processing finished, but got an error or no documents seen, cannot export!");
   }
 
   @Override
@@ -238,15 +241,28 @@ public class LF_Export extends LF_ExportBase {
       if(getClassAnnotationType() != null && !getClassAnnotationType().isEmpty()) {
         throw new GateRuntimeException("Either targetFeature or classAnnotationType must be specified, not both");
       }
-      corpusRepresentationClass = new CorpusRepresentationMalletTarget(featureSpec.getFeatureInfo(), scaleFeatures, targetType);
-      System.err.println("DEBUG: created the corpusRepresentationMalletClass: "+corpusRepresentationClass);
+      if(getExporter() == Exporter.EXPORTER_MALLET_SEQ) {
+        // this would have to create a MalletSeq representation and then find a way to export that!
+        // corpusRepresentationSeq = new CorpusRepresentationMalletSeq(featureSpec.getFeatureInfo(), scaleFeatures);
+        // System.err.println("DEBUG: created the corpusRepresentationMalletSeq: "+corpusRepresentationSeq);
+      } else {
+        corpusRepresentationClass = new CorpusRepresentationMalletTarget(featureSpec.getFeatureInfo(), scaleFeatures, targetType);
+        System.err.println("DEBUG: created the corpusRepresentationMalletClass: "+corpusRepresentationClass);
+      }
     } else if(getClassAnnotationType() != null && !getClassAnnotationType().isEmpty()) {
       haveSequenceProblem = true;
       if(getTargetFeature() != null && !getTargetFeature().isEmpty()) {
         throw new GateRuntimeException("Either targetFeature or classAnnotationType must be specified, not both");
       }
-      corpusRepresentationSeq = new CorpusRepresentationMalletSeq(featureSpec.getFeatureInfo(), scaleFeatures);
-      System.err.println("DEBUG: created the corpusRepresentationMalletSeq: "+corpusRepresentationSeq);
+      if(getExporter() == Exporter.EXPORTER_MALLET_SEQ) {
+        throw new GateRuntimeException("Exporting using MALLET_SEQ is not yet supported");
+        // this would have to create a MalletSeq representation and then find a way to export that!
+        // corpusRepresentationSeq = new CorpusRepresentationMalletSeq(featureSpec.getFeatureInfo(), scaleFeatures);
+        // System.err.println("DEBUG: created the corpusRepresentationMalletSeq: "+corpusRepresentationSeq);
+      } else {
+        corpusRepresentationClass = new CorpusRepresentationMalletTarget(featureSpec.getFeatureInfo(), scaleFeatures,TargetType.NOMINAL);
+        System.err.println("DEBUG: created the corpusRepresentationMalletClass: "+corpusRepresentationClass);        
+      }
   }
     
     haveSequenceAlg = getSequenceSpan()!=null && !getSequenceSpan().isEmpty();
