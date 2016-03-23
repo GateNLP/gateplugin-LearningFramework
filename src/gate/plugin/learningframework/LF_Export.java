@@ -178,7 +178,7 @@ public class LF_Export extends LF_ExportBase {
     // for sequence tagging (in that case, the target Feature must be empty!)
     
     // But in any case, if we use MALLET_SEQ, we need to get the sequence annotation
-    if(haveSequenceProblem) {
+    if(haveSequenceAlg) {
       sequenceAS = inputAS.get(getSequenceSpan());
     }
     AnnotationSet classAnnots = null;
@@ -189,10 +189,10 @@ public class LF_Export extends LF_ExportBase {
     // the nameFeatureName is always null for now!
     String nameFeatureName = null;
     if(haveSequenceAlg) {      
-      corpusRepresentationSeq.add(instanceAS, sequenceAS, inputAS, classAnnots, classAnnots, targetType, nameFeatureName);
+      corpusRepresentationSeq.add(instanceAS, sequenceAS, inputAS, classAnnots, null, targetType, nameFeatureName);
     } else {
       if(haveSequenceProblem) {
-        corpusRepresentationClass.add(instanceAS, sequenceAS, inputAS, null, getTargetFeature(), targetType, nameFeatureName);
+        corpusRepresentationClass.add(instanceAS, sequenceAS, inputAS, classAnnots, null, targetType, nameFeatureName);
       } else {
         corpusRepresentationClass.add(instanceAS, sequenceAS, inputAS, null, getTargetFeature(), targetType, nameFeatureName);
       }
@@ -265,7 +265,7 @@ public class LF_Export extends LF_ExportBase {
       }
   }
     
-    haveSequenceAlg = getSequenceSpan()!=null && !getSequenceSpan().isEmpty();
+    haveSequenceAlg = (getExporter() == Exporter.EXPORTER_MALLET_SEQ);
     
     
     System.err.println("DEBUG: setup of the export PR complete");
