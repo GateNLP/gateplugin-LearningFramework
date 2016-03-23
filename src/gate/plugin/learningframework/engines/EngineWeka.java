@@ -50,7 +50,7 @@ public class EngineWeka extends Engine {
     } else {
       // must be classification algorithm then!
        weka.core.Instances all = new CorpusRepresentationWeka(corpusRepresentationMallet).getRepresentationWeka();
-       boolean noStratify = (boolean)opts.getValueOrElse("nostratify", 0);
+       boolean noStratify = (boolean)opts.getValueOrElse("nostratify", false);
        Random rand = new Random(seed); 
        all.randomize(rand);
        boolean stratified = !noStratify;
@@ -92,7 +92,7 @@ public class EngineWeka extends Engine {
   public Evaluation evaluateXVal(int k, String parms) {
     Parms opts = new Parms(parms,"s:seed:i","S:nostratify:b");
     int seed = (int)opts.getValueOrElse("seed", 0);
-    boolean noStratify = (boolean)opts.getValueOrElse("nostratify", 0);
+    boolean noStratify = (boolean)opts.getValueOrElse("nostratify", false);
     Random rand = new Random(seed); 
     Instances all = new CorpusRepresentationWeka(corpusRepresentationMallet).getRepresentationWeka();
     Evaluation eval = null;
