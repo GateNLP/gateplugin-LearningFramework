@@ -25,6 +25,7 @@ import gate.creole.metadata.RunTime;
 import gate.plugin.learningframework.engines.AlgorithmKind;
 import gate.plugin.learningframework.engines.Engine;
 import gate.util.GateRuntimeException;
+import java.net.URL;
 
 /**
  * <p>
@@ -42,6 +43,20 @@ public class LF_ApplySequenceTagging extends LearningFrameworkPRBase {
 
   static final Logger logger = Logger.getLogger(LF_ApplyClassification.class.getCanonicalName());
 
+  protected URL dataDirectory;
+
+  @RunTime
+  @CreoleParameter(comment = "The directory where all data will be stored and read from")
+  public void setDataDirectory(URL output) {
+    dataDirectory = output;
+  }
+
+  public URL getDataDirectory() {
+    return this.dataDirectory;
+  }
+
+  
+  
   protected String outputASName;
 
   @RunTime

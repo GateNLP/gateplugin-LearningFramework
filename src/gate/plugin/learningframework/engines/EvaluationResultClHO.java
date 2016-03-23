@@ -13,8 +13,8 @@ public class EvaluationResultClHO  extends EvaluationResultClassification {
   
   @Override
   public String toString() {    
-    return "EvaluationResultClHO{" + "accuracy=" + accuracyEstimate + ",trainingFraction="+trainingFraction+"nrRepeats="+nrRepeats+
-            "stratified="+stratified + "}";
+    return "EvaluationResultClHO{" + "accuracy=" + accuracyEstimate + ",trainingFraction="+trainingFraction+",nrRepeats="+nrRepeats+
+            ",stratified="+stratified + "}";
   }
   
 }

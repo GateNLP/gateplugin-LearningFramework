@@ -194,7 +194,7 @@ public abstract class Engine {
    */
   public abstract void trainModel(String parms);
   
-  public abstract EvaluationResult evaluate(String algorithmParameters,EvaluationMethod evaluationMethod,int numberOfFolds,double trainingFraction,int numberOfRepeats,boolean doStratification);
+  public abstract EvaluationResult evaluate(String algorithmParameters,EvaluationMethod evaluationMethod,int numberOfFolds,double trainingFraction,int numberOfRepeats);
   
   protected void updateInfo() {
     info.nrTrainingInstances = corpusRepresentationMallet.getRepresentationMallet().size();

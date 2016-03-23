@@ -47,6 +47,19 @@ public class LF_TrainSequenceTagging extends LF_TrainBase {
 
   private Logger logger = Logger.getLogger(LF_TrainSequenceTagging.class.getCanonicalName());
 
+  protected URL dataDirectory;
+
+  @RunTime
+  @CreoleParameter(comment = "The directory where all data will be stored and read from")
+  public void setDataDirectory(URL output) {
+    dataDirectory = output;
+  }
+
+  public URL getDataDirectory() {
+    return this.dataDirectory;
+  }
+
+  
   /**
    * The configuration file.
    *

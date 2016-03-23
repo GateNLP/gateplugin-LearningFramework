@@ -42,18 +42,6 @@ public abstract class LearningFrameworkPRBase
   // =================================================================
   // Creole Parameters for all the PRs that derive from this class
   // =================================================================
-  protected URL dataDirectory;
-
-  @RunTime
-  @CreoleParameter(comment = "The directory where all data will be stored and read from")
-  public void setDataDirectory(URL output) {
-    dataDirectory = output;
-  }
-
-  public URL getDataDirectory() {
-    return this.dataDirectory;
-  }
-
   protected String inputASName;
 
   @RunTime
@@ -81,20 +69,6 @@ public abstract class LearningFrameworkPRBase
   }
 
   protected Mode mode;
-
-  protected String identifierFeature;
-
-  @RunTime
-  @Optional
-  @CreoleParameter(comment = "The feature of the instance that "
-          + "can be used as an identifier for that instance.")
-  public void setIdentifierFeature(String identifierFeature) {
-    this.identifierFeature = identifierFeature;
-  }
-
-  public String getIdentifierFeature() {
-    return this.identifierFeature;
-  }
 
   protected String algorithmParameters;
 

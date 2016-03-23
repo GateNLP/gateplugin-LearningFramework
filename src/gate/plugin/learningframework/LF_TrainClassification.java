@@ -42,6 +42,20 @@ public class LF_TrainClassification extends LF_TrainBase {
 
   private final Logger logger = Logger.getLogger(LF_TrainClassification.class.getCanonicalName());
 
+  protected URL dataDirectory;
+
+  @RunTime
+  @CreoleParameter(comment = "The directory where all data will be stored and read from")
+  public void setDataDirectory(URL output) {
+    dataDirectory = output;
+  }
+
+  public URL getDataDirectory() {
+    return this.dataDirectory;
+  }
+
+  
+  
   /**
    * The configuration file.
    *

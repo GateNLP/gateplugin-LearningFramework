@@ -44,6 +44,20 @@ public class LF_Export extends LF_ExportBase {
 
   private final Logger logger = Logger.getLogger(LF_Export.class.getCanonicalName());
 
+  protected URL dataDirectory;
+
+  @RunTime
+  @CreoleParameter(comment = "The directory where all data will be stored and read from")
+  public void setDataDirectory(URL output) {
+    dataDirectory = output;
+  }
+
+  public URL getDataDirectory() {
+    return this.dataDirectory;
+  }
+
+  
+  
   /**
    * The configuration file.
    *

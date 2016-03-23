@@ -135,10 +135,10 @@ public class TestEngineLibSVM {
     System.err.println("added instances, number of instances now: "+crm.getRepresentationMallet().size());
 
     // method parameters: algparameters, method, folds, fraction, repeats, stratification
-    EvaluationResultClXval res = (EvaluationResultClXval)engine.evaluate("-c 1000 -g 0.02", EvaluationMethod.CROSSVALIDATION, 10, 0.66, 1, false);
+    EvaluationResultClXval res = (EvaluationResultClXval)engine.evaluate("-c 1000 -g 0.02", EvaluationMethod.CROSSVALIDATION, 10, 0.66, 1);
     System.err.println("TESTS-EVALUATION1: "+res);
     assertEquals(0.9088, res.accuracyEstimate,0.0001);
-    res = (EvaluationResultClXval)engine.evaluate("-c 10 -g 0.1", EvaluationMethod.CROSSVALIDATION, 10, 0.66, 1, false);
+    res = (EvaluationResultClXval)engine.evaluate("-c 10 -g 0.1", EvaluationMethod.CROSSVALIDATION, 10, 0.66, 1);
     System.err.println("TESTS-EVALUATION2: "+res);
     assertEquals(0.9515, res.accuracyEstimate,0.0001);
   }

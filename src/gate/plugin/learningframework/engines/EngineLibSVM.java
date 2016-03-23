@@ -18,6 +18,7 @@ import gate.util.GateRuntimeException;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import libsvm.svm;
 import static libsvm.svm.svm_set_print_string_function;
 import libsvm.svm_model;
@@ -294,10 +295,7 @@ public class EngineLibSVM extends Engine {
   @Override
   public EvaluationResult evaluate(String algorithmParameters, 
           EvaluationMethod evaluationMethod, int numberOfFolds, double trainingFraction, 
-          int numberOfRepeats, boolean doStratification) {
-    if(doStratification) {
-      throw new GateRuntimeException("LibSVM Evaluation does not support stratification!");
-    }
+          int numberOfRepeats) {
     if(numberOfRepeats > 1) {
       throw new GateRuntimeException("LibSVM Evaluation does not support numberOfRepeats > 1 yet!");
     }
@@ -306,8 +304,9 @@ public class EngineLibSVM extends Engine {
       if(evaluationMethod == EvaluationMethod.CROSSVALIDATION) {
         EvaluationResultClXval resultXval = new EvaluationResultClXval();
         resultXval.nrFolds = numberOfFolds;
-        resultXval.nrRepeats = numberOfRepeats;
-        resultXval.stratified = doStratification;
+        // From looking at the code in svm.java, method svm_cross_validation
+        // they actually always do stratification.
+        resultXval.stratified = true;
         
         svm_parameter svmparms = makeSvmParms(algorithmParameters);
         Parms ps = new Parms("S:seed:i");
@@ -335,12 +334,66 @@ public class EngineLibSVM extends Engine {
         resultXval.accuracyEstimate = ((double)nrCorrect) / target.length;
         result = resultXval;        
       } else {
+        EvaluationResultClHO resultClHO = new EvaluationResultClHO();
+        resultClHO.nrRepeats = numberOfRepeats;
+        resultClHO.stratified = false;
+        resultClHO.trainingFraction = trainingFraction;
+
+        svm_parameter svmparms = makeSvmParms(algorithmParameters);
+        Parms ps = new Parms("S:seed:i");
+        // TODO: figure out if this has actually any impact on the randomization
+        // used for the crossvaliation!
+        int seed = (int) ps.getValueOrElse("seed", 1);
+        libsvm.svm.rand.setSeed(seed);
+        
+        List<Double> accuracies = new ArrayList<Double>(numberOfRepeats);
+        svm_problem svmprob = CorpusRepresentationLibSVM.getFromMallet(corpusRepresentationMallet);
+        int total = svmprob.l;
+        int trainsize = (int)(total * trainingFraction);
+        int testsize = total - trainsize;
+        if(trainsize == 0 || testsize == 0) {
+          throw new GateRuntimeException("Training fraction of "+trainingFraction+" leads to training size "+trainsize+" and test size "+testsize);
+        }
+        svm_problem svm_train = new svm_problem();
+        svm_problem svm_test = new svm_problem();
+        // Sizes of the training/test set will not change between repeats
+        svm_test.l = testsize;
+        svm_train.l = trainsize;
+        // create an index array that represents the random permutation of
+        // instances and shuffle it
+        Random rgen = new Random(seed);
+        int[] idx = new int[total];
+        for(int i = 0; i<idx.length; i++) { idx[i] = i; }
+        shuffle(idx,rgen);
+        for(int repeat=0; repeat<numberOfRepeats; repeat++) {
+          // Split the instances up into training and test set
+          // To do this we repeatedly shuffle the index array and divide it into 
+          // the training and application problem
+          
+          svm_model model = libsvm.svm.svm_train(svm_train, svmparms);
+          
+        }
+        
+        
         result = new EvaluationResultClHO();
       }
     } else {
       throw new GateRuntimeException("Evaluation for Regression not implemented yet");
     }
     return result;
+  }
+  
+  // in place shuffle the array, using the given pre-initialized random object
+  // lets have full control here and do it ourselves, using Fisher-Yates
+  public static void shuffle(int[] idx, Random rgen) {
+        for(int i = 0; i<idx.length; i++) { idx[i] = i; }
+        // lets have full control here and do it ourselves, using Fisher-Yates
+        for(int i = 0; i<idx.length; i++) { 
+          int r = i+rgen.nextInt(idx.length-i); 
+          int tmp = idx[r];
+          idx[r] = idx[i];
+          idx[i] = tmp;
+        }    
   }
 
 }

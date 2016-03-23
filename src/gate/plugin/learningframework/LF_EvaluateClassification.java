@@ -134,7 +134,7 @@ public class LF_EvaluateClassification extends LF_TrainBase {
   protected EvaluationMethod evaluationMethod = EvaluationMethod.CROSSVALIDATION;
   @RunTime
   @Optional
-  @CreoleParameter(comment = "Evaluation Method", defaultValue = "CROSSVALIDATION")
+  @CreoleParameter(comment = "Evaluation Method, not all algorithms may support all methods", defaultValue = "CROSSVALIDATION")
   public void setEvaluationMethod(EvaluationMethod val) {
     evaluationMethod = val;
   }
@@ -148,14 +148,14 @@ public class LF_EvaluateClassification extends LF_TrainBase {
   @RunTime
   @Optional
   @CreoleParameter(comment = "Number of folds for the cross validation", defaultValue = "10")
-  public void setNumberOfFolds(int val) {
+  public void setNumberOfFolds(Integer val) {
     if(val < 2) {
       throw new GateRuntimeException("numberOfFolds must be > 1");
     }
     numberOfFolds = val;
   }
   
-  public int getNumberOfFolds() {    
+  public Integer getNumberOfFolds() {    
     return numberOfFolds;
   }
   
@@ -163,38 +163,27 @@ public class LF_EvaluateClassification extends LF_TrainBase {
   @RunTime
   @Optional
   @CreoleParameter(comment = "Fraction of instances to use for training, > 0.0 and < 1.0", defaultValue = "0.6667")
-  public void setTrainingFraction(double val) {
+  public void setTrainingFraction(Double val) {
     if(val <= 0.0 || val >= 1.0) {
       throw new GateRuntimeException("trainingFraction must be > 0.0 and < 1.0");
     }
     trainingFraction = val;
   }
   
-  public double getTrainingFraction() {
+  public Double getTrainingFraction() {
     return trainingFraction;
   }
   
-  protected boolean doStratification = false;
-  @RunTime
-  @Optional
-  @CreoleParameter(comment = "If stratification should be done (only relevant if supported)", defaultValue = "false")
-  public void setDoStratification(boolean val) {
-    doStratification = val;
-  }
-  
-  public boolean getDoStratification() {
-    return doStratification;
-  }
   
   protected int numberOfRepeats = 1;
   @RunTime
   @Optional
-  @CreoleParameter(comment = "Number of times to perform the evaluation to get an average", defaultValue = "1")
-  public void setNumberOfRepeats(int val) {
+  @CreoleParameter(comment = "Number of times to perform holdout evaluation to get an average", defaultValue = "1")
+  public void setNumberOfRepeats(Integer val) {
     numberOfRepeats = val;
   }
   
-  public int getNumberOfRepeats() {    
+  public Integer getNumberOfRepeats() {    
     return numberOfRepeats;
   }
   
@@ -244,7 +233,7 @@ public class LF_EvaluateClassification extends LF_TrainBase {
 
     corpusRepresentation.addScaling(getScaleFeatures());
     
-    EvaluationResult er = engine.evaluate(getAlgorithmParameters(),evaluationMethod,numberOfFolds,trainingFraction,numberOfRepeats,doStratification);
+    EvaluationResult er = engine.evaluate(getAlgorithmParameters(),evaluationMethod,numberOfFolds,trainingFraction,numberOfRepeats);
     logger.info("LearningFramework: Evaluation complete!");
     logger.info(er);
   }
@@ -256,9 +245,6 @@ public class LF_EvaluateClassification extends LF_TrainBase {
 
   @Override
   protected void beforeFirstDocument(Controller controller) {
-    dataDir = gate.util.Files.fileFromURL(dataDirectory);
-    if(!dataDir.exists()) throw new GateRuntimeException("Data directory not found: "+dataDir.getAbsolutePath());
-
     if (getTrainingAlgorithm() == null) {
       throw new GateRuntimeException("LearningFramework: no training algorithm specified");
     }

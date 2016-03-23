@@ -9,12 +9,11 @@ package gate.plugin.learningframework.engines;
 public class EvaluationResultClXval  extends EvaluationResultClassification {
   public int nrFolds;
   public boolean stratified;
-  public int nrRepeats;
   
   @Override
   public String toString() {    
-    return "EvaluationResultClXval{" + "accuracy=" + accuracyEstimate + ",nrFolds="+nrFolds+"nrRepeats="+nrRepeats+
-            "stratified="+stratified + "}";
+    return "EvaluationResultClXval{" + "accuracy=" + accuracyEstimate + ",nrFolds="+nrFolds+
+            ",stratified="+stratified + "}";
   }
   
 }

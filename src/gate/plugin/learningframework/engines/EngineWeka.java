@@ -295,7 +295,7 @@ public class EngineWeka extends Engine {
   }
 
   @Override
-  public EvaluationResult evaluate(String algorithmParameters, EvaluationMethod evaluationMethod, int numberOfFolds, double trainingFraction, int numberOfRepeats, boolean doStratification) {
+  public EvaluationResult evaluate(String algorithmParameters, EvaluationMethod evaluationMethod, int numberOfFolds, double trainingFraction, int numberOfRepeats) {
     EvaluationResult ret = null;
     if(evaluationMethod == EvaluationMethod.CROSSVALIDATION) {
       Evaluation eval = evaluateXVal(numberOfFolds, algorithmParameters);
@@ -304,7 +304,6 @@ public class EngineWeka extends Engine {
         e.internalEvaluationResult = eval;
         e.accuracyEstimate = 1.0 - eval.errorRate();
         e.nrFolds = numberOfFolds;   
-        e.nrRepeats = numberOfRepeats;
         ret = e;
       } else {
         throw new GateRuntimeException("Weka evaluation: not implemented for regression yet!");
