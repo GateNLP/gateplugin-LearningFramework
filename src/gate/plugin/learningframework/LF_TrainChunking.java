@@ -35,17 +35,17 @@ import gate.util.GateRuntimeException;
  *
  */
 @CreoleResource(
-        name = "LF_TrainSequenceTagging",
-        helpURL = "https://github.com/GateNLP/gateplugin-LearningFramework/wiki/LF_TrainSequenceTagging",
-        comment = "Train a machine learning model for sequence tagging")
-public class LF_TrainSequenceTagging extends LF_TrainBase {
+        name = "LF_TrainChunking",
+        helpURL = "https://github.com/GateNLP/gateplugin-LearningFramework/wiki/LF_TrainChunking",
+        comment = "Train a machine learning model for chunking")
+public class LF_TrainChunking extends LF_TrainBase {
 
   /**
    *
    */
   private static final long serialVersionUID = 1L;
 
-  private Logger logger = Logger.getLogger(LF_TrainSequenceTagging.class.getCanonicalName());
+  private Logger logger = Logger.getLogger(LF_TrainChunking.class.getCanonicalName());
 
   protected URL dataDirectory;
 

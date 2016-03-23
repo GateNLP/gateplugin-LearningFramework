@@ -31,10 +31,10 @@ import java.net.URL;
  * <p>
  * Training, evaluation and application of ML in GATE.</p>
  */
-@CreoleResource(name = "LF_ApplySequenceTagging",
-        helpURL = "https://github.com/GateNLP/gateplugin-LearningFramework/wiki/LF_ApplySequenceTagging",
-        comment = "Apply a trained sequence tagging model to documents")
-public class LF_ApplySequenceTagging extends LearningFrameworkPRBase {
+@CreoleResource(name = "LF_ApplyChunking",
+        helpURL = "https://github.com/GateNLP/gateplugin-LearningFramework/wiki/LF_ApplyChunking",
+        comment = "Apply a trained chunking model to documents")
+public class LF_ApplyChunking extends LearningFrameworkPRBase {
 
   /**
    *
