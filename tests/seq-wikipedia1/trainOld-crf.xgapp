@@ -1218,10 +1218,6 @@
                   </gate.util.persistence.PersistenceManager-URLHolder>
                 </entry>
                 <entry>
-                  <string>identifierFeature</string>
-                  <null/>
-                </entry>
-                <entry>
                   <string>learnerParams</string>
                   <null/>
                 </entry>

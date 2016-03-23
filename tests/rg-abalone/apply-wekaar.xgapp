@@ -266,10 +266,6 @@
                   <string></string>
                 </entry>
                 <entry>
-                  <string>identifierFeature</string>
-                  <string></string>
-                </entry>
-                <entry>
                   <string>confidenceThreshold</string>
                   <double>0.0</double>
                 </entry>

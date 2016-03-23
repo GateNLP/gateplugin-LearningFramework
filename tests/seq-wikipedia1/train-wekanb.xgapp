@@ -1618,10 +1618,6 @@
               <mapType>gate.util.SimpleFeatureMapImpl</mapType>
               <localMap>
                 <entry>
-                  <string>identifierFeature</string>
-                  <string></string>
-                </entry>
-                <entry>
                   <string>trainingAlgorithm</string>
                   <gate.plugin.learningframework.engines.AlgorithmClassification>WEKA_CL_NAIVE_BAYES</gate.plugin.learningframework.engines.AlgorithmClassification>
                 </entry>

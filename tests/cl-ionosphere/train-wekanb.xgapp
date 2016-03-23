@@ -179,10 +179,6 @@
                   <string>class</string>
                 </entry>
                 <entry>
-                  <string>identifierFeature</string>
-                  <null/>
-                </entry>
-                <entry>
                   <string>trainingAlgorithm</string>
                   <gate.plugin.learningframework.engines.AlgorithmClassification>WEKA_CL_NAIVE_BAYES</gate.plugin.learningframework.engines.AlgorithmClassification>
                 </entry>

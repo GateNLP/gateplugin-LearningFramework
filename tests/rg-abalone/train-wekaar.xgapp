@@ -148,10 +148,6 @@
                   <string>target</string>
                 </entry>
                 <entry>
-                  <string>identifierFeature</string>
-                  <string></string>
-                </entry>
-                <entry>
                   <string>trainingAlgorithm</string>
                   <gate.plugin.learningframework.engines.AlgorithmRegression>WEKA_RG_ADDITIVE_REGRESSION</gate.plugin.learningframework.engines.AlgorithmRegression>
                 </entry>

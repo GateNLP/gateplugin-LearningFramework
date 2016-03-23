@@ -179,10 +179,6 @@
                   <string>class</string>
                 </entry>
                 <entry>
-                  <string>identifierFeature</string>
-                  <null/>
-                </entry>
-                <entry>
                   <string>trainingAlgorithm</string>
                   <gate.plugin.learningframework.engines.AlgorithmClassification>MALLET_CL_C45</gate.plugin.learningframework.engines.AlgorithmClassification>
                 </entry>

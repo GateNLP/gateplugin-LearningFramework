@@ -130,10 +130,6 @@
                   <gate.plugin.learningframework.Exporter>EXPORTER_WEKA_CLASS</gate.plugin.learningframework.Exporter>
                 </entry>
                 <entry>
-                  <string>identifierFeature</string>
-                  <null/>
-                </entry>
-                <entry>
                   <string>featureSpecURL</string>
                   <gate.util.persistence.PersistenceManager-URLHolder>
                     <urlString>$relpath$feats.xml</urlString>

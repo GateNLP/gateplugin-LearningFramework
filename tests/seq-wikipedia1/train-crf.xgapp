@@ -1127,10 +1127,6 @@
               <mapType>gate.util.SimpleFeatureMapImpl</mapType>
               <localMap>
                 <entry>
-                  <string>identifierFeature</string>
-                  <null/>
-                </entry>
-                <entry>
                   <string>trainingAlgorithm</string>
                   <gate.plugin.learningframework.engines.AlgorithmClassification>MALLET_SEQ_CRF</gate.plugin.learningframework.engines.AlgorithmClassification>
                 </entry>

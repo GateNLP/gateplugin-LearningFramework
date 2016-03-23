@@ -175,10 +175,6 @@
                   <string>class</string>
                 </entry>
                 <entry>
-                  <string>identifierFeature</string>
-                  <null/>
-                </entry>
-                <entry>
                   <string>trainingAlgorithm</string>
                   <gate.plugin.learningframework.engines.AlgorithmClassification>LIBSVM_CL</gate.plugin.learningframework.engines.AlgorithmClassification>
                 </entry>
