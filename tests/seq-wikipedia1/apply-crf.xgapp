@@ -1274,7 +1274,7 @@
                 </entry>
               </localMap>
             </runtimeParams>
-            <resourceType>gate.plugin.learningframework.LF_ApplySequenceTagging</resourceType>
+            <resourceType>gate.plugin.learningframework.LF_ApplyChunking</resourceType>
             <resourceName>LearningFrameworkApply 00012</resourceName>
             <initParams class="gate.util.persistence.MapPersistence">
               <mapType>gate.util.SimpleFeatureMapImpl</mapType>

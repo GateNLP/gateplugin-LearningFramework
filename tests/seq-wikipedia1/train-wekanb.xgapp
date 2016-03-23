@@ -1667,7 +1667,7 @@
                 </entry>
               </localMap>
             </runtimeParams>
-            <resourceType>gate.plugin.learningframework.LF_TrainSequenceTagging</resourceType>
+            <resourceType>gate.plugin.learningframework.LF_TrainChunking</resourceType>
             <resourceName>LearningFrameworkTrain</resourceName>
             <initParams class="gate.util.persistence.MapPersistence">
               <mapType>gate.util.SimpleFeatureMapImpl</mapType>
