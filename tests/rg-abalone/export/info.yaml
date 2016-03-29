@@ -1,0 +1,14 @@
+algorithmClass: gate.plugin.learningframework.engines.AlgorithmClassification
+algorithmName: WEKA_CL_NAIVE_BAYES
+classAnnotationType: 'null'
+classLabels: null
+engineClass: gate.plugin.learningframework.engines.EngineWeka
+modelClass: ' weka.classifiers.bayes.NaiveBayes'
+nrTargetValues: 0
+nrTrainingDimensions: 10
+nrTrainingDocuments: 0
+nrTrainingInstances: 4177
+targetFeature: class
+task: CLASSIFIER
+trainerClass: weka.classifiers.bayes.NaiveBayes
+trainingCorpusName: ''

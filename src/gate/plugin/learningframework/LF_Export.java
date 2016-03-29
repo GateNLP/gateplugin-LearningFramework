@@ -169,32 +169,18 @@ public class LF_Export extends LF_ExportBase {
     // extract the required annotation sets,
     AnnotationSet inputAS = doc.getAnnotations(getInputASName());
     AnnotationSet instanceAS = inputAS.get(getInstanceType());
-    // the classAS 
-    // the sequenceAS must be specified for a sequence tagging algorithm and most not be specified
-    // for a non-sequence tagging algorithm!
-    AnnotationSet sequenceAS = null;
-    // If the exporter is MALLET_SEQ, then what we really do depends on the classType parameters:
-    // if it is empty, then we will create a feature vector sequence for classification, otherwise
-    // for sequence tagging (in that case, the target Feature must be empty!)
-    
-    // But in any case, if we use MALLET_SEQ, we need to get the sequence annotation
-    if(haveSequenceProblem) {
-      sequenceAS = inputAS.get(getSequenceSpan());
-    }
-    AnnotationSet classAnnots = null;
-    if(haveSequenceProblem) {
-      classAnnots = inputAS.get(getClassAnnotationType());
-    }
-    // the classAS is always null for the classification task!
-    // the nameFeatureName is always null for now!
     String nameFeatureName = null;
-    if(haveSequenceAlg) {      
-      corpusRepresentationSeq.add(instanceAS, sequenceAS, inputAS, classAnnots, classAnnots, targetType, nameFeatureName);
+    if(haveSequenceAlg) {
+      if(haveSequenceProblem) {
+        corpusRepresentationSeq.add(instanceAS, inputAS.get(getSequenceSpan()), inputAS, inputAS.get(getClassAnnotationType()), null, targetType, nameFeatureName);
+      } else {
+        corpusRepresentationSeq.add(instanceAS, inputAS.get(getSequenceSpan()), inputAS, null, getTargetFeature(), targetType, nameFeatureName);        
+      }
     } else {
       if(haveSequenceProblem) {
-        corpusRepresentationClass.add(instanceAS, sequenceAS, inputAS, null, getTargetFeature(), targetType, nameFeatureName);
+        corpusRepresentationClass.add(instanceAS, null, inputAS, inputAS.get(getClassAnnotationType()), null, targetType, nameFeatureName);
       } else {
-        corpusRepresentationClass.add(instanceAS, sequenceAS, inputAS, null, getTargetFeature(), targetType, nameFeatureName);
+        corpusRepresentationClass.add(instanceAS, null, inputAS, null, getTargetFeature(), targetType, nameFeatureName);
       }
     }
   }

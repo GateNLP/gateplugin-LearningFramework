@@ -51,6 +51,10 @@ public abstract class CorpusRepresentation {
       System.err.println("EXPORTING BY WEKA");
       CorpusRepresentationWeka crw = new CorpusRepresentationWeka(crm);
       crw.export(directory, parms);
+    } else if(action == Exporter.EXPORTER_WEKA_REGRESSION) {
+      System.err.println("EXPORTING FOR REGRESSION BY WEKA");
+      CorpusRepresentationWeka crw = new CorpusRepresentationWeka(crm);
+      crw.export(directory, parms);
     } else if(action == Exporter.EXPORTER_LIBSVM_CLASS) {
       CorpusRepresentationLibSVM crl = new CorpusRepresentationLibSVM(crm);
       crl.export(directory, parms);
