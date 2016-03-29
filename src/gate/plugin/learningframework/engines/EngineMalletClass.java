@@ -11,6 +11,7 @@ import cc.mallet.classify.Classifier;
 import cc.mallet.classify.ClassifierTrainer;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
+import cc.mallet.types.InstanceList.CrossValidationIterator;
 import cc.mallet.types.LabelVector;
 import cc.mallet.types.Labeling;
 import gate.Annotation;
@@ -27,6 +28,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import org.apache.log4j.Logger;
 
 /**
@@ -150,7 +152,50 @@ public class EngineMalletClass extends EngineMallet {
 
   @Override
   public EvaluationResult evaluate(String algorithmParameters, EvaluationMethod evaluationMethod, int numberOfFolds, double trainingFraction, int numberOfRepeats) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    EvaluationResult ret = null;
+    Parms parms = new Parms(algorithmParameters,"s:seed:i");
+    int seed = (Integer)parms.getValueOrElse("seed", 1);
+    if(evaluationMethod == EvaluationMethod.CROSSVALIDATION) {
+      CrossValidationIterator cvi = corpusRepresentationMallet.getRepresentationMallet().crossValidationIterator(numberOfFolds, seed);
+      if(algorithm instanceof AlgorithmClassification) {
+        double sumOfAccs = 0.0;
+        while(cvi.hasNext()) {
+          InstanceList[] il = cvi.nextSplit();
+          InstanceList trainSet = il[0];
+          InstanceList testSet = il[1];
+          Classifier cl = ((ClassifierTrainer) trainer).train(trainSet);
+          sumOfAccs += cl.getAccuracy(testSet);
+        }
+        EvaluationResultClXval e = new EvaluationResultClXval();
+        e.internalEvaluationResult = null;
+        e.accuracyEstimate = sumOfAccs/numberOfFolds; 
+        e.nrFolds = numberOfFolds;   
+        ret = e;
+      } else {
+        throw new GateRuntimeException("Mallet evaluation: not available for regression!");
+      }
+    } else {
+      if(algorithm instanceof AlgorithmClassification) {
+        Random rnd = new Random(seed);
+        double sumOfAccs = 0.0;
+        for(int i = 0; i<numberOfRepeats; i++) {
+          InstanceList[] sets = corpusRepresentationMallet.getRepresentationMallet().split(rnd,
+				new double[]{trainingFraction, 1-trainingFraction});
+          Classifier cl = ((ClassifierTrainer) trainer).train(sets[0]);
+          sumOfAccs += cl.getAccuracy(sets[1]);
+        }
+        EvaluationResultClHO e = new EvaluationResultClHO();
+        e.internalEvaluationResult = null;
+        e.accuracyEstimate = sumOfAccs/numberOfRepeats;
+        e.trainingFraction = trainingFraction;
+        e.nrRepeats = numberOfRepeats;
+        ret = e;
+      } else {
+        throw new GateRuntimeException("Mallet evaluation: not available for regression!");
+      }      
+    }
+    return ret;
+    
   }
   
 
