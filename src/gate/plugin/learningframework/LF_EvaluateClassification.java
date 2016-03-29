@@ -188,6 +188,22 @@ public class LF_EvaluateClassification extends LF_TrainBase {
   }
   
   
+  protected String classAnnotationType;
+
+  @RunTime
+  @CreoleParameter(comment = "Annotation type containing/indicating the class.")
+  public void setClassAnnotationType(String classType) {
+    this.classAnnotationType = classType;
+  }
+
+  public String getClassAnnotationType() {
+    return this.classAnnotationType;
+  }
+
+
+  
+  
+  
   
   private int nrDocuments;
   
@@ -209,12 +225,23 @@ public class LF_EvaluateClassification extends LF_TrainBase {
     if (getTrainingAlgorithm() == AlgorithmClassification.MALLET_SEQ_CRF) {
       // NOTE: we already have checked earlier, that in that case, the sequenceSpan parameter is 
       // given!
+      // NOTE: we do not actually support a sequence learner yet!
       sequenceAS = inputAS.get(getSequenceSpan());
     }
-    // the classAS is always null for the classification task!
-    // the nameFeatureName is always null for now!
+    // We allo a class annotation type to be specified: in this case, we will run the 
+    // evaluation for the classification problem generated from the chunking problem.
+    AnnotationSet classAS = null;
+    String tfName = null;
+    if(getClassAnnotationType() == null || getClassAnnotationType().isEmpty()) {
+      tfName = getTargetFeature();
+      classAS = null;
+    } else {
+      tfName = null;
+      classAS = inputAS.get(getClassAnnotationType());
+    }
+    inputAS.get(getClassAnnotationType());
     String nameFeatureName = null;
-    corpusRepresentation.add(instanceAS, sequenceAS, inputAS, null, getTargetFeature(), TargetType.NOMINAL, nameFeatureName);
+    corpusRepresentation.add(instanceAS, sequenceAS, inputAS, classAS, tfName, TargetType.NOMINAL, nameFeatureName);
     nrDocuments++;
   }
 
