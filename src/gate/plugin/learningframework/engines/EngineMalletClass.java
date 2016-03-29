@@ -9,6 +9,7 @@ import cc.mallet.classify.C45Trainer;
 import cc.mallet.classify.Classification;
 import cc.mallet.classify.Classifier;
 import cc.mallet.classify.ClassifierTrainer;
+import cc.mallet.classify.DecisionTreeTrainer;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.InstanceList.CrossValidationIterator;
@@ -101,10 +102,27 @@ public class EngineMalletClass extends EngineMallet {
       // there are parameters, so if it is one of the algorithms were we support setting
       // a parameter do this      
       if (algorithm.equals(AlgorithmClassification.MALLET_CL_C45)) {      
-        Parms ps = new Parms(parms, "m:maxDepth:i", "p:prune:b");
+        Parms ps = new Parms(parms, "m:maxDepth:i", "p:prune:b","m:minNumInsts:i");
         int maxDepth = (int)ps.getValueOrElse("maxDepth", -1);
+        int minNumInsts = (int)ps.getValueOrElse("minNumInsts", 2);
         boolean prune = (boolean)ps.getValueOrElse("prune",false);  
-        trainer = new C45Trainer(maxDepth,prune);
+        C45Trainer c45trainer = new C45Trainer(maxDepth,prune);
+        c45trainer.setMinNumInsts(minNumInsts);
+        trainer = c45trainer;
+      } else if(algorithm.equals(AlgorithmClassification.MALLET_CL_DECISION_TREE)) {
+        DecisionTreeTrainer dtTrainer = new DecisionTreeTrainer();
+        Parms ps = new Parms(parms, "m:maxDepth:i", "i:minInfoGainSplit:d");
+        int maxDepth = (int)ps.getValueOrElse("maxDepth", DecisionTreeTrainer.DEFAULT_MAX_DEPTH);
+        double minIGS = (double)ps.getValueOrElse("minInfoGainSplit",DecisionTreeTrainer.DEFAULT_MIN_INFO_GAIN_SPLIT);  
+        dtTrainer.setMaxDepth(maxDepth);
+        dtTrainer.setMinInfoGainSplit(minIGS);
+        trainer = dtTrainer;
+      /* TODO!!!
+      } else if(algorithm.equals(AlgorithmClassification.MALLET_CL_MAX_ENT)) {
+      } else if(algorithm.equals(AlgorithmClassification.MALLET_CL_NAIVE_BAYES)) {
+      } else if(algorithm.equals(AlgorithmClassification.MALLET_CL_NAIVE_BAYES_EM)) {
+      } else if(algorithm.equals(AlgorithmClassification.MALLET_CL_WINNOW)) {
+      */
       } else {
         // all other algorithms are still just instantiated from the class name, we ignore
         // the parameters

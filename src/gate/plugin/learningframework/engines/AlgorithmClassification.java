@@ -21,6 +21,7 @@ public enum AlgorithmClassification implements Algorithm {
   MALLET_CL_NAIVE_BAYES_EM(EngineMalletClass.class,cc.mallet.classify.NaiveBayesEMTrainer.class),
   MALLET_CL_NAIVE_BAYES(EngineMalletClass.class,cc.mallet.classify.NaiveBayes.class),
   MALLET_CL_WINNOW(EngineMalletClass.class,cc.mallet.classify.WinnowTrainer.class),
+  MALLET_CL_BALANCED_WINNOW(EngineMalletClass.class,cc.mallet.classify.BalancedWinnowTrainer.class),
   MALLET_SEQ_CRF(EngineMalletSeq.class,null), // creating this training is too complex, no class specified
   MALLET_CL_SPECIFY_CLASS(EngineMalletClass.class,null),
   WEKA_CL_NAIVE_BAYES(EngineWeka.class,weka.classifiers.bayes.NaiveBayes.class),
