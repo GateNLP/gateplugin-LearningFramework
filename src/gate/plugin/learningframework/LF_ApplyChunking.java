@@ -90,22 +90,7 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
     return this.confidenceThreshold;
   }
 
-  protected String targetFeature;
 
-  // TODO: we want to get rid of this and read this name from the info file!!
-  @RunTime
-  @Optional
-  @CreoleParameter(comment = "Name of class feature to add to the original "
-          + "instance annotations",
-          defaultValue = "")
-  public void setTargetFeature(String name) {
-    targetFeature = name;
-  }
-
-  public String getTargetFeature() {
-    return targetFeature;
-  }
-  
   String sequenceSpan;
   
   @RunTime
