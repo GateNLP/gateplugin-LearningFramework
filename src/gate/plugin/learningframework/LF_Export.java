@@ -251,7 +251,7 @@ public class LF_Export extends LF_ExportBase {
       }
   }
     
-    haveSequenceAlg = getSequenceSpan()!=null && !getSequenceSpan().isEmpty();
+    haveSequenceAlg = (getExporter() == Exporter.EXPORTER_MALLET_SEQ);
     
     
     System.err.println("DEBUG: setup of the export PR complete");

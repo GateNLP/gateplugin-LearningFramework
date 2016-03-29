@@ -65,9 +65,11 @@
   <path id="compile.classpath">
     <path refid="gate.classpath" />
     <path refid="ivylibs" />
+    <!--
     <fileset dir="lib"> 
       <include name="*.jar"/>
     </fileset>
+    -->
     <fileset dir="lib-static">
       <include name="*.jar"/>
     </fileset>

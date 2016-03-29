@@ -19,3 +19,6 @@ hs_err_*.log
 /tests/cl-ionosphere/export/data.arff
 /tests/cl-ionosphere/export/info.yaml
 /tests/cl-ionosphere/export/pipe.pipe
+/tests/seq-wikipedia1/export/*
+!/tests/seq-wikipedia1/export/.keep
+
