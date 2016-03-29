@@ -6,6 +6,8 @@
 
 package gate.plugin.learningframework.engines;
 
+import cc.mallet.classify.Classifier;
+import cc.mallet.classify.ClassifierTrainer;
 import cc.mallet.fst.CRF;
 import cc.mallet.fst.CRFOptimizableByLabelLikelihood;
 import cc.mallet.fst.CRFTrainerByLabelLikelihood;
@@ -31,6 +33,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import org.apache.log4j.Logger;
 
 /**
@@ -53,6 +56,13 @@ public class EngineMalletSeq extends EngineMallet {
 
   @Override
   public void trainModel(String options) {
+    InstanceList trainingData = corpusRepresentationMallet.getRepresentationMallet();
+    CRF crf = trainModel(trainingData,options);
+    model = crf;
+    updateInfo();
+  }
+  
+  public CRF trainModel(InstanceList trainingData, String options) {
     
     // NOTE: Training of the CRF is very flexible in Mallet and not everything is clear to me
     // yet. Unfortunately, there is practically no documentation available.
@@ -68,11 +78,9 @@ public class EngineMalletSeq extends EngineMallet {
     // selected for actual sequence tagging. This is why we check the literal name here
     // instead of something derived from the Algorithm enum class.
     System.err.println("DEBUG: our algorithm name is "+info.algorithmName);
-    InstanceList trainingData = corpusRepresentationMallet.getRepresentationMallet();
     if(info.algorithmName.equals("MALLET_SEQ_CRF")) {
       
       CRF crf = new CRF(trainingData.getPipe(), null);
-      model = crf;
       
       Parms parms = new Parms(options,"S:states:s","o:orders:s","of:ofully:b","as:addstart:B");
       
@@ -154,11 +162,11 @@ public class EngineMalletSeq extends EngineMallet {
       };
       crft.addEvaluator(viterbiWriter);      
       crft.train(trainingData, Integer.MAX_VALUE);
+      return crf;
     } else {
       // For now, there is no other algorithm!
+      throw new GateRuntimeException("EngineMalletSeq: only MALLET_SEQ_CRF supported so far!");
     }
-    updateInfo();
-    
   }
 
   @Override
@@ -264,8 +272,54 @@ public class EngineMalletSeq extends EngineMallet {
   }
 
   @Override
+  // NOTE: this evaluates only the classification problem generated from the original chunking problem,
+  // so as for classification, we get accuracy estimates, not precision/recall/F-measure.
+  // We do not have anything in the LearningFramework for doing F-measure evaluation, this has to 
+  // be done outside of the LF in some kind of wrapper or script that invokes the proper LF methods.
   public EvaluationResult evaluate(String algorithmParameters, EvaluationMethod evaluationMethod, int numberOfFolds, double trainingFraction, int numberOfRepeats) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    EvaluationResult ret = null;
+    Parms parms = new Parms(algorithmParameters,"s:seed:i");
+    int seed = (Integer)parms.getValueOrElse("seed", 1);
+    if(evaluationMethod == EvaluationMethod.CROSSVALIDATION) {
+      InstanceList.CrossValidationIterator cvi = corpusRepresentationMallet.getRepresentationMallet().crossValidationIterator(numberOfFolds, seed);
+      if(algorithm instanceof AlgorithmClassification) {
+        double sumOfAccs = 0.0;
+        while(cvi.hasNext()) {
+          InstanceList[] il = cvi.nextSplit();
+          InstanceList trainSet = il[0];
+          InstanceList testSet = il[1];
+          CRF crf = trainModel(trainSet, algorithmParameters);
+          sumOfAccs += crf.averageTokenAccuracy(testSet);
+        }
+        EvaluationResultClXval e = new EvaluationResultClXval();
+        e.internalEvaluationResult = null;
+        e.accuracyEstimate = sumOfAccs/numberOfFolds; 
+        e.nrFolds = numberOfFolds;   
+        ret = e;
+      } else {
+        throw new GateRuntimeException("Mallet evaluation: not available for regression!");
+      }
+    } else {
+      if(algorithm instanceof AlgorithmClassification) {
+        Random rnd = new Random(seed);
+        double sumOfAccs = 0.0;
+        for(int i = 0; i<numberOfRepeats; i++) {
+          InstanceList[] sets = corpusRepresentationMallet.getRepresentationMallet().split(rnd,
+				new double[]{trainingFraction, 1-trainingFraction});
+          CRF crf = trainModel(sets[0], algorithmParameters);
+          sumOfAccs += crf.averageTokenAccuracy(sets[1]);
+        }
+        EvaluationResultClHO e = new EvaluationResultClHO();
+        e.internalEvaluationResult = null;
+        e.accuracyEstimate = sumOfAccs/numberOfRepeats;
+        e.trainingFraction = trainingFraction;
+        e.nrRepeats = numberOfRepeats;
+        ret = e;
+      } else {
+        throw new GateRuntimeException("Mallet evaluation: not available for regression!");
+      }      
+    }
+    return ret;
   }
   
 
