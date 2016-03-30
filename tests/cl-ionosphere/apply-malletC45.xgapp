@@ -112,6 +112,7 @@
                   <gate.util.persistence.CollectionPersistence>
                     <localList>
                       <string>LearningFramework</string>
+                      <string>LFOUT</string>
                     </localList>
                     <collectionType>java.util.ArrayList</collectionType>
                   </gate.util.persistence.CollectionPersistence>
@@ -289,7 +290,7 @@
                 </entry>
                 <entry>
                   <string>inputASName</string>
-                  <string>LearningFramework</string>
+                  <string>LFOUT</string>
                 </entry>
                 <entry>
                   <string>sequenceSpan</string>

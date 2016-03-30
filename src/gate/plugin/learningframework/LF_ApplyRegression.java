@@ -60,7 +60,8 @@ public class LF_ApplyRegression extends LearningFrameworkPRBase {
 
   @RunTime
   @Optional
-  @CreoleParameter(defaultValue = "LearningFramework")
+  @CreoleParameter(comment="If not empty, place new annotations in the output set instead of updating the existing annotations", 
+          defaultValue = "LearningFramework")
   public void setOutputASName(String oasn) {
     this.outputASName = oasn;
   }
