@@ -146,7 +146,7 @@ public class LF_TrainChunking extends LF_TrainBase {
   private CorpusRepresentationMallet corpusRepresentation;
   
   @Override
-  public void execute(Document doc) {
+  public Document process(Document doc) {
     if(isInterrupted()) {
       interrupted = false;
       throw new GateRuntimeException("Execution was requested to be interrupted");
@@ -165,6 +165,7 @@ public class LF_TrainChunking extends LF_TrainBase {
       corpusRepresentation.add(instanceAS, null, inputAS, classAS, null, TargetType.NOMINAL, nameFeatureName);
     }
     nrDocuments++;
+    return doc;
   }
 
   @Override

@@ -165,7 +165,7 @@ public class LF_Export extends LF_ExportBase {
   // Also: can we get most of what we need to do into the Exporter enum already??
 
   @Override
-  public void execute(Document doc) {
+  public Document process(Document doc) {
     // extract the required annotation sets,
     AnnotationSet inputAS = doc.getAnnotations(getInputASName());
     AnnotationSet instanceAS = inputAS.get(getInstanceType());
@@ -183,6 +183,7 @@ public class LF_Export extends LF_ExportBase {
         corpusRepresentationClass.add(instanceAS, null, inputAS, null, getTargetFeature(), targetType, nameFeatureName);
       }
     }
+    return doc;
   }
 
   @Override

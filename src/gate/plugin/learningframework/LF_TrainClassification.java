@@ -148,7 +148,7 @@ public class LF_TrainClassification extends LF_TrainBase {
   private File dataDir;
 
   @Override
-  public void execute(Document doc) {
+  public Document process(Document doc) {
     if(isInterrupted()) {
       interrupted = false;
       throw new GateRuntimeException("Execution was requested to be interrupted");
@@ -169,6 +169,7 @@ public class LF_TrainClassification extends LF_TrainBase {
     // the nameFeatureName is always null for now!
     String nameFeatureName = null;
     corpusRepresentation.add(instanceAS, sequenceAS, inputAS, null, getTargetFeature(), TargetType.NOMINAL, nameFeatureName);
+    return doc;
   }
 
   @Override

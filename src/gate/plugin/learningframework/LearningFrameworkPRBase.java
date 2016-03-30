@@ -10,29 +10,24 @@
  */
 package gate.plugin.learningframework;
 
-import java.io.Serializable;
-import java.net.URL;
 
 import org.apache.log4j.Logger;
 
 import gate.Controller;
 import gate.Document;
 import gate.Resource;
-import gate.creole.ControllerAwarePR;
 import gate.creole.ResourceInstantiationException;
-import gate.creole.AbstractLanguageAnalyser;
 import gate.creole.ExecutionException;
 import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
 
 /**
- * Base class for all LearningFramework PRs providing the shared parameters and some shared
- * processing.
+ * Base class for all LearningFramework PRs providing the shared parameters.
  */
 public abstract class LearningFrameworkPRBase
-        extends AbstractLanguageAnalyser
-        implements Serializable, ControllerAwarePR {
+        extends AbstractDocumentProcessor
+  {
 
   /**
    *
@@ -83,90 +78,4 @@ public abstract class LearningFrameworkPRBase
   public String getAlgorithmParameters() {
     return this.algorithmParameters;
   }
-
-  //================================================================
-  // Instance variables, visible to the child classes
-  //================================================================
-  /**
-   * A flag that indicates that the PR has just been started. Used in execute() to run code that
-   * needs to run once before any documents are processed.
-   */
-  protected boolean justStarted = false;
-
-  /**
-   * A flag that indicates that at least one document was processed.
-   */
-  protected boolean haveSomeDocuments = false;
-
-  protected Controller controller;
-
-  protected Throwable throwable;
-
-  //===============================================================================
-  // Implementation of the relevant API methods for LanguageAnalyzers. These
-  // get inherited by the implementing class. This also defines abstract methods 
-  // that make it easier to handle the control flow:
-  // void execute(Document doc) - replaces void execute()
-  // void beforeFirstDocument() - called before the first document is processed
-  //     (not called if there were no documents in the corpus, for example)
-  // void afterLastDocument()   - called after the last document was processed
-  //     (not called if there were no documents in the corpus, for example)
-  //================================================================================
-  @Override
-  public Resource init() throws ResourceInstantiationException {
-    return this;
-  }
-
-  @Override
-  public void execute() throws ExecutionException {
-    if (justStarted) {
-      beforeFirstDocument(controller);
-      justStarted = false;
-    }
-    execute(getDocument());
-    haveSomeDocuments = true;
-  }
-
-  @Override
-  public void controllerExecutionAborted(Controller arg0, Throwable arg1)
-          throws ExecutionException {
-    // reset the flags for the next time the controller is run
-    controller = arg0;
-    throwable = arg1;
-    if (haveSomeDocuments) {
-      afterLastDocument(arg0, arg1);
-    } else {
-      finishedNoDocument(arg0, arg1);
-    }
-  }
-
-  @Override
-  public void controllerExecutionFinished(Controller arg0)
-          throws ExecutionException {
-    controller = arg0;
-    if (haveSomeDocuments) {
-      afterLastDocument(arg0, null);
-    } else {
-      finishedNoDocument(arg0, null);
-    }
-  }
-
-  @Override
-  public void controllerExecutionStarted(Controller arg0)
-          throws ExecutionException {
-    controller = arg0;
-    justStarted = true;
-    haveSomeDocuments = false;
-  }
-
-  //=====================================================================
-  // New simplified API for the child classes 
-  //=====================================================================
-  protected abstract void execute(Document document);
-
-  protected abstract void beforeFirstDocument(Controller ctrl);
-
-  protected abstract void afterLastDocument(Controller ctrl, Throwable t);
-
-  protected abstract void finishedNoDocument(Controller ctrl, Throwable t);
 }

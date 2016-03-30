@@ -99,7 +99,7 @@ public class LF_ApplyRegression extends LearningFrameworkPRBase {
   private String targetFeatureToUse; 
 
   @Override
-  public void execute(Document doc) {
+  public Document process(Document doc) {
     if(isInterrupted()) {
       interrupted = false;
       throw new GateRuntimeException("Execution was requested to be interrupted");
@@ -112,7 +112,8 @@ public class LF_ApplyRegression extends LearningFrameworkPRBase {
           instanceAS, inputAS,
           null, getAlgorithmParameters());
 
-    GateClassification.applyClassification(doc, gcs, targetFeatureToUse, null, null);    
+    GateClassification.applyClassification(doc, gcs, targetFeatureToUse, null, null);   
+    return doc;
   }
 
 

@@ -132,7 +132,7 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
   private String targetFeatureToUse; 
 
   @Override
-  public void execute(Document doc) {
+  public Document process(Document doc) {
     if(isInterrupted()) {
       interrupted = false;
       throw new GateRuntimeException("Execution was requested to be interrupted");
@@ -155,6 +155,7 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
           sequenceAS, getAlgorithmParameters());
 
     GateClassification.applyClassification(doc, gcs, targetFeatureToUse, null, null);    
+    return doc;
   }
 
 

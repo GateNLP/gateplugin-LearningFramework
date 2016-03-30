@@ -191,6 +191,7 @@ public class LF_EvaluateClassification extends LF_TrainBase {
   protected String classAnnotationType;
 
   @RunTime
+  @Optional
   @CreoleParameter(comment = "Annotation type containing/indicating the class.")
   public void setClassAnnotationType(String classType) {
     this.classAnnotationType = classType;
@@ -210,7 +211,7 @@ public class LF_EvaluateClassification extends LF_TrainBase {
   private File dataDir;
 
   @Override
-  public void execute(Document doc) {
+  public Document process(Document doc) {
     if(isInterrupted()) {
       interrupted = false;
       throw new GateRuntimeException("Execution was requested to be interrupted");
@@ -243,6 +244,7 @@ public class LF_EvaluateClassification extends LF_TrainBase {
     String nameFeatureName = null;
     corpusRepresentation.add(instanceAS, sequenceAS, inputAS, classAS, tfName, TargetType.NOMINAL, nameFeatureName);
     nrDocuments++;
+    return doc;
   }
 
   @Override

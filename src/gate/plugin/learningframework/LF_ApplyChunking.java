@@ -116,7 +116,7 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
 
 
   @Override
-  public void execute(Document doc) {
+  public Document process(Document doc) {
     if(isInterrupted()) {
       interrupted = false;
       throw new GateRuntimeException("Execution was requested to be interrupted");
@@ -151,6 +151,7 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
     // TODO: maybe make confidence threshold more flexible for sequence annotations?
     String classAnnotationType = engine.getInfo().classAnnotationType;
     GateClassification.addSurroundingAnnotations(tmpAS, tmpInstanceAS, outputAS, classAnnotationType, getConfidenceThreshold());
+    return doc;
   }
 
 
