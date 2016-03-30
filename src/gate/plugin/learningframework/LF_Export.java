@@ -103,7 +103,7 @@ public class LF_Export extends LF_ExportBase {
   protected String classAnnotationType;
   @Optional
   @RunTime
-  @CreoleParameter(comment = "Annotation type indicating the class for sequence tagging problems (not yet supported).")
+  @CreoleParameter(comment = "Annotation type indicating the class for sequence tagging problems.")
   public void setClassAnnotationType(String classType) {
     this.classAnnotationType = classType;
   }
