@@ -61,7 +61,7 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
 
   @RunTime
   @Optional
-  @CreoleParameter(defaultValue = "LearningFramework")
+  @CreoleParameter(comment="If not empty, place new annotations in the output set instead of updating the existing annotations", defaultValue = "")
   public void setOutputASName(String oasn) {
     this.outputASName = oasn;
   }
@@ -153,8 +153,13 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
     List<GateClassification> gcs = engine.classify(
           instanceAS, inputAS,
           sequenceAS, getAlgorithmParameters());
+    
+    AnnotationSet outputAS = null;
+    if(getOutputASName()!=null || !getOutputASName().isEmpty()) {
+      outputAS = doc.getAnnotations(getOutputASName());
+    }
 
-    GateClassification.applyClassification(doc, gcs, targetFeatureToUse, null, null);    
+    GateClassification.applyClassification(doc, gcs, targetFeatureToUse, outputAS, null);    
     return doc;
   }
 

@@ -176,7 +176,7 @@ public class LF_TrainRegression extends LF_TrainBase {
 
   @Override
   protected void finishedNoDocument(Controller c, Throwable t) {
-    logger.error("Processing finished, but no documents seen, cannot train!");
+    logger.error("Processing finished, but no documents seen, got an error, or the PR was disabled in the pipeline - cannot train!");
   }
 
   @Override

@@ -150,6 +150,7 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
     AnnotationSet outputAS = doc.getAnnotations(getOutputASName());
     // TODO: maybe make confidence threshold more flexible for sequence annotations?
     String classAnnotationType = engine.getInfo().classAnnotationType;
+    
     GateClassification.addSurroundingAnnotations(tmpAS, tmpInstanceAS, outputAS, classAnnotationType, getConfidenceThreshold());
     return doc;
   }
