@@ -2,9 +2,8 @@
 <CREOLE-DIRECTORY
   ID="gate.LearningFramework"
   VERSION="2.0"
-  DESCRIPTION="Learning Framework"
-  HELPURL="https://github.com/GenevieveGorrell/gateplugin-LearningFramework/wiki"
-
+  DESCRIPTION="Learning Framework (New)"
+  HELPURL="https://github.com/GateNLP/gateplugin-LearningFramework/wiki"
 >
   <JAR scan="true">gateplugin-LearningFramework.jar</JAR>
   <JAR>lib-static/snakeyaml-1.16.jar</JAR> 
@@ -12,5 +11,4 @@
   <JAR>lib-static/commons-cli-1.4-modified.jar</JAR>
   <JAR>lib-static/libsvm.jar</JAR>
   <JAR>lib-static/mallet.jar</JAR>
-
 </CREOLE-DIRECTORY>
