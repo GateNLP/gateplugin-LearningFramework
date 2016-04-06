@@ -21,7 +21,7 @@ import gate.creole.ControllerAwarePR;
 import gate.creole.ResourceInstantiationException;
 import gate.creole.AbstractLanguageAnalyser;
 import gate.creole.ExecutionException;
-import java.util.Optional;
+//import java.util.Optional;
 
 /**
  * Abstract base class for all the PRs in this plugin.
