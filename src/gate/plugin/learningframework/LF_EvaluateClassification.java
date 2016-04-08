@@ -25,6 +25,7 @@ import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
 import gate.plugin.learningframework.engines.AlgorithmClassification;
 import gate.plugin.learningframework.engines.Engine;
 import gate.plugin.learningframework.engines.EvaluationResult;
+import gate.plugin.learningframework.engines.EvaluationResultClassification;
 import gate.plugin.learningframework.features.FeatureSpecification;
 import gate.plugin.learningframework.features.TargetType;
 import gate.util.GateRuntimeException;
@@ -265,6 +266,9 @@ public class LF_EvaluateClassification extends LF_TrainBase {
     EvaluationResult er = engine.evaluate(getAlgorithmParameters(),evaluationMethod,numberOfFolds,trainingFraction,numberOfRepeats);
     logger.info("LearningFramework: Evaluation complete!");
     logger.info(er);
+    if(getCorpus() != null && er instanceof EvaluationResultClassification) {
+      getCorpus().getFeatures().put("LearningFramework.accuracyEstimate", ((EvaluationResultClassification)er).accuracyEstimate);
+    }
   }
 
   @Override
