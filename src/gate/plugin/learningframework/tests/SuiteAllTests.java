@@ -12,7 +12,8 @@ import org.junit.runners.Suite;
   TestInfo.class,
   TestParms.class,
   TestEngineMalletClass.class,
-  TestEngineWeka.class,
+  TestEngineWekaClassification.class,
+  TestEngineWekaRegression.class,
   TestEngineLibSVM.class,
   TestEngineMalletSeq.class,
   TestFeatureScaling.class

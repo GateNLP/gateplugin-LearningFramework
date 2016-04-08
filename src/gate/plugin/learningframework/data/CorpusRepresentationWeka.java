@@ -23,9 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.lang.NotImplementedException;
 import weka.core.Attribute;
-import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ArffSaver;
 import weka.core.converters.CSVSaver;
@@ -285,9 +283,12 @@ public class CorpusRepresentationWeka extends CorpusRepresentation {
   
   public static weka.core.Instance wekaInstanceFromMalletInstance(Instances wekaDataset, 
           cc.mallet.types.Instance malletInstance) {
+      //System.err.println("Mallet instance "+malletInstance.getData()+", target="+malletInstance.getTarget());
       FeatureVector fv = (FeatureVector) malletInstance.getData();
       int size = fv.numLocations();
       int wekaTargetIndex = wekaDataset.classIndex();
+      //System.err.print("wekaTargetIndex="+wekaTargetIndex);
+      
       // TODO: for now we just directly copy over the mallet values to the weka values
       // We may need to handle certain cases with missing values separately!
 
@@ -302,6 +303,7 @@ public class CorpusRepresentationWeka extends CorpusRepresentation {
       for (int i = 0; i < size; i++) {
         indices[i] = fv.indexAtLocation(i);
         values[i] = fv.valueAtLocation(i);
+        //System.err.print(",["+fv.indexAtLocation(i)+"]="+fv.valueAtLocation(i));
       }
       // now set the target, if we have one 
       Object malletValue = malletInstance.getTarget();
@@ -311,6 +313,7 @@ public class CorpusRepresentationWeka extends CorpusRepresentation {
         // a double value directly
         if(malletInstance.getTargetAlphabet() == null) {
           values[size] = (double) malletInstance.getTarget();
+          //System.err.println(", target["+wekaTargetIndex+"]="+values[size]);
         } else {
           LabelAlphabet la = (LabelAlphabet)malletInstance.getTargetAlphabet();
           Label malletLabel = (Label)malletInstance.getTarget();
@@ -319,18 +322,28 @@ public class CorpusRepresentationWeka extends CorpusRepresentation {
           int wekaIndex = wekaDataset.classAttribute().indexOfValue(targetString);
           values[size] = (double)wekaIndex;
           if(targetIndex != wekaIndex) {
-            System.err.println("DEBUG ASSERTION FAILED: malletIndex for target is not equal to wekaIndex");
+            //System.err.println("DEBUG ASSERTION FAILED: malletIndex for target is not equal to wekaIndex");
           }
+          //System.err.println(", target["+wekaTargetIndex+"]="+values[size]+"="+targetString);
         }
       } else {  // we do not have a target value, so lets create a missing value target for weka
         indices[size] = wekaDataset.classIndex();
         values[size] = Double.NaN;
       }
-      weka.core.SparseInstance wekaInstance = new weka.core.SparseInstance(1.0, values, indices, values.length);
+      // The last parameter of the constructor is described as the "maximum number of values that can be
+      // stored" but it is not clear to me what this means exactly.
+      
+      //weka.core.SparseInstance wekaInstance = new weka.core.SparseInstance(1.0, values, indices, values.length);
+      weka.core.SparseInstance wekaInstance = new weka.core.SparseInstance(1.0, values, indices, wekaTargetIndex+1);
+
+
       // TODO: is this necessary, is this useful?
       // What does this actually do? Hopefully not actually add or modify anything in the wekaDataset
       // and just give the instance a chance to know about the attributes?
+      
       wekaInstance.setDataset(wekaDataset);
+      //System.err.println("Weka instance "+wekaInstance);
+      //System.err.println("Weka target from instance "+wekaInstance.value(wekaInstance.classIndex()));
       return wekaInstance;
   }
 
