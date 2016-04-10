@@ -35,14 +35,14 @@ import java.io.File;
  *
  */
 @CreoleResource(
-        name = "LF_EvaluateClassification",
-        helpURL = "https://github.com/GateNLP/gateplugin-LearningFramework/wiki/LF_EvaluateClassification",
-        comment = "Evaluate an algorithm and parameter settings for classification")
-public class LF_EvaluateClassification extends LF_TrainBase {
+        name = "LF_EvaluateRegression",
+        helpURL = "https://github.com/GateNLP/gateplugin-LearningFramework/wiki/LF_EvaluateRegression",
+        comment = "Evaluate an algorithm and parameter settings for regression")
+public class LF_EvaluateRegression extends LF_TrainBase {
 
   private static final long serialVersionUID = -420477134626830002L;
 
-  private final Logger logger = Logger.getLogger(LF_EvaluateClassification.class.getCanonicalName());
+  private final Logger logger = Logger.getLogger(LF_EvaluateRegression.class.getCanonicalName());
 
   /**
    * The configuration file.
