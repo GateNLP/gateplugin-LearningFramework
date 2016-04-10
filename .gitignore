@@ -3,7 +3,7 @@
 /gateplugin-LearningFramework.jar
 /classes
 /lib
-
+/build.properties
 *~
 #*#
 *.class

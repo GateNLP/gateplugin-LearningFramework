@@ -1,0 +1,6 @@
+# Needed for compilation: 
+# - if there is no environment variable GATE_HOME and GATE is not
+#   installed in ../.. or when you use Netbeans automatic projects,
+#   you need to set the full path of the GATE home directory here
+gate.home=/where/gate/is/installed
+
