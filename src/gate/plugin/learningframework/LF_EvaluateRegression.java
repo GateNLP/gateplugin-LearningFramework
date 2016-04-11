@@ -23,9 +23,11 @@ import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
 import gate.plugin.learningframework.engines.AlgorithmClassification;
+import gate.plugin.learningframework.engines.AlgorithmRegression;
 import gate.plugin.learningframework.engines.Engine;
 import gate.plugin.learningframework.engines.EvaluationResult;
 import gate.plugin.learningframework.engines.EvaluationResultClassification;
+import gate.plugin.learningframework.engines.EvaluationResultRegression;
 import gate.plugin.learningframework.features.FeatureSpecification;
 import gate.plugin.learningframework.features.TargetType;
 import gate.util.GateRuntimeException;
@@ -60,16 +62,16 @@ public class LF_EvaluateRegression extends LF_TrainBase {
     return featureSpecURL;
   }
 
-  private AlgorithmClassification trainingAlgorithm;
+  private AlgorithmRegression trainingAlgorithm;
 
   @RunTime
   @Optional
   @CreoleParameter(comment = "The algorithm to be used for training the classifier")
-  public void setTrainingAlgorithm(AlgorithmClassification algo) {
+  public void setTrainingAlgorithm(AlgorithmRegression algo) {
     this.trainingAlgorithm = algo;
   }
 
-  public AlgorithmClassification getTrainingAlgorithm() {
+  public AlgorithmRegression getTrainingAlgorithm() {
     return this.trainingAlgorithm;
   }
 
@@ -102,9 +104,9 @@ public class LF_EvaluateRegression extends LF_TrainBase {
 
   @RunTime
   @Optional
-  @CreoleParameter(comment = "The feature containing the class label")
-  public void setTargetFeature(String classFeature) {
-    this.targetFeature = classFeature;
+  @CreoleParameter(comment = "The feature containing the target label")
+  public void setTargetFeature(String targetFeature) {
+    this.targetFeature = targetFeature;
   }
 
   public String getTargetFeature() {
@@ -118,19 +120,6 @@ public class LF_EvaluateRegression extends LF_TrainBase {
 
   protected String sequenceSpan;
 
-  @RunTime
-  @Optional
-  @CreoleParameter(comment = "For sequence learners, an annotation type "
-          + "defining a meaningful sequence span. Ignored by non-sequence "
-          + "learners.")
-  public void setSequenceSpan(String seq) {
-    this.sequenceSpan = seq;
-  }
-
-  public String getSequenceSpan() {
-    return this.sequenceSpan;
-  }
-  
   
   protected EvaluationMethod evaluationMethod = EvaluationMethod.CROSSVALIDATION;
   @RunTime
@@ -189,24 +178,6 @@ public class LF_EvaluateRegression extends LF_TrainBase {
   }
   
   
-  protected String classAnnotationType;
-
-  @RunTime
-  @Optional
-  @CreoleParameter(comment = "Annotation type containing/indicating the class.")
-  public void setClassAnnotationType(String classType) {
-    this.classAnnotationType = classType;
-  }
-
-  public String getClassAnnotationType() {
-    return this.classAnnotationType;
-  }
-
-
-  
-  
-  
-  
   private int nrDocuments;
   
   private File dataDir;
@@ -220,30 +191,11 @@ public class LF_EvaluateRegression extends LF_TrainBase {
     // extract the required annotation sets,
     AnnotationSet inputAS = doc.getAnnotations(getInputASName());
     AnnotationSet instanceAS = inputAS.get(getInstanceType());
-    // the classAS 
-    // the sequenceAS must be specified for a sequence tagging algorithm and most not be specified
-    // for a non-sequence tagging algorithm!
     AnnotationSet sequenceAS = null;
-    if (getTrainingAlgorithm() == AlgorithmClassification.MALLET_SEQ_CRF) {
-      // NOTE: we already have checked earlier, that in that case, the sequenceSpan parameter is 
-      // given!
-      // NOTE: we do not actually support a sequence learner yet!
-      sequenceAS = inputAS.get(getSequenceSpan());
-    }
-    // We allo a class annotation type to be specified: in this case, we will run the 
-    // evaluation for the classification problem generated from the chunking problem.
     AnnotationSet classAS = null;
-    String tfName = null;
-    if(getClassAnnotationType() == null || getClassAnnotationType().isEmpty()) {
-      tfName = getTargetFeature();
-      classAS = null;
-    } else {
-      tfName = null;
-      classAS = inputAS.get(getClassAnnotationType());
-    }
-    inputAS.get(getClassAnnotationType());
+    String tfName = getTargetFeature();
     String nameFeatureName = null;
-    corpusRepresentation.add(instanceAS, sequenceAS, inputAS, classAS, tfName, TargetType.NOMINAL, nameFeatureName);
+    corpusRepresentation.add(instanceAS, sequenceAS, inputAS, classAS, tfName, TargetType.NUMERIC, nameFeatureName);
     nrDocuments++;
     return doc;
   }
@@ -251,8 +203,6 @@ public class LF_EvaluateRegression extends LF_TrainBase {
   @Override
   public void afterLastDocument(Controller arg0, Throwable t) {
     System.out.println("LearningFramework: Starting evaluating engine " + engine);
-    System.out.println("Training set classes: "
-            + corpusRepresentation.getRepresentationMallet().getPipe().getTargetAlphabet().toString().replaceAll("\\n", " "));
     System.out.println("Training set size: " + corpusRepresentation.getRepresentationMallet().size());
     if (corpusRepresentation.getRepresentationMallet().getDataAlphabet().size() > 20) {
       System.out.println("LearningFramework: Attributes " + corpusRepresentation.getRepresentationMallet().getDataAlphabet().size());
@@ -266,8 +216,8 @@ public class LF_EvaluateRegression extends LF_TrainBase {
     EvaluationResult er = engine.evaluate(getAlgorithmParameters(),evaluationMethod,numberOfFolds,trainingFraction,numberOfRepeats);
     logger.info("LearningFramework: Evaluation complete!");
     logger.info(er);
-    if(getCorpus() != null && er instanceof EvaluationResultClassification) {
-      getCorpus().getFeatures().put("LearningFramework.accuracyEstimate", ((EvaluationResultClassification)er).accuracyEstimate);
+    if(getCorpus() != null && er instanceof EvaluationResultRegression) {
+      getCorpus().getFeatures().put("LearningFramework.rmse", ((EvaluationResultRegression)er).rmse);
     }
   }
 
@@ -279,19 +229,12 @@ public class LF_EvaluateRegression extends LF_TrainBase {
   @Override
   protected void beforeFirstDocument(Controller controller) {
     if (getTrainingAlgorithm() == null) {
-      throw new GateRuntimeException("LearningFramework: no training algorithm specified");
+      throw new GateRuntimeException("LF_EvaluateRegression: no training algorithm specified");
     }
-    if (getTrainingAlgorithm() == AlgorithmClassification.MALLET_SEQ_CRF) {
-      if (getSequenceSpan() == null || getSequenceSpan().isEmpty()) {
-        throw new GateRuntimeException("SequenceSpan parameter is required for MALLET_SEQ_CRF");
-      }
-    } else {
-      if (getSequenceSpan() != null && !getSequenceSpan().isEmpty()) {
-        throw new GateRuntimeException("SequenceSpan parameter must not be specified with non-sequence tagging algorithm");
-      }
+    if(getTargetFeature() == null || getTargetFeature().isEmpty()) {
+      throw new GateRuntimeException("LF_EvaluateRegression: no target feature specified");
     }
-
-    AlgorithmClassification alg = getTrainingAlgorithm();
+    AlgorithmRegression alg = getTrainingAlgorithm();
     // if an algorithm is specified where the name ends in "SPECIFY_CLASS" use the 
     // algorithmJavaClass 
     if (getTrainingAlgorithm().toString().endsWith("SPECIFY_CLASS")) {
@@ -316,7 +259,7 @@ public class LF_EvaluateRegression extends LF_TrainBase {
     System.err.println("DEBUG Read the feature specification: " + featureSpec);
 
     // create the corpus representation for creating the training instances
-    corpusRepresentation = new CorpusRepresentationMalletTarget(featureSpec.getFeatureInfo(), scaleFeatures, TargetType.NOMINAL);
+    corpusRepresentation = new CorpusRepresentationMalletTarget(featureSpec.getFeatureInfo(), scaleFeatures, TargetType.NUMERIC);
     System.err.println("DEBUG: created the corpusRepresentationMallet: " + corpusRepresentation);
 
     // Create the engine from the Algorithm parameter

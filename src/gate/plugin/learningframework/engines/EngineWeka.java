@@ -46,7 +46,36 @@ public class EngineWeka extends Engine {
     Parms opts = new Parms(parms,"s:seed:i","S:nostratify:b");
     int seed = (int)opts.getValueOrElse("seed", 0);
     if(algorithm instanceof AlgorithmRegression) {
-      throw new UnsupportedOperationException("Weka holdout eval for regression not supported yet."); 
+       weka.core.Instances all = new CorpusRepresentationWeka(corpusRepresentationMallet).getRepresentationWeka();
+       Random rand = new Random(seed); 
+       all.randomize(rand);
+       if(repeats!=1) {
+         throw new GateRuntimeException("Only repeats == 1 supported yet");
+       }
+       int trainSize = (int)Math.round(all.numInstances()*portion);
+       int testSize = all.numInstances()-trainSize;
+       Instances train = new Instances(all,0,trainSize);
+       Instances test = new Instances(all,trainSize,testSize);
+       Classifier classifier = (Classifier)trainer;
+      try {
+        classifier.buildClassifier(train);
+      } catch (Exception ex) {
+        throw new GateRuntimeException("Error during training of Weka classifier",ex);
+      }
+      Evaluation eval = null;
+      try {
+        eval = new Evaluation(train);
+      } catch (Exception ex) {
+        throw new GateRuntimeException("Could not create Evaluation object",ex);
+      }
+      try {
+        eval.evaluateModel(classifier, test);
+      } catch (Exception ex) {
+        throw new GateRuntimeException("Error evaluating the classifier",ex);
+      }
+      System.out.println("Evaluation result:\n"+eval);
+      return eval;
+      
     } else {
       // must be classification algorithm then!
        weka.core.Instances all = new CorpusRepresentationWeka(corpusRepresentationMallet).getRepresentationWeka();
@@ -306,7 +335,11 @@ public class EngineWeka extends Engine {
         e.nrFolds = numberOfFolds;   
         ret = e;
       } else {
-        throw new GateRuntimeException("Weka evaluation: not implemented for regression yet!");
+        EvaluationResultRgXval e = new EvaluationResultRgXval();
+        e.internalEvaluationResult = eval;
+        e.rmse = eval.rootMeanSquaredError();
+        e.nrFolds = numberOfFolds;   
+        ret = e;        
       }
     } else {
       // TODO: check if classification or regression!!
@@ -319,7 +352,12 @@ public class EngineWeka extends Engine {
         e.nrRepeats = numberOfRepeats;
         ret = e;
       } else {
-        throw new GateRuntimeException("Weka evaluation: not implemented for regression yet!");
+        EvaluationResultRgHO e = new EvaluationResultRgHO();
+        e.internalEvaluationResult = eval;
+        e.rmse = eval.rootMeanSquaredError();
+        e.trainingFraction = trainingFraction;
+        e.nrRepeats = numberOfRepeats;
+        ret = e;        
       }      
     }
     return ret;

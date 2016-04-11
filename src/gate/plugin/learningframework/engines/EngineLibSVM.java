@@ -182,7 +182,6 @@ public class EngineLibSVM extends Engine {
       Instance malletInstance = data.extractIndependentFeatures(instAnn, inputAS);
       malletInstance = pipe.instanceFrom(malletInstance);
       svm_node[] svmInstance = CorpusRepresentationLibSVM.libSVMInstanceIndepFromMalletInstance(malletInstance);
-      int bestLabel = (new Double(svm.svm_predict(svmModel, svmInstance))).intValue();
 
       double bestConf = 0.0;
 
@@ -193,6 +192,7 @@ public class EngineLibSVM extends Engine {
         GateClassification gc = new GateClassification(instAnn, prediction);
         gcs.add(gc);
       } else {
+        int bestLabel = (new Double(svm.svm_predict(svmModel, svmInstance))).intValue();
         if (svm.svm_check_probability_model(svmModel) == 1) {
           double[] confidences = new double[numberOfLabels];
           double v = svm.svm_predict_probability(svmModel, svmInstance, confidences);
@@ -296,9 +296,6 @@ public class EngineLibSVM extends Engine {
   public EvaluationResult evaluate(String algorithmParameters, 
           EvaluationMethod evaluationMethod, int numberOfFolds, double trainingFraction, 
           int numberOfRepeats) {
-    if(numberOfRepeats > 1) {
-      throw new GateRuntimeException("LibSVM Evaluation does not support numberOfRepeats > 1 yet!");
-    }
     EvaluationResult result = null;
     if(algorithm instanceof AlgorithmClassification) {
       if(evaluationMethod == EvaluationMethod.CROSSVALIDATION) {
@@ -309,7 +306,7 @@ public class EngineLibSVM extends Engine {
         resultXval.stratified = true;
         
         svm_parameter svmparms = makeSvmParms(algorithmParameters);
-        Parms ps = new Parms("S:seed:i");
+        Parms ps = new Parms(algorithmParameters,"S:seed:i");
         // TODO: figure out if this has actually any impact on the randomization
         // used for the crossvaliation!
         int seed = (int) ps.getValueOrElse("seed", 1);
@@ -333,14 +330,14 @@ public class EngineLibSVM extends Engine {
         resultXval.nrIncorrect = nrIncorrect;
         resultXval.accuracyEstimate = ((double)nrCorrect) / target.length;
         result = resultXval;        
-      } else {
+      } else {        
         EvaluationResultClHO resultClHO = new EvaluationResultClHO();
         resultClHO.nrRepeats = numberOfRepeats;
         resultClHO.stratified = false;
         resultClHO.trainingFraction = trainingFraction;
 
         svm_parameter svmparms = makeSvmParms(algorithmParameters);
-        Parms ps = new Parms("S:seed:i");
+        Parms ps = new Parms(algorithmParameters,"S:seed:i");
         // TODO: figure out if this has actually any impact on the randomization
         // used for the crossvaliation!
         int seed = (int) ps.getValueOrElse("seed", 1);
@@ -365,20 +362,146 @@ public class EngineLibSVM extends Engine {
         int[] idx = new int[total];
         for(int i = 0; i<idx.length; i++) { idx[i] = i; }
         shuffle(idx,rgen);
+        List<Double> accs = new ArrayList<Double>();
+        int nrCorrectAll = 0;
+        int nrIncorrectAll = 0;
+        int nrTotalAll = 0;
         for(int repeat=0; repeat<numberOfRepeats; repeat++) {
           // Split the instances up into training and test set
           // To do this we repeatedly shuffle the index array and divide it into 
           // the training and application problem
+          split(svmprob,svm_train,svm_test,idx);
           
           svm_model model = libsvm.svm.svm_train(svm_train, svmparms);
-          
-        }
-        
-        
-        result = new EvaluationResultClHO();
+          //TODO: actually implement the accuracy estimate calculation!
+          int nrCorrect = 0;
+          int nrIncorrect = 0;
+          int nrTotal = 0;
+          for(int k=0; k<svm_test.l; k++) {
+            nrTotal++;
+            svm_node[] svmInstance = svm_test.x[k];
+            int bestLabel = (new Double(svm.svm_predict(model, svmInstance))).intValue();
+            if(bestLabel == Math.round(svm_test.y[k])) {
+              nrCorrect++;
+            } else {
+              nrIncorrect++;
+            }
+          }
+          accs.add(((double)nrCorrect)/nrTotal);
+          nrCorrectAll += nrCorrect;
+          nrIncorrectAll += nrIncorrect;
+          nrTotalAll += nrTotal;
+          System.err.println("Accuracy for holdout repetition "+(repeat+1)+" is "+(((double)nrCorrect)/nrTotal));
+          if(repeat != (numberOfRepeats-1)) shuffle(idx,rgen);
+        }          
+        double sumAccs = 0.0;
+        for(Double acc : accs) { sumAccs += acc; }        
+        resultClHO.accuracyEstimate = sumAccs / accs.size();
+        resultClHO.nrCorrect = nrCorrectAll;
+        resultClHO.nrIncorrect = nrIncorrectAll;
+        resultClHO.nrRepeats = numberOfRepeats;
+        resultClHO.stratified = false;
+        resultClHO.trainingFraction = trainingFraction;
+        result = resultClHO;
       }
     } else {
-      throw new GateRuntimeException("Evaluation for Regression not implemented yet");
+      if(evaluationMethod == EvaluationMethod.CROSSVALIDATION) {
+        EvaluationResultRgXval resultXval = new EvaluationResultRgXval();
+        resultXval.nrFolds = numberOfFolds;
+        
+        svm_parameter svmparms = makeSvmParms(algorithmParameters);
+        Parms ps = new Parms(algorithmParameters,"S:seed:i");
+        // TODO: figure out if this has actually any impact on the randomization
+        // used for the crossvaliation!
+        int seed = (int) ps.getValueOrElse("seed", 1);
+        System.err.println("Random seed set to "+seed);
+        libsvm.svm.rand.setSeed(seed);
+        
+        svm_problem svmprob = CorpusRepresentationLibSVM.getFromMallet(corpusRepresentationMallet);
+        
+        double target[] = new double[svmprob.l];
+
+        libsvm.svm.svm_cross_validation(svmprob, svmparms, numberOfFolds, target);
+        int sumSquared = 0;
+        int sumAbsolute = 0;
+        int nTotal = 0;
+        for(int i=0; i<target.length; i++) {
+          double diff = target[i] - svmprob.y[i];
+          sumSquared += diff*diff;
+          sumAbsolute += Math.abs(diff);
+          nTotal += 1;
+        }
+        resultXval.rmse = Math.sqrt(sumSquared/nTotal);
+        resultXval.nrTotal = nTotal;        
+        resultXval.sumAbsErr = sumAbsolute;
+        resultXval.sumSqrErr = sumSquared;
+        result = resultXval;        
+      } else {
+        EvaluationResultRgHO resultRgHO = new EvaluationResultRgHO();
+        resultRgHO.nrRepeats = numberOfRepeats;
+        resultRgHO.trainingFraction = trainingFraction;
+
+        svm_parameter svmparms = makeSvmParms(algorithmParameters);
+        Parms ps = new Parms(algorithmParameters,"S:seed:i");
+        // TODO: figure out if this has actually any impact on the randomization
+        // used for the crossvaliation!
+        int seed = (int) ps.getValueOrElse("seed", 1);
+        System.err.println("Random seed set to "+seed);
+        libsvm.svm.rand.setSeed(seed);
+        
+        List<Double> accuracies = new ArrayList<Double>(numberOfRepeats);
+        svm_problem svmprob = CorpusRepresentationLibSVM.getFromMallet(corpusRepresentationMallet);
+        int total = svmprob.l;
+        int trainsize = (int)(total * trainingFraction);
+        int testsize = total - trainsize;
+        if(trainsize == 0 || testsize == 0) {
+          throw new GateRuntimeException("Training fraction of "+trainingFraction+" leads to training size "+trainsize+" and test size "+testsize);
+        }
+        svm_problem svm_train = new svm_problem();
+        svm_problem svm_test = new svm_problem();
+        // Sizes of the training/test set will not change between repeats
+        svm_test.l = testsize;
+        svm_train.l = trainsize;
+        // create an index array that represents the random permutation of
+        // instances and shuffle it
+        Random rgen = new Random(seed);
+        int[] idx = new int[total];
+        for(int i = 0; i<idx.length; i++) { idx[i] = i; }
+        shuffle(idx,rgen);
+        int nrTotalAll = 0;
+        double sumSquaredAll = 0.0;
+        double sumAbsoluteAll = 0.0;
+        for(int repeat=0; repeat<numberOfRepeats; repeat++) {
+          // Split the instances up into training and test set
+          // To do this we repeatedly shuffle the index array and divide it into 
+          // the training and application problem
+          split(svmprob,svm_train,svm_test,idx);
+          
+          svm_model model = libsvm.svm.svm_train(svm_train, svmparms);
+          double sumSqared = 0.0;
+          double sumAbsolute = 0.0;
+          int nrTotal = 0;
+          for(int k=0; k<svm_test.l; k++) {
+            nrTotal++;
+            svm_node[] svmInstance = svm_test.x[k];
+            double pred = svm.svm_predict(model, svmInstance);
+            double diff = pred - svm_test.y[k];
+            sumSqared+=diff*diff;
+            sumAbsolute+=Math.abs(diff);
+          }
+          nrTotalAll += nrTotal;
+          sumAbsoluteAll+=sumAbsolute;
+          sumSquaredAll+=sumSqared;
+          System.err.println("RMSE for holdout repetition "+(repeat+1)+" is "+Math.sqrt(sumSqared/nrTotal));
+          if(repeat != (numberOfRepeats-1)) shuffle(idx,rgen);
+        }
+        resultRgHO.nrRepeats = numberOfRepeats;
+        resultRgHO.nrTotal = nrTotalAll;
+        resultRgHO.rmse = Math.sqrt(sumSquaredAll / nrTotalAll);
+        resultRgHO.sumAbsErr = sumAbsoluteAll;
+        resultRgHO.sumSqrErr = sumSquaredAll;
+        result = resultRgHO;
+      }
     }
     return result;
   }
@@ -394,6 +517,37 @@ public class EngineLibSVM extends Engine {
           idx[r] = idx[i];
           idx[i] = tmp;
         }    
+        
+        System.err.print("First 20 shuffled indices: ");
+        for(int i=0; i<Math.min(20,idx.length); i++) {
+          System.err.print(idx[i]);
+          System.err.print(" ");
+        }
+        System.err.println();
+        
   }
 
+  public void split(svm_problem all, svm_problem train, svm_problem test, int idx[]) {
+    // this assumes that train and test already have the correct sizes and that
+    // the size of idx is the sum of these sizes
+    // IMPORTANT: the train and test sets hold references to the indep rows in all, 
+    // these should not get modified! However the ys are always new arrays!
+    if(idx.length != all.l || idx.length != (train.l+test.l)) {
+      throw new GateRuntimeException("Cannot split, odd sizes all="+all.l+",idx="+idx.length+",train="+train.l+",test="+test.l);
+    }
+    train.x = new svm_node[train.l][];
+    train.y = new double[train.l];
+    for(int i=0; i<train.l; i++) {
+      train.x[i] = all.x[idx[i]];
+      train.y[i] = all.y[idx[i]];
+    }
+    test.x = new svm_node[test.l][];
+    test.y = new double[test.l];
+    for(int i=0; i<test.l; i++) {
+      test.x[i] = all.x[idx[i+train.l]];
+      test.y[i] = all.y[idx[i+train.l]];
+    }
+  }
+  
+  
 }
