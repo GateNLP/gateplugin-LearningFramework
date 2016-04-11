@@ -265,7 +265,7 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
 
   @Override
   public void export(File directory, String parms) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    instances.save(new File(directory, "data.mallettarget.ser"));
   }
 
 }

@@ -7,7 +7,6 @@
 package gate.plugin.learningframework.engines;
 
 import cc.mallet.types.Instance;
-import cc.mallet.types.InstanceList;
 import gate.Annotation;
 import gate.AnnotationSet;
 import gate.plugin.learningframework.EvaluationMethod;

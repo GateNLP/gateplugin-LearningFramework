@@ -61,7 +61,7 @@ public class EngineLibSVM extends Engine {
     // as it was selected
     if(algorithm instanceof AlgorithmRegression) {
       Integer algType = (Integer)ps.getValue("svm_type");
-      // if the parameter is not give at all, we use 3 as the default for regression
+      // if the parameter is not given at all, we use 3 as the default for regression
       if(algType == null) svmparms.svm_type = 3;
       if(svmparms.svm_type != 3 && svmparms.svm_type != 4) {
         throw new GateRuntimeException("SvmLib: only -s 3 or -s 4 allowed for regression");
