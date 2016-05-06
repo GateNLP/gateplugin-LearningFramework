@@ -16,6 +16,7 @@
          static jar all is fine.
     <dependency org="org.yaml" name="snakeyaml" rev="1.16" />
     -->
+    <dependency org="cc.mallet" name="mallet" rev="2.0.8" />
     <dependency org="org.beanshell" name="bsh" rev="2.0b4"/>
     <dependency org="jgrapht" name="jgrapht" rev="0.6.0"/>
     <dependency org="jgrapht" name="jgrapht" rev="0.6.0"/>
