@@ -10,5 +10,4 @@
   <IVY>build/ivy.xml</IVY>
   <JAR>lib-static/commons-cli-1.4-modified.jar</JAR>
   <JAR>lib-static/libsvm.jar</JAR>
-  <JAR>lib-static/mallet.jar</JAR>
 </CREOLE-DIRECTORY>
