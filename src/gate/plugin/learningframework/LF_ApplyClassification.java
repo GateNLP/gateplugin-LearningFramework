@@ -44,15 +44,23 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
   static final Logger logger = Logger.getLogger(LF_ApplyClassification.class.getCanonicalName());
 
   protected URL dataDirectory;
+  protected boolean dataDirectoryChanged = true;
 
   @RunTime
   @CreoleParameter(comment = "The directory where all data will be stored and read from")
   public void setDataDirectory(URL output) {
     dataDirectory = output;
+    dataDirectoryChanged = true;
   }
 
   public URL getDataDirectory() {
     return this.dataDirectory;
+  }
+  
+  public boolean getDataDirectoryIsChanged() {
+    boolean tmp = dataDirectoryChanged;
+    dataDirectoryChanged = false;
+    return tmp;
   }
 
   
@@ -183,7 +191,12 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
     savedModelDirectoryFile = gate.util.Files.fileFromURL(dataDirectory);
 
     // Restore the Engine
-    engine = Engine.loadEngine(savedModelDirectoryFile, getAlgorithmParameters());
+    // We only restore the engine if the engine is still null, or, if it 
+    // is not null, if the parameter for the directory or the algorithm paramters
+    // has been modified since last time.
+    if(engine == null || getDataDirectoryIsChanged() || getAlgorithmParametersIsChanged()) {
+      engine = Engine.loadEngine(savedModelDirectoryFile, getAlgorithmParameters());
+    }
     System.out.println("LF-Info: model loaded is now "+engine);
 
     if (engine.getModel() == null) {

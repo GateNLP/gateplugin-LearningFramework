@@ -66,6 +66,7 @@ public abstract class LearningFrameworkPRBase
   protected Mode mode;
 
   protected String algorithmParameters;
+  protected boolean algorithmParamtersChanged = true;
 
   @RunTime
   @Optional
@@ -73,9 +74,16 @@ public abstract class LearningFrameworkPRBase
           + "can be entered here. For example, the LibSVM supports parameters.")
   public void setAlgorithmParameters(String learnerParams) {
     this.algorithmParameters = learnerParams;
+    algorithmParamtersChanged = true;
   }
 
   public String getAlgorithmParameters() {
     return this.algorithmParameters;
+  }
+  
+  public boolean getAlgorithmParametersIsChanged() {
+    boolean tmp = algorithmParamtersChanged;
+    algorithmParamtersChanged = false;
+    return tmp;
   }
 }
