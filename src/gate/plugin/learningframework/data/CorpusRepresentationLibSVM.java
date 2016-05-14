@@ -68,7 +68,7 @@ public class CorpusRepresentationLibSVM extends CorpusRepresentation {
     if (data == null) {
       throw new GateRuntimeException("No data");
     }
-    if (parms != null || !parms.isEmpty()) {
+    if (parms != null && !parms.isEmpty()) {
       throw new GateRuntimeException("No parameters supported, must be null, not: \""+parms+"\"");
     }
     svm_problem prob = data;
