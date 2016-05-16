@@ -164,7 +164,7 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
           sequenceAS, getAlgorithmParameters());
     
     AnnotationSet outputAS = null;
-    if(getOutputASName()!=null || !getOutputASName().isEmpty()) {
+    if(getOutputASName()!=null && !getOutputASName().isEmpty()) {
       outputAS = doc.getAnnotations(getOutputASName());
     }
 
