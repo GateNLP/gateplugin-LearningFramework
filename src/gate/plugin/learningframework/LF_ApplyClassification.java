@@ -44,26 +44,18 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
   static final Logger logger = Logger.getLogger(LF_ApplyClassification.class.getCanonicalName());
 
   protected URL dataDirectory;
-  protected boolean dataDirectoryChanged = true;
+  protected URL oldDataDirectory;
 
   @RunTime
   @CreoleParameter(comment = "The directory where all data will be stored and read from")
   public void setDataDirectory(URL output) {
     dataDirectory = output;
-    dataDirectoryChanged = true;
   }
 
   public URL getDataDirectory() {
     return this.dataDirectory;
   }
-  
-  public boolean getDataDirectoryIsChanged() {
-    boolean tmp = dataDirectoryChanged;
-    dataDirectoryChanged = false;
-    return tmp;
-  }
-
-  
+    
   
   protected String outputASName;
 
@@ -185,19 +177,15 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
   @Override
   protected void beforeFirstDocument(Controller controller) {
 
-    // JP: this was moved from the dataDirectory setter to avoid problems
-    // but we should really make sure that the learning is reloaded only 
-    // if the URL has changed since the last time (if ever) it was loaded.
-    savedModelDirectoryFile = gate.util.Files.fileFromURL(dataDirectory);
-
-    // Restore the Engine
-    // We only restore the engine if the engine is still null, or, if it 
-    // is not null, if the parameter for the directory or the algorithm paramters
-    // has been modified since last time.
-    if(engine == null || getDataDirectoryIsChanged() || getAlgorithmParametersIsChanged()) {
+    // if the engine is still null, or the dataDirectory has changed since 
+    // we last loaded the engine, or the algorithmParameters were changed,
+    // reload the engine.
+    if(engine == null || !dataDirectory.equals(oldDataDirectory) || getAlgorithmParametersIsChanged()) {
+      savedModelDirectoryFile = gate.util.Files.fileFromURL(dataDirectory);
+      oldDataDirectory = dataDirectory;
       engine = Engine.loadEngine(savedModelDirectoryFile, getAlgorithmParameters());
     }
-    System.out.println("LF-Info: model loaded is now "+engine);
+    System.out.println("LF-Info: loaded model is "+engine);
 
     if (engine.getModel() == null) {
       throw new GateRuntimeException("Do not have a model, something went wrong.");

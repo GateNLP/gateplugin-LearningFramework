@@ -221,6 +221,11 @@ public class EngineWeka extends Engine {
       GateClassification gc = null;
       if(pipe.getTargetAlphabet() == null) {
         // regression
+        
+        // DEBUG: for regression, the wekaInstance must have a numeric class attribute
+        //if(!wekaInstance.classAttribute().isNumeric()) {
+        //  System.err.println("Class attribute not numeric for Regression: "+wekaInstance.classAttribute());
+        //}
         double result=Double.NaN;
         try {
           result = wekaClassifier.classifyInstance(wekaInstance);
@@ -234,6 +239,10 @@ public class EngineWeka extends Engine {
       } else {
         // classification
 
+        // DEBUG: for classification, the wekaInstance must have a nominal class attribute
+        //if(!wekaInstance.classAttribute().isNominal()) {
+        //  System.err.println("Class attribute not nominal for classification: "+wekaInstance.classAttribute());
+        //}
 
 
         // Weka AbstractClassifier already handles the situation correctly when 
