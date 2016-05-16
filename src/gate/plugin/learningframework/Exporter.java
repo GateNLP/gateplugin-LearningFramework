@@ -17,6 +17,7 @@ import gate.plugin.learningframework.data.CorpusRepresentationWeka;
 
 public enum Exporter {
   EXPORTER_WEKA_CLASS(CorpusRepresentationWeka.class),
+  EXPORTER_WEKA_LIBSVM_CLASS(CorpusRepresentationWeka.class),
   EXPORTER_WEKA_REGRESSION(CorpusRepresentationWeka.class),
   EXPORTER_MALLET_CLASS(CorpusRepresentationMallet.class),
   EXPORTER_MALLET_SEQ(CorpusRepresentationMalletSeq.class),

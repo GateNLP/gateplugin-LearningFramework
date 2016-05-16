@@ -48,14 +48,21 @@ public abstract class CorpusRepresentation {
     if(action == Exporter.EXPORTER_MALLET_CLASS) {
       crm.export(directory, parms);
     } else if(action == Exporter.EXPORTER_WEKA_CLASS) {
-      System.err.println("EXPORTING BY WEKA");
+      System.err.println("Exporting for classification by Weka to "+directory);
       CorpusRepresentationWeka crw = new CorpusRepresentationWeka(crm);
       crw.export(directory, parms);
+    } else if(action == Exporter.EXPORTER_WEKA_LIBSVM_CLASS) {
+      System.err.println("Exporting for classification by Weka as LibSVM to "+directory);
+      CorpusRepresentationWeka crw = new CorpusRepresentationWeka(crm);
+      if(parms==null) parms = "";
+      parms = "-f libsvm " + parms;
+      crw.export(directory, parms);
     } else if(action == Exporter.EXPORTER_WEKA_REGRESSION) {
-      System.err.println("EXPORTING FOR REGRESSION BY WEKA");
+      System.err.println("Exporting for regression by Weka to "+directory);
       CorpusRepresentationWeka crw = new CorpusRepresentationWeka(crm);
       crw.export(directory, parms);
     } else if(action == Exporter.EXPORTER_LIBSVM_CLASS) {
+      System.err.println("Exporting for classification as LibSVM to "+directory);
       CorpusRepresentationLibSVM crl = new CorpusRepresentationLibSVM(crm);
       crl.export(directory, parms);
     } else {
