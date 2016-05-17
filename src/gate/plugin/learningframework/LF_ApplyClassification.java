@@ -151,6 +151,8 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
       sequenceAS = doc.getAnnotations(getSequenceSpan());
     }
 
+    //System.out.println("LF_ApplyClassification debug: instanceAS="+instanceAS.size()+", inputAS="+inputAS.size()+
+    //  ", sequenceAS="+sequenceAS);
     List<GateClassification> gcs = engine.classify(
           instanceAS, inputAS,
           sequenceAS, getAlgorithmParameters());

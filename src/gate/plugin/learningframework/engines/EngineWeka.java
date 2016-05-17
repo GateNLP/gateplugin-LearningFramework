@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 import weka.classifiers.Classifier;
 import weka.classifiers.evaluation.Evaluation;
 import weka.core.Instances;
+import cc.mallet.types.FeatureVector;
 
 /**
  *
@@ -209,13 +210,25 @@ public class EngineWeka extends Engine {
     data.stopGrowth();
     List<GateClassification> gcs = new ArrayList<GateClassification>();
     LFPipe pipe = (LFPipe)data.getRepresentationMallet().getPipe();
+    //System.out.println("FeatureInfo="+pipe.getFeatureInfo());
     Classifier wekaClassifier = (Classifier)model;
+    //System.out.println("DataAlphabet="+data.getRepresentationMallet().getDataAlphabet());
     // iterate over the instance annotations and create mallet instances 
     for(Annotation instAnn : instanceAS.inDocumentOrder()) {
       Instance inst = data.extractIndependentFeatures(instAnn, inputAS);
+      
+      //FeatureVector fv = (FeatureVector)inst.getData();      
+      //System.out.println("Mallet instance, fv: "+fv.toString(true)+", len="+fv.numLocations());
       inst = pipe.instanceFrom(inst);
+      
+      //FeatureVector fv = (FeatureVector)inst.getData();
+      //System.out.println("Mallet instance, fv: "+fv.toString(true)+", len="+fv.numLocations());
+      
       // Convert to weka Instance
       weka.core.Instance wekaInstance = CorpusRepresentationWeka.wekaInstanceFromMalletInstance(instances, inst);
+      
+      //System.out.println("Classifying instance: "+wekaInstance.toStringNoWeight());
+      
       // classify with the weka classifier or predict the numeric value: if the mallet pipe does have
       // a target alphabet we assume classification, otherwise we assume regression
       GateClassification gc = null;
@@ -305,7 +318,7 @@ public class EngineWeka extends Engine {
   @Override
   public void initializeAlgorithm(Algorithm algorithm, String parms) {
     Class trainerClass = algorithm.getTrainerClass();
-    System.err.println("LF DEBUG: trying to initialize trainer class "+trainerClass);
+    //System.err.println("LF DEBUG: trying to initialize trainer class "+trainerClass);
     try {
       trainer = trainerClass.newInstance();
     } catch (Exception ex) {
@@ -371,4 +384,7 @@ public class EngineWeka extends Engine {
     return ret;
   }
 
+  
+  
+  
 }

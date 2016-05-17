@@ -221,6 +221,7 @@ public class FeatureExtraction {
     // inputAS a boolean. No matter what the datatype is, this is always indicated by setting the
     // featureName to 1.0 (while for all instances, where the annotation is missing, the value will
     // implicitly be set to 0.0). 
+    // System.err.println("DEBUG: for fname="+featureName+",dt="+dt);
     if(featureName==null||featureName.isEmpty()) {
       // construct the featureName name and set to 1.0
       // however, only add the featureName if the featureName alphabet is allowed to grow.
@@ -259,8 +260,10 @@ public class FeatureExtraction {
                 inst.setProperty(PROP_IGNORE_HAS_MV,true);
                 break;
               case keep:  // this represents the MV by not setting any indicator featureName, so nothing to do
+                //System.out.println("DEBUG: oneofk, mv, keep");
                 break;
               case zero_value: // for one-of-k we treat this identically to keep, nothing to do
+                //System.out.println("DEBUG: oneofk, mv, zero");
                 break;
               case special_value: // we use the predefined special value
                 addToFeatureVector(fv,internalFeatureNamePrefix+VALSEP+MVVALUE,1.0);
@@ -289,6 +292,8 @@ public class FeatureExtraction {
               if(!alphabet.growthStopped()) {
                 // the lookupIndex method automatically adds the value if it is not there yet
                 addToFeatureVector(fv, internalFeatureNamePrefix, alphabet.lookupIndex(val));
+              } else {
+                //System.out.println("DEBUG: number, growStopped");
               }
             }
           } else {
@@ -296,6 +301,7 @@ public class FeatureExtraction {
             switch(mvt) {
               case ignore_instance: 
                 inst.setProperty(PROP_IGNORE_HAS_MV, true);
+                //System.out.println("DEBUG: other, mv, setProp");
                 break;
               case keep:  // for this kind of codeas, we use the value NaN
                 addToFeatureVector(fv,internalFeatureNamePrefix, Double.NaN );
@@ -332,12 +338,14 @@ public class FeatureExtraction {
                       " at offset "+gate.Utils.start(sourceAnnotation)+" in document "+doc.getName());
             }
           }        
-          addToFeatureVector(fv,internalFeatureNamePrefix,val);
+          addToFeatureVector(fv,internalFeatureNamePrefix,val);          
+          //System.err.println("DEBUG: for fname="+featureName+",dt="+dt+", valObj="+valObj+", fv="+fv.numLocations());
         } else {
             // we have a numeric missing value!
             switch(mvt) {
               case ignore_instance: 
                 inst.setProperty(PROP_IGNORE_HAS_MV, true);
+                //System.out.println("DEBUG: numeric, mv, setProp");
                 break;
               case keep:  // for this kind of codeas, we use the value NaN
                 addToFeatureVector(fv,internalFeatureNamePrefix, Double.NaN );
@@ -352,6 +360,7 @@ public class FeatureExtraction {
               default:
                 throw new NotImplementedException("MV-Handling");
             }                                  
+          //System.err.println("DEBUG: for fname="+featureName+",dt="+dt+", valObj="+valObj+", fv="+fv.numLocations());
         }
       } else if(dt == Datatype.bool) {
         if(valObj != null) {
@@ -375,6 +384,7 @@ public class FeatureExtraction {
             // we have a missing boolean value
             switch(mvt) {
               case ignore_instance: 
+                //System.out.println("DEBUG: boolean, mv, setProp");
                 inst.setProperty(PROP_IGNORE_HAS_MV, true);
                 break;
               case keep:  // for this kind of codeas, we use the value NaN
@@ -397,6 +407,7 @@ public class FeatureExtraction {
       }
     
     }
+    //System.out.println("DEBUG: worker, fv is now"+fv.numLocations());
   } // extractFeature (SimpleAttribute)
 
   
@@ -778,7 +789,10 @@ public class FeatureExtraction {
    */
   private static void addToFeatureVector(AugmentableFeatureVector fv, Object key, double val) {
     Alphabet a = fv.getAlphabet();
-    if(!a.contains(key) && a.growthStopped()) return;
+    if(!a.contains(key) && a.growthStopped()) {
+      //System.err.println("DEBUG: GROWTH STOPPED! key="+key+",a="+a);
+      return;
+    }
     fv.add(key,val);
   }
         

@@ -64,7 +64,15 @@ public class FeatureInfo implements Serializable {
 
   public List<Attribute> getAttributes() { return attributes; }
   
-
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("FeatureInfo{growthStopped=");
+    sb.append(growthStopped);
+    sb.append(",attrs=");
+    sb.append(attributes);
+    sb.append("}");
+    return sb.toString();
+  }
 
 
 
