@@ -7,5 +7,5 @@ package gate.plugin.learningframework.engines;
  * @author Johann Petrak
  */
 public class EvaluationResult {
-  Object internalEvaluationResult; // the library-specific evaluation result, e.g. Weka Eval
+  Object internalEvaluationResult; // the library-specific evaluation result
 }

@@ -17,14 +17,7 @@
     <dependency org="org.yaml" name="snakeyaml" rev="1.16" />
     -->
     <dependency org="cc.mallet" name="mallet" rev="2.0.8" />
-    <dependency org="org.beanshell" name="bsh" rev="2.0b4"/>
-    <dependency org="jgrapht" name="jgrapht" rev="0.6.0"/>
-    <dependency org="jgrapht" name="jgrapht" rev="0.6.0"/>
-    <dependency org="net.sf.jwordnet" name="jwnl" rev="1.4_rc3"/>
-    <dependency org="net.sf.trove4j" name="trove4j" rev="2.0.2"/>
-    <dependency org="com.googlecode.matrix-toolkits-java" name="mtj" rev="0.9.14"/>
     <dependency org="org.jdom" name="jdom" rev="1.1"/>
-    <dependency org="nz.ac.waikato.cms.weka" name="weka-dev" rev="3.7.13"/>
   </dependencies>
 </ivy-module>
 

@@ -30,7 +30,7 @@ public abstract class CorpusRepresentation {
   /**
    * Returns whatever object the concrete representation uses to represent the instances.
    * In addition, each specific CorpusRepresentation subclass has a representation specific
-   * method that returns the correct type of data, e.g. getRepresentationLibSVM or getRepresentationWeka.
+   * method that returns the correct type of data, e.g. getRepresentationLibSVM 
    * @return 
    */
   public abstract Object getRepresentation();
@@ -45,24 +45,41 @@ public abstract class CorpusRepresentation {
   public abstract void export(File directory, String parms);
   
   public static void export(CorpusRepresentationMallet crm, Exporter action, File directory, String parms) {
+    Info info = new Info();
     if(action == Exporter.EXPORTER_MALLET_CLASS) {
+      info.algorithmClass = "gate.plugin.learningframework.engines.AlgorithmClassification";
+      info.algorithmName = "MALLET_CL_DUMMY";
+      info.engineClass = "gate.plugin.learningframework.engines.EngineMalletClass";
+      info.modelClass = "cc.mallet.classify.Dummy";
       crm.export(directory, parms);
-    } else if(action == Exporter.EXPORTER_WEKA_CLASS) {
-      System.err.println("Exporting for classification by Weka to "+directory);
-      CorpusRepresentationWeka crw = new CorpusRepresentationWeka(crm);
-      crw.export(directory, parms);
-    } else if(action == Exporter.EXPORTER_WEKA_LIBSVM_CLASS) {
-      System.err.println("Exporting for classification by Weka as LibSVM to "+directory);
-      CorpusRepresentationWeka crw = new CorpusRepresentationWeka(crm);
-      if(parms==null) parms = "";
-      parms = "-f libsvm " + parms;
-      crw.export(directory, parms);
-    } else if(action == Exporter.EXPORTER_WEKA_REGRESSION) {
-      System.err.println("Exporting for regression by Weka to "+directory);
-      CorpusRepresentationWeka crw = new CorpusRepresentationWeka(crm);
-      crw.export(directory, parms);
+    } else if(action == Exporter.EXPORTER_ARFF_CLASS) {
+      System.err.println("Exporting for classification in ARFF format to "+directory);
+      info.algorithmClass = "gate.plugin.learningframework.engines.AlgorithmClassification";
+      info.algorithmName = "ARFF_CL_DUMMY";
+      info.engineClass = "gate.plugin.learningframework.engines.EngineMicroserviceArff";
+      info.modelClass =  "gate.plugin.learningframework.engines.EngineMicroserviceArff";
+      // TODO
+    } else if(action == Exporter.EXPORTER_ARFF_REGRESSION) {
+      System.err.println("Exporting for regression in ARFF format to "+directory);
+      info.algorithmClass = "gate.plugin.learningframework.engines.AlgorithmRegression";
+      info.engineClass = "gate.plugin.learningframework.engines.EngineMicroserviceArff";
+      info.modelClass =  "gate.plugin.learningframework.engines.EngineMicroserviceArff";
+      info.algorithmName = "ARFF_RG_DUMMY";
+      // TODO
     } else if(action == Exporter.EXPORTER_LIBSVM_CLASS) {
       System.err.println("Exporting for classification as LibSVM to "+directory);
+      info.algorithmClass = "gate.plugin.learningframework.engines.AlgorithmClassification";
+      info.engineClass = "gate.plugin.learningframework.engines.EngineLibSVM";
+      info.modelClass =  "todo.do.not.know.yet";
+      info.algorithmName = "LIBSVM_CL_DUMMY";
+      CorpusRepresentationLibSVM crl = new CorpusRepresentationLibSVM(crm);
+      crl.export(directory, parms);
+    } else if(action == Exporter.EXPORTER_LIBSVM_REGRESSION) {
+      System.err.println("Exporting for regression as LibSVM to "+directory);
+      info.algorithmClass = "gate.plugin.learningframework.engines.AlgorithmRegression";
+      info.engineClass = "gate.plugin.learningframework.engines.EngineLibSVM";
+      info.modelClass =  "todo.do.not.know.yet";
+      info.algorithmName = "LIBSVM_RG_DUMMY";
       CorpusRepresentationLibSVM crl = new CorpusRepresentationLibSVM(crm);
       crl.export(directory, parms);
     } else {
@@ -72,9 +89,6 @@ public abstract class CorpusRepresentation {
     }
     // In addition to the actual data file exported by the methods above,
     // always also export the pipe and a template info file!
-    Info info = new Info();
-    info.algorithmClass = "gate.plugin.learningframework.engines.AlgorithmClassification";
-    info.algorithmName = "WEKA_CL_NAIVE_BAYES";
     info.classAnnotationType = "null";
     LFPipe lfpipe = (LFPipe)crm.getPipe();
     if(lfpipe.getTargetAlphabet()==null) {
@@ -92,10 +106,8 @@ public abstract class CorpusRepresentation {
     info.nrTrainingInstances = crm.getRepresentationMallet().size();
     info.targetFeature = "class";
     info.task = "CLASSIFIER";
-    info.trainerClass = "weka.classifiers.bayes.NaiveBayes";
+    info.trainerClass = "";
     info.trainingCorpusName = "";
-    info.engineClass = "gate.plugin.learningframework.engines.EngineWeka";
-    info.modelClass = " weka.classifiers.bayes.NaiveBayes";
     info.save(directory);
     // finally save the Mallet corpus representation
     crm.savePipe(directory);

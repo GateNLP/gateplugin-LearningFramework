@@ -13,12 +13,10 @@ package gate.plugin.learningframework;
 import gate.plugin.learningframework.data.CorpusRepresentationLibSVM;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletSeq;
-import gate.plugin.learningframework.data.CorpusRepresentationWeka;
 
 public enum Exporter {
-  EXPORTER_WEKA_CLASS(CorpusRepresentationWeka.class),
-  EXPORTER_WEKA_LIBSVM_CLASS(CorpusRepresentationWeka.class),
-  EXPORTER_WEKA_REGRESSION(CorpusRepresentationWeka.class),
+  EXPORTER_ARFF_CLASS(null),  // TODO: MS/Stream exporter
+  EXPORTER_ARFF_REGRESSION(null),  // TODO: MS/Stream exporter
   EXPORTER_MALLET_CLASS(CorpusRepresentationMallet.class),
   EXPORTER_MALLET_SEQ(CorpusRepresentationMalletSeq.class),
   EXPORTER_LIBSVM_CLASS(CorpusRepresentationLibSVM.class),

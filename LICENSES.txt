@@ -1,0 +1,19 @@
+This plugin depends on the following software:
+
+  Mallet: http://mallet.cs.umass.edu/
+  License: https://opensource.org/licenses/cpl1.0.php
+
+  SnakeYaml: https://bitbucket.org/asomov/snakeyaml
+  License: Apache License 2.0
+
+  LibSVM: https://www.csie.ntu.edu.tw/~cjlin/libsvm/
+  License: http://www.csie.ntu.edu.tw/~cjlin/libsvm/COPYRIGHT
+
+  CommonsCLI: https://commons.apache.org/proper/commons-cli/
+  License: Apache License 2.0 
+
+  gateplugin-Evaluation: https://github.com/johann-petrak/gateplugin-Evaluation
+  License: LGPL 2.1
+
+  JDOM: http://jdom.org/
+  License: http://jdom.org/docs/faq.html#a0030 (Apache-like, more permissive)    

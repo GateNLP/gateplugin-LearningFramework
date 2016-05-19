@@ -23,15 +23,7 @@ public enum AlgorithmClassification implements Algorithm {
   MALLET_CL_WINNOW(EngineMalletClass.class,cc.mallet.classify.WinnowTrainer.class),
   MALLET_CL_BALANCED_WINNOW(EngineMalletClass.class,cc.mallet.classify.BalancedWinnowTrainer.class),
   MALLET_SEQ_CRF(EngineMalletSeq.class,null), // creating this training is too complex, no class specified
-  MALLET_CL_SPECIFY_CLASS(EngineMalletClass.class,null),
-  WEKA_CL_NAIVE_BAYES(EngineWeka.class,weka.classifiers.bayes.NaiveBayes.class),
-  WEKA_CL_J48(EngineWeka.class,weka.classifiers.trees.J48.class),
-  WEKA_CL_MULTILAYER_PERCEPTRON(EngineWeka.class,weka.classifiers.functions.MultilayerPerceptron.class),
-  WEKA_CL_RANDOM_TREE(EngineWeka.class,weka.classifiers.trees.RandomTree.class),
-  WEKA_CL_IBK(EngineWeka.class,weka.classifiers.lazy.IBk.class),
-  WEKA_CL_LOGISTIC_REGRESSION(EngineWeka.class,weka.classifiers.functions.Logistic.class),
-  WEKA_CL_RANDOM_FOREST(EngineWeka.class,weka.classifiers.trees.RandomForest.class),
-  WEKA_CL_SPECIFY_CLASS(EngineWeka.class,null);
+  MALLET_CL_SPECIFY_CLASS(EngineMalletClass.class,null);
   private AlgorithmClassification() {
     
   }

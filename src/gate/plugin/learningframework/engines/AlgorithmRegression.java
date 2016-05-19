@@ -11,14 +11,7 @@ package gate.plugin.learningframework.engines;
  * @author johann
  */
 public enum AlgorithmRegression implements Algorithm {
-  LIBSVM_RG(EngineLibSVM.class,null),
-  WEKA_RG_ADDITIVE_REGRESSION(EngineWeka.class,weka.classifiers.meta.AdditiveRegression.class),
-  WEKA_RG_LINEAR_REGRESSION(EngineWeka.class,weka.classifiers.functions.LinearRegression.class),
-  WEKA_RG_REPTree(EngineWeka.class,weka.classifiers.trees.REPTree.class),
-  WEKA_RG_SMOReg(EngineWeka.class,weka.classifiers.functions.SMOreg.class),
-  WEKA_RG_MULTILAYER_PERCEPTRON(EngineWeka.class,weka.classifiers.functions.MultilayerPerceptron.class),
-  WEKA_RG_GAUSSIAN_PROCESSES(EngineWeka.class,weka.classifiers.functions.GaussianProcesses.class),
-  WEKA_RG_SPECIFY_CLASS(EngineWeka.class,null);
+  LIBSVM_RG(EngineLibSVM.class,null);
   private AlgorithmRegression() {
     
   }

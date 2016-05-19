@@ -5,11 +5,9 @@
  */
 package gate.plugin.learningframework.data;
 
-import cc.mallet.types.FeatureVector;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.Label;
-import cc.mallet.types.LabelAlphabet;
 import cc.mallet.types.SparseVector;
 import gate.util.GateRuntimeException;
 import java.io.File;
@@ -17,7 +15,6 @@ import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import libsvm.svm_node;
 import libsvm.svm_problem;
-import weka.core.Instances;
 
 /**
  *
