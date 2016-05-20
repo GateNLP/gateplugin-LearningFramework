@@ -44,8 +44,18 @@ public abstract class CorpusRepresentation {
    */
   public abstract void export(File directory, String parms);
   
-  public static void export(CorpusRepresentationMallet crm, Exporter action, File directory, String parms) {
-    Info info = new Info();
+  public static void export(CorpusRepresentationMallet crm, Exporter exporter, File directory, String parms) {
+    CorpusExporter ce = null;
+    try {
+      ce = (CorpusExporter)exporter.getCorpusExporterClass().newInstance();
+    } catch (Exception ex) {
+      throw new RuntimeException("Could not instanciate exporter class "+exporter.getCorpusExporterClass(),ex);
+    }
+    // get the pre-filled info object
+    Info info = ce.getInfo();
+    // actually export the data 
+    ce.export(directory, crm);
+    /*
     if(action == Exporter.EXPORTER_MALLET_CLASS) {
       info.algorithmClass = "gate.plugin.learningframework.engines.AlgorithmClassification";
       info.algorithmName = "MALLET_CL_DUMMY";
@@ -87,6 +97,7 @@ public abstract class CorpusRepresentation {
       // we should do this by reflection somehow ...
       throw new GateRuntimeException("Export method not yet implemented: "+action);
     }
+    */
     // In addition to the actual data file exported by the methods above,
     // always also export the pipe and a template info file!
     info.classAnnotationType = "null";
@@ -121,10 +132,5 @@ public abstract class CorpusRepresentation {
    * and how instances should get transformed or scaled.
    */
   public abstract void clear();
-
-  // TODO: it may be good in some situations, if we could import data from external sources
-  // directly, but not sure about the details. This is not implemented at the moment at all  
-  
-  
   
 }

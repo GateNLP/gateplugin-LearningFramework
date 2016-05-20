@@ -10,20 +10,23 @@
  */
 package gate.plugin.learningframework;
 
-import gate.plugin.learningframework.data.CorpusRepresentationLibSVM;
-import gate.plugin.learningframework.data.CorpusRepresentationMallet;
-import gate.plugin.learningframework.data.CorpusRepresentationMalletSeq;
+import gate.plugin.learningframework.data.CorpusExporterARFF;
+import gate.plugin.learningframework.data.CorpusExporterLibSVM;
+import gate.plugin.learningframework.features.TargetType;
 
 public enum Exporter {
-  EXPORTER_ARFF_CLASS(null),  // TODO: MS/Stream exporter
-  EXPORTER_ARFF_REGRESSION(null),  // TODO: MS/Stream exporter
-  EXPORTER_MALLET_CLASS(CorpusRepresentationMallet.class),
-  EXPORTER_MALLET_SEQ(CorpusRepresentationMalletSeq.class),
-  EXPORTER_LIBSVM_CLASS(CorpusRepresentationLibSVM.class),
-  EXPORTER_LIBSVM_REGRESSION(CorpusRepresentationLibSVM.class);
-  private Exporter(Class corpusRepresentationClass) {
-    this.corpusRepresentationClass = corpusRepresentationClass;
+  EXPORTER_ARFF_CLASS(CorpusExporterARFF.class,TargetType.NOMINAL),  
+  EXPORTER_ARFF_REGRESSION(CorpusExporterARFF.class,TargetType.NUMERIC),  
+  //EXPORTER_MALLET_CLASS(),
+  //EXPORTER_MALLET_SEQ(),
+  EXPORTER_LIBSVM_CLASS(CorpusExporterLibSVM.class,TargetType.NOMINAL),
+  EXPORTER_LIBSVM_REGRESSION(CorpusExporterLibSVM.class,TargetType.NUMERIC);
+  private Exporter(Class corpusExporterClass, TargetType ttype) {
+    this.corpusExporterClass = corpusExporterClass;
+    this.ttype = ttype;
   }
-  private Class corpusRepresentationClass = null;
-  public Class getCorpusRepresentationClass() { return corpusRepresentationClass; }
+  private Class corpusExporterClass = null;
+  private TargetType ttype = TargetType.NOMINAL;
+  public Class getCorpusExporterClass() { return corpusExporterClass; }
+  public TargetType getTargetType() { return ttype; }
 }
