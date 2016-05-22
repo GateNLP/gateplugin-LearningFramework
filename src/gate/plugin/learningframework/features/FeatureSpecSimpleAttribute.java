@@ -15,11 +15,11 @@ import java.util.logging.Logger;
  *
  * @author Johann Petrak
  */
-public class SimpleAttribute extends Attribute implements Serializable, Cloneable {
+public class FeatureSpecSimpleAttribute extends FeatureSpecAttribute implements Serializable, Cloneable {
 
   private static final long serialVersionUID = -2346560362547132478L;
 
-  public SimpleAttribute(String aname, String type, String feature, Datatype datatype, CodeAs codeas, MissingValueTreatment missingValueTreatment, String missingValueValue, String scalingMethod, String transformMethod) {
+  public FeatureSpecSimpleAttribute(String aname, String type, String feature, Datatype datatype, CodeAs codeas, MissingValueTreatment missingValueTreatment, String missingValueValue, String scalingMethod, String transformMethod) {
     this.name = aname;
     this.annType = type;
     this.feature = feature;
@@ -56,8 +56,8 @@ public class SimpleAttribute extends Attribute implements Serializable, Cloneabl
   }
   
   @Override
-  public SimpleAttribute clone() {
-      return (SimpleAttribute) super.clone();
+  public FeatureSpecSimpleAttribute clone() {
+      return (FeatureSpecSimpleAttribute) super.clone();
   }
   
 

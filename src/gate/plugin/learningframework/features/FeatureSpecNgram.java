@@ -14,9 +14,9 @@ import java.util.logging.Logger;
  *
  * @author Johann Petrak
  */
-public class Ngram extends Attribute implements Serializable, Cloneable {
+public class FeatureSpecNgram extends FeatureSpecAttribute implements Serializable, Cloneable {
 
-  public Ngram(String aname, int number, String type, String feature) {
+  public FeatureSpecNgram(String aname, int number, String type, String feature) {
     this.name = aname;
     this.number = number;
     this.annType = type;
@@ -43,8 +43,8 @@ public class Ngram extends Attribute implements Serializable, Cloneable {
   }
   
   @Override
-  public Ngram clone() {
-      return (Ngram) super.clone();
+  public FeatureSpecNgram clone() {
+      return (FeatureSpecNgram) super.clone();
   }
   
 }

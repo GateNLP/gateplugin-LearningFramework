@@ -28,7 +28,7 @@ public class FeatureInfo implements Serializable {
    * Create an instance with an empty list of attributes.
    */
   public FeatureInfo() {
-    attributes = new ArrayList<Attribute>();
+    attributes = new ArrayList<FeatureSpecAttribute>();
   }
 
   /**
@@ -36,8 +36,8 @@ public class FeatureInfo implements Serializable {
    */
   public FeatureInfo(FeatureInfo other) {
     this.growthStopped = other.growthStopped;
-    attributes = new ArrayList<Attribute>();
-    for(Attribute attr : other.getAttributes()) {
+    attributes = new ArrayList<FeatureSpecAttribute>();
+    for(FeatureSpecAttribute attr : other.getAttributes()) {
       attributes.add(attr.clone());
     }
   }
@@ -45,7 +45,7 @@ public class FeatureInfo implements Serializable {
   public void stopGrowth() {
     // make sure that all alphabets we have stored with some of the attributes are
     // locked too!
-    for(Attribute attr : attributes) {
+    for(FeatureSpecAttribute attr : attributes) {
       attr.stopGrowth();
     }
     growthStopped = true;
@@ -59,10 +59,10 @@ public class FeatureInfo implements Serializable {
     return growthStopped;
   }
 
-  protected List<Attribute> attributes;
+  protected List<FeatureSpecAttribute> attributes;
 
 
-  public List<Attribute> getAttributes() { return attributes; }
+  public List<FeatureSpecAttribute> getAttributes() { return attributes; }
   
   public String toString() {
     StringBuilder sb = new StringBuilder();

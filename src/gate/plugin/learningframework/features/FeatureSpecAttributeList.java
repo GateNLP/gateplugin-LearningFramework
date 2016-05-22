@@ -12,11 +12,11 @@ import java.io.Serializable;
  *
  * @author Johann Petrak
  */
-public class AttributeList extends SimpleAttribute implements Serializable, Cloneable {
+public class FeatureSpecAttributeList extends FeatureSpecSimpleAttribute implements Serializable, Cloneable {
 
   private static final long serialVersionUID = -4627730393276173588L;
 
-  public AttributeList(String aname, String type, String feature, Datatype datatype, CodeAs codeas, MissingValueTreatment missingValueTreatment, String missingValueValue, String scalingMethod, String transformMethod, int from, int to) {
+  public FeatureSpecAttributeList(String aname, String type, String feature, Datatype datatype, CodeAs codeas, MissingValueTreatment missingValueTreatment, String missingValueValue, String scalingMethod, String transformMethod, int from, int to) {
     super(aname, type, feature, datatype, codeas, missingValueTreatment, missingValueValue, scalingMethod, transformMethod);
     this.from = from;
     this.to = to;
@@ -25,7 +25,7 @@ public class AttributeList extends SimpleAttribute implements Serializable, Clon
   /**
    * Create an AttributeList instance from a SimpleAttribute plus the from and to values
    */
-  public AttributeList(SimpleAttribute att, int from, int to) {
+  public FeatureSpecAttributeList(FeatureSpecSimpleAttribute att, int from, int to) {
     super(att.name, att.annType, att.feature, att.datatype, att.codeas, att.missingValueTreatment, 
             "dummy", "dummy", "dummy");
     this.from = from;
@@ -52,8 +52,8 @@ public class AttributeList extends SimpleAttribute implements Serializable, Clon
   }
   
   @Override
-  public AttributeList clone() {
-    return (AttributeList) super.clone();
+  public FeatureSpecAttributeList clone() {
+    return (FeatureSpecAttributeList) super.clone();
   }
   
   

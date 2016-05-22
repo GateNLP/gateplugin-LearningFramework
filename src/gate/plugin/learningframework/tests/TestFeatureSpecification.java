@@ -6,7 +6,7 @@
 
 package gate.plugin.learningframework.tests;
 
-import gate.plugin.learningframework.features.Attribute;
+import gate.plugin.learningframework.features.FeatureSpecAttribute;
 import gate.plugin.learningframework.features.FeatureInfo;
 import gate.plugin.learningframework.features.FeatureSpecification;
 import java.util.List;
@@ -28,7 +28,7 @@ public class TestFeatureSpecification {
             "</ROOT>";
     FeatureSpecification fs;    
     FeatureInfo fi;
-    List<Attribute> as;
+    List<FeatureSpecAttribute> as;
     fs = new FeatureSpecification(spec);
     fi = fs.getFeatureInfo();
     as = fi.getAttributes();

@@ -95,7 +95,7 @@ public class FeatureSpecification {
 
     // In this method, we directly modify the attributes list from the featureinfo we have 
     // stored. 
-    List<Attribute> attributes = featureInfo.getAttributes();
+    List<FeatureSpecAttribute> attributes = featureInfo.getAttributes();
     
     int n = 0;
     for (Element element : elements) {
@@ -104,10 +104,10 @@ public class FeatureSpecification {
       if (elementName.equals("attribute")) {
         attributes.add(parseSimpleAttribute(element, n));
       } else if (elementName.equals("attributelist")) {
-        SimpleAttribute att = parseSimpleAttribute(element, n);
+        FeatureSpecSimpleAttribute att = parseSimpleAttribute(element, n);
         int from = Integer.parseInt(element.getChildText("FROM"));
         int to = Integer.parseInt(element.getChildText("TO"));
-        attributes.add(new AttributeList(att, from, to));
+        attributes.add(new FeatureSpecAttributeList(att, from, to));
       } else if (elementName.equals("ngram")) {
         attributes.add(parseNgramAttribute(element, n));
       } else {
@@ -116,7 +116,7 @@ public class FeatureSpecification {
     }
   } // parseConfigXml
 
-  private SimpleAttribute parseSimpleAttribute(Element attributeElement, int i) {
+  private FeatureSpecSimpleAttribute parseSimpleAttribute(Element attributeElement, int i) {
     String aname = getChildTextOrElse(attributeElement, "NAME", "").trim();
     String feat = getChildTextOrElse(attributeElement, "FEATURE", "").trim();
     String dtstr = getChildTextOrElse(attributeElement, "DATATYPE", null);    
@@ -164,7 +164,7 @@ public class FeatureSpecification {
     String scalingMethod = "";
     String transformMethod = "";
     String missingValueValue = ""; // if MVs should get replaced with a constant value, that value as a String
-    SimpleAttribute att = new SimpleAttribute(
+    FeatureSpecSimpleAttribute att = new FeatureSpecSimpleAttribute(
             aname,
             atype,
             feat,
@@ -178,7 +178,7 @@ public class FeatureSpecification {
     return att;
   }
 
-  private Attribute parseNgramAttribute(Element ngramElement, int i) {
+  private FeatureSpecAttribute parseNgramAttribute(Element ngramElement, int i) {
     String aname = getChildTextOrElse(ngramElement,"NAME","").trim();
     String annType = getChildTextOrElse(ngramElement,"TYPE","").trim();
     if (annType.isEmpty()) {
@@ -189,7 +189,7 @@ public class FeatureSpecification {
     if (feature.isEmpty()) {
       throw new GateRuntimeException("TYPE in NGRAM " + i + " must not be missing or empty");
     }
-    Ngram ng = new Ngram(
+    FeatureSpecNgram ng = new FeatureSpecNgram(
             aname,
             Integer.parseInt(ngramElement.getChildText("NUMBER")),
             annType,

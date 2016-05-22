@@ -14,11 +14,11 @@ import cc.mallet.types.LabelAlphabet;
 import gate.Annotation;
 import gate.Document;
 import gate.creole.ResourceInstantiationException;
-import gate.plugin.learningframework.features.Attribute;
+import gate.plugin.learningframework.features.FeatureSpecAttribute;
 import gate.plugin.learningframework.features.FeatureExtraction;
 import gate.plugin.learningframework.features.FeatureInfo;
 import gate.plugin.learningframework.features.FeatureSpecification;
-import gate.plugin.learningframework.features.SimpleAttribute;
+import gate.plugin.learningframework.features.FeatureSpecSimpleAttribute;
 import gate.plugin.learningframework.mallet.LFPipe;
 import org.junit.Test;
 import static gate.plugin.learningframework.tests.Utils.newDocument;
@@ -59,10 +59,10 @@ public class TestPipeSerialization {
     Document doc = newDocument();
     Annotation instAnn = addAnn(doc,"",0,0,"theType",gate.Utils.featureMap("feature1","val1"));
     Instance inst = newInstance();
-    Attribute attr = fi.getAttributes().get(0);
+    FeatureSpecAttribute attr = fi.getAttributes().get(0);
     // make sure the attribute is a SimpleAttribute as expected
-    assertEquals(SimpleAttribute.class, attr.getClass());
-    SimpleAttribute sa = (SimpleAttribute)attr;
+    assertEquals(FeatureSpecSimpleAttribute.class, attr.getClass());
+    FeatureSpecSimpleAttribute sa = (FeatureSpecSimpleAttribute)attr;
     FeatureExtraction.extractFeature(inst, sa, doc.getAnnotations(), instAnn);
     // verify that we do have an alphabet in the attribute info
     assertNotNull(sa.alphabet);    
@@ -90,8 +90,8 @@ public class TestPipeSerialization {
     // is there exactly one attribute
     assertEquals(1, pipe2.getFeatureInfo().getAttributes().size());
     // does that attribute have an alphabet
-    assertNotNull(((SimpleAttribute)pipe2.getFeatureInfo().getAttributes().get(0)).alphabet);
+    assertNotNull(((FeatureSpecSimpleAttribute)pipe2.getFeatureInfo().getAttributes().get(0)).alphabet);
     // is the alphabet identical to what we originally had
-    assertEquals(valuealphabet,((SimpleAttribute)pipe2.getFeatureInfo().getAttributes().get(0)).alphabet);
+    assertEquals(valuealphabet,((FeatureSpecSimpleAttribute)pipe2.getFeatureInfo().getAttributes().get(0)).alphabet);
   }
 }

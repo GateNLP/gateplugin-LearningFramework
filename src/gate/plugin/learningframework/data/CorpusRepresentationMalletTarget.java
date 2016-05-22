@@ -1,17 +1,3 @@
-/*
- * CorpusWriterMallet.java
- *  
- * Copyright (c) 1995-2015, The University of Sheffield. See the file
- * COPYRIGHT.txt in the software or at http://gate.ac.uk/gate/COPYRIGHT.txt
- * Copyright 2015 South London and Maudsley NHS Trust and King's College London
- *
- * This file is part of GATE (see http://gate.ac.uk/), and is free software,
- * licenced under the GNU Library General Public License, Version 2, June 1991
- * (in the distribution as file licence.html, and also available at
- * http://gate.ac.uk/gate/licence.html).
- *
- * Genevieve Gorrell, 9 Jan 2015
- */
 package gate.plugin.learningframework.data;
 
 import gate.Annotation;
@@ -27,7 +13,7 @@ import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelAlphabet;
 import gate.plugin.learningframework.ScalingMethod;
 import gate.plugin.learningframework.mallet.FeatureVector2NormalizedFeatureVector;
-import gate.plugin.learningframework.features.Attribute;
+import gate.plugin.learningframework.features.FeatureSpecAttribute;
 import gate.plugin.learningframework.features.FeatureExtraction;
 import gate.plugin.learningframework.features.FeatureInfo;
 import gate.plugin.learningframework.features.TargetType;
@@ -159,7 +145,7 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
     
     AugmentableFeatureVector afv = new AugmentableFeatureVector(pipe.getDataAlphabet());
     Instance inst = new Instance(afv, null, null, null);
-    for(Attribute attr : featureInfo.getAttributes()) {
+    for(FeatureSpecAttribute attr : featureInfo.getAttributes()) {
       FeatureExtraction.extractFeature(inst, attr, inputAS, instanceAnnotation);
     }
     // TODO: we destructively replace the AugmentableFeatureVector by a FeatureVector here,
@@ -267,5 +253,6 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
   public void export(File directory, String parms) {
     instances.save(new File(directory, "data.mallettarget.ser"));
   }
+
 
 }

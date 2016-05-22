@@ -88,4 +88,5 @@ public abstract class CorpusRepresentationMallet extends CorpusRepresentation {
   public abstract void add(AnnotationSet instancesAS, AnnotationSet sequenceAS, AnnotationSet inputAS, AnnotationSet classAS, String targetFeatureName, TargetType targetType, String nameFeatureName);
   
   public abstract void addScaling(ScalingMethod scaleFeatures);
+  
 }

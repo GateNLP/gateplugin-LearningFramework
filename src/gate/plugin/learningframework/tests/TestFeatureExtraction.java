@@ -15,11 +15,11 @@ import gate.Document;
 import gate.Factory;
 import gate.Gate;
 import gate.creole.ResourceInstantiationException;
-import gate.plugin.learningframework.features.Attribute;
+import gate.plugin.learningframework.features.FeatureSpecAttribute;
 import gate.plugin.learningframework.features.FeatureExtraction;
 import gate.plugin.learningframework.features.FeatureInfo;
 import gate.plugin.learningframework.features.FeatureSpecification;
-import gate.plugin.learningframework.features.SimpleAttribute;
+import gate.plugin.learningframework.features.FeatureSpecSimpleAttribute;
 import static gate.plugin.learningframework.tests.Utils.*;
 import gate.util.GateException;
 import gate.util.GateRuntimeException;
@@ -83,7 +83,7 @@ public class TestFeatureExtraction {
             "<ATTRIBUTE><TYPE>theType</TYPE><FEATURE>missing3numeric</FEATURE><DATATYPE>numeric</DATATYPE></ATTRIBUTE>"+
             "</ROOT>";
     FeatureInfo fi = new FeatureSpecification(spec).getFeatureInfo();
-    List<Attribute> as = fi.getAttributes();
+    List<FeatureSpecAttribute> as = fi.getAttributes();
     assertNotNull(as);
     assertEquals(11,as.size());
 
@@ -192,7 +192,7 @@ public class TestFeatureExtraction {
     instAnn.getFeatures().put("nomFeat2", "xxxx");
     instAnn.getFeatures().put("nomFeat3", "xxxx");
     
-    List<Attribute> as2 = new FeatureSpecification(spec).getFeatureInfo().getAttributes();
+    List<FeatureSpecAttribute> as2 = new FeatureSpecification(spec).getFeatureInfo().getAttributes();
 
     FeatureExtraction.extractFeature(inst, as2.get(0), doc.getAnnotations(), instAnn);
     System.err.println("After "+as2.get(0)+" FV="+inst.getData());
@@ -239,8 +239,8 @@ public class TestFeatureExtraction {
     assertEquals(1.0,((FeatureVector)inst.getData()).value("A:theType:nomFeat3"),EPS);
     
     // check if we do have the proper value alphabet
-    assertTrue(as2.get(2) instanceof SimpleAttribute);
-    SimpleAttribute att2 = (SimpleAttribute)as2.get(2);
+    assertTrue(as2.get(2) instanceof FeatureSpecSimpleAttribute);
+    FeatureSpecSimpleAttribute att2 = (FeatureSpecSimpleAttribute)as2.get(2);
     Alphabet att2a = att2.alphabet;
     System.err.println("Alphabet for nomFeat3="+att2a);
     assertEquals(2,att2a.size());
@@ -257,7 +257,7 @@ public class TestFeatureExtraction {
     String spec = "<ROOT>"+
             "<ATTRIBUTE><TYPE>theType</TYPE><FEATURE>feature1</FEATURE><DATATYPE>nominal</DATATYPE></ATTRIBUTE>"+
             "</ROOT>";
-    List<Attribute> as = new FeatureSpecification(spec).getFeatureInfo().getAttributes();
+    List<FeatureSpecAttribute> as = new FeatureSpecification(spec).getFeatureInfo().getAttributes();
     Instance inst = newInstance();
     
     // prepare the document
@@ -276,7 +276,7 @@ public class TestFeatureExtraction {
     String spec = "<ROOT>"+
             "<ATTRIBUTE><TYPE>theType</TYPE><FEATURE>feature1</FEATURE><DATATYPE>nominal</DATATYPE></ATTRIBUTE>"+
             "</ROOT>";
-    List<Attribute> as = new FeatureSpecification(spec).getFeatureInfo().getAttributes();
+    List<FeatureSpecAttribute> as = new FeatureSpecification(spec).getFeatureInfo().getAttributes();
     Instance inst = newInstance();
     
     // prepare the document
@@ -299,7 +299,7 @@ public class TestFeatureExtraction {
             "<NGRAM><TYPE>theType</TYPE><FEATURE>theFeature</FEATURE><NUMBER>3</NUMBER></NGRAM>"+
             "</ROOT>";
     FeatureInfo fi = new FeatureSpecification(spec).getFeatureInfo();
-    List<Attribute> as = fi.getAttributes();
+    List<FeatureSpecAttribute> as = fi.getAttributes();
 
     Alphabet a = new Alphabet();
     AugmentableFeatureVector afv = new AugmentableFeatureVector(a);
@@ -367,7 +367,7 @@ public class TestFeatureExtraction {
             "<NGRAM><NAME>someName</NAME><TYPE>theType</TYPE><FEATURE>theFeature</FEATURE><NUMBER>3</NUMBER></NGRAM>"+
             "</ROOT>";
     FeatureInfo fi = new FeatureSpecification(spec).getFeatureInfo();
-    List<Attribute> as = fi.getAttributes();
+    List<FeatureSpecAttribute> as = fi.getAttributes();
     System.err.println("NGRAMS with explicitly specified name!!");
     Alphabet a = new Alphabet();
     AugmentableFeatureVector afv = new AugmentableFeatureVector(a);
@@ -431,7 +431,7 @@ public class TestFeatureExtraction {
     String spec = "<ROOT>"+
             "<ATTRIBUTELIST><TYPE>theType</TYPE><FEATURE>theFeature</FEATURE><DATATYPE>nominal</DATATYPE><FROM>-1</FROM><TO>1</TO></ATTRIBUTELIST>"+
             "</ROOT>";
-    List<Attribute> as = new FeatureSpecification(spec).getFeatureInfo().getAttributes();
+    List<FeatureSpecAttribute> as = new FeatureSpecification(spec).getFeatureInfo().getAttributes();
     Instance inst = newInstance();
     
     // prepare the document
@@ -466,7 +466,7 @@ public class TestFeatureExtraction {
     String spec = "<ROOT>"+
             "<ATTRIBUTELIST><NAME>myAttList</NAME><TYPE>theType</TYPE><FEATURE>theFeature</FEATURE><DATATYPE>nominal</DATATYPE><FROM>-1</FROM><TO>1</TO></ATTRIBUTELIST>"+
             "</ROOT>";
-    List<Attribute> as = new FeatureSpecification(spec).getFeatureInfo().getAttributes();
+    List<FeatureSpecAttribute> as = new FeatureSpecification(spec).getFeatureInfo().getAttributes();
     Instance inst = newInstance();
     
     // prepare the document

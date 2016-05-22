@@ -91,12 +91,12 @@ public class FeatureExtraction {
 
   public static void extractFeature(        
           Instance inst,
-          Attribute att,
+          FeatureSpecAttribute att,
           AnnotationSet inputAS, 
           Annotation instanceAnnotation) {
-    if(att instanceof AttributeList) extractFeature(inst,(AttributeList)att,inputAS,instanceAnnotation);
-    else if(att instanceof SimpleAttribute) extractFeature(inst,(SimpleAttribute)att,inputAS,instanceAnnotation);
-    else if(att instanceof Ngram) extractFeature(inst,(Ngram)att,inputAS,instanceAnnotation);
+    if(att instanceof FeatureSpecAttributeList) extractFeature(inst,(FeatureSpecAttributeList)att,inputAS,instanceAnnotation);
+    else if(att instanceof FeatureSpecSimpleAttribute) extractFeature(inst,(FeatureSpecSimpleAttribute)att,inputAS,instanceAnnotation);
+    else if(att instanceof FeatureSpecNgram) extractFeature(inst,(FeatureSpecNgram)att,inputAS,instanceAnnotation);
     else {
       throw new GateRuntimeException("Attempt to call extractFeature with type "+att.getClass());
     }
@@ -128,7 +128,7 @@ public class FeatureExtraction {
    */
   private static void extractFeature(
           Instance inst,
-          SimpleAttribute att,
+          FeatureSpecSimpleAttribute att,
           AnnotationSet inputAS, 
           Annotation instanceAnnotation) {
     Document doc = inputAS.getDocument();
@@ -428,7 +428,7 @@ public class FeatureExtraction {
   // NOTE: if the featureName is missing, i.e. it is null or the empty string, then the whole annotation gets ignored
   private static void extractFeature(
           Instance inst,
-          Ngram ng, 
+          FeatureSpecNgram ng, 
           AnnotationSet inputAS, 
           Annotation instanceAnnotation
           ) {
@@ -517,7 +517,7 @@ public class FeatureExtraction {
   
   private static void extractFeature(
           Instance inst, 
-          AttributeList al, 
+          FeatureSpecAttributeList al, 
           AnnotationSet inputAS, 
           Annotation instanceAnnotation
           ) {
@@ -719,8 +719,8 @@ public class FeatureExtraction {
    * @param featureName
    * @return 
    */
-  public static Attribute lookupAttributeForFeatureName(List<Attribute> attributes, String featureName) {
-    Attribute ret = null;
+  public static FeatureSpecAttribute lookupAttributeForFeatureName(List<FeatureSpecAttribute> attributes, String featureName) {
+    FeatureSpecAttribute ret = null;
     // first off, we distinguish between one-of-k coding and others: if we have one-of-k coding,
     // then there must be a VALSEP. 
     int valsepIdx = featureName.indexOf(VALSEP);
@@ -740,7 +740,7 @@ public class FeatureExtraction {
       featureNamePrefix = featureNamePrefix.replaceAll("#-?[0-9]+$","");
       // now the featureNamePrefix should be identical to the name of an attribute
       // look it up
-      for(Attribute attr : attributes) {
+      for(FeatureSpecAttribute attr : attributes) {
         if(attr.name.equals(featureNamePrefix)) {
           ret = attr;
           break;
@@ -758,7 +758,7 @@ public class FeatureExtraction {
         // the second part is the type, the third part is the feature name, which could be empty
         String t = parts[1];
         String f = parts[2];
-        for(Attribute att : attributes) {
+        for(FeatureSpecAttribute att : attributes) {
           if(att.annType.equals(t)) {
             // now try to match the feature too 
             if(f.isEmpty() && (att.feature == null || att.feature.isEmpty())) {

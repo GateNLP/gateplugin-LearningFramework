@@ -23,9 +23,11 @@ import libsvm.svm_problem;
 public class CorpusRepresentationLibSVM extends CorpusRepresentation {
 
   protected svm_problem data;
+  protected CorpusRepresentationMallet crm;
 
   public CorpusRepresentationLibSVM(CorpusRepresentationMallet other) {
     data = getFromMallet(other);
+    crm = other;
   }
 
   public svm_problem getRepresentationLibSVM() {
@@ -141,6 +143,11 @@ public class CorpusRepresentationLibSVM extends CorpusRepresentation {
     // set this to null for now. 
     // There is not much reason why this should ever get used anyway.
     data = null;
+  }
+
+  @Override
+  public InstanceList getRepresentationMallet() {
+   return crm.instances;
   }
 
 }

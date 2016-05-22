@@ -6,12 +6,12 @@
 
 package gate.plugin.learningframework.data;
 
+import cc.mallet.types.InstanceList;
 import gate.plugin.learningframework.ScalingMethod;
 import gate.plugin.learningframework.Exporter;
 import gate.plugin.learningframework.engines.Info;
 import gate.plugin.learningframework.features.FeatureInfo;
 import gate.plugin.learningframework.mallet.LFPipe;
-import gate.util.GateRuntimeException;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -34,6 +34,8 @@ public abstract class CorpusRepresentation {
    * @return 
    */
   public abstract Object getRepresentation();
+  
+  public abstract InstanceList getRepresentationMallet();
   
   /**
    * Write the instances to one or more files.
