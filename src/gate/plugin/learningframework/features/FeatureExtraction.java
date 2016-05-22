@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package gate.plugin.learningframework.features;
 
@@ -19,6 +14,14 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
+
+// TODO: need a better way to map mallet feature names back to the attribute
+// specification. We do not want to create yet another map for this since it
+// could become huge for the bag of words/bag of ngram features.
+// However we could either create a map for just the part of the mallet feature
+// name without the value (before the first val sep) or we could try to 
+// find a reversible mapping for the prefix (before valsep).
+
 
 /**
  * Code for extracting features from a document based on a FeatureInfo.
@@ -754,6 +757,7 @@ public class FeatureExtraction {
       String[] parts = featureNamePrefix.split(NAMESEP, -1);
       if(parts.length != 3) {
         // not sure what to do now, for now we just ignore this and do not return an attribute
+        System.err.println("Not three parts for a feature name prefix="+featureNamePrefix+" but "+parts.length);
       } else {
         // the second part is the type, the third part is the feature name, which could be empty
         String t = parts[1];

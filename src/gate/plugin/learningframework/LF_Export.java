@@ -205,15 +205,18 @@ public class LF_Export extends LF_ExportBase {
   @Override
   protected void beforeFirstDocument(Controller controller) {
     
+    /*
     if(getExporter() == Exporter.EXPORTER_MALLET_SEQ) {
       if(getSequenceSpan() == null || getSequenceSpan().isEmpty()) {
         throw new GateRuntimeException("SequenceSpan parameter is required for EXPORTER_MALLET_SEQ");
       } 
     } else {
+    */
       if(getSequenceSpan() != null && !getSequenceSpan().isEmpty()) {
-        throw new GateRuntimeException("SequenceSpan parameter must not be specified unless EXPORTER_MALLET_SEQ is used");
+        // NOTE: we do not have a sequence exporter yet!!
+        throw new GateRuntimeException("SequenceSpan parameter must not be specified unless Sequence exporter is used");
       }
-    }
+    //}
     
     
     System.err.println("DEBUG: Before Documents.");
@@ -228,31 +231,35 @@ public class LF_Export extends LF_ExportBase {
       if(getClassAnnotationType() != null && !getClassAnnotationType().isEmpty()) {
         throw new GateRuntimeException("Either targetFeature or classAnnotationType must be specified, not both");
       }
+      /*
       if(getExporter() == Exporter.EXPORTER_MALLET_SEQ) {
         // this would have to create a MalletSeq representation and then find a way to export that!
         // corpusRepresentationSeq = new CorpusRepresentationMalletSeq(featureSpec.getFeatureInfo(), scaleFeatures);
         // System.err.println("DEBUG: created the corpusRepresentationMalletSeq: "+corpusRepresentationSeq);
       } else {
+      */
         corpusRepresentationClass = new CorpusRepresentationMalletTarget(featureSpec.getFeatureInfo(), scaleFeatures, targetType);
         System.err.println("DEBUG: created the corpusRepresentationMalletClass: "+corpusRepresentationClass);
-      }
+      //}
     } else if(getClassAnnotationType() != null && !getClassAnnotationType().isEmpty()) {
       haveSequenceProblem = true;
       if(getTargetFeature() != null && !getTargetFeature().isEmpty()) {
         throw new GateRuntimeException("Either targetFeature or classAnnotationType must be specified, not both");
       }
+      /*
       if(getExporter() == Exporter.EXPORTER_MALLET_SEQ) {
         throw new GateRuntimeException("Exporting using MALLET_SEQ is not yet supported");
         // this would have to create a MalletSeq representation and then find a way to export that!
         // corpusRepresentationSeq = new CorpusRepresentationMalletSeq(featureSpec.getFeatureInfo(), scaleFeatures);
         // System.err.println("DEBUG: created the corpusRepresentationMalletSeq: "+corpusRepresentationSeq);
       } else {
+      */
         corpusRepresentationClass = new CorpusRepresentationMalletTarget(featureSpec.getFeatureInfo(), scaleFeatures,TargetType.NOMINAL);
         System.err.println("DEBUG: created the corpusRepresentationMalletClass: "+corpusRepresentationClass);        
-      }
+      //}
   }
     
-    haveSequenceAlg = (getExporter() == Exporter.EXPORTER_MALLET_SEQ);
+    haveSequenceAlg = false; //(getExporter() == Exporter.EXPORTER_MALLET_SEQ);
     
     
     System.err.println("DEBUG: setup of the export PR complete");

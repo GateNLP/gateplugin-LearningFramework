@@ -14,17 +14,10 @@ import gate.plugin.learningframework.Globals;
 import gate.plugin.learningframework.engines.Info;
 import gate.plugin.learningframework.features.Datatype;
 import gate.plugin.learningframework.features.FeatureExtraction;
-import gate.plugin.learningframework.mallet.LFPipe;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -34,7 +27,12 @@ public class CorpusExporterARFF extends CorpusExporter {
 
   @Override
   public Info getInfo() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    Info info = new Info();
+    info.algorithmClass = "gate.plugin.learningframework.engines.AlgorithmClassification";
+    info.algorithmName = "ARFF_CL_DUMMY";
+    info.engineClass = "gate.plugin.learningframework.engines.EngineMicroserviceArff";
+    info.modelClass =  "gate.plugin.learningframework.engines.EngineMicroserviceArff";    
+    return info;
   }
 
   @Override

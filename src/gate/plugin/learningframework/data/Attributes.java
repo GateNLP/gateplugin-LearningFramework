@@ -91,6 +91,10 @@ public class Attributes implements Iterable<Attribute> {
           }           
         } else if(fsAttr instanceof FeatureSpecNgram) {
           // nothing to be done here
+        } else if(fsAttr==null) {
+          throw new RuntimeException("FeatureSpecification is null for feature "+
+                  i+", name="+malletFeatureName+ 
+                  "\nFeatureSpecification is "+featureInfo);
         } else {
           throw new RuntimeException(
                   "Impossible: found odd FeatureSpecAttribute type "+fsAttr.getClass());
