@@ -166,7 +166,7 @@ public class Attributes implements Iterable<Attribute> {
     private int currentIndex = 0;
     @Override
     public boolean hasNext() {
-      return(attributes.size()>=currentIndex);
+      return(attributes.size()>currentIndex);
     }
 
     @Override

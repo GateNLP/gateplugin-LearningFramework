@@ -10,6 +10,7 @@ import cc.mallet.types.Alphabet;
 import cc.mallet.types.FeatureVector;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
+import cc.mallet.types.Label;
 import gate.plugin.learningframework.Globals;
 import gate.plugin.learningframework.data.Attribute;
 import gate.plugin.learningframework.data.Attributes;
@@ -59,8 +60,8 @@ public class CorpusExporterARFF extends CorpusExporter {
     } catch (FileNotFoundException ex) {
       throw new RuntimeException("Could not open "+dataFile.getAbsolutePath(),ex);
     }
-    headerOut.println("@RELATION GateLearninFramework");
-    dataOut.println("@RELATION GateLearninFramework");
+    headerOut.println("@RELATION GateLearningFramework");
+    dataOut.println("@RELATION GateLearningFramework");
     for(Attribute attr : attrs) {
       headerOut.print("@ATTRIBUTE ");
       dataOut.print("@ATTRIBUTE ");
@@ -115,6 +116,7 @@ public class CorpusExporterARFF extends CorpusExporter {
     // export the actual data in sparse format
     // TODO: make sure we respect the flag to ignore an instance with missing values
     // TODO: if the instance has a weight, also output the weight!!
+    dataOut.println("@DATA");
     for(Instance inst : malletInstances) {
       String line = instance2WekaArffLine(inst,attrs);
       dataOut.println(line);
@@ -208,18 +210,29 @@ public class CorpusExporterARFF extends CorpusExporter {
       // Now also add location and value for the target, if we have one
       Object target = inst.getTarget();
       if(target!=null) {
-        double targetValue = (double)target;
-        sb.append(", ");        
         Attribute targetAttr = attrs.getTargetAttribute();
+        sb.append(", ");        
         sb.append(targetAttr.index);
         sb.append(" ");
-        if(targetAttr.datatype==Datatype.numeric) {
-          sb.append(targetValue);
-        } else if(targetAttr.datatype==Datatype.nominal) {
-          sb.append(escape4Arff((String)targetAttr.alphabet.lookupObject((int) targetValue)));
+        // we expect this to be either a Label instance or something that can be cast to double
+        if(target instanceof Label) {
+          if(targetAttr.datatype != Datatype.nominal) {
+            throw new RuntimeException("Target is a label but datatype for attribute is not nominal");
+          }
+          Label malletLabel = (Label)target;
+          String targetString = malletLabel.toString();
+          sb.append(targetString);
+          // TODO: could check here if the label index is the same as expected from
+          // the attribute defintion!
         } else {
-          sb.append("UNEXPECTEDTARGETDATATYPE!!!");
+          if(targetAttr.datatype != Datatype.numeric) {
+            throw new RuntimeException("Target is a number but datatype for attribute is not  numeric");
+          }
+          double targetValue = (double)target;
+          sb.append(targetValue);
         }
+      } else {
+        // target is null: do nothing, simply create the row without a target 
       }
       sb.append("}");
       // TODO: add instance weight here once we support instance weights?
