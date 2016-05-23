@@ -291,7 +291,12 @@ public class FeatureExtraction {
       addToFeatureVector(fv, fname, 1.0);
     } else {    
       // First get the value inputAS an Object, if there is no value, we have an Object that is null
-      Object valObj = sourceAnnotation.getFeatures().get(featureName);
+      // If the sourceAnnotation is null, we already did not find the source at all,
+      // so the value is always missing.
+      Object valObj = null;
+      if(sourceAnnotation != null) {
+        valObj = sourceAnnotation.getFeatures().get(featureName);
+      } 
       // no matter what the datatype is, a null is always a missing value, so we set the 
       // property that indicates the existence of a missing valuein the instance right here
       if(valObj == null) {

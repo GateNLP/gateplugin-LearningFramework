@@ -158,8 +158,8 @@ public class TestEngineMalletSeq {
     System.err.println("GOT STATS F strict="+stats.getFMeasureStrict(1.0));
     System.err.println("GOT STATS F lenient="+stats.getFMeasureLenient(1.0));
     
-    assertEquals(0.3646, stats.getFMeasureStrict(1.0), 0.01);
-    assertEquals(0.4299, stats.getFMeasureLenient(1.0), 0.01);
+    assertEquals(0.2965, stats.getFMeasureStrict(1.0), 0.01);
+    assertEquals(0.3472, stats.getFMeasureLenient(1.0), 0.01);
         
   }
 
