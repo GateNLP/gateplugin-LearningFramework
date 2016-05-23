@@ -181,17 +181,18 @@ public class FeatureSpecification {
   private FeatureSpecAttribute parseNgramAttribute(Element ngramElement, int i) {
     String aname = getChildTextOrElse(ngramElement,"NAME","").trim();
     String annType = getChildTextOrElse(ngramElement,"TYPE","").trim();
+    String numberString = getChildTextOrElse(ngramElement,"NUMBER","1").trim();
     if (annType.isEmpty()) {
       throw new GateRuntimeException("TYPE in NGRAM " + i + " must not be missing or empty");
     }
     
     String feature = getChildTextOrElse(ngramElement,"FEATURE","").trim();
     if (feature.isEmpty()) {
-      throw new GateRuntimeException("TYPE in NGRAM " + i + " must not be missing or empty");
+      throw new GateRuntimeException("FEATURE in NGRAM " + i + " must not be missing or empty");
     }
     FeatureSpecNgram ng = new FeatureSpecNgram(
             aname,
-            Integer.parseInt(ngramElement.getChildText("NUMBER")),
+            Integer.parseInt(numberString),
             annType,
             feature
     );

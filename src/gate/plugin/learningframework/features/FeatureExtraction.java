@@ -1,4 +1,3 @@
-
 package gate.plugin.learningframework.features;
 
 import cc.mallet.types.Alphabet;
@@ -14,13 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
-
-// TODO: need a better way to map mallet feature names back to the attribute
-// specification. We do not want to create yet another map for this since it
-// could become huge for the bag of words/bag of ngram features.
-// However we could either create a map for just the part of the mallet feature
-// name without the value (before the first val sep) or we could try to 
-// find a reversible mapping for the prefix (before valsep).
 
 
 /**
@@ -245,6 +237,26 @@ public class FeatureExtraction {
     extractFeatureWorker(att.name,"A",inst,sourceAnnotation,doc,annType,featureName,alphabet,dt,mvt,codeas);
   }
     
+  
+  /**
+   * Do the actual hard work of extracting a feature and adding it to the Mallet
+   * feature vector. This is used to do the actual extraction for simple 
+   * attributes and attribute lists.
+   * 
+   * @param name the name of the feature as defined in the attribute specification or an empty string
+   * @param internalFeatureIndicator the part of the feature name that indicates the type of attribute
+   * specification, e.g. "A" for attribute or something like "L-3" for attribute list
+   * @param inst the mallet instance
+   * @param sourceAnnotation the annotation from which to extract the feature value
+   * @param doc 
+   * @param annType the annotation type as defined in the attribute specification. This can be 
+   * empty if the original instance annotation is used.
+   * @param featureName the feature name as defined in the attribute specification.
+   * @param alphabet
+   * @param dt
+   * @param mvt
+   * @param codeas 
+   */
   private static void extractFeatureWorker(
           String name,
           String internalFeatureIndicator,
@@ -263,9 +275,9 @@ public class FeatureExtraction {
     // or just the name give in the attribute
     String internalFeatureNamePrefix;
     if(name.isEmpty()) {
-      internalFeatureNamePrefix = internalFeatureIndicator+NAMESEP+annType+NAMESEP+featureName;
+      internalFeatureNamePrefix = annType+TYPESEP+featureName+NAMESEP+internalFeatureIndicator;
     } else {
-      internalFeatureNamePrefix = name;
+      internalFeatureNamePrefix = name+NAMESEP+internalFeatureIndicator;
     }
     // if the featureName name is empty, then all we want is indicate the presence of the annotation
     // inputAS a boolean. No matter what the datatype is, this is always indicated by setting the
@@ -546,10 +558,11 @@ public class FeatureExtraction {
           // we have got our ngram now, count it, but only add if we are allowed to!
           String prefix;
           if(ng.name.isEmpty()) {
-            prefix = "N"+number+NAMESEP+annType+NAMESEP+featureName;
+            prefix = annType + TYPESEP + featureName;
           } else {
             prefix = ng.name;
           }
+          prefix = prefix + NAMESEP + "N" + number;
           // NOTE: if the key is already in the feature vector, then 
           // this will increment the current count by one!
           // This means that the number of times the ngram is contained within the 
@@ -574,6 +587,8 @@ public class FeatureExtraction {
           Annotation instanceAnnotation
           ) {
 
+    // TODO: what if the annotation type from the attribute specification is 
+    // the same as for the instance annotation or if it is empty.
     Document doc = inputAS.getDocument();
     AugmentableFeatureVector fv = (AugmentableFeatureVector) inst.getData();
 
@@ -585,8 +600,9 @@ public class FeatureExtraction {
     Alphabet alphabet = al.alphabet;
     MissingValueTreatment mvt = al.missingValueTreatment;
     CodeAs codeas = al.codeas;
-    if(annType.isEmpty()) {
+    if(annType.isEmpty() || instanceAnnotation.getType().equals(annType)) {
       annType = instanceAnnotation.getType();
+      annType = "";
     }
     long centre = instanceAnnotation.getStartNode().getOffset();
     List<Annotation> annlistforward = inputAS.get(annType, centre, doc.getContent().size()).inDocumentOrder();
@@ -605,14 +621,12 @@ public class FeatureExtraction {
           // make compiler happy for now
           //textToReturn = textToReturn + separator + annType + ":" + featureName + ":r" + i + ":" + extractFeature(annType, featureName, datatype, inputASname, ann, doc);
       }
-      // If we specify a name explicitly, we still need to add the element number to it.
-      // If no name is specified, we leave it empty.
+      // If the list annotation exists at all, process it just like a 
+      // simple attribute. 
+      // NOTE: if the list annotation does not exist we do not treat the corresponding
+      // feature values as missing for now!!
       if(ann != null) {        
-        String tmpName = "";
-        if(!al.name.isEmpty()) {
-          tmpName =  al.name + "#" + i;
-        }
-        extractFeatureWorker(tmpName,"L"+i,inst,ann,doc,annType,featureName,alphabet,dt,mvt,codeas);    
+        extractFeatureWorker(al.name,"L"+i,inst,ann,doc,annType,featureName,alphabet,dt,mvt,codeas);    
       }
     }
   } // extractFeature (AttributeList)
