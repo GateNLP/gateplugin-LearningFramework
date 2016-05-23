@@ -59,40 +59,6 @@ public class CorpusRepresentationLibSVM extends CorpusRepresentation {
     return nodearray;
   }
 
-  @Override
-  /**
-   * Export to file data.libsvm. parms must always be null.
-   */
-  public void export(File saveDirectory, String parms) {
-    if (data == null) {
-      throw new GateRuntimeException("No data");
-    }
-    if (parms != null && !parms.isEmpty()) {
-      throw new GateRuntimeException("No parameters supported, must be null, not: \""+parms+"\"");
-    }
-    svm_problem prob = data;
-    PrintStream out = null;
-    File outFile = new File(saveDirectory, "data.libsvm");
-    try {
-      out = new PrintStream(outFile);
-      for (int i = 0; i < prob.l; i++) {
-        out.print(prob.y[i]);
-        for (int j = 0; j < prob.x[i].length; j++) {
-          out.print(" ");
-          out.print(prob.x[i][j].index);
-          out.print(":");
-          out.print(prob.x[i][j].value);
-        }
-        out.println();
-      }
-      out.close();
-    } catch (FileNotFoundException ex) {
-      System.err.println("Could not write training instances to svm format file");
-      ex.printStackTrace(System.out);
-    }
-
-  }
-
   /**
    * Create libsvm representation from Mallet.
    *

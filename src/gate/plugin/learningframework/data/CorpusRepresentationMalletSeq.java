@@ -266,8 +266,4 @@ public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
 
   }
 
-  @Override
-  public void export(File directory, String parms) {
-    instances.save(new File(directory, "data.malletseq.ser"));
-  }
 }

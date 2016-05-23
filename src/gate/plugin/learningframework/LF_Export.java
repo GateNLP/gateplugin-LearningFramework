@@ -191,9 +191,9 @@ public class LF_Export extends LF_ExportBase {
     File outDir = Files.fileFromURL(getDataDirectory());
     if(!haveSequenceAlg) { 
       corpusRepresentationClass.addScaling(getScaleFeatures());
-      CorpusRepresentation.export(corpusRepresentationClass, exporter, outDir, getAlgorithmParameters());
+      Exporter.export(corpusRepresentationClass, exporter, outDir, getInstanceType(), getAlgorithmParameters());
     } else {
-      CorpusRepresentation.export(corpusRepresentationSeq, exporter, outDir, getAlgorithmParameters());
+      Exporter.export(corpusRepresentationSeq, exporter, outDir, getInstanceType(), getAlgorithmParameters());
     }
   }
 

@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gate.plugin.learningframework.data;
+package gate.plugin.learningframework.export;
 
+import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.engines.Info;
 import gate.plugin.learningframework.features.TargetType;
 import java.io.File;
@@ -28,7 +29,7 @@ public abstract class CorpusExporter {
    * @param directory
    * @param cr 
    */
-  public abstract void export(File directory, CorpusRepresentation cr);
+  public abstract void export(File directory, CorpusRepresentationMallet cr, String instanceType, String parms);
   
   /**
    * Set the target type to use with this exporter.

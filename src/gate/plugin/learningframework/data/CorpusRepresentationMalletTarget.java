@@ -249,10 +249,4 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
     System.out.println("DEBUG pipes after normalization: " + pipe);
   }
 
-  @Override
-  public void export(File directory, String parms) {
-    instances.save(new File(directory, "data.mallettarget.ser"));
-  }
-
-
 }

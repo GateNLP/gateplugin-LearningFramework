@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gate.plugin.learningframework.data;
+package gate.plugin.learningframework.export;
 
 import cc.mallet.pipe.Pipe;
 import cc.mallet.types.Alphabet;
@@ -11,6 +11,9 @@ import cc.mallet.types.FeatureVector;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import gate.plugin.learningframework.Globals;
+import gate.plugin.learningframework.data.Attribute;
+import gate.plugin.learningframework.data.Attributes;
+import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.engines.Info;
 import gate.plugin.learningframework.features.Datatype;
 import gate.plugin.learningframework.features.FeatureExtraction;
@@ -36,10 +39,10 @@ public class CorpusExporterARFF extends CorpusExporter {
   }
 
   @Override
-  public void export(File directory, CorpusRepresentation cr) {    
+  public void export(File directory, CorpusRepresentationMallet cr, String instanceType, String parms) {    
     InstanceList malletInstances = cr.getRepresentationMallet();
     Pipe pipe = malletInstances.getPipe();
-    Attributes attrs = new Attributes(pipe);
+    Attributes attrs = new Attributes(pipe,instanceType);
     // We create two files: one with just the header and no instances and
     // one with everything
     File headerOnlyFile = new File(directory,Globals.headerBasename+".arff");
@@ -82,7 +85,7 @@ public class CorpusExporterARFF extends CorpusExporter {
       dataOut.println();
     } // for attr : attrs
     // Now one more line for the target
-    Attribute target = attrs.targetAttribute;
+    Attribute target = attrs.getTargetAttribute();
     headerOut.print("@ATTRIBUTE ");
     dataOut.print("@ATTRIBUTE ");
     // get the name, if necessary, escape it properly

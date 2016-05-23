@@ -42,6 +42,42 @@ public class FeatureExtraction {
   // specification for NGRAM and ATTRIBUTELIST are different from each other and those from other specs.
   // Also, the feature name should still be as short as possible, readable and contain as few
   // special characters as possible. 
+  // UPDATE (2016-05-23): decided to change the naming scheme again to make it easier
+  // to map between Mallet feature names and the original attributes.
+  // Also, the instance annotation type is not getting included in the mallet feature
+  // name any more so that a model trained on one annotation type can be applied to
+  // another.
+  // Description of the aims and how the mapping should work:
+  // - each attribute in the feature specification maps to one or more mallet features
+  // - each attribute in the feature specification is identified by either a "NAME" specification
+  //   in the attribute element (which must be unique across all attribute entries), or 
+  //   by the combination of annotation type and feature name specified in the attribute element.
+  // - we call the NAME or the annotation type/feature name "attribute name".
+  // - for each attribute name, there can be several mallet features for ngrams or attribute lists,
+  //   and in case of one-of-k coded nominal features, for each possible value
+  // New convention:
+  // - the mallet name starts with the attribute name, followed by the NAMESEP character
+  // - the mallet name can have one of three formats:
+  //   = annotatioType TYPESEP featureName : if an anntation type is specified in the attribtue specification
+  //     This means the feature will be taken from an annotation  with that type
+  //     that overlaps with the instance annotation
+  //   = TYPESEP featureName  : if not annotation type is specified in the attribute specification
+  //     This means the feature will be take directly from the instance annotation
+  //   = specifiedName : this overrides either of the two previous names if the NAME element was specified
+  //     for an attribute specification.
+  // - the character after the NAMESEP character indicates the type of the attribute specification,
+  //   A for ATTRIBUTE, L for ATTRIBUTELIST and N for NGRAM
+  // - If the type is ATTRIBUTE and the feature is a nominal one-of-k feature, then the feature name is
+  //   followed by VALSEP followed by the value itself
+  // - If the type is Attributelist then the "L" is followed by the element number in the attribute
+  //   list, e.g. "-2", "0" or "3".
+  //   If the feature is a nominal one-of-k feature then the feature name is followed by VALSEP followed
+  //   by the value itself
+  // - if the type is NGRAM, then the "N" is followed by the number (e.g. 2 for 2-grams). This is then
+  //   followed by VALSEP and the ngram itself, with each gram separated by the others using NGRAMSEP
+  // 
+  // 
+  // This is the old convention: 
   // Here is what we use for now:
   // If a NAME is specified in the attribute definition, then that name is used as the 
   // first part of the feature name prefix, optionally followed by #[i] where [i] is then
@@ -60,28 +96,38 @@ public class FeatureExtraction {
   // The value for an ngram is all the individual grams, concatenated witth NGRAMSEP.
 
   
-  // NOTE: currently these strings are hard-coded but it may make sense to look if there 
-  // are better choices or make these configurable in some advanced section of the featureName config
-  // file.
+  // NOTE: the various separater characters are all unicode characters taken
+  // from the "Box Drawing" Unicode block as these are extremely unlikely
+  // to be used either as part of annotation type or feature names or to 
+  // occur inside ngrams of the text. No attempt is made to escape or otherwise
+  // handle these characters IF they indeed occur in these places.
+  
   /**
    * Separates the grams in an n-gram with n>1.
    */
-  private static final String NGRAMSEP = "_";
-  /**
-   * Separates the featureName name from the type and also from the attribute kind.
-   * Attribute kind is "!N!" for ngram and "!L!" for attribute list, not kind is added for a 
-   * simple attribute. Also separates the location index or ngram number.
-   */
-  private static final String NAMESEP = ":";
-  /**
-   * Separates the featureName name part from the value part for featureName names of features that 
- indicate the presence of that value.
-   * For example a simple attribute extracted from annotation "Person" from featureName "category" 
- with the value "NN" has the instance featureName name "Person:category:NN";
-   */
-  private static final String VALSEP = "=";
+  private static final String NGRAMSEP = "┋";
   
-  private static final String MVVALUE = "%%%NA%%%";
+  /**
+   * Separates the name from any additional information.
+   * Additional information is kind of attribute (Ngram, attributelist etc), 
+   * things like the element number if it is an attributelist, or the value
+   * for nominal one-of-k coded features. 
+   */
+  private static final String NAMESEP = "╬";
+  
+  /**
+   * Separates the type name inside the name from the feature name. 
+   * The scheme is typename¦featurename where typename can be empty.
+   */
+  private static final String TYPESEP = "┆";
+  
+  /**
+   * Separates the remainder of the feature name from the part that indicates
+   * the value for nominal one-of-k coded features.
+   */
+  private static final String VALSEP = "═";
+  
+  private static final String MVVALUE = "╔MV╗";
   
   public static final String SEQ_INSIDE = "I";
   public static final String SEQ_BEGINNING = "B";
@@ -165,7 +211,8 @@ public class FeatureExtraction {
     Annotation sourceAnnotation = null;
     if (annType.isEmpty() || instanceAnnotation.getType().equals(annType)) {
       sourceAnnotation = instanceAnnotation;
-      annType = sourceAnnotation.getType();
+      // annType = sourceAnnotation.getType();
+      annType = "";
     } else {
       AnnotationSet overlappings = gate.Utils.getOverlappingAnnotations(inputAS, instanceAnnotation, annType);
       if(overlappings.size() > 1) {
@@ -183,9 +230,9 @@ public class FeatureExtraction {
           }
         }
       } else if(overlappings.size() == 0) {
-        // if there is no overlapping annotation of annType annType, we simply do nothing
-        // TODO: handle this inputAS if all features have missing values!!!!!!
-        return;
+        // there is no overlappign annotation so we have to pass on null 
+        // and treat this as a missing value
+        sourceAnnotation = null;
       } else {
         // we have exactly one annotation, use that one
         sourceAnnotation = gate.Utils.getOnlyAnn(overlappings);
@@ -337,7 +384,8 @@ public class FeatureExtraction {
               val = Double.parseDouble(valObj.toString());
             } catch (Exception ex) {
               val = 0.0;
-              logger.warn("Cannot parse String "+valObj+" as a number, using 0.0 for annotation of type "+annType+ 
+              logger.warn("Cannot parse String "+valObj+" as a number, using 0.0 for annotation of type "+
+                      sourceAnnotation.getType()+  // take it from the annotation, annType can be empty!
                       " at offset "+gate.Utils.start(sourceAnnotation)+" in document "+doc.getName());
             }
           }        
@@ -378,7 +426,8 @@ public class FeatureExtraction {
               if(tmp) val = 1.0;
             } catch (Exception ex) {
               // value is already 0.0
-              logger.warn("Cannot parse String "+valObj+" as a boolean, using 0.0 for annotation of type "+annType+ 
+              logger.warn("Cannot parse String "+valObj+" as a boolean, using 0.0 for annotation of type "+
+                      sourceAnnotation.getType()+  // take it from the annotation, annType can be empty!
                       " at offset "+gate.Utils.start(sourceAnnotation)+" in document "+doc.getName());              
             }
           }
@@ -717,62 +766,73 @@ public class FeatureExtraction {
   }
 
   /**
-   * Try and find the attribute that may correspond to the featureName.
+   * Return the attribute name part of a ML feature.
+   * 
+   * @param attributes
+   * @param mlFeature
+   * @return 
+   */
+  public static String attrName4MlFeature(String mlFeature) {
+    // first get the attribute name part
+    String parts[] = mlFeature.split(NAMESEP,-1);
+    if(parts.length < 2) {
+      throw new RuntimeException("Odd ML feature name, does not contain a NAMESEP: "+mlFeature);
+    }
+    return parts[0];
+  }
+  
+  
+  
+  /**
+   * Try and find the attribute that corresponds to the ML featureName.
+   * 
+   * This requries the instance annotation type because the way how the 
+   * ML feature is generated depends on the instance annotation type. 
+   * 
    * @param attributes
    * @param featureName
    * @return 
    */
-  public static FeatureSpecAttribute lookupAttributeForFeatureName(List<FeatureSpecAttribute> attributes, String featureName) {
+  public static FeatureSpecAttribute lookupAttributeForFeatureName(List<FeatureSpecAttribute> attributes, 
+          String mlFeatureName, String instanceType) {
     FeatureSpecAttribute ret = null;
-    // first off, we distinguish between one-of-k coding and others: if we have one-of-k coding,
-    // then there must be a VALSEP. 
-    int valsepIdx = featureName.indexOf(VALSEP);
-    String featureNamePrefix;
-    if(valsepIdx >= 0) {
-      // ok we have a one-of-k coded nominal, get the prefix
-      featureNamePrefix = featureName.substring(0,valsepIdx);
-    } else {
-      // the whole thing is the prefix
-      featureNamePrefix = featureName;
-    }
-    // now we have two possibilities again: either this is from a NAME element or it is from
-    // the type and feature name. In the first case, there should be no NAMESEP in the string. 
-    if(featureNamePrefix.indexOf(NAMESEP) < 0) {
-      // no namesep, so this must be from a name.
-      // This could now contain a # and (possibly negative number) at the end, we need to first remove that
-      featureNamePrefix = featureNamePrefix.replaceAll("#-?[0-9]+$","");
-      // now the featureNamePrefix should be identical to the name of an attribute
-      // look it up
+    String attrName = attrName4MlFeature(mlFeatureName);
+    // now if the attrName contains a TYPESEP, we have to find the attribute by
+    // type and feature name, otherwise we simply find it by name
+    if(attrName.contains(TYPESEP)) {
+      String parts[] = attrName.split(TYPESEP,-1);
+      if(parts.length != 2) throw new RuntimeException("ODD ATTRIBUTE NAME"); // should never happen
+      String featType = parts[0];
+      String featName = parts[1];
       for(FeatureSpecAttribute attr : attributes) {
-        if(attr.name.equals(featureNamePrefix)) {
-          ret = attr;
-          break;
-        }
-      }
-    } else {
-      // we hava a featureNamePrefix that contains a NAMESEP, try to split it up so we get
-      // the type and feature name
-      // There should always be exactly two NAMESEPs so if we split on that, we should get
-      // three Strings
-      String[] parts = featureNamePrefix.split(NAMESEP, -1);
-      if(parts.length != 3) {
-        // not sure what to do now, for now we just ignore this and do not return an attribute
-        System.err.println("Not three parts for a feature name prefix="+featureNamePrefix+" but "+parts.length);
-      } else {
-        // the second part is the type, the third part is the feature name, which could be empty
-        String t = parts[1];
-        String f = parts[2];
-        for(FeatureSpecAttribute att : attributes) {
-          if(att.annType.equals(t)) {
-            // now try to match the feature too 
-            if(f.isEmpty() && (att.feature == null || att.feature.isEmpty())) {
-              ret = att;
+        if(featName.equals(attr.feature)) {
+          // the types should also match but we have to consider that the 
+          // type in the attribute specification can be empty in which case we 
+          // have a match if the type from the mlFeature is also empty or matches
+          // the instanceType. The same is true vice-versa: if the type from the
+          // mlFeature is empty than the type from the attr spec must be empty
+          // or match the instanceType
+          if(featType.equals(attr.annType)) {
+            ret = attr;
+            break;
+          } else if(featType.isEmpty()) {
+            if(attr.annType.isEmpty() || attr.annType.equals(instanceType)) {
+              ret = attr;
               break;
-            } else if(f.equals(att.feature)) {
-              ret = att;
+            }             
+          } else if(attr.annType.isEmpty()) {
+            if(featType.isEmpty() || featType.equals(instanceType)) {
+              ret = attr;
               break;
             }
           }
+        }
+      }
+    } else {      
+      for(FeatureSpecAttribute attr : attributes) {
+        if(attr.name != null && attr.name.equals(attrName)) {
+          ret = attr;
+          break;
         }
       }
     }

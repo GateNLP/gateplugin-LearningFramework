@@ -35,7 +35,7 @@ public class Attributes implements Iterable<Attribute> {
    * if it is an ordinary pipe. 
    * @param pipe 
    */
-  public Attributes(Pipe pipe) {
+  public Attributes(Pipe pipe, String instanceType) {
     // first create the attributes (independent vars)    
     Alphabet dataAlphabet = pipe.getDataAlphabet();
     // if we can, also represent the pipe as LFPipe
@@ -68,7 +68,8 @@ public class Attributes implements Iterable<Attribute> {
         FeatureSpecAttribute fsAttr = 
                 FeatureExtraction.lookupAttributeForFeatureName(
                   featureInfo.getAttributes(),
-                  malletFeatureName);
+                  malletFeatureName,
+                  instanceType);
         if(fsAttr instanceof FeatureSpecAttributeList) {
           FeatureSpecAttributeList fsAttrList = (FeatureSpecAttributeList)fsAttr;
           if(fsAttrList.datatype == Datatype.bool) {
