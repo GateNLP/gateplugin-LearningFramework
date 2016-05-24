@@ -11,6 +11,9 @@
         <urlString>$gatehome$plugins/Groovy</urlString>
       </gate.util.persistence.PersistenceManager-URLHolder>
       <gate.util.persistence.PersistenceManager-URLHolder>
+        <urlString>$gatehome$plugins/Format_FastInfoset</urlString>
+      </gate.util.persistence.PersistenceManager-URLHolder>
+      <gate.util.persistence.PersistenceManager-URLHolder>
         <urlString>$gatehome$plugins/Tools</urlString>
       </gate.util.persistence.PersistenceManager-URLHolder>
     </localList>
@@ -207,7 +210,10 @@
                 </entry>
                 <entry>
                   <string>scriptParams</string>
-                  <null/>
+                  <gate.util.persistence.MapPersistence>
+                    <mapType>gate.util.SimpleFeatureMapImpl</mapType>
+                    <localMap/>
+                  </gate.util.persistence.MapPersistence>
                 </entry>
                 <entry>
                   <string>outputASName</string>
@@ -259,14 +265,14 @@
                   <string>class</string>
                 </entry>
                 <entry>
-                  <string>confidenceThreshold</string>
-                  <double>0.0</double>
-                </entry>
-                <entry>
                   <string>dataDirectory</string>
                   <gate.util.persistence.PersistenceManager-URLHolder>
                     <urlString>$relpath$model-libsvm</urlString>
                   </gate.util.persistence.PersistenceManager-URLHolder>
+                </entry>
+                <entry>
+                  <string>confidenceThreshold</string>
+                  <double>0.0</double>
                 </entry>
                 <entry>
                   <string>instanceType</string>
@@ -286,7 +292,7 @@
                 </entry>
                 <entry>
                   <string>outputASName</string>
-                  <string>LFOUT</string>
+                  <string>LearningFramework</string>
                 </entry>
                 <entry>
                   <string>inputASName</string>
@@ -294,7 +300,7 @@
                 </entry>
                 <entry>
                   <string>sequenceSpan</string>
-                  <null/>
+                  <string></string>
                 </entry>
               </localMap>
             </runtimeParams>

@@ -157,8 +157,14 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
           instanceAS, inputAS,
           sequenceAS, getAlgorithmParameters());
     
+    // If the outputSet is the same as the inputSet, we do not create new 
+    // annotations
+    // So if they are both null or both the same non-null value we leave the outputAS null, otherwise we 
+    // set it to something (in the case of null, the default set).
     AnnotationSet outputAS = null;
-    if(getOutputASName()!=null && !getOutputASName().isEmpty()) {
+    if(getOutputASName()==null && getInputASName()==null || 
+       getOutputASName()!= null && getInputASName() != null && getOutputASName().equals(getInputASName())) {
+    } else {
       outputAS = doc.getAnnotations(getOutputASName());
     }
 

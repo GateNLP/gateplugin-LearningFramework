@@ -1159,7 +1159,7 @@
                 <entry>
                   <string>featureSpecURL</string>
                   <gate.util.persistence.PersistenceManager-URLHolder>
-                    <urlString>$relpath$feats.xml</urlString>
+                    <urlString>$relpath$feats2.xml</urlString>
                   </gate.util.persistence.PersistenceManager-URLHolder>
                 </entry>
                 <entry>

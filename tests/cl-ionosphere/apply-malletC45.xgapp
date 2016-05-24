@@ -11,6 +11,9 @@
         <urlString>$gatehome$plugins/Groovy</urlString>
       </gate.util.persistence.PersistenceManager-URLHolder>
       <gate.util.persistence.PersistenceManager-URLHolder>
+        <urlString>$gatehome$plugins/Format_FastInfoset</urlString>
+      </gate.util.persistence.PersistenceManager-URLHolder>
+      <gate.util.persistence.PersistenceManager-URLHolder>
         <urlString>$gatehome$plugins/Tools</urlString>
       </gate.util.persistence.PersistenceManager-URLHolder>
     </localList>
@@ -207,7 +210,10 @@
                 </entry>
                 <entry>
                   <string>scriptParams</string>
-                  <null/>
+                  <gate.util.persistence.MapPersistence>
+                    <mapType>gate.util.SimpleFeatureMapImpl</mapType>
+                    <localMap/>
+                  </gate.util.persistence.MapPersistence>
                 </entry>
                 <entry>
                   <string>outputASName</string>
@@ -290,7 +296,7 @@
                 </entry>
                 <entry>
                   <string>inputASName</string>
-                  <string>LFOUT</string>
+                  <string>LearningFramework</string>
                 </entry>
                 <entry>
                   <string>sequenceSpan</string>

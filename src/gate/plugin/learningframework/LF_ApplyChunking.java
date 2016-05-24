@@ -139,7 +139,6 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
           instanceAS, inputAS,
           sequenceAS, getAlgorithmParameters());
 
-    System.err.println("Got gcs="+gcs);
     AnnotationSet tmpAS = doc.getAnnotations("LF_SEQ_TMP");
     // since we specify the output annotation set tmpAS, new instance annotations are created there
     String featureName = engine.getInfo().targetFeature;    
