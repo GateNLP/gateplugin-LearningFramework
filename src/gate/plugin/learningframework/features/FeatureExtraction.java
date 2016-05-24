@@ -329,8 +329,7 @@ public class FeatureExtraction {
               case keep:  // this represents the MV by not setting any indicator featureName, so nothing to do
                 //System.out.println("DEBUG: oneofk, mv, keep");
                 break;
-              case zero_value: // for one-of-k we treat this identically to keep, nothing to do
-                //System.out.println("DEBUG: oneofk, mv, zero");
+              case zero_value: // we treat this identical to keep: no feature set
                 break;
               case special_value: // we use the predefined special value
                 addToFeatureVector(fv,internalFeatureNamePrefix+VALSEP+MVVALUE,1.0);
@@ -370,12 +369,21 @@ public class FeatureExtraction {
                 inst.setProperty(PROP_IGNORE_HAS_MV, true);
                 //System.out.println("DEBUG: other, mv, setProp");
                 break;
-              case keep:  // for this kind of codeas, we use the value NaN
+              case keep:  
                 addToFeatureVector(fv,internalFeatureNamePrefix, Double.NaN );
                 break;
-              case zero_value: // use the first value, does not make much sense really, but ...
-                // TODO: document that this combination should be avoided, probably
+              case zero_value: // use the "special_value" 
                 addToFeatureVector(fv,internalFeatureNamePrefix, 0.0 );
+                String val = MVVALUE;
+                if(alphabet.contains(val)) {
+                  addToFeatureVector(fv, internalFeatureNamePrefix, alphabet.lookupIndex(MVVALUE));
+                } else {
+                  if(!alphabet.growthStopped()) {
+                    addToFeatureVector(fv, internalFeatureNamePrefix, alphabet.lookupIndex(MVVALUE));
+                  } else {
+                    //System.out.println("DEBUG: number, growStopped");
+                  }
+                }
                 break;
               case special_value: // we use the special value -1.0 which should get handled by Mallet somehow
                 addToFeatureVector(fv,internalFeatureNamePrefix,-1.0);

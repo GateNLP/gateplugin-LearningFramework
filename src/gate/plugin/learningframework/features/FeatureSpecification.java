@@ -158,7 +158,15 @@ public class FeatureSpecification {
     }
     
     CodeAs codeas = CodeAs.valueOf(codeasstr);
-    String missingValueTreatmentStr = getChildTextOrElse(attributeElement, "MISSINGVALUETREATMENT", "special_value");
+    // the default for missingvaluetreatment is special_value for numeric and 
+    // number-coded nominal, but for one-of-k coded values, we use "zero_value"
+    // because this is usually how the absence of such values is coded!
+    String missingValueTreatmentStr = "";
+    if(dt==Datatype.nominal && codeas==CodeAs.one_of_k) {
+      missingValueTreatmentStr = getChildTextOrElse(attributeElement, "MISSINGVALUETREATMENT", "keep");
+    } else {
+      missingValueTreatmentStr = getChildTextOrElse(attributeElement, "MISSINGVALUETREATMENT", "special_value");
+    }
     MissingValueTreatment mvt = MissingValueTreatment.valueOf(missingValueTreatmentStr);
     // TODO: not implemented yet, but we should add this!!
     String scalingMethod = "";
