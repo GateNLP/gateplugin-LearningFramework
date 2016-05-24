@@ -61,7 +61,7 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
 
   @RunTime
   @Optional
-  @CreoleParameter(comment="If not empty, place new annotations in the output set instead of updating the existing annotations", 
+  @CreoleParameter(comment="If identical to the input AS, existing annotations are updated", 
           defaultValue = "LearningFramework")
   public void setOutputASName(String oasn) {
     this.outputASName = oasn;
