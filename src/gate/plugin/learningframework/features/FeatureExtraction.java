@@ -467,8 +467,8 @@ public class FeatureExtraction {
               case keep:  // for this kind of codeas, we use the value NaN
                 addToFeatureVector(fv,internalFeatureNamePrefix, Double.NaN );
                 break;
-              case zero_value: // use the first value, does not make much sense really, but ...
-                // TODO: document that this combination should be avoided, probably
+              case zero_value: // Use zero which will make false identical to missing
+                // and work well with sparse vectors
                 addToFeatureVector(fv,internalFeatureNamePrefix, 0.0 );
                 break;
               case special_value: // we use the special value -1.0 which should get handled by Mallet somehow

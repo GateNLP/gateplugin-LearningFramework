@@ -164,6 +164,8 @@ public class FeatureSpecification {
     String missingValueTreatmentStr = "";
     if(dt==Datatype.nominal && codeas==CodeAs.one_of_k) {
       missingValueTreatmentStr = getChildTextOrElse(attributeElement, "MISSINGVALUETREATMENT", "keep");
+    } else if (dt==Datatype.bool) {
+      missingValueTreatmentStr = getChildTextOrElse(attributeElement, "MISSINGVALUETREATMENT", "zero_value");
     } else {
       missingValueTreatmentStr = getChildTextOrElse(attributeElement, "MISSINGVALUETREATMENT", "special_value");
     }
