@@ -6,11 +6,11 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-  //TestFeatureSpecification.class,
-  //TestFeatureExtraction.class,
-  //TestPipeSerialization.class,
-  //TestInfo.class,
-  //TestParms.class,
+  TestFeatureSpecification.class,
+  TestFeatureExtraction.class,
+  TestPipeSerialization.class,
+  TestInfo.class,
+  TestParms.class,
   TestEngineMalletClass.class,
   TestEngineLibSVM.class,
   TestEngineMalletSeq.class,

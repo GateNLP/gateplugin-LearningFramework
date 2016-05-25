@@ -34,7 +34,7 @@ public class TestFeatureSpecification {
     as = fi.getAttributes();
     assertNotNull(as);
     assertEquals(1,as.size());
-    assertEquals("SimpleAttribute(name=,type=theType,feature=,datatype=bool,missingvaluetreatment=special_value,codeas=number",as.get(0).toString());
+    assertEquals("SimpleAttribute(name=,type=theType,feature=,datatype=bool,missingvaluetreatment=zero_value,codeas=number",as.get(0).toString());
         
     spec = "<ROOT>"+
             "<ATTRIBUTELIST><TYPE>theType</TYPE><FEATURE>string</FEATURE><DATATYPE>nominal</DATATYPE><FROM>-2</FROM><TO>1</TO></ATTRIBUTELIST>"+
@@ -44,7 +44,7 @@ public class TestFeatureSpecification {
     as = fi.getAttributes();
     assertNotNull(as);
     assertEquals(1,as.size());
-    assertEquals("AttributeList(name=,type=theType,feature=string,datatype=nominal,missingvaluetreatment=special_value,codeas=one_of_k,from=-2,to=1",as.get(0).toString());
+    assertEquals("AttributeList(name=,type=theType,feature=string,datatype=nominal,missingvaluetreatment=keep,codeas=one_of_k,from=-2,to=1",as.get(0).toString());
 
     spec = "<ROOT>"+
             "<NGRAM><TYPE>theType</TYPE><FEATURE>theFeature</FEATURE><NUMBER>3</NUMBER></NGRAM>"+

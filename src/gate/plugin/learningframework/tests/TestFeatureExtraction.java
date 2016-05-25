@@ -77,10 +77,10 @@ public class TestFeatureExtraction {
             "<ATTRIBUTE><TYPE>theType</TYPE><FEATURE>boolfeature1</FEATURE><DATATYPE>boolean</DATATYPE></ATTRIBUTE>"+
             "<ATTRIBUTE><TYPE>theType</TYPE><FEATURE>boolfeature2</FEATURE><DATATYPE>bool</DATATYPE></ATTRIBUTE>"+
             "<ATTRIBUTE><TYPE>theType</TYPE></ATTRIBUTE>"+
-            "<ATTRIBUTE><TYPE>theType</TYPE><FEATURE>missing2nominal</FEATURE><DATATYPE>nominal</DATATYPE></ATTRIBUTE>"+
-            "<ATTRIBUTE><TYPE>theType</TYPE><FEATURE>missing3nominal</FEATURE><DATATYPE>nominal</DATATYPE><CODEAS>number</CODEAS></ATTRIBUTE>"+
-            "<ATTRIBUTE><TYPE>theType</TYPE><FEATURE>missing1bool</FEATURE><DATATYPE>bool</DATATYPE></ATTRIBUTE>"+
-            "<ATTRIBUTE><TYPE>theType</TYPE><FEATURE>missing3numeric</FEATURE><DATATYPE>numeric</DATATYPE></ATTRIBUTE>"+
+            "<ATTRIBUTE><TYPE>theType</TYPE><FEATURE>missing2nominal</FEATURE><DATATYPE>nominal</DATATYPE><MISSINGVALUETREATMENT>special_value</MISSINGVALUETREATMENT></ATTRIBUTE>"+
+            "<ATTRIBUTE><TYPE>theType</TYPE><FEATURE>missing3nominal</FEATURE><DATATYPE>nominal</DATATYPE><MISSINGVALUETREATMENT>special_value</MISSINGVALUETREATMENT><CODEAS>number</CODEAS></ATTRIBUTE>"+
+            "<ATTRIBUTE><TYPE>theType</TYPE><FEATURE>missing1bool</FEATURE><DATATYPE>bool</DATATYPE><MISSINGVALUETREATMENT>special_value</MISSINGVALUETREATMENT></ATTRIBUTE>"+
+            "<ATTRIBUTE><TYPE>theType</TYPE><FEATURE>missing3numeric</FEATURE><DATATYPE>numeric</DATATYPE><MISSINGVALUETREATMENT>special_value</MISSINGVALUETREATMENT></ATTRIBUTE>"+
             "</ROOT>";
     FeatureInfo fi = new FeatureSpecification(spec).getFeatureInfo();
     List<FeatureSpecAttribute> as = fi.getAttributes();
