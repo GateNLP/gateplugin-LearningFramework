@@ -102,11 +102,19 @@ public class EngineMalletClass extends EngineMallet {
       // there are parameters, so if it is one of the algorithms were we support setting
       // a parameter do this      
       if (algorithm.equals(AlgorithmClassification.MALLET_CL_C45)) {      
-        Parms ps = new Parms(parms, "m:maxDepth:i", "p:prune:b","m:minNumInsts:i");
-        int maxDepth = (int)ps.getValueOrElse("maxDepth", -1);
+        Parms ps = new Parms(parms, "m:maxDepth:i", "p:prune:b","n:minNumInsts:i");
+        int maxDepth = (int)ps.getValueOrElse("maxDepth", 0);
         int minNumInsts = (int)ps.getValueOrElse("minNumInsts", 2);
-        boolean prune = (boolean)ps.getValueOrElse("prune",false);  
-        C45Trainer c45trainer = new C45Trainer(maxDepth,prune);
+        boolean prune = (boolean)ps.getValueOrElse("prune",true);
+        C45Trainer c45trainer = null;
+        if(maxDepth > 0) {
+          if(!prune) 
+            c45trainer = new C45Trainer(maxDepth,false);
+          else 
+            c45trainer = new C45Trainer(maxDepth,true);          
+        } else {
+          c45trainer = new C45Trainer(prune);
+        }
         c45trainer.setMinNumInsts(minNumInsts);
         trainer = c45trainer;
       } else if(algorithm.equals(AlgorithmClassification.MALLET_CL_DECISION_TREE)) {
