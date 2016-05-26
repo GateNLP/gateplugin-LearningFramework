@@ -41,7 +41,7 @@
 
 
   <target name="initivy">
-    <!-- <ivy:configure file="${build.dir}/ivysettings.xml"/> -->
+    <ivy:configure file="${build.dir}/ivysettings.xml"/> 
     <!-- <ivy:retrieve sync="true" file="${build.dir}/ivy.xml" pattern="${libDir}/[artifact]-[revision].[ext]" /> -->
     <!-- <ivy:retrieve file="${build.dir}/ivy.xml"/> -->
     <ivy:resolve file="${build.dir}/ivy.xml"/>
@@ -142,6 +142,10 @@
   <!-- remove the generated .class files -->
   <target name="clean.classes" >
     <delete dir="${classes.dir}" />
+  </target>
+
+  <target name="clean.all" depends="clean" >
+    <ivy:cleancache/> 
   </target>
 
   <!-- Clean up - remove .class and .jar files -->
