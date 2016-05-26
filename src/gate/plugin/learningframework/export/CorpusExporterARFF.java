@@ -108,6 +108,8 @@ public class CorpusExporterARFF extends CorpusExporter {
     }
     headerOut.println();
     dataOut.println();
+    headerOut.println("@DATA");
+    dataOut.println("@DATA");
     try {
       headerOut.close();
     } catch(Exception ex) {
@@ -116,7 +118,6 @@ public class CorpusExporterARFF extends CorpusExporter {
     // export the actual data in sparse format
     // TODO: make sure we respect the flag to ignore an instance with missing values
     // TODO: if the instance has a weight, also output the weight!!
-    dataOut.println("@DATA");
     for(Instance inst : malletInstances) {
       String line = instance2WekaArffLine(inst,attrs);
       dataOut.println(line);
