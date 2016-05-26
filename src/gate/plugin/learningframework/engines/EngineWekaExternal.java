@@ -77,20 +77,26 @@ public class EngineWekaExternal extends Engine {
     if(wrapperPath == null) {
       throw new GateRuntimeException("No entry 'path' in the weka.yaml file to specify the wrapper path");
     }
-    String command = new File(directory,wrapperPath).getAbsolutePath();
+    File commandFile = new File(wrapperPath);
+    String command = commandFile.isAbsolute() ? 
+            wrapperPath :
+            new File(directory,wrapperPath).getAbsolutePath();
     if(!new File(command).canExecute()) {
       throw new GateRuntimeException("Not an executable file or not found: "+command);
     }
-    String model = new File(directory,FILENAME_MODEL).getAbsolutePath();
-    if(!new File(model).exists()) {
-      throw new GateRuntimeException("File not found: "+model);
+    String modelFileName = new File(directory,FILENAME_MODEL).getAbsolutePath();
+    if(!new File(modelFileName).exists()) {
+      throw new GateRuntimeException("File not found: "+modelFileName);
     }
     String header = new File(directory,"header.arff").getAbsolutePath();
     if(!new File(header).exists()) {
       throw new GateRuntimeException("File not found: "+header);
     }
-    System.err.println("Running: "+command+" "+model+" "+header);
-    process = new Process4ObjectStream(directory,command,model,header);
+    String finalCommand = command+" "+modelFileName+" "+header;
+    System.err.println("Running: "+finalCommand);
+    // Create a fake Model jsut to make LF_Apply... happy which checks if this is null
+    model = "ExternalWekaWrapperModel";
+    process = new Process4ObjectStream(directory,finalCommand);
   }
 
   @Override

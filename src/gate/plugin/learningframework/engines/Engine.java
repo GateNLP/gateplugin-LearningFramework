@@ -86,7 +86,7 @@ public abstract class Engine {
     // eng.corpusRepresentationMallet.stopGrowth();
     
     Algorithm algorithm = null;
-    if(info.algorithmClass != null || !info.algorithmClass.isEmpty()) {
+    if(info.algorithmClass != null && !info.algorithmClass.isEmpty()) {
       if(info.algorithmClass.equals(AlgorithmClassification.class.getName())) {
         algorithm = AlgorithmClassification.valueOf(info.algorithmName);      
       } else if(info.algorithmClass.equals(AlgorithmSequenceTagging.class.getName())) {
@@ -242,6 +242,7 @@ public abstract class Engine {
    * completed successfully.
    */
   protected Object model;
+  
   public Object getModel() { return model; }
   
   public AlgorithmKind getAlgorithmKind() { 
@@ -268,7 +269,9 @@ public abstract class Engine {
   }
   
   public String toString() {
-    return "Engine{"+getClass()+"/"+algorithm.getClass()+",alg="+trainer+",info="+info+
+    return "Engine{"+getClass()+"/"+
+            (algorithm==null ? "(null)" : algorithm.getClass())+
+            ",alg="+trainer+",info="+info+
             ",model="+this.getModel()+",CR="+corpusRepresentationMallet+"}";
   }
   
