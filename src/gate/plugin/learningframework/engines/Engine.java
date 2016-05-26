@@ -46,8 +46,12 @@ public abstract class Engine {
    * then construct the Engine instance and initialize it.
    * If there are parameters that will influence the initialization of the algorithm,
    * they will be used.
-   * TODO: this must also load the (empty) Mallet corpus representation associated with 
-   * that engine!
+   * 
+   * NOTE: this will also be used for creating an Engine for those situations
+   * where an external model was trained. For this the user has to provide
+   * an info.yaml file manually. This file must contain the Engine class,
+   * all other entries can be missing.
+   * 
    * @param directory
    * @return 
    */
@@ -81,37 +85,36 @@ public abstract class Engine {
     // at the end. 
     // eng.corpusRepresentationMallet.stopGrowth();
     
-    // TODO: re-create an algorithm object of the correct class
     Algorithm algorithm = null;
-    if(info.algorithmClass.equals(AlgorithmClassification.class.getName())) {
-      algorithm = AlgorithmClassification.valueOf(info.algorithmName);      
-    } else if(info.algorithmClass.equals(AlgorithmSequenceTagging.class.getName())) {
-      algorithm = AlgorithmSequenceTagging.valueOf(info.algorithmName);
-    } else if(info.algorithmClass.equals(AlgorithmRegression.class.getName())) {
-      algorithm = AlgorithmRegression.valueOf(info.algorithmName);      
-    } else {
-      throw new GateRuntimeException("Not a known algorithm enumeration class "+info.algorithmClass);
-    }
-    if(algorithm.getTrainerClass()==null) {
-      try {
-        // NOTE: in case we do not know a trainer class and we also do not have one stored in 
-        // the info file, do not create it - sometimes this is simply not necessary for 
-        // classification!
-        if(info.trainerClass!=null) {
-          algorithm.setTrainerClass(Class.forName(info.trainerClass));
-        }
-      } catch (Exception ex) {
-        throw new GateRuntimeException("Could not find the trainer class "+info.trainerClass);
+    if(info.algorithmClass != null || !info.algorithmClass.isEmpty()) {
+      if(info.algorithmClass.equals(AlgorithmClassification.class.getName())) {
+        algorithm = AlgorithmClassification.valueOf(info.algorithmName);      
+      } else if(info.algorithmClass.equals(AlgorithmSequenceTagging.class.getName())) {
+        algorithm = AlgorithmSequenceTagging.valueOf(info.algorithmName);
+      } else if(info.algorithmClass.equals(AlgorithmRegression.class.getName())) {
+        algorithm = AlgorithmRegression.valueOf(info.algorithmName);      
+      } else {
+        throw new GateRuntimeException("Not a known algorithm enumeration class "+info.algorithmClass);
       }
-    }
-    
-    eng.initializeAlgorithm(algorithm,parms);
-    eng.algorithm = algorithm;
+      if(algorithm.getTrainerClass()==null) {
+        try {
+          // NOTE: in case we do not know a trainer class and we also do not have one stored in 
+          // the info file, do not create it - sometimes this is simply not necessary for 
+          // classification!
+          if(info.trainerClass!=null) {
+            algorithm.setTrainerClass(Class.forName(info.trainerClass));
+          }
+        } catch (Exception ex) {
+          throw new GateRuntimeException("Could not find the trainer class "+info.trainerClass);
+        }
+      }    
+      eng.initializeAlgorithm(algorithm,parms);
+      eng.algorithm = algorithm;
+    } // if we have an algorithm class in the info file
     return eng;
   }
   
   protected abstract void loadMalletCorpusRepresentation(File directory);
-    
   
   
   
