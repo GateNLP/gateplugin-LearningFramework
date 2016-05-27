@@ -101,11 +101,13 @@ public class EngineWekaExternal extends Engine {
 
   @Override
   protected void saveModel(File directory) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    // NOTE: not needed, since we train using the external command, the model gets saved using the wrapper
   }
 
   @Override
   public void trainModel(String parms) {
+    // TODO: invoke the weka wrapper
+    // NOTE: for this the first word in parms must be the full weka class name, the rest are parms
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 

@@ -32,10 +32,11 @@ public class CorpusExporterARFF extends CorpusExporter {
   @Override
   public Info getInfo() {
     Info info = new Info();
+    
     info.algorithmClass = "gate.plugin.learningframework.engines.AlgorithmClassification";
-    info.algorithmName = "ARFF_CL_DUMMY";
-    info.engineClass = "gate.plugin.learningframework.engines.EngineMicroserviceArff";
-    info.modelClass =  "gate.plugin.learningframework.engines.EngineMicroserviceArff";    
+    info.algorithmName = "DUMMY";
+    info.engineClass = "gate.plugin.learningframework.engines.EngineWekaExternal";
+    info.modelClass =  "DUMMY";    
     return info;
   }
 
