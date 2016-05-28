@@ -21,3 +21,4 @@ hs_err_*.log
 /tests/seq-wikipedia1/export/*
 !/tests/seq-wikipedia1/export/.keep
 /test-tmp-EngineMalletSeqOut/
+/tests/cl-ionosphere/model-weka-external/data.arff

@@ -59,7 +59,7 @@ public class TestEngineMalletClass {
     String nameFeature = null;
     crm.add(instanceAS, sequenceAS, inputAS, classAS, targetFeature, TargetType.NOMINAL, nameFeature);
     System.err.println("TESTS: added instances, number of instances now: "+crm.getRepresentationMallet().size());
-    engine.trainModel("");
+    engine.trainModel(null,"","");
     System.err.println("TESTS: model trained");
     System.err.println("TESTS: engine before saving: "+engine);
     engine.saveEngine(new File("."));

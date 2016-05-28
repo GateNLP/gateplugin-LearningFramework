@@ -6,8 +6,12 @@ import gate.Annotation;
 import gate.AnnotationSet;
 import gate.lib.interaction.data.SparseDoubleVector;
 import gate.lib.interaction.process.Process4ObjectStream;
+import gate.lib.interaction.process.ProcessBase;
+import gate.lib.interaction.process.ProcessSimple;
 import gate.plugin.learningframework.EvaluationMethod;
+import gate.plugin.learningframework.Exporter;
 import gate.plugin.learningframework.GateClassification;
+import gate.plugin.learningframework.Globals;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
 import gate.plugin.learningframework.mallet.LFPipe;
 import gate.util.GateRuntimeException;
@@ -49,41 +53,89 @@ import org.yaml.snakeyaml.Yaml;
  */
 public class EngineWekaExternal extends Engine {
 
-  Process4ObjectStream process;
+  ProcessBase process;
+  
+  /**
+   * Try to find the script running the Weka-Wrapper command.
+   * If apply is true, the executable for application is searched,
+   * otherwise the one for training.
+   * This checks the following settings (increasing priority): 
+   * environment variable WEKA_WRAPPER_HOME,
+   * java property gate.plugin.learningframework.wekawrapper.home and
+   * the setting "wekawrapper.home" in file "weka.yaml" in the data directory,
+   * if it exists. 
+   * The setting for the weka wrapper home can be relative in which case it
+   * will be resolved relative to the dataDirectory
+   * @param dataDirectory
+   * @return 
+   */
+  private File findWrapperCommand(File dataDirectory, boolean apply) {
+    String homeDir = System.getenv("WEKA_WRAPPER_HOME");
+    String tmp = System.getProperty("gate.plugin.learningframework.wekawrapper.home");
+    if(tmp!=null) homeDir = tmp;
+    File wekaInfoFile = new File(dataDirectory,"weka.yaml");
+    if(wekaInfoFile.exists()) {
+      Yaml yaml = new Yaml();
+      Object obj;
+      try {
+        obj = yaml.load(new InputStreamReader(new FileInputStream(wekaInfoFile),"UTF-8"));
+      } catch (Exception ex) {
+        throw new GateRuntimeException("Could not load yaml file "+wekaInfoFile,ex);
+      }    
+      tmp = null;
+      if(obj instanceof Map) {
+        Map map = (Map)obj;
+        tmp = (String)map.get("wekawrapper.home");      
+      } else {
+        throw new GateRuntimeException("Info file has strange format: "+wekaInfoFile.getAbsolutePath());
+      }
+      if(tmp == null) {
+        System.err.println("weka.yaml file present but does not contain wekawrapper.home setting");
+      } else {
+        homeDir = tmp;
+      }      
+    }
+    File wrapperHome = new File(homeDir);
+    if(!wrapperHome.isDirectory()) {
+      throw new GateRuntimeException("WekaWrapper home is not a directory: "+wrapperHome.getAbsolutePath());
+    }
+    // Now, depending on the operating system, and on train/apply,
+    // find the correct script to execute
+    File commandFile;
+    // we use the simple heuristic that if the file separator is "/" 
+    // we assume we can use the bash script, if it is "\" we use the windows
+    // script and otherwise we give up
+    boolean linuxLike = System.getProperty("file.separator").equals("/");
+    boolean windowsLike = System.getProperty("file.separator").equals("\\");
+    if(linuxLike) {
+      if(apply) 
+        commandFile = new File(new File(wrapperHome,"bin"),"wekaWrapperApply.sh");
+      else
+        commandFile = new File(new File(wrapperHome,"bin"),"wekaWrapperTrain.sh");
+    } else if(windowsLike) {
+      if(apply) 
+        commandFile = new File(new File(wrapperHome,"bin"),"wekaWrapperApply.cmd");
+      else
+        commandFile = new File(new File(wrapperHome,"bin"),"wekaWrapperTrain.cmd");      
+    } else {
+      throw new GateRuntimeException("It appears this OS is not supported");
+    }
+    commandFile = commandFile.isAbsolute() ? 
+            commandFile :
+            new File(dataDirectory,commandFile.getPath());
+    if(!commandFile.canExecute()) {
+      throw new GateRuntimeException("Not an executable file or not found: "+commandFile);
+    }
+    return commandFile;
+  }
+  
   
   @Override
   protected void loadModel(File directory, String parms) {
     // Instead of loading a model, this establishes a connection with the 
     // external weka process. For this, we expect an additional file in the 
     // directory, weka.yaml, which describes how to run the weka wrapper
-    File wekaInfoFile = new File(directory,"weka.yaml");
-    if(!wekaInfoFile.exists()) {
-      throw new GateRuntimeException("No weka.yaml file found in the data directory!");
-    }
-    Yaml yaml = new Yaml();
-    Object obj;
-    try {
-      obj = yaml.load(new InputStreamReader(new FileInputStream(wekaInfoFile),"UTF-8"));
-    } catch (Exception ex) {
-      throw new GateRuntimeException("Could not load file "+wekaInfoFile,ex);
-    }    
-    String wrapperPath = null;
-    if(obj instanceof Map) {
-      Map map = (Map)obj;
-      wrapperPath = (String)map.get("path");      
-    } else {
-      throw new GateRuntimeException("Info file is not a map");
-    }
-    if(wrapperPath == null) {
-      throw new GateRuntimeException("No entry 'path' in the weka.yaml file to specify the wrapper path");
-    }
-    File commandFile = new File(wrapperPath);
-    String command = commandFile.isAbsolute() ? 
-            wrapperPath :
-            new File(directory,wrapperPath).getAbsolutePath();
-    if(!new File(command).canExecute()) {
-      throw new GateRuntimeException("Not an executable file or not found: "+command);
-    }
+    File commandFile = findWrapperCommand(directory, true);
     String modelFileName = new File(directory,FILENAME_MODEL).getAbsolutePath();
     if(!new File(modelFileName).exists()) {
       throw new GateRuntimeException("File not found: "+modelFileName);
@@ -92,7 +144,7 @@ public class EngineWekaExternal extends Engine {
     if(!new File(header).exists()) {
       throw new GateRuntimeException("File not found: "+header);
     }
-    String finalCommand = command+" "+modelFileName+" "+header;
+    String finalCommand = commandFile.getAbsolutePath()+" "+modelFileName+" "+header;
     System.err.println("Running: "+finalCommand);
     // Create a fake Model jsut to make LF_Apply... happy which checks if this is null
     model = "ExternalWekaWrapperModel";
@@ -101,14 +153,46 @@ public class EngineWekaExternal extends Engine {
 
   @Override
   protected void saveModel(File directory) {
-    // NOTE: not needed, since we train using the external command, the model gets saved using the wrapper
+    // NOTE: we do not need to save the model here because the external
+    // WekaWrapper command does this.
+    // However we still need to make sure a usable info file is saved!
+    info.engineClass = EngineWekaExternal.class.getName();
+    info.save(directory);
   }
 
   @Override
-  public void trainModel(String parms) {
+  public void trainModel(File dataDirectory, String instanceType, String parms) {
     // TODO: invoke the weka wrapper
     // NOTE: for this the first word in parms must be the full weka class name, the rest are parms
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    if(parms == null || parms.isEmpty()) {
+      throw new GateRuntimeException("Cannot train using WekaWrapper, algorithmParameter must contain Weka algorithm class as first word");
+    }
+    String wekaClass = null;
+    String wekaParms = "";
+    int spaceIdx = parms.indexOf(" ");
+    if(spaceIdx<0) {
+      wekaClass = parms;
+    } else {
+      wekaClass = parms.substring(0,spaceIdx);
+      wekaParms = parms.substring(spaceIdx).trim();
+    }
+    File commandFile = findWrapperCommand(dataDirectory, false);
+    // Export the data 
+    // Note: any scaling was already done in the PR before calling this method!
+    // find out if we train classification or regression
+    // NOTE: not sure if classification/regression matters here as long as
+    // the actual exporter class does the right thing based on the corpus representation!
+    Exporter.export(getCorpusRepresentationMallet(), 
+            Exporter.EXPORTER_ARFF_CLASS, dataDirectory, instanceType, parms);
+    String dataFileName = new File(dataDirectory,Globals.dataBasename+".arff").getAbsolutePath();
+    String modelFileName = new File(dataDirectory, FILENAME_MODEL).getAbsolutePath();
+    String finalCommand = commandFile.getAbsolutePath()+" "+dataFileName+" "+modelFileName+" "+wekaClass+" "+wekaParms;
+    System.err.println("Running: "+finalCommand);
+    // Create a fake Model jsut to make LF_Apply... happy which checks if this is null
+    model = "ExternalWekaWrapperModel";
+    
+    process = new ProcessSimple(dataDirectory,finalCommand);
+    process.waitFor();
   }
 
   @Override

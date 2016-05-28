@@ -10,4 +10,5 @@
   <IVY>build/ivy.xml</IVY>
   <JAR>lib-static/commons-cli-1.4-modified.jar</JAR>
   <JAR>lib-static/libsvm.jar</JAR>
+  <JAR>lib-static/interaction-1.0-SNAPSHOT.jar</JAR>
 </CREOLE-DIRECTORY>

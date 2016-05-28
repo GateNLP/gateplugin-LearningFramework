@@ -43,7 +43,7 @@ public class EngineMalletClass extends EngineMallet {
   public EngineMalletClass() { }
 
   @Override
-  public void trainModel(String parms) {
+  public void trainModel(File dataDirectory, String instanceType, String parms) {
     System.err.println("EngineMalletClass.trainModel: trainer="+trainer);
     System.err.println("EngineMalletClass.trainModel: CR="+corpusRepresentationMallet);
     

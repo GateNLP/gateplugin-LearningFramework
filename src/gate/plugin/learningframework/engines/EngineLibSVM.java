@@ -132,7 +132,7 @@ public class EngineLibSVM extends Engine {
   
   
   @Override
-  public void trainModel(String parms) {
+  public void trainModel(File dataDirectory, String instanceType, String parms) {
 
     // 1) calculate the default parameter values that depend on the data
     //int nrIndepFeatures = corpusRepresentationMallet.getRepresentationMallet().getDataAlphabet().size();

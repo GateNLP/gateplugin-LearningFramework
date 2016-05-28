@@ -193,7 +193,9 @@ public class LF_TrainClassification extends LF_TrainBase {
     engine.getInfo().targetFeature = getTargetFeature();
     engine.getInfo().trainingCorpusName = corpus.getName();
     
-    engine.trainModel(getAlgorithmParameters());
+    engine.trainModel(gate.util.Files.fileFromURL(dataDirectory),
+            getInstanceType(),
+            getAlgorithmParameters());
     logger.info("LearningFramework: Training complete!");
     engine.saveEngine(dataDir);
   }

@@ -6,8 +6,6 @@
 
 package gate.plugin.learningframework.engines;
 
-import cc.mallet.classify.Classifier;
-import cc.mallet.classify.ClassifierTrainer;
 import cc.mallet.fst.CRF;
 import cc.mallet.fst.CRFOptimizableByLabelLikelihood;
 import cc.mallet.fst.CRFTrainerByLabelLikelihood;
@@ -55,7 +53,7 @@ public class EngineMalletSeq extends EngineMallet {
  
 
   @Override
-  public void trainModel(String options) {
+  public void trainModel(File DataDirectory, String instanceType, String options) {
     InstanceList trainingData = corpusRepresentationMallet.getRepresentationMallet();
     CRF crf = trainModel(trainingData,options);
     model = crf;

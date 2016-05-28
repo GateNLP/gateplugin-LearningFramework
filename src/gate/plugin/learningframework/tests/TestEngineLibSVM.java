@@ -65,7 +65,7 @@ public class TestEngineLibSVM {
     System.err.println("TESTS: added instances, number of instances now: "+crm.getRepresentationMallet().size());
     // Use the same parameters as we did in previous tests with previous versions so we can 
     // compare the results
-    engine.trainModel("-c 1000 -g 0.02");
+    engine.trainModel(new File("."),"","-c 1000 -g 0.02");
     System.err.println("TESTS: model trained");
     System.err.println("TESTS: engine before saving: "+engine);
     engine.saveEngine(new File("."));
@@ -165,7 +165,7 @@ public class TestEngineLibSVM {
     String nameFeature = null;
     crm.add(instanceAS, sequenceAS, inputAS, classAS, targetFeature, TargetType.NUMERIC, nameFeature);
     System.err.println("TESTS: added instances, number of instances now: "+crm.getRepresentationMallet().size());
-    engine.trainModel("");
+    engine.trainModel(null,"","");
     System.err.println("TESTS: model trained");
     System.err.println("TESTS: engine before saving: "+engine);
     engine.saveEngine(new File("."));

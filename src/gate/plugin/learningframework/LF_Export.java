@@ -21,7 +21,6 @@ import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
-import gate.plugin.learningframework.data.CorpusRepresentation;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletSeq;
 import gate.plugin.learningframework.engines.Engine;

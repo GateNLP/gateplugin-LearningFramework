@@ -192,7 +192,9 @@ public class LF_TrainChunking extends LF_TrainBase {
     engine.getInfo().trainingCorpusName = corpus.getName();
     engine.getInfo().classAnnotationType = getClassAnnotationType();
     
-    engine.trainModel(getAlgorithmParameters());
+    engine.trainModel(gate.util.Files.fileFromURL(dataDirectory),
+            getInstanceType(),
+            getAlgorithmParameters());
     logger.info("LearningFramework: Training complete!");
     engine.saveEngine(dataDir);
   }

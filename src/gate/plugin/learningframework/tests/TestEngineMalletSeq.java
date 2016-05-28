@@ -101,7 +101,7 @@ public class TestEngineMalletSeq {
     System.out.println("FVS 0="+fvs.size()+"\n"+fvs.toString());
     System.out.println("TARG 0="+inst.getTarget().toString());
     
-    engine.trainModel("");
+    engine.trainModel(null,"","");
     //System.err.println("TESTS: model trained");
     //System.err.println("TESTS: engine before saving: "+engine);
     engine.saveEngine(new File("."));

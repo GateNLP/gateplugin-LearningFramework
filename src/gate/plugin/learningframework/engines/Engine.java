@@ -7,7 +7,6 @@
 package gate.plugin.learningframework.engines;
 
 import cc.mallet.types.Alphabet;
-import cc.mallet.types.InstanceList;
 import gate.AnnotationSet;
 import gate.plugin.learningframework.EvaluationMethod;
 import gate.plugin.learningframework.GateClassification;
@@ -129,8 +128,15 @@ public abstract class Engine {
    */
   public void saveEngine(File directory) {
     // First save the info, but before that, update the info!
-    info.modelClass = model.getClass().getName();
-    info.save(directory);
+    // NOTE: for external algorithms the model will be null
+    // or a string at this point, if that is the case, we 
+    // do not save the info file here, but expect saveModel to do this!
+    if(info.modelClass==null || info.modelClass instanceof String) {
+      // do nothing
+    } else {
+      info.modelClass = model.getClass().getName();
+      info.save(directory);
+    }
     // Then delegate to the engine to save the model
     saveModel(directory);
     // finally save the Mallet corpus representation
@@ -195,7 +201,7 @@ public abstract class Engine {
    * The Engine instance should know best how to use or convert that representation to its own
    * format, using one of the CorpusRepresentationXXX classes.
    */
-  public abstract void trainModel(String parms);
+  public abstract void trainModel(File dataDirectory, String instanceType, String parms);
   
   public abstract EvaluationResult evaluate(String algorithmParameters,EvaluationMethod evaluationMethod,int numberOfFolds,double trainingFraction,int numberOfRepeats);
   
