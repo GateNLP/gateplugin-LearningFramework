@@ -3,6 +3,7 @@ package gate.plugin.learningframework.data;
 import cc.mallet.types.Alphabet;
 import gate.plugin.learningframework.features.CodeAs;
 import gate.plugin.learningframework.features.Datatype;
+import gate.plugin.learningframework.features.MissingValueTreatment;
 import java.util.Objects;
 import org.apache.log4j.Logger;
 
@@ -44,12 +45,13 @@ public class Attribute {
     return true;
   }
 
-  public Attribute(String name, int index, Datatype datatype, CodeAs codeAs, Alphabet alphabet) {
+  public Attribute(String name, int index, Datatype datatype, CodeAs codeAs, MissingValueTreatment mvt, Alphabet alphabet) {
     this.name = name;
     this.index = index;
     this.datatype = datatype;
     this.codeAs = codeAs;
     this.alphabet = alphabet;
+    this.mvTreatment = mvt;
   }
   /** 
    * Index/location of the attribute in a (sparse) feature vector.
@@ -63,10 +65,12 @@ public class Attribute {
    * If the attribute/feature is nominal, how the value is coded 
    */
   public CodeAs codeAs;
+  
+  public MissingValueTreatment mvTreatment;
 
   @Override
   public String toString() {
-    return "Attribute{" + "name=" + name + ", index=" + index + ", datatype=" + datatype + ", codeAs=" + codeAs + ", alphabet=" + alphabet + '}';
+    return "Attribute{" + "name=" + name + ", index=" + index + ", datatype=" + datatype + ", codeAs=" + codeAs + ", mvt="+mvTreatment+ ", alphabet=" + alphabet + '}';
   }
   /**
    * Dictionary of possible values and their codes if the attribute/feature 

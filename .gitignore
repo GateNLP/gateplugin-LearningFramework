@@ -13,11 +13,11 @@ TESTS-TestSuites.xml
 junit-noframes.html
 hs_err_*.log
 
-/tests/*/model-*/pipe.pipe
-/tests/*/model-*/info.yaml
-/tests/*/model-*/lf.model
-/tests/*/model-*/data.arff
-/tests/*/model-*/header.arff
+/tests/*/*/pipe.pipe
+/tests/*/*/info.yaml
+/tests/*/*/lf.model
+/tests/*/*/data.arff
+/tests/*/*/header.arff
 /tests/cl-ionosphere/export/*
 /tests/rg-abalone/export/*
 /tests/seq-wikipedia1/export/*

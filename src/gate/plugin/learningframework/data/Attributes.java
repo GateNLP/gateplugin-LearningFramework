@@ -54,7 +54,7 @@ public class Attributes implements Iterable<Attribute> {
       // create an attribute with default settings for datatype, code and 
       // alphabet, if we got more information about it we will override later
       Attribute attr = new Attribute(
-              malletFeatureName, i, Datatype.numeric, null, null);
+              malletFeatureName, i, Datatype.numeric, null, null, null);
       // add it
       attributes.add(attr);
       name2index.put(malletFeatureName, i);
@@ -72,26 +72,28 @@ public class Attributes implements Iterable<Attribute> {
                   instanceType);
         if(fsAttr instanceof FeatureSpecAttributeList) {
           FeatureSpecAttributeList fsAttrList = (FeatureSpecAttributeList)fsAttr;
+          attr.codeAs = fsAttrList.codeas;
+          attr.mvTreatment = fsAttrList.missingValueTreatment;
+          attr.datatype = fsAttrList.datatype;
           if(fsAttrList.datatype == Datatype.bool) {
-            attr.datatype = fsAttrList.datatype;
             attr.alphabet = booleanAlph;
           } else if(fsAttrList.datatype == Datatype.nominal) {
-            attr.datatype = fsAttrList.datatype;
             if(fsAttrList.codeas == CodeAs.number)
               attr.alphabet = fsAttrList.alphabet;
           } 
         } else if(fsAttr instanceof FeatureSpecSimpleAttribute) {
           FeatureSpecSimpleAttribute fsAttrSimple = (FeatureSpecSimpleAttribute)fsAttr;
+          attr.codeAs = fsAttrSimple.codeas;
+          attr.mvTreatment = fsAttrSimple.missingValueTreatment;
+          attr.datatype = fsAttrSimple.datatype;
           if(fsAttrSimple.datatype == Datatype.bool) {
-            attr.datatype = fsAttrSimple.datatype;
             attr.alphabet = booleanAlph;
           } else if(fsAttrSimple.datatype == Datatype.nominal) {
-            attr.datatype = fsAttrSimple.datatype;
             if(fsAttrSimple.codeas == CodeAs.number)
               attr.alphabet = fsAttrSimple.alphabet;
           }           
         } else if(fsAttr instanceof FeatureSpecNgram) {
-          // nothing to be done here
+          // nothing to do here
         } else if(fsAttr==null) {
           throw new RuntimeException("FeatureSpecification is null for feature "+
                   i+", name="+malletFeatureName+ 
@@ -106,7 +108,7 @@ public class Attributes implements Iterable<Attribute> {
     // if the target alphabet exists, we assume a nominal target
     // The target index is the next index after the last independent attribute
     // index. This is convenient for Weka.
-    targetAttribute = new Attribute("target", attributes.size(), Datatype.numeric, null, null);
+    targetAttribute = new Attribute("target", attributes.size(), Datatype.numeric, null, null, null);
     if(targetAlphabet != null) {
       targetAttribute.alphabet = targetAlphabet;
       targetAttribute.datatype = Datatype.nominal;

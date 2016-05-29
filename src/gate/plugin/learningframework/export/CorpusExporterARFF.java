@@ -16,6 +16,7 @@ import gate.plugin.learningframework.data.Attribute;
 import gate.plugin.learningframework.data.Attributes;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.engines.Info;
+import gate.plugin.learningframework.features.CodeAs;
 import gate.plugin.learningframework.features.Datatype;
 import gate.plugin.learningframework.features.FeatureExtraction;
 import java.io.File;
@@ -75,13 +76,18 @@ public class CorpusExporterARFF extends CorpusExporter {
       if(attr.datatype == Datatype.numeric) {
         headerOut.print("NUMERIC");
         dataOut.print("NUMERIC");
-      } else {
+      } else if(attr.datatype == Datatype.nominal && attr.codeAs == CodeAs.number ||
+                attr.datatype == Datatype.bool) {
         if(attr.alphabet == null) {
           throw new RuntimeException("Attribute is not numeric but no alphabet: "+attr);
         }
         String vals = alphabet2Arff(attr.alphabet);
         headerOut.print(vals);
         dataOut.print(vals);
+      } else {
+        // fall back is NUMERIC
+        headerOut.print("NUMERIC");
+        dataOut.print("NUMERIC");        
       }
       headerOut.println();
       dataOut.println();
@@ -187,21 +193,40 @@ public class CorpusExporterARFF extends CorpusExporter {
     if(data instanceof FeatureVector) {
       FeatureVector vector = (FeatureVector)data;
       sb.append("{");
-      for(int i=0; i<vector.numLocations(); i++) {        
-        if(i>0) sb.append(", "); 
+      boolean first = true;
+      for(int i=0; i<vector.numLocations(); i++) {   
         int loc = vector.location(i);
+        // TODO: figure out why we can gate -1 here.
+        // the method SparseVector.location(int) is defined in Mallet to return
+        // -1 is the index (here: i) is not found in the indices for the sparse
+        // vector. 
+        if(loc<0) {
+          System.err.println("ODD index for location "+i+" idx="+loc);
+          System.err.println("Vector "+vector.toString(true));
+          continue;
+        }
+        if(first) 
+          first = false;
+        else 
+          sb.append(", "); 
         sb.append(loc);
         sb.append(" ");
         double value = vector.valueAtLocation(i);
         if(value == Double.NaN) {
           sb.append("?");
         } else {
+          // TODO: proper handling of missing values!!!
+          // Also: codeas may be null sometimes, make sure if we have a datatype
+          // where codeas is relevant, we ALWAYS have codeas set to the correct value!
           Attribute attr = attrs.getAttribute(loc);
-          if(attr.datatype==Datatype.numeric) {
+          if(attr.datatype==Datatype.numeric || (attr.datatype==Datatype.nominal && attr.codeAs!=CodeAs.number)) {
+            // TODO: check for missing value!!!
             sb.append(value);
           } else if(attr.datatype==Datatype.bool) {
+            // TODO: check for missing value, also use the special alphabet we created?
             if(value<0.5) { sb.append("false"); } else { sb.append("true"); }
           } else if(attr.datatype==Datatype.nominal) {
+            // TODO: check for missing value!
             sb.append(escape4Arff((String)attr.alphabet.lookupObject((int) value)));
           } else {
             // guard for forgetting about here when we add datatypes later
