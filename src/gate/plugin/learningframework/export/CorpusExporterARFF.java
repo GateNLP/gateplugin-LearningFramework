@@ -195,21 +195,12 @@ public class CorpusExporterARFF extends CorpusExporter {
       sb.append("{");
       boolean first = true;
       for(int i=0; i<vector.numLocations(); i++) {   
-        int loc = vector.location(i);
-        // TODO: figure out why we can gate -1 here.
-        // the method SparseVector.location(int) is defined in Mallet to return
-        // -1 is the index (here: i) is not found in the indices for the sparse
-        // vector. 
-        if(loc<0) {
-          //System.err.println("ODD index for location "+i+" idx="+loc);
-          //System.err.println("Vector "+vector.toString(true));
-          continue;
-        }
+        int idx = vector.indexAtLocation(i);
         if(first) 
           first = false;
         else 
           sb.append(", "); 
-        sb.append(loc);
+        sb.append(idx);
         sb.append(" ");
         double value = vector.valueAtLocation(i);
         if(value == Double.NaN) {
@@ -218,7 +209,7 @@ public class CorpusExporterARFF extends CorpusExporter {
           // TODO: proper handling of missing values!!!
           // Also: codeas may be null sometimes, make sure if we have a datatype
           // where codeas is relevant, we ALWAYS have codeas set to the correct value!
-          Attribute attr = attrs.getAttribute(loc);
+          Attribute attr = attrs.getAttribute(idx);
           if(attr.datatype==Datatype.numeric || (attr.datatype==Datatype.nominal && attr.codeAs!=CodeAs.number)) {
             // TODO: check for missing value!!!
             sb.append(value);
