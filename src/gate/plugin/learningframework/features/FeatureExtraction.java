@@ -600,46 +600,132 @@ public class FeatureExtraction {
           Annotation instanceAnnotation
           ) {
 
-    // TODO: what if the annotation type from the attribute specification is 
-    // the same as for the instance annotation or if it is empty.
+    // If the type from the attribute specification is the same as the 
+    // instance annotation type or if it is empty, we create the elements
+    // from the instance annotations. Otherwise we use the specified type. 
+    // 
+    // The annotation -1 is one that ends before the beginning of annotation 0
+    // Annotation -2 is one that ends before the beginning of annottion -1
+    // Annotation +1 is one that starts after the end of annotation 0
+    // Annotation +2 is one that starts after the end of annotation 1
+    // Annotation 0 is the one which is either current instance (if we use 
+    // instance annotations) or the longest one that overlaps with the current 
+    // instance (similar to a Simple Attr).
     Document doc = inputAS.getDocument();
     AugmentableFeatureVector fv = (AugmentableFeatureVector) inst.getData();
 
     Datatype dt = al.datatype;
     String annType = al.annType;
+    String annType4Feature = annType;
+    String annType4Getting = annType;
+    if(annType4Getting == null || annType4Getting.isEmpty()) {
+      annType4Getting = instanceAnnotation.getType();
+    }
     String featureName = al.feature;
+    String withinType = al.withinType;
     int from = al.from;
     int to = al.to;
     Alphabet alphabet = al.alphabet;
     MissingValueTreatment mvt = al.missingValueTreatment;
     CodeAs codeas = al.codeas;
-    if(annType.isEmpty() || instanceAnnotation.getType().equals(annType)) {
-      annType = instanceAnnotation.getType();
-      annType = "";
+    
+    // First of all, get the annotation 0 and also get the set of the 
+    // annotation types we are interested in.
+    // If we have a "WITHIN" declaration, we immediately limit the 
+    // set of interesting annotations to those within the containing annotation.
+    Annotation sourceAnnotation = null;
+    long rangeFrom = 0L;
+    long rangeTo = doc.getContent().size();
+    AnnotationSet withinSet = inputAS;
+    if(withinType!=null) {
+      AnnotationSet withins = gate.Utils.getCoveringAnnotations(inputAS, instanceAnnotation, withinType);
+      if(withins.size() != 1) {
+        logger.warn("More than one covering WITHIN annotation for "+instanceAnnotation+" in document "+doc.getName());        
+      }
+      if(withins.size() == 0) {
+        logger.warn("No covering WITHIN annotation for "+instanceAnnotation+" in document "+doc.getName());
+        return; // Skip this instance!
+      }
+      Annotation within = withins.iterator().next(); // get an arbitrary one
+      rangeFrom = within.getStartNode().getOffset();
+      rangeTo = within.getEndNode().getOffset();
+      withinSet = gate.Utils.getContainedAnnotations(inputAS, within, annType4Getting);
+    } 
+    if (annType.isEmpty() || instanceAnnotation.getType().equals(annType)) {
+      sourceAnnotation = instanceAnnotation;
+      // TODO: if we have within, get set of instance annotations within within.
+      // If not even the original annotation is within, do nothing but log 
+      // a warning
+      annType4Feature = "";
+    } else {
+      AnnotationSet overlappings = gate.Utils.getOverlappingAnnotations(inputAS, instanceAnnotation, annType4Getting);
+      if(overlappings.size() > 1) {
+        logger.warn("More than one overlapping annotation of type "+annType4Getting+" for instance annotation at offset "+
+                gate.Utils.start(instanceAnnotation)+" in document "+doc.getName());
+        // find the last longest (try to make this deterministic, there is 
+        // still a small chance of non-determinism if there are more than one
+        // overlapping annotations of the same length in the last position 
+        // where a longest annotation occurs.
+        int maxSize = 0;
+        for(Annotation ann : overlappings.inDocumentOrder()) {
+          if(gate.Utils.length(ann)>maxSize) {
+            maxSize = gate.Utils.length(ann);
+            sourceAnnotation = ann;
+          }
+        }
+      } else if(overlappings.size() == 0) {
+        // there is no overlappign annotation 
+        // For lists we do not treat this as a missing value and instead 
+        // just do not create anything for this instance annotation
+        // TODO: log this
+        return;
+      } else {
+        // we have exactly one annotation, use that one
+        sourceAnnotation = gate.Utils.getOnlyAnn(overlappings);
+      }
     }
-    long centre = instanceAnnotation.getStartNode().getOffset();
-    List<Annotation> annlistforward = inputAS.get(annType, centre, doc.getContent().size()).inDocumentOrder();
-    List<Annotation> annlistbackward = inputAS.get(annType, 0L, centre).inDocumentOrder();
+    
+    long start = sourceAnnotation.getStartNode().getOffset();
+    long end = sourceAnnotation.getEndNode().getOffset();
+    List<Annotation> annlistforward = inputAS.get(annType4Getting, end, rangeTo).inDocumentOrder();
+    List<Annotation> annlistbackward = inputAS.get(annType4Getting, 0L, start).inDocumentOrder();
+    System.err.println("rangeFrom="+rangeFrom+", rangeTo="+rangeTo+"START="+start+", END="+end+", forwardsize="+annlistforward.size()+", backwardsize="+annlistbackward.size());
     // go through each of the members in the attribute list and get the annotation
     // then process each annotation just like a simple annotation, only that the name of 
     // featureName gets derived from this list attribute plus the location in the list.
-    for (int i = from; i <= to; i++) {
-      Annotation ann = null;
-      if (i < 0) {
-        if (-i <= annlistbackward.size()) {
-          ann = annlistbackward.get(annlistbackward.size() + i);
-        }
-      } else if (i < annlistforward.size()) {
-          ann = annlistforward.get(i);
-          // make compiler happy for now
-          //textToReturn = textToReturn + separator + annType + ":" + featureName + ":r" + i + ":" + extractFeature(annType, featureName, datatype, inputASname, ann, doc);
+    // TODO: this does not work if the annotations are overlapping!!!
+    
+    // First loop: go from index -1 to the smallest from index to the left
+    
+    int albsize = annlistbackward.size();
+    for (int i = -1; i >= from; i--) {
+      // -1 corresponds to element (size-1) in the list, 
+      // -2 corresponds to element (size-2) in the list etc. 
+      // in general we want element (size+i) if that is > 0
+      if(albsize+i>0) {
+        Annotation ann = annlistbackward.get(albsize+i);
+        extractFeatureWorker(al.name,"L"+i,inst,ann,doc,annType4Feature,
+                featureName,alphabet,dt,mvt,codeas);    
+      } else {
+        break;
       }
-      // If the list annotation exists at all, process it just like a 
-      // simple attribute. 
-      // NOTE: if the list annotation does not exist we do not treat the corresponding
-      // feature values as missing for now!!
-      if(ann != null) {        
-        extractFeatureWorker(al.name,"L"+i,inst,ann,doc,annType,featureName,alphabet,dt,mvt,codeas);    
+    }
+    // if we have index 0 in the range, process for that one
+    if(from<=0&&to>=0) {
+      extractFeatureWorker(al.name,"L"+0,inst,sourceAnnotation,doc,annType4Feature,
+              featureName,alphabet,dt,mvt,codeas);          
+    }
+    // do the ones to the right
+    int alfsize = annlistforward.size();
+    for (int i = 1; i <= to; i++) {
+      // for i=1 we get element 0, in general we get element i-1
+      // if i <= size
+      if(i<=alfsize) {
+        Annotation ann = annlistforward.get(i-1);
+        extractFeatureWorker(al.name,"L"+i,inst,ann,doc,annType4Feature,
+                featureName,alphabet,dt,mvt,codeas);    
+      } else {
+        break;
       }
     }
   } // extractFeature (AttributeList)

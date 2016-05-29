@@ -228,6 +228,8 @@ public class EngineLibSVM extends Engine {
     } catch (Exception e) {
       throw new GateRuntimeException("Error saving LIBSVM model", e);
     }
+    // Since we do not have a proper model, save our info here
+    info.save(directory);
   }
 
   @Override

@@ -452,7 +452,7 @@ public class TestFeatureExtraction {
     Instance inst = newInstance();
     
     // prepare the document
-    Annotation instAnn = addAnn(doc, "", 10, 10, "instanceType", gate.Utils.featureMap());
+    Annotation instAnn = addAnn(doc, "", 10, 11, "instanceType", gate.Utils.featureMap());
     addAnn(doc,"",0,2,"theType",gate.Utils.featureMap("theFeature","tok1"));
     addAnn(doc,"",2,4,"theType",gate.Utils.featureMap("theFeature","tok2"));
     addAnn(doc,"",4,6,"theType",gate.Utils.featureMap("theFeature","tok3"));
@@ -468,7 +468,6 @@ public class TestFeatureExtraction {
     System.err.println("After "+as.get(0)+" (list -1to1) FV="+inst.getData());
     System.err.println("Alphabet L1="+inst.getAlphabet());
     assertEquals(3,inst.getAlphabet().size());
-    System.err.println("Alphabet is "+inst.getAlphabet());
     assertTrue(inst.getAlphabet().contains("theType┆theFeature╬L-1═tok5"));
     assertTrue(inst.getAlphabet().contains("theType┆theFeature╬L0═tok6"));
     assertTrue(inst.getAlphabet().contains("theType┆theFeature╬L1═tok7"));
@@ -488,7 +487,7 @@ public class TestFeatureExtraction {
     Instance inst = newInstance();
     
     // prepare the document
-    Annotation instAnn = addAnn(doc, "", 10, 10, "instanceType", gate.Utils.featureMap());
+    Annotation instAnn = addAnn(doc, "", 10, 12, "instanceType", gate.Utils.featureMap());
     addAnn(doc,"",0,2,"theType",gate.Utils.featureMap("theFeature","tok1"));
     addAnn(doc,"",2,4,"theType",gate.Utils.featureMap("theFeature","tok2"));
     addAnn(doc,"",4,6,"theType",gate.Utils.featureMap("theFeature","tok3"));

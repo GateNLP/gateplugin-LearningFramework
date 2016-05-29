@@ -131,7 +131,7 @@ public abstract class Engine {
     // NOTE: for external algorithms the model will be null
     // or a string at this point, if that is the case, we 
     // do not save the info file here, but expect saveModel to do this!
-    if(info.modelClass==null || info.modelClass instanceof String) {
+    if(info.modelClass==null) {
       // do nothing
     } else {
       info.modelClass = model.getClass().getName();
@@ -206,6 +206,10 @@ public abstract class Engine {
   public abstract EvaluationResult evaluate(String algorithmParameters,EvaluationMethod evaluationMethod,int numberOfFolds,double trainingFraction,int numberOfRepeats);
   
   protected void updateInfo() {
+    //System.err.println("In updateInfo, model is "+model);
+    if(model!=null) {
+      info.modelClass = model.getClass().getName();
+    }
     info.nrTrainingInstances = corpusRepresentationMallet.getRepresentationMallet().size();
     info.nrTrainingDimensions = corpusRepresentationMallet.getRepresentationMallet().getDataAlphabet().size();    
     LFPipe pipe = (LFPipe)corpusRepresentationMallet.getPipe();

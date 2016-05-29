@@ -107,7 +107,8 @@ public class FeatureSpecification {
         FeatureSpecSimpleAttribute att = parseSimpleAttribute(element, n);
         int from = Integer.parseInt(element.getChildText("FROM"));
         int to = Integer.parseInt(element.getChildText("TO"));
-        attributes.add(new FeatureSpecAttributeList(att, from, to));
+        String withinType = getChildTextOrElse(element, "WITHIN", null); 
+        attributes.add(new FeatureSpecAttributeList(att, withinType, from, to));
       } else if (elementName.equals("ngram")) {
         attributes.add(parseNgramAttribute(element, n));
       } else {

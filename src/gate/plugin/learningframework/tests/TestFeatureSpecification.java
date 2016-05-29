@@ -44,7 +44,7 @@ public class TestFeatureSpecification {
     as = fi.getAttributes();
     assertNotNull(as);
     assertEquals(1,as.size());
-    assertEquals("AttributeList(name=,type=theType,feature=string,datatype=nominal,missingvaluetreatment=keep,codeas=one_of_k,from=-2,to=1",as.get(0).toString());
+    assertEquals("AttributeList(name=,type=theType,feature=string,datatype=nominal,missingvaluetreatment=keep,codeas=one_of_k,within=null,from=-2,to=1",as.get(0).toString());
 
     spec = "<ROOT>"+
             "<NGRAM><TYPE>theType</TYPE><FEATURE>theFeature</FEATURE><NUMBER>3</NUMBER></NGRAM>"+

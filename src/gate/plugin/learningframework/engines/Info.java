@@ -75,6 +75,7 @@ public class Info {
   public void save(File directory) {
     String dump = new Yaml().dumpAs(this,Tag.MAP,DumperOptions.FlowStyle.BLOCK);
     File infoFile = new File(directory,FILENAME_INFO);
+    //System.err.println("Saving engine to "+infoFile);
     OutputStreamWriter out = null;
     try {
       out = new OutputStreamWriter(new FileOutputStream(infoFile),"UTF-8");
