@@ -164,7 +164,7 @@
                 <entry>
                   <string>dataDirectory</string>
                   <gate.util.persistence.PersistenceManager-URLHolder>
-                    <urlString>$relpath$model-weka-external</urlString>
+                    <urlString>$relpath$model-weka-external-nb</urlString>
                   </gate.util.persistence.PersistenceManager-URLHolder>
                 </entry>
                 <entry>
@@ -181,7 +181,7 @@
                 </entry>
                 <entry>
                   <string>algorithmParameters</string>
-                  <string>weka.classifiers.trees.RandomForest</string>
+                  <string>weka.classifiers.bayes.NaiveBayes</string>
                 </entry>
                 <entry>
                   <string>featureSpecURL</string>
@@ -226,7 +226,7 @@
       <collectionType>java.util.ArrayList</collectionType>
     </prList>
     <resourceType>gate.creole.ConditionalSerialAnalyserController</resourceType>
-    <resourceName>train-weka-external</resourceName>
+    <resourceName>train-weka-external-nb</resourceName>
     <initParams class="gate.util.persistence.MapPersistence">
       <mapType>gate.util.SimpleFeatureMapImpl</mapType>
       <localMap/>

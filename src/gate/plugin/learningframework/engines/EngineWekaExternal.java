@@ -96,6 +96,9 @@ public class EngineWekaExternal extends Engine {
       }      
     }
     File wrapperHome = new File(homeDir);
+    if(!wrapperHome.isAbsolute()) {
+      wrapperHome = new File(dataDirectory,homeDir);
+    }
     if(!wrapperHome.isDirectory()) {
       throw new GateRuntimeException("WekaWrapper home is not a directory: "+wrapperHome.getAbsolutePath());
     }

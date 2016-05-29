@@ -16,9 +16,12 @@ hs_err_*.log
 /tests/*/model-*/pipe.pipe
 /tests/*/model-*/info.yaml
 /tests/*/model-*/lf.model
+/tests/*/model-*/data.arff
+/tests/*/model-*/header.arff
 /tests/cl-ionosphere/export/*
 /tests/rg-abalone/export/*
 /tests/seq-wikipedia1/export/*
-!/tests/seq-wikipedia1/export/.keep
+!/tests/*/*/.keep
+!/tests/*/model-*/weka.yaml
 /test-tmp-EngineMalletSeqOut/
-/tests/cl-ionosphere/model-weka-external/data.arff
+
