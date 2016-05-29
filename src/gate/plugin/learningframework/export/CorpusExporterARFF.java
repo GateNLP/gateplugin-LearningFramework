@@ -201,8 +201,8 @@ public class CorpusExporterARFF extends CorpusExporter {
         // -1 is the index (here: i) is not found in the indices for the sparse
         // vector. 
         if(loc<0) {
-          System.err.println("ODD index for location "+i+" idx="+loc);
-          System.err.println("Vector "+vector.toString(true));
+          //System.err.println("ODD index for location "+i+" idx="+loc);
+          //System.err.println("Vector "+vector.toString(true));
           continue;
         }
         if(first) 
