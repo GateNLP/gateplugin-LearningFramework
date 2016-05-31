@@ -5,20 +5,10 @@
  */
 package gate.plugin.learningframework.export;
 
-import cc.mallet.pipe.Pipe;
-import cc.mallet.types.Alphabet;
-import cc.mallet.types.FeatureVector;
-import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
-import gate.plugin.learningframework.Globals;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.engines.Info;
-import gate.plugin.learningframework.features.Datatype;
-import gate.plugin.learningframework.features.FeatureExtraction;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
 
 /**
  *

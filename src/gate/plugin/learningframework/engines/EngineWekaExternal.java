@@ -211,7 +211,7 @@ public class EngineWekaExternal extends Engine {
   public List<GateClassification> classify(AnnotationSet instanceAS, AnnotationSet inputAS, AnnotationSet sequenceAS, String parms) {
     CorpusRepresentationMalletTarget data = (CorpusRepresentationMalletTarget)corpusRepresentationMallet;
     data.stopGrowth();
-    System.err.println("Running EngineWeka.classify on document "+instanceAS.getDocument().getName());
+    //System.err.println("Running EngineWeka.classify on document "+instanceAS.getDocument().getName());
     List<GateClassification> gcs = new ArrayList<GateClassification>();
     LFPipe pipe = (LFPipe)data.getRepresentationMallet().getPipe();
     for(Annotation instAnn : instanceAS.inDocumentOrder()) {
@@ -230,8 +230,8 @@ public class EngineWekaExternal extends Engine {
       int[] locations = sdv.getLocations();
       double[] values = sdv.getValues();
       for(int i=0;i<locs;i++) {
-        locations[i] = fv.location(i);
-        values[i] = fv.value(i);
+        locations[i] = fv.indexAtLocation(i);
+        values[i] = fv.value(locations[i]);
       }
       // send the vector over to the weka process
       process.writeObject(sdv);
@@ -246,7 +246,7 @@ public class EngineWekaExternal extends Engine {
         // this is an error, lets panic for now
         throw new RuntimeException("Got a response from the Weka process which is not double[] but "+obj.getClass());
       }
-      System.err.println("Sent vector: locs/values="+Arrays.toString(locations)+"/"+Arrays.toString(values)+", ret="+Arrays.toString(ret));
+      //System.err.println("Sent vector: locs/values="+Arrays.toString(locations)+"/"+Arrays.toString(values)+", ret="+Arrays.toString(ret));
       GateClassification gc = null;
       // now check if the mallet representation and the weka process agree 
       // on if we have regression or classification

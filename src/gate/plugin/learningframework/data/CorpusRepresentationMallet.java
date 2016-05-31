@@ -89,4 +89,24 @@ public abstract class CorpusRepresentationMallet extends CorpusRepresentation {
   
   public abstract void addScaling(ScalingMethod scaleFeatures);
   
+  // TODO: need to do this better: make sure if there are thousands of 
+  // features that we only show a subset and the number?
+  /*
+  public String toString() {
+    Alphabet dataAlph = pipe.getDataAlphabet();
+    Alphabet targetAlph = pipe.getTargetAlphabet();
+    StringBuilder sb = new StringBuilder();
+    sb.append("CorpusRepresentationMallet{dataalphabet=");
+    sb.append(dataAlph.toString());
+    sb.append(",targetalphabet=");
+    if(targetAlph==null) {
+      sb.append("null");
+    } else {
+      sb.append(targetAlph.toString());
+    }
+    sb.append("}");
+    return sb.toString();
+  }
+  */
+  
 }

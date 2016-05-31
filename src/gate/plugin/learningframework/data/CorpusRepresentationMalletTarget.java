@@ -70,7 +70,7 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
   }
 
   /**
-   * Create a new instance based on the pipe stored in directory.
+   * Create a new CRMT instance based on the pipe stored in directory.
    * @param directory
    * @return 
    */
