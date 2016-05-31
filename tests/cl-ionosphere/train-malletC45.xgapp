@@ -141,10 +141,6 @@
               <mapType>gate.util.SimpleFeatureMapImpl</mapType>
               <localMap>
                 <entry>
-                  <string>algorithmJavaClass</string>
-                  <string></string>
-                </entry>
-                <entry>
                   <string>dataDirectory</string>
                   <gate.util.persistence.PersistenceManager-URLHolder>
                     <urlString>$relpath$model-malletC45</urlString>

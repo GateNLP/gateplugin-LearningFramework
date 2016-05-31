@@ -22,11 +22,9 @@ import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
-import gate.plugin.learningframework.engines.AlgorithmClassification;
 import gate.plugin.learningframework.engines.AlgorithmRegression;
 import gate.plugin.learningframework.engines.Engine;
 import gate.plugin.learningframework.engines.EvaluationResult;
-import gate.plugin.learningframework.engines.EvaluationResultClassification;
 import gate.plugin.learningframework.engines.EvaluationResultRegression;
 import gate.plugin.learningframework.features.FeatureSpecification;
 import gate.plugin.learningframework.features.TargetType;
@@ -73,19 +71,6 @@ public class LF_EvaluateRegression extends LF_TrainBase {
 
   public AlgorithmRegression getTrainingAlgorithm() {
     return this.trainingAlgorithm;
-  }
-
-  protected String algorithmJavaClass;
-
-  @RunTime
-  @Optional
-  @CreoleParameter(comment = "The Java class of the training algorithm to use, only used if SPECIFY_CLASS is selected")
-  public void setAlgorithmJavaClass(String className) {
-    algorithmJavaClass = className;
-  }
-
-  public String getAlgorithmJavaClass() {
-    return algorithmJavaClass;
   }
 
   protected ScalingMethod scaleFeatures = ScalingMethod.NONE;
@@ -235,20 +220,6 @@ public class LF_EvaluateRegression extends LF_TrainBase {
       throw new GateRuntimeException("LF_EvaluateRegression: no target feature specified");
     }
     AlgorithmRegression alg = getTrainingAlgorithm();
-    // if an algorithm is specified where the name ends in "SPECIFY_CLASS" use the 
-    // algorithmJavaClass 
-    if (getTrainingAlgorithm().toString().endsWith("SPECIFY_CLASS")) {
-      if (getAlgorithmJavaClass() == null || getAlgorithmJavaClass().isEmpty()) {
-        throw new GateRuntimeException("AlgorithmClass parameter must be specified when " + getTrainingAlgorithm() + " is chosen");
-      }
-      Class clazz = null;
-      try {
-        clazz = Class.forName(getAlgorithmJavaClass());
-      } catch (ClassNotFoundException ex) {
-        throw new GateRuntimeException("Could not load algorithm class: " + getAlgorithmJavaClass(), ex);
-      }
-      alg.setTrainerClass(clazz);
-    }
 
     System.err.println("DEBUG: Before Document.");
     System.err.println("  Training algorithm engine class is " + alg.getEngineClass());

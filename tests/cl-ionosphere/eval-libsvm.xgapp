@@ -177,10 +177,6 @@
                   <gate.plugin.learningframework.engines.AlgorithmClassification>LIBSVM_CL</gate.plugin.learningframework.engines.AlgorithmClassification>
                 </entry>
                 <entry>
-                  <string>algorithmJavaClass</string>
-                  <null/>
-                </entry>
-                <entry>
                   <string>evaluationMethod</string>
                   <gate.plugin.learningframework.EvaluationMethod>CROSSVALIDATION</gate.plugin.learningframework.EvaluationMethod>
                 </entry>

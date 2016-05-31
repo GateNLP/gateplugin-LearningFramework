@@ -155,10 +155,6 @@
                   <gate.plugin.learningframework.engines.AlgorithmRegression>WEKA_RG_WRAPPER</gate.plugin.learningframework.engines.AlgorithmRegression>
                 </entry>
                 <entry>
-                  <string>algorithmJavaClass</string>
-                  <null/>
-                </entry>
-                <entry>
                   <string>dataDirectory</string>
                   <gate.util.persistence.PersistenceManager-URLHolder>
                     <urlString>$relpath$model-weka-external-lr</urlString>

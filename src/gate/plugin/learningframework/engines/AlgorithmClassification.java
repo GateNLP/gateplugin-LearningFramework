@@ -23,7 +23,6 @@ public enum AlgorithmClassification implements Algorithm {
   MALLET_CL_WINNOW(EngineMalletClass.class,cc.mallet.classify.WinnowTrainer.class),
   MALLET_CL_BALANCED_WINNOW(EngineMalletClass.class,cc.mallet.classify.BalancedWinnowTrainer.class),
   MALLET_SEQ_CRF(EngineMalletSeq.class,null), // creating this training is too complex, no class specified
-  MALLET_CL_SPECIFY_CLASS(EngineMalletClass.class,null),
   WEKA_CL_WRAPPER(EngineWekaExternal.class,null);
   private AlgorithmClassification() {
     

@@ -177,10 +177,6 @@
                   <gate.plugin.learningframework.engines.AlgorithmRegression>LIBSVM_RG</gate.plugin.learningframework.engines.AlgorithmRegression>
                 </entry>
                 <entry>
-                  <string>algorithmJavaClass</string>
-                  <null/>
-                </entry>
-                <entry>
                   <string>evaluationMethod</string>
                   <gate.plugin.learningframework.EvaluationMethod>HOLDOUT</gate.plugin.learningframework.EvaluationMethod>
                 </entry>

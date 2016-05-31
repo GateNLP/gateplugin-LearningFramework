@@ -95,6 +95,9 @@ public class EngineWekaExternal extends Engine {
         homeDir = tmp;
       }      
     }
+    if(homeDir == null) {
+      throw new GateRuntimeException("WekaWrapper home not set, please see https://github.com/GateNLP/gateplugin-LearningFramework/wiki/UsingWeka");
+    }
     File wrapperHome = new File(homeDir);
     if(!wrapperHome.isAbsolute()) {
       wrapperHome = new File(dataDirectory,homeDir);
@@ -127,7 +130,7 @@ public class EngineWekaExternal extends Engine {
             commandFile :
             new File(dataDirectory,commandFile.getPath());
     if(!commandFile.canExecute()) {
-      throw new GateRuntimeException("Not an executable file or not found: "+commandFile);
+      throw new GateRuntimeException("Not an executable file or not found: "+commandFile+" please see https://github.com/GateNLP/gateplugin-LearningFramework/wiki/UsingWeka");
     }
     return commandFile;
   }

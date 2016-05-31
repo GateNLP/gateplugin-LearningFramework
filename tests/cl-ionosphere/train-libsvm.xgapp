@@ -179,10 +179,6 @@
                   <gate.plugin.learningframework.engines.AlgorithmClassification>LIBSVM_CL</gate.plugin.learningframework.engines.AlgorithmClassification>
                 </entry>
                 <entry>
-                  <string>algorithmJavaClass</string>
-                  <string></string>
-                </entry>
-                <entry>
                   <string>featureSpecURL</string>
                   <gate.util.persistence.PersistenceManager-URLHolder>
                     <urlString>$relpath$feats.xml</urlString>

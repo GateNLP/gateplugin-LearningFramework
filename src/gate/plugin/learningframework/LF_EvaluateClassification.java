@@ -73,19 +73,6 @@ public class LF_EvaluateClassification extends LF_TrainBase {
     return this.trainingAlgorithm;
   }
 
-  protected String algorithmJavaClass;
-
-  @RunTime
-  @Optional
-  @CreoleParameter(comment = "The Java class of the training algorithm to use, only used if SPECIFY_CLASS is selected")
-  public void setAlgorithmJavaClass(String className) {
-    algorithmJavaClass = className;
-  }
-
-  public String getAlgorithmJavaClass() {
-    return algorithmJavaClass;
-  }
-
   protected ScalingMethod scaleFeatures = ScalingMethod.NONE;
 
   @RunTime
@@ -292,20 +279,6 @@ public class LF_EvaluateClassification extends LF_TrainBase {
     }
 
     AlgorithmClassification alg = getTrainingAlgorithm();
-    // if an algorithm is specified where the name ends in "SPECIFY_CLASS" use the 
-    // algorithmJavaClass 
-    if (getTrainingAlgorithm().toString().endsWith("SPECIFY_CLASS")) {
-      if (getAlgorithmJavaClass() == null || getAlgorithmJavaClass().isEmpty()) {
-        throw new GateRuntimeException("AlgorithmClass parameter must be specified when " + getTrainingAlgorithm() + " is chosen");
-      }
-      Class clazz = null;
-      try {
-        clazz = Class.forName(getAlgorithmJavaClass());
-      } catch (ClassNotFoundException ex) {
-        throw new GateRuntimeException("Could not load algorithm class: " + getAlgorithmJavaClass(), ex);
-      }
-      alg.setTrainerClass(clazz);
-    }
 
     System.err.println("DEBUG: Before Document.");
     System.err.println("  Training algorithm engine class is " + alg.getEngineClass());
