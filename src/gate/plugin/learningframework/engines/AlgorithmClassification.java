@@ -15,14 +15,16 @@ public enum AlgorithmClassification implements Algorithm {
   // if we want to use parameters for those.
   // Also consider supporting in addition this port: https://github.com/davidsoergel/jlibsvm/
   LIBSVM_CL(EngineLibSVM.class,libsvm.svm.class), 
+  MALLET_CL_BALANCED_WINNOW(EngineMalletClass.class,cc.mallet.classify.BalancedWinnowTrainer.class),
   MALLET_CL_C45(EngineMalletClass.class,cc.mallet.classify.C45Trainer.class),
   MALLET_CL_DECISION_TREE(EngineMalletClass.class,cc.mallet.classify.DecisionTreeTrainer.class),
   MALLET_CL_MAX_ENT(EngineMalletClass.class,cc.mallet.classify.MaxEntTrainer.class),
   MALLET_CL_NAIVE_BAYES_EM(EngineMalletClass.class,cc.mallet.classify.NaiveBayesEMTrainer.class),
   MALLET_CL_NAIVE_BAYES(EngineMalletClass.class,cc.mallet.classify.NaiveBayes.class),
   MALLET_CL_WINNOW(EngineMalletClass.class,cc.mallet.classify.WinnowTrainer.class),
-  MALLET_CL_BALANCED_WINNOW(EngineMalletClass.class,cc.mallet.classify.BalancedWinnowTrainer.class),
-  MALLET_SEQ_CRF(EngineMalletSeq.class,null), // creating this training is too complex, no class specified
+  // TODO: this is not implemented yet since we need to be able to delay the 
+  // instantiation of the CRF trainer to actual training time!!
+  //MALLET_SEQ_CRF(EngineMalletSeq.class,null), // creating this training is too complex, no class specified
   WEKA_CL_WRAPPER(EngineWekaExternal.class,null);
   private AlgorithmClassification() {
     
