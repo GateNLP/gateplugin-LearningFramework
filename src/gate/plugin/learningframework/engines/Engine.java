@@ -89,8 +89,6 @@ public abstract class Engine {
     if(info.algorithmClass != null && !info.algorithmClass.isEmpty()) {
       if(info.algorithmClass.equals(AlgorithmClassification.class.getName())) {
         algorithm = AlgorithmClassification.valueOf(info.algorithmName);      
-      } else if(info.algorithmClass.equals(AlgorithmSequenceTagging.class.getName())) {
-        algorithm = AlgorithmSequenceTagging.valueOf(info.algorithmName);
       } else if(info.algorithmClass.equals(AlgorithmRegression.class.getName())) {
         algorithm = AlgorithmRegression.valueOf(info.algorithmName);      
       } else {
