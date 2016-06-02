@@ -9,11 +9,17 @@ package gate.plugin.learningframework.engines;
 import cc.mallet.fst.CRF;
 import cc.mallet.fst.CRFOptimizableByLabelLikelihood;
 import cc.mallet.fst.CRFTrainerByLabelLikelihood;
+import cc.mallet.fst.CRFTrainerByStochasticGradient;
+import cc.mallet.fst.CRFTrainerByThreadedLabelLikelihood;
+import cc.mallet.fst.CRFTrainerByValueGradients;
+import cc.mallet.fst.MEMM;
+import cc.mallet.fst.MEMMTrainer;
 import cc.mallet.fst.SumLatticeDefault;
 import cc.mallet.fst.Transducer;
 import cc.mallet.fst.TransducerTrainer;
 import cc.mallet.fst.ViterbiWriter;
 import cc.mallet.optimize.Optimizable;
+import cc.mallet.pipe.Pipe;
 import cc.mallet.types.FeatureVectorSequence;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
@@ -55,13 +61,14 @@ public class EngineMalletSeq extends EngineMallet {
   @Override
   public void trainModel(File DataDirectory, String instanceType, String options) {
     InstanceList trainingData = corpusRepresentationMallet.getRepresentationMallet();
-    CRF crf = trainModel(trainingData,options);
-    model = crf;
+    Transducer td = trainModel(trainingData,options);
+    model = td;
     updateInfo();
   }
   
-  public CRF trainModel(InstanceList trainingData, String options) {
-    
+  public static TransducerTrainer createTrainer(InstanceList trainingData, Info info, String options) {
+    TransducerTrainer transtrainer = null;
+
     // NOTE: Training of the CRF is very flexible in Mallet and not everything is clear to me
     // yet. Unfortunately, there is practically no documentation available.
     // There is some useful example code around:
@@ -70,17 +77,33 @@ public class EngineMalletSeq extends EngineMallet {
     // src/cc/mallet/fst/SimpleTagger.java - more detailled: especially also shows multithreaded training!
     //   how to use this: http://mallet.cs.umass.edu/sequences.php
     
-
-    // the algorithm name is stored in info.
     // NOTE: the name can come from an algorithm selected for classification OR an algorithm
     // selected for actual sequence tagging. This is why we check the literal name here
     // instead of something derived from the Algorithm enum class.
-    System.err.println("DEBUG: our algorithm name is "+info.algorithmName);
-    if(info.algorithmName.equals("MALLET_SEQ_CRF")) {
+    
+    // NOTE on supported trainers: we only support trainers here which are not
+    // too complex to set up and which can be used with the normal succession of
+    // how training works in the LF.
+    // Mallet also supports a lot of additional things, e.g. regularization 
+    // on unlabeled data, but this cannot be used here. 
+    // 
+    String alg = info.algorithmName;
+    System.err.println("DEBUG: our algorithm name is "+alg);
+    if(alg.startsWith("MALLET_SEQ_CRF")) {
       
       CRF crf = new CRF(trainingData.getPipe(), null);
       
-      Parms parms = new Parms(options,"S:states:s","o:orders:s","of:ofully:b","as:addstart:B");
+      Parms parms = new Parms(options,
+              "S:states:s",
+              "o:orders:s",
+              "f:ofully:b",
+              "a:addstart:B",
+              "v:logViterbiPaths:i",
+              "t:threads:i",
+              "sg:stochasticGradient:B",
+              "wdd:weightDimDensely:B",
+              "usw:useSparseWeights:B",
+              "ssut:setSomeUnsupportedTrick:B");
       
       String states = (String)parms.getValueOrElse("states", "fully-connected");
       switch (states) {
@@ -122,49 +145,89 @@ public class EngineMalletSeq extends EngineMallet {
       boolean addStart = (boolean) parms.getValueOrElse("addstart", true);
       if(addStart) crf.addStartState();
       
-      //crf.setWeightsDimensionDensely();
+      boolean wdd = (boolean) parms.getValueOrElse("weightDimDensely", false);
+      if(wdd) crf.setWeightsDimensionDensely();
       
       // initialize model's weights
       crf.setWeightsDimensionAsIn(trainingData, false);
       
-      //  CRFOptimizableBy* objects (terms in the objective function)
-      // objective 1: label likelihood objective
-      CRFOptimizableByLabelLikelihood optLabel
-              = new CRFOptimizableByLabelLikelihood(crf, trainingData);
+      // now depending on which trainer we want we need to do slightly different
+      // things
+      if(alg.equals("MALLET_SEQ_CRF")) { // By[Thread]LabelLikelihood
+        // if threads parameter is specified and >0, we use ByThreadLabelLikelihood
+        int threads = (int) parms.getValueOrElse("threads", 0);
+        boolean usw = (boolean) parms.getValueOrElse("useSparseWeights", false);
+        boolean ssut = (boolean) parms.getValueOrElse("setSomeUnsupportedTrick", false);
+        if(threads<=0) {      
+          CRFTrainerByLabelLikelihood tr = new CRFTrainerByLabelLikelihood(crf);
+          if(usw) tr.setUseSparseWeights(true);
+          if(ssut) tr.setUseSomeUnsupportedTrick(true);
+          transtrainer = tr;
+        } else {
+          CRFTrainerByThreadedLabelLikelihood tr = 
+                  new CRFTrainerByThreadedLabelLikelihood(crf, threads);
+          if(usw) tr.setUseSparseWeights(true);
+          if(ssut) tr.setUseSomeUnsupportedTrick(true);
+          transtrainer = tr;
+        }        
+      } else if(alg.equals("MALLET_SEQ_CRF_SG")) {
+        // TODO: instead of all trainingData, use sample?
+        // TODO: allow to use training rate instead of trainingData?
+        CRFTrainerByStochasticGradient crft = 
+                new CRFTrainerByStochasticGradient(crf, trainingData);
+        
+      } else if(alg.equals("MALLET_SEQ_CRF_VG")) {
+        //  CRFOptimizableBy* objects (terms in the objective function)
+        // objective 1: label likelihood objective
+        CRFOptimizableByLabelLikelihood optLabel
+                = new CRFOptimizableByLabelLikelihood(crf, trainingData);      
+        Optimizable.ByGradientValue[] opts
+               = new Optimizable.ByGradientValue[]{optLabel};
+        // by default, use L-BFGS as the optimizer
+        CRFTrainerByValueGradients crfTrainer = new CRFTrainerByValueGradients(crf, opts);
+        crfTrainer.setMaxResets(0);
+        transtrainer = crfTrainer;
+      } else {
+        throw new GateRuntimeException("Not yet supported: "+alg);
+      }
       
-      // CRF trainer
-      Optimizable.ByGradientValue[] opts
-              = new Optimizable.ByGradientValue[]{optLabel};
-      // by default, use L-BFGS as the optimizer
-      // CRFTrainerByValueGradients crfTrainer = new CRFTrainerByValueGradients(crf, opts);
-      
-      CRFTrainerByLabelLikelihood crft = new CRFTrainerByLabelLikelihood(crf);
-      
-      //CRFTrainerByStochasticGradient crft = new CRFTrainerByStochasticGradient(crf, trainingData);
-
-      //crft.setUseSparseWeights(true);
-      //crft.setUseSomeUnsupportedTrick(true);
-      
-      // all setup done, train until convergence
-      //crfTrainer.setMaxResets(0);
       
       // TODO: if we want to output the viterbi paths:
-        ViterbiWriter viterbiWriter = new ViterbiWriter(
+      int logVit = (int) parms.getValueOrElse("logViterbiPaths", 0);
+      if(logVit==0) logVit=Integer.MAX_VALUE;
+      final int lv = logVit;
+      ViterbiWriter viterbiWriter = new ViterbiWriter(
           "LF_debug", // output file prefix
           new InstanceList[] { trainingData },
           new String[] { "train" }) {
         @Override
         public boolean precondition (TransducerTrainer tt) {
-          return tt.getIteration() % Integer.MAX_VALUE == 0;
+          return tt.getIteration() % lv == 0;
         }
       };
-      crft.addEvaluator(viterbiWriter);      
-      crft.train(trainingData, Integer.MAX_VALUE);
-      return crf;
+      transtrainer.addEvaluator(viterbiWriter);   
+    } else if(alg.equals("MALLET_SEQ_MEMM")) {
+      // TODO: 
+      MEMM memm = new MEMM(trainingData.getDataAlphabet(),trainingData.getTargetAlphabet());
+      transtrainer = new MEMMTrainer(memm);
     } else {
-      // For now, there is no other algorithm!
-      throw new GateRuntimeException("EngineMalletSeq: only MALLET_SEQ_CRF supported so far!");
+      // Nothing else supported!
+      throw new GateRuntimeException("EngineMalletSeq: unknown/unsupported algorithm: "+alg);
     }
+    
+    return transtrainer;
+  }
+  
+  
+  public Transducer trainModel(InstanceList trainingData, String options) {
+
+    TransducerTrainer trainer = createTrainer(trainingData, info, options);
+    Parms parms = new Parms(options,"i:iterations:i");
+    int iters = (int) parms.getValueOrElse("iterations", 0);
+    if(iters==0) iters = Integer.MAX_VALUE;
+    trainer.train(trainingData, iters);
+    Transducer td = trainer.getTransducer();
+    return td;
   }
 
   @Override
@@ -286,7 +349,7 @@ public class EngineMalletSeq extends EngineMallet {
           InstanceList[] il = cvi.nextSplit();
           InstanceList trainSet = il[0];
           InstanceList testSet = il[1];
-          CRF crf = trainModel(trainSet, algorithmParameters);
+          Transducer crf = trainModel(trainSet, algorithmParameters);
           sumOfAccs += crf.averageTokenAccuracy(testSet);
         }
         EvaluationResultClXval e = new EvaluationResultClXval();
@@ -304,7 +367,7 @@ public class EngineMalletSeq extends EngineMallet {
         for(int i = 0; i<numberOfRepeats; i++) {
           InstanceList[] sets = corpusRepresentationMallet.getRepresentationMallet().split(rnd,
 				new double[]{trainingFraction, 1-trainingFraction});
-          CRF crf = trainModel(sets[0], algorithmParameters);
+          Transducer crf = trainModel(sets[0], algorithmParameters);
           sumOfAccs += crf.averageTokenAccuracy(sets[1]);
         }
         EvaluationResultClHO e = new EvaluationResultClHO();

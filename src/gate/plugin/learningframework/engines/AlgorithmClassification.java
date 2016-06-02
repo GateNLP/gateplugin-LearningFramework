@@ -22,9 +22,14 @@ public enum AlgorithmClassification implements Algorithm {
   MALLET_CL_NAIVE_BAYES_EM(EngineMalletClass.class,cc.mallet.classify.NaiveBayesEMTrainer.class),
   MALLET_CL_NAIVE_BAYES(EngineMalletClass.class,cc.mallet.classify.NaiveBayes.class),
   MALLET_CL_WINNOW(EngineMalletClass.class,cc.mallet.classify.WinnowTrainer.class),
-  // TODO: this is not implemented yet since we need to be able to delay the 
-  // instantiation of the CRF trainer to actual training time!!
-  //MALLET_SEQ_CRF(EngineMalletSeq.class,null), // creating this training is too complex, no class specified
+  MALLET_SEQ_CRF(EngineMalletSeq.class,null), // ByLabelLikelihood or ByThreadedLabelLikelihood
+  MALLET_SEQ_CRF_SG(EngineMalletSeq.class,null), // Stochastic gradient
+  MALLET_SEQ_CRF_VG(EngineMalletSeq.class,null), // Value gradient
+  // The following requires specification of an array of Optimizable.ByGradientValue
+  // instances which need to be initialized with Instances 
+  // We only add this after figuring out exactly how it needs to get set up!
+  // MALLET_SEQ_CRF_VGS(EngineMalletSeq.class,null), // ByValueGradients  
+  MALLET_SEQ_MEMM(EngineMalletSeq.class,null),
   WEKA_CL_WRAPPER(EngineWekaExternal.class,null);
   private AlgorithmClassification() {
     

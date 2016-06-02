@@ -216,9 +216,9 @@ public class LF_TrainChunking extends LF_TrainBase {
     if (getTrainingAlgorithm() == null) {
       throw new GateRuntimeException("LearningFramework: no training algorithm specified");
     }
-    if (getTrainingAlgorithm() == AlgorithmClassification.MALLET_SEQ_CRF) {
+    if (getTrainingAlgorithm().toString().contains("MALLET_SEQ_")) {
       if (getSequenceSpan() == null || getSequenceSpan().isEmpty()) {
-        throw new GateRuntimeException("SequenceSpan parameter is required for MALLET_SEQ_CRF");
+        throw new GateRuntimeException("SequenceSpan parameter is required for MALLET_SEQ_*");
       }
       haveSequenceTagger = true;
     } else {
