@@ -96,7 +96,7 @@ public class EngineMalletSeq extends EngineMallet {
       Parms parms = new Parms(options,
               "S:states:s",
               "o:orders:s",
-              "f:ofully:b",
+              "f:ofully:B",
               "a:addstart:B",
               "v:logViterbiPaths:i",
               "t:threads:i",
