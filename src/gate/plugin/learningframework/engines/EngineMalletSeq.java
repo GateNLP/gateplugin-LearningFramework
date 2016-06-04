@@ -150,6 +150,10 @@ public class EngineMalletSeq extends EngineMallet {
       if(wdd) crf.setWeightsDimensionDensely();
       
       // initialize model's weights
+      // TODO: make this conditional on a parm, how does this relate to 
+      // weightDimDensely?? 
+      // !!! This should probably be the same parameter!!!
+      // TODO: second parm should depend on the unsupported trick option!
       crf.setWeightsDimensionAsIn(trainingData, false);
       
       // now depending on which trainer we want we need to do slightly different
