@@ -96,14 +96,14 @@ public class EngineMalletSeq extends EngineMallet {
       Parms parms = new Parms(options,
               "S:states:s",
               "o:orders:s",
-              "f:ofully:B",
-              "a:addstart:B",
+              "f:ofully:b",
+              "a:addstart:b",
               "v:logViterbiPaths:i",
               "t:threads:i",
-              "sg:stochasticGradient:B",
-              "wdd:weightDimDensely:B",
-              "usw:useSparseWeights:B",
-              "ssut:setSomeUnsupportedTrick:B");
+              "sg:stochasticGradient:b",
+              "wdd:weightDimDensely:b",
+              "usw:useSparseWeights:b",
+              "ssut:setSomeUnsupportedTrick:b");
       
       String states = (String)parms.getValueOrElse("states", "fully-connected");
       switch (states) {
@@ -121,7 +121,7 @@ public class EngineMalletSeq extends EngineMallet {
           break;
         case "order-n":
           int[] orders = new int[]{1};
-          String ordersparm = (String)parms.getValueOrElse("orders", "1");
+          String ordersparm = (String)parms.getValueOrElse("orders", "0:1");
           if(ordersparm.equals("1")) {
             orders = new int[]{1};
           } else if(ordersparm.equals("0:1")) {
@@ -132,13 +132,14 @@ public class EngineMalletSeq extends EngineMallet {
             orders = new int[]{0};
           } else if(ordersparm.equals("1:2")) {
             orders = new int[]{1,2};
-          } else if(ordersparm.equals("21")) {
+          } else if(ordersparm.equals("2")) {
             orders = new int[]{2};
           } else {
             throw new GateRuntimeException("Invalid value for parameter orders: "+ordersparm);
           }
           boolean ofully = (Boolean)parms.getValueOrElse("ofully", false);
           crf.addOrderNStates(trainingData, orders, null, null, null, null, ofully);
+          break;
         default:
           throw new GateRuntimeException("Unknown value for parameter states: "+states);
       }
@@ -222,10 +223,13 @@ public class EngineMalletSeq extends EngineMallet {
   public Transducer trainModel(InstanceList trainingData, String options) {
 
     TransducerTrainer trainer = createTrainer(trainingData, info, options);
-    Parms parms = new Parms(options,"i:iterations:i");
+    Parms parms = new Parms(options,"i:iterations:i","V:verbose:b");
+    boolean verbose = (boolean)parms.getValueOrElse("verbose", false);
     int iters = (int) parms.getValueOrElse("iterations", 0);
     if(iters==0) iters = Integer.MAX_VALUE;
     trainer.train(trainingData, iters);
+    if(verbose) 
+      trainer.getTransducer().print();
     Transducer td = trainer.getTransducer();
     return td;
   }
