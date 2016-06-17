@@ -171,6 +171,14 @@ public class FeatureSpecification {
       missingValueTreatmentStr = getChildTextOrElse(attributeElement, "MISSINGVALUETREATMENT", "special_value");
     }
     MissingValueTreatment mvt = MissingValueTreatment.valueOf(missingValueTreatmentStr);
+    // If the datatype is not anything other than nominal, we also allow the 
+    // setting "listsep" for automatical list splitting    
+    String listsep = getChildTextOrElse(attributeElement, "LISTSEP", "");
+    if(!listsep.isEmpty()) {
+      if(dt!=Datatype.nominal) {
+        throw new GateRuntimeException("LISTSEP only allowed if datatype is nominal");
+      }      
+    }
     // TODO: not implemented yet, but we should add this!!
     String scalingMethod = "";
     String transformMethod = "";
@@ -184,7 +192,8 @@ public class FeatureSpecification {
             mvt,
             missingValueValue,
             scalingMethod,
-            transformMethod
+            transformMethod,
+            listsep
     );
     return att;
   }

@@ -1,15 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package gate.plugin.learningframework.features;
 
 import cc.mallet.types.Alphabet;
 import java.io.Serializable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -19,7 +12,17 @@ public class FeatureSpecSimpleAttribute extends FeatureSpecAttribute implements 
 
   private static final long serialVersionUID = -2346560362547132478L;
 
-  public FeatureSpecSimpleAttribute(String aname, String type, String feature, Datatype datatype, CodeAs codeas, MissingValueTreatment missingValueTreatment, String missingValueValue, String scalingMethod, String transformMethod) {
+  public FeatureSpecSimpleAttribute(
+          String aname, 
+          String type, 
+          String feature, 
+          Datatype datatype, 
+          CodeAs codeas, 
+          MissingValueTreatment missingValueTreatment, 
+          String missingValueValue, 
+          String scalingMethod, 
+          String transformMethod,
+          String listsep) {
     this.name = aname;
     this.annType = type;
     this.feature = feature;
@@ -29,11 +32,13 @@ public class FeatureSpecSimpleAttribute extends FeatureSpecAttribute implements 
     if (datatype == Datatype.nominal && codeas == CodeAs.number) {
       alphabet = new Alphabet();
     }
+    this.listsep = listsep;
   }
   public CodeAs codeas = CodeAs.one_of_k;
   public Datatype datatype;
   public MissingValueTreatment missingValueTreatment = MissingValueTreatment.zero_value;
   public Alphabet alphabet;
+  public String listsep;
 
   @Override
   public void stopGrowth() {

@@ -11,8 +11,21 @@ public class FeatureSpecAttributeList extends FeatureSpecSimpleAttribute impleme
 
   private static final long serialVersionUID = -4627730393276173588L;
 
-  public FeatureSpecAttributeList(String aname, String type, String feature, Datatype datatype, CodeAs codeas, MissingValueTreatment missingValueTreatment, String missingValueValue, String scalingMethod, String transformMethod, int from, int to, String withinType) {
-    super(aname, type, feature, datatype, codeas, missingValueTreatment, missingValueValue, scalingMethod, transformMethod);
+  public FeatureSpecAttributeList(
+          String aname, 
+          String type, 
+          String feature, 
+          Datatype datatype, 
+          CodeAs codeas, 
+          MissingValueTreatment missingValueTreatment, 
+          String missingValueValue, 
+          String scalingMethod, 
+          String transformMethod, 
+          int from, int to, 
+          String withinType,
+          String listsep) {
+    super(aname, type, feature, datatype, codeas, missingValueTreatment, 
+            missingValueValue, scalingMethod, transformMethod, listsep);
     this.from = from;
     this.to = to;
     this.withinType = withinType;
@@ -22,8 +35,9 @@ public class FeatureSpecAttributeList extends FeatureSpecSimpleAttribute impleme
    * Create an AttributeList instance from a SimpleAttribute plus the from and to values
    */
   public FeatureSpecAttributeList(FeatureSpecSimpleAttribute att, String withinType, int from, int to) {
-    super(att.name, att.annType, att.feature, att.datatype, att.codeas, att.missingValueTreatment, 
-            "dummy", "dummy", "dummy");
+    super(att.name, att.annType, att.feature, att.datatype, att.codeas, 
+            att.missingValueTreatment, 
+            "dummy", "dummy", "dummy", "");
     this.from = from;
     this.to = to;
     this.withinType = withinType;

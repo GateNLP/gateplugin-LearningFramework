@@ -11,6 +11,7 @@ import gate.Utils;
 import gate.util.GateRuntimeException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
 
@@ -187,6 +188,7 @@ public class FeatureExtraction {
     CodeAs codeas = att.codeas;
     Datatype dt = att.datatype;
     Alphabet alphabet = att.alphabet;
+    String listsep = att.listsep;
     // first of all get the annotation from where we want to construct the annotation.
     // If annType is the same type as the annType of the instance annotation, use the 
     // instance annotation directly. Otherwise, use an annotation of type annType that overlaps
@@ -234,7 +236,7 @@ public class FeatureExtraction {
     // vector, so we do not even check, we simply add the featureName.
     // How we add the featureName depends on the datatype, on the codeas setting if it is nominal,
     // and also on how we treat missing values.
-    extractFeatureWorker(att.name,"A",inst,sourceAnnotation,doc,annType,featureName,alphabet,dt,mvt,codeas);
+    extractFeatureWorker(att.name,"A",inst,sourceAnnotation,doc,annType,featureName,alphabet,dt,mvt,codeas,listsep);
   }
     
   
@@ -268,7 +270,8 @@ public class FeatureExtraction {
           Alphabet alphabet,
           Datatype dt,
           MissingValueTreatment mvt,
-          CodeAs codeas)  {
+          CodeAs codeas,
+          String listsep)  {
     
     AugmentableFeatureVector fv = (AugmentableFeatureVector)inst.getData();
     // create the default feature name prefix: this is either "A"+NAMESEP+type+NAMESEP+featureName
@@ -312,14 +315,41 @@ public class FeatureExtraction {
         if(codeas==CodeAs.one_of_k) {
           if(valObj != null) {
             // it is not a missing value
-            String val = valObj.toString();
-            // TODO: do we have to escape the featureName name in some way here?
-            // TODO: if we want to store a count rather than 1.0, we would need to make use
-            // of a pre-calculated feature vector here which should contain the count for 
-            // this feature over all instances in the document (or whatever the counting strategy is)
-            // For this we would have to modify this and the calling method to also take 
-            // an optional feature vector and use it if it is non-null
-            addToFeatureVector(fv, internalFeatureNamePrefix+VALSEP+val, 1.0);
+
+            // if the value is an Iterable, create one feature for each element
+            if(valObj instanceof Iterable) {
+              Iterable iterable = (Iterable) valObj;
+              for(Object obj : iterable) {
+                String val = obj.toString();
+                addToFeatureVector(fv, internalFeatureNamePrefix+VALSEP+val, 1.0);
+              }
+            } else if(valObj instanceof Map) {
+              Map map = (Map)valObj;
+              for(Object key : map.keySet()) {
+                Object mapval = map.get(key);
+                String val = key.toString() + "=" + mapval.toString();
+              }
+            } else {            
+              String val = valObj.toString();
+              // TODO: if we want to store a count rather than 1.0, we would need to make use
+              // of a pre-calculated feature vector here which should contain the count for 
+              // this feature over all instances in the document (or whatever the counting strategy is)
+              // For this we would have to modify this and the calling method to also take 
+              // an optional feature vector and use it if it is non-null
+              if(listsep!=null && !listsep.isEmpty()) {
+                // we need to have a look if the value needs the get split into elements
+                String[] vals = val.split(listsep,-1);
+                for(String v : vals) {
+                  // NOTE: we automatically remove any empty elements here
+                  if(!v.trim().isEmpty()) {
+                    addToFeatureVector(fv, internalFeatureNamePrefix+VALSEP+v.trim(), 1.0);
+                  }
+                }
+              } else {
+                // just take the value as is
+                addToFeatureVector(fv, internalFeatureNamePrefix+VALSEP+val, 1.0);
+              }
+            }
           } else {
             // we have a missing value, check the missing value treatment for what to do now
             switch(mvt) {
@@ -338,7 +368,7 @@ public class FeatureExtraction {
                 throw new NotImplementedException("MV-Handling");
             }                      
           }
-        } else if(codeas==CodeAs.number) {
+        } else if(codeas==CodeAs.number) { // end of CodeAs.one_of_k
           if(valObj!=null) {
             // For this representation, we need to maintain a dictionary that maps values to 
             // numbers! This is also done using an Alphabet, and if a value is not in the alphabet,
@@ -628,6 +658,7 @@ public class FeatureExtraction {
     Alphabet alphabet = al.alphabet;
     MissingValueTreatment mvt = al.missingValueTreatment;
     CodeAs codeas = al.codeas;
+    String listsep = al.listsep;
     
     // First of all, get the annotation 0 and also get the set of the 
     // annotation types we are interested in.
@@ -705,7 +736,7 @@ public class FeatureExtraction {
       if(albsize+i>0) {
         Annotation ann = annlistbackward.get(albsize+i);
         extractFeatureWorker(al.name,"L"+i,inst,ann,doc,annType4Feature,
-                featureName,alphabet,dt,mvt,codeas);    
+                featureName,alphabet,dt,mvt,codeas,listsep);    
       } else {
         break;
       }
@@ -713,7 +744,7 @@ public class FeatureExtraction {
     // if we have index 0 in the range, process for that one
     if(from<=0&&to>=0) {
       extractFeatureWorker(al.name,"L"+0,inst,sourceAnnotation,doc,annType4Feature,
-              featureName,alphabet,dt,mvt,codeas);          
+              featureName,alphabet,dt,mvt,codeas,listsep);          
     }
     // do the ones to the right
     int alfsize = annlistforward.size();
@@ -723,7 +754,7 @@ public class FeatureExtraction {
       if(i<=alfsize) {
         Annotation ann = annlistforward.get(i-1);
         extractFeatureWorker(al.name,"L"+i,inst,ann,doc,annType4Feature,
-                featureName,alphabet,dt,mvt,codeas);    
+                featureName,alphabet,dt,mvt,codeas,listsep);    
       } else {
         break;
       }

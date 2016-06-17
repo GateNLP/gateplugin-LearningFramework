@@ -23,6 +23,7 @@ import gate.plugin.learningframework.features.FeatureSpecSimpleAttribute;
 import static gate.plugin.learningframework.tests.Utils.*;
 import gate.util.GateException;
 import gate.util.GateRuntimeException;
+import java.util.HashSet;
 import java.util.List;
 import org.junit.After;
 import org.junit.Test;
@@ -512,5 +513,99 @@ public class TestFeatureExtraction {
     assertEquals(1.0,((FeatureVector)inst.getData()).value("myAttList╬L0═tok6"),EPS);
     assertEquals(1.0,((FeatureVector)inst.getData()).value("myAttList╬L1═tok7"),EPS);
   }
+  
+  // Test extracting a nominal attribute where the annotation feature is a collection
+  @Test
+  public void extractSimpleList1() {
+    String spec = "<ROOT>"+
+            "<ATTRIBUTE><TYPE>theType</TYPE><FEATURE>feature1</FEATURE><DATATYPE>nominal</DATATYPE></ATTRIBUTE>"+
+            "</ROOT>";
+    List<FeatureSpecAttribute> as = new FeatureSpecification(spec).getFeatureInfo().getAttributes();
+    Instance inst = newInstance();
+    
+    // prepare the document
+    Annotation instAnn = addAnn(doc, "", 0, 10, "instanceType", gate.Utils.featureMap());
+    HashSet<String> v1 = new HashSet<String>();
+    v1.add("setval1");
+    v1.add("setval2");
+    v1.add("setval3");
+    Annotation tok1 = addAnn(doc, "", 0, 5, "theType", gate.Utils.featureMap("feature1",v1));
+
+    
+    Annotation instAnn2 = addAnn(doc, "", 11, 20, "instanceType", gate.Utils.featureMap());
+    HashSet<String> v2 = new HashSet<String>();
+    v2.add("setval1");
+    v2.add("setval4");
+    v2.add("setval5");
+    Annotation tok2 = addAnn(doc, "", 12, 15, "theType", gate.Utils.featureMap("feature1",v2));
+    
+    FeatureExtraction.extractFeature(inst, as.get(0), doc.getAnnotations(), instAnn);
+    FeatureVector fv = (FeatureVector)inst.getData();
+    System.err.println("FeatureExtraction SimpleList1a: "+fv.toString(true));
+    assertTrue(inst.getAlphabet().contains("theType┆feature1╬A═setval1"));
+    assertTrue(inst.getAlphabet().contains("theType┆feature1╬A═setval2"));
+    assertTrue(inst.getAlphabet().contains("theType┆feature1╬A═setval3"));
+    assertEquals(3,((FeatureVector)inst.getData()).numLocations());
+    assertEquals(1.0,((FeatureVector)inst.getData()).value("theType┆feature1╬A═setval1"),EPS);
+    assertEquals(1.0,((FeatureVector)inst.getData()).value("theType┆feature1╬A═setval2"),EPS);
+    assertEquals(1.0,((FeatureVector)inst.getData()).value("theType┆feature1╬A═setval3"),EPS);
+    
+    inst = newInstance(inst.getAlphabet());
+    FeatureExtraction.extractFeature(inst, as.get(0), doc.getAnnotations(), instAnn2);
+    fv = (FeatureVector)inst.getData();
+    System.err.println("FeatureExtraction SimpleList1b: "+fv.toString(true));
+    assertTrue(inst.getAlphabet().contains("theType┆feature1╬A═setval1"));
+    assertTrue(inst.getAlphabet().contains("theType┆feature1╬A═setval4"));
+    assertTrue(inst.getAlphabet().contains("theType┆feature1╬A═setval5"));
+    assertEquals(3,((FeatureVector)inst.getData()).numLocations());
+    assertEquals(1.0,((FeatureVector)inst.getData()).value("theType┆feature1╬A═setval1"),EPS);
+    assertEquals(1.0,((FeatureVector)inst.getData()).value("theType┆feature1╬A═setval4"),EPS);
+    assertEquals(1.0,((FeatureVector)inst.getData()).value("theType┆feature1╬A═setval5"),EPS);
+    
+  }  
+
+  // Test extracting a nominal attribute where the annotation feature is a collection
+  @Test
+  public void extractSimpleList2() {
+    String spec = "<ROOT>"+
+            "<ATTRIBUTE><TYPE>theType</TYPE><FEATURE>feature1</FEATURE><DATATYPE>nominal</DATATYPE><LISTSEP>:</LISTSEP></ATTRIBUTE>"+
+            "</ROOT>";
+    List<FeatureSpecAttribute> as = new FeatureSpecification(spec).getFeatureInfo().getAttributes();
+    Instance inst = newInstance();
+    
+    // prepare the document
+    Annotation instAnn = addAnn(doc, "", 0, 10, "instanceType", gate.Utils.featureMap());
+    Annotation tok1 = addAnn(doc, "", 0, 5, "theType", gate.Utils.featureMap("feature1","lval1:lval2:lval3"));
+
+    
+    Annotation instAnn2 = addAnn(doc, "", 11, 20, "instanceType", gate.Utils.featureMap());
+    Annotation tok2 = addAnn(doc, "", 12, 15, "theType", gate.Utils.featureMap("feature1","lval1:lval4:lval5"));
+    
+    FeatureExtraction.extractFeature(inst, as.get(0), doc.getAnnotations(), instAnn);
+    FeatureVector fv = (FeatureVector)inst.getData();
+    System.err.println("FeatureExtraction SimpleList2a: "+fv.toString(true));
+    assertTrue(inst.getAlphabet().contains("theType┆feature1╬A═lval1"));
+    assertTrue(inst.getAlphabet().contains("theType┆feature1╬A═lval2"));
+    assertTrue(inst.getAlphabet().contains("theType┆feature1╬A═lval3"));
+    assertEquals(3,((FeatureVector)inst.getData()).numLocations());
+    assertEquals(1.0,((FeatureVector)inst.getData()).value("theType┆feature1╬A═lval1"),EPS);
+    assertEquals(1.0,((FeatureVector)inst.getData()).value("theType┆feature1╬A═lval2"),EPS);
+    assertEquals(1.0,((FeatureVector)inst.getData()).value("theType┆feature1╬A═lval3"),EPS);
+    
+    inst = newInstance(inst.getAlphabet());
+    FeatureExtraction.extractFeature(inst, as.get(0), doc.getAnnotations(), instAnn2);
+    fv = (FeatureVector)inst.getData();
+    System.err.println("FeatureExtraction SimpleList2b: "+fv.toString(true));
+    assertTrue(inst.getAlphabet().contains("theType┆feature1╬A═lval1"));
+    assertTrue(inst.getAlphabet().contains("theType┆feature1╬A═lval4"));
+    assertTrue(inst.getAlphabet().contains("theType┆feature1╬A═lval5"));
+    assertEquals(3,((FeatureVector)inst.getData()).numLocations());
+    assertEquals(1.0,((FeatureVector)inst.getData()).value("theType┆feature1╬A═lval1"),EPS);
+    assertEquals(1.0,((FeatureVector)inst.getData()).value("theType┆feature1╬A═lval4"),EPS);
+    assertEquals(1.0,((FeatureVector)inst.getData()).value("theType┆feature1╬A═lval5"),EPS);
+    
+  }  
+
+  
  
 }

@@ -50,6 +50,9 @@ public class Utils {
   public static Instance newInstance() {
     return new Instance(new AugmentableFeatureVector(new Alphabet()),null,null,null);    
   }
+  public static Instance newInstance(Alphabet alph) {
+    return new Instance(new AugmentableFeatureVector(alph),null,null,null);    
+  }
   
   public static Document loadDocument(File file) throws MalformedURLException, ResourceInstantiationException {
     FeatureMap parms = Factory.newFeatureMap();
