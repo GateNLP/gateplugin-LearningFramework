@@ -482,7 +482,7 @@ public class TestFeatureExtraction {
   public void extractList2() {
     // same as extractList2, but with explicitly specified name
     String spec = "<ROOT>"+
-            "<ATTRIBUTELIST><NAME>myAttList</NAME><TYPE>theType</TYPE><FEATURE>theFeature</FEATURE><DATATYPE>nominal</DATATYPE><FROM>-1</FROM><TO>1</TO></ATTRIBUTELIST>"+
+            "<ATTRIBUTELIST><NAME>myAttList</NAME><TYPE>theType</TYPE><FEATURE>theFeature</FEATURE><DATATYPE>nominal</DATATYPE><FROM>-2</FROM><TO>2</TO></ATTRIBUTELIST>"+
             "</ROOT>";
     List<FeatureSpecAttribute> as = new FeatureSpecification(spec).getFeatureInfo().getAttributes();
     Instance inst = newInstance();
@@ -499,12 +499,37 @@ public class TestFeatureExtraction {
     addAnn(doc,"",14,16,"theType",gate.Utils.featureMap("theFeature","tok8"));
     addAnn(doc,"",16,18,"theType",gate.Utils.featureMap("theFeature","tok9"));
     addAnn(doc,"",18,20,"theType",gate.Utils.featureMap("theFeature","tok10"));
+    Annotation withinAnn = addAnn(doc,"",8,15,"within",gate.Utils.featureMap());
     
     FeatureExtraction.extractFeature(inst, as.get(0), doc.getAnnotations(), instAnn);
     System.err.println("After "+as.get(0)+" (list -1to1) FV="+inst.getData());
     System.err.println("Alphabet L2="+inst.getAlphabet());
-    assertEquals(3,inst.getAlphabet().size());
+    assertEquals(5,inst.getAlphabet().size());
     System.err.println("Alphabet is "+inst.getAlphabet());
+    FeatureVector fv = (FeatureVector)inst.getData();
+    System.err.println("extractList2-all: "+fv.toString(true));
+    assertTrue(inst.getAlphabet().contains("myAttList╬L-2═tok4"));
+    assertTrue(inst.getAlphabet().contains("myAttList╬L-1═tok5"));
+    assertTrue(inst.getAlphabet().contains("myAttList╬L0═tok6"));
+    assertTrue(inst.getAlphabet().contains("myAttList╬L1═tok7"));
+    assertTrue(inst.getAlphabet().contains("myAttList╬L2═tok8"));
+    assertEquals(5,((FeatureVector)inst.getData()).numLocations());
+    assertEquals(1.0,((FeatureVector)inst.getData()).value("myAttList╬L-2═tok4"),EPS);
+    assertEquals(1.0,((FeatureVector)inst.getData()).value("myAttList╬L-1═tok5"),EPS);
+    assertEquals(1.0,((FeatureVector)inst.getData()).value("myAttList╬L0═tok6"),EPS);
+    assertEquals(1.0,((FeatureVector)inst.getData()).value("myAttList╬L1═tok7"),EPS);
+    assertEquals(1.0,((FeatureVector)inst.getData()).value("myAttList╬L2═tok8"),EPS);
+    
+    // Do the test again, but this time with a declaration that limits it to within the within annotation
+    spec = "<ROOT>"+
+            "<ATTRIBUTELIST><NAME>myAttList</NAME><TYPE>theType</TYPE><FEATURE>theFeature</FEATURE><DATATYPE>nominal</DATATYPE><FROM>-1</FROM><TO>1</TO><WITHIN>within</WITHIN></ATTRIBUTELIST>"+
+            "</ROOT>";
+    as = new FeatureSpecification(spec).getFeatureInfo().getAttributes();
+    inst = newInstance();
+    FeatureExtraction.extractFeature(inst, as.get(0), doc.getAnnotations(), instAnn);
+    fv = (FeatureVector)inst.getData();
+    System.err.println("extractList2-within: "+fv.toString(true));
+    assertEquals(3,inst.getAlphabet().size());
     assertTrue(inst.getAlphabet().contains("myAttList╬L-1═tok5"));
     assertTrue(inst.getAlphabet().contains("myAttList╬L0═tok6"));
     assertTrue(inst.getAlphabet().contains("myAttList╬L1═tok7"));

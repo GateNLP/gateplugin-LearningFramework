@@ -718,9 +718,9 @@ public class FeatureExtraction {
     
     long start = sourceAnnotation.getStartNode().getOffset();
     long end = sourceAnnotation.getEndNode().getOffset();
-    List<Annotation> annlistforward = inputAS.get(annType4Getting, end, rangeTo).inDocumentOrder();
-    List<Annotation> annlistbackward = inputAS.get(annType4Getting, 0L, start).inDocumentOrder();
-    System.err.println("rangeFrom="+rangeFrom+", rangeTo="+rangeTo+"START="+start+", END="+end+", forwardsize="+annlistforward.size()+", backwardsize="+annlistbackward.size());
+    List<Annotation> annlistforward = inputAS.getContained(end, rangeTo).get(annType4Getting).inDocumentOrder();
+    List<Annotation> annlistbackward = inputAS.getContained(rangeFrom, start).get(annType4Getting).inDocumentOrder();
+    System.err.println("rangeFrom="+rangeFrom+", rangeTo="+rangeTo+",START="+start+", END="+end+", forwardsize="+annlistforward.size()+", backwardsize="+annlistbackward.size());
     // go through each of the members in the attribute list and get the annotation
     // then process each annotation just like a simple annotation, only that the name of 
     // featureName gets derived from this list attribute plus the location in the list.
@@ -733,7 +733,7 @@ public class FeatureExtraction {
       // -1 corresponds to element (size-1) in the list, 
       // -2 corresponds to element (size-2) in the list etc. 
       // in general we want element (size+i) if that is > 0
-      if(albsize+i>0) {
+      if(albsize+i>=0) {
         Annotation ann = annlistbackward.get(albsize+i);
         extractFeatureWorker(al.name,"L"+i,inst,ann,doc,annType4Feature,
                 featureName,alphabet,dt,mvt,codeas,listsep);    
