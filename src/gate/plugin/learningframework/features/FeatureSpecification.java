@@ -228,14 +228,18 @@ public class FeatureSpecification {
    * Return the text of a single child element or a default value. This checks that there is at most
    * one child of this annType and throws and exception if there are more than one. If there is no
    * child of this name, then the value elseVal is returned. NOTE: the value returned is trimmed if
-   * it is a string, but case is preserved
+   * it is a string, but case is preserved.
+   * NOTE: this tries both the all-uppercase and the all-lowercase variant of the given name.
    */
   private static String getChildTextOrElse(Element parent, String name, String elseVal) {
     List<Element> children = parent.getChildren(name);
     if (children.size() > 1) {
       throw new GateRuntimeException("Element " + parent.getName() + " has more than one nested " + name + " element");
     }
-    String tmp = parent.getChildTextTrim(name);
+    String tmp = parent.getChildTextTrim(name.toUpperCase());
+    if(tmp == null) {
+      tmp = parent.getChildText(name.toLowerCase());
+    }
     if (tmp == null) {
       return elseVal;
     } else {
