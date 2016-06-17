@@ -77,6 +77,7 @@ public abstract class Engine {
     // representation if necessary.
     eng.loadModel(directory, parms);
     eng.loadMalletCorpusRepresentation(directory);
+    //System.err.println("Loaded mallet corpus representation: "+eng.getCorpusRepresentationMallet());
 
     // we could stop growh right after loading, but that would interfere with engines which
     // allow updating, incremental learning etc. 
@@ -88,8 +89,6 @@ public abstract class Engine {
     if(info.algorithmClass != null && !info.algorithmClass.isEmpty()) {
       if(info.algorithmClass.equals(AlgorithmClassification.class.getName())) {
         algorithm = AlgorithmClassification.valueOf(info.algorithmName);      
-      } else if(info.algorithmClass.equals(AlgorithmSequenceTagging.class.getName())) {
-        algorithm = AlgorithmSequenceTagging.valueOf(info.algorithmName);
       } else if(info.algorithmClass.equals(AlgorithmRegression.class.getName())) {
         algorithm = AlgorithmRegression.valueOf(info.algorithmName);      
       } else {

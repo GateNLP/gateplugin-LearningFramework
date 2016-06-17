@@ -5,11 +5,17 @@
  */
 package gate.plugin.learningframework.engines;
 
+import cc.mallet.classify.BalancedWinnow;
+import cc.mallet.classify.BalancedWinnowTrainer;
 import cc.mallet.classify.C45Trainer;
 import cc.mallet.classify.Classification;
 import cc.mallet.classify.Classifier;
 import cc.mallet.classify.ClassifierTrainer;
 import cc.mallet.classify.DecisionTreeTrainer;
+import cc.mallet.classify.MaxEntTrainer;
+import cc.mallet.classify.NaiveBayesEMTrainer;
+import cc.mallet.classify.NaiveBayesTrainer;
+import cc.mallet.classify.WinnowTrainer;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.InstanceList.CrossValidationIterator;
@@ -125,16 +131,51 @@ public class EngineMalletClass extends EngineMallet {
         dtTrainer.setMaxDepth(maxDepth);
         dtTrainer.setMinInfoGainSplit(minIGS);
         trainer = dtTrainer;
-      /* TODO!!!
       } else if(algorithm.equals(AlgorithmClassification.MALLET_CL_MAX_ENT)) {
+        MaxEntTrainer tr = new MaxEntTrainer();
+        Parms ps = new Parms(parms, "v:gaussianPriorVariance:d",
+                "l:l1Weight:d", "i:numIterations:i");
+        // TODO: the default values cannot be take from MaxEntTrainer because
+        // they are not public there
+        double gaussianPriorVariance = (double)ps.getValueOrElse("gaussianPriorVariance", 1.0);
+        tr.setGaussianPriorVariance(gaussianPriorVariance);
+        double l1Weight = (double)ps.getValueOrElse("l1Weight", 0.0);
+        tr.setL1Weight(l1Weight);
+        int iters = (int)ps.getValueOrElse("numIterations", Integer.MAX_VALUE);
+        tr.setNumIterations(iters);
+        trainer = tr;
+      // NOTE: for AdaBoost, use this method recursively to first initialize
+      // the trainer with the base traner. The parameters should contain
+      // something like -A ALGNAME -N numRounds -a -b ... 
+      // where ALGNAME is an AlgorithmClassification constant and N is the
+      // numRounds parameter for AdaBoost[M2] and all the other parameters 
+      // are for the base algorithm initialization
+      } else if(algorithm.equals(AlgorithmClassification.MALLET_CL_BALANCED_WINNOW)) {
+        Parms ps = new Parms(parms, "e:epsilon:d",
+                "d:delta:d", "i:maxIterations:i", "c:coolingRate:d");
+        double epsilon = (double)ps.getValueOrElse("epsilon", BalancedWinnowTrainer.DEFAULT_EPSILON);
+        double delta = (double)ps.getValueOrElse("delta", BalancedWinnowTrainer.DEFAULT_DELTA);
+        int iters = (int)ps.getValueOrElse("int", BalancedWinnowTrainer.DEFAULT_MAX_ITERATIONS);
+        double cr = (double)ps.getValueOrElse("coolingRate", BalancedWinnowTrainer.DEFAULT_COOLING_RATE);
+        trainer = new BalancedWinnowTrainer(epsilon,delta,iters,cr);
       } else if(algorithm.equals(AlgorithmClassification.MALLET_CL_NAIVE_BAYES)) {
+        // This one does not have any parameters!
+        trainer = new NaiveBayesTrainer();        
       } else if(algorithm.equals(AlgorithmClassification.MALLET_CL_NAIVE_BAYES_EM)) {
+        // No parameters!
+        trainer = new NaiveBayesEMTrainer();
       } else if(algorithm.equals(AlgorithmClassification.MALLET_CL_WINNOW)) {
-      */
+        Parms ps = new Parms(parms, "a:alpha:d",
+                "b:beta:d", "n:nfact:d");
+        double alpha = (double)ps.getValueOrElse("alpha", 2.0);
+        double beta = (double)ps.getValueOrElse("beta", 2.0);
+        double nfact = (double)ps.getValueOrElse("nfact", 0.5);
+        
+        WinnowTrainer trainer = new WinnowTrainer(alpha, beta, nfact);
       } else {
         // all other algorithms are still just instantiated from the class name, we ignore
         // the parameters
-        logger.warn("Parameters ignored when creating Mallet trainer " + algorithm.getTrainerClass());
+        logger.warn("IMPORTANT: parameters ignored when creating Mallet trainer " + algorithm.getTrainerClass());
         Class trainerClass = algorithm.getTrainerClass();
         try {
           trainer = (ClassifierTrainer) trainerClass.newInstance();

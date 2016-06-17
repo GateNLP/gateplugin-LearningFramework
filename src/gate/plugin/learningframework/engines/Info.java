@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Objects;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
 import org.yaml.snakeyaml.nodes.Tag;
 
 /**
@@ -73,7 +74,11 @@ public class Info {
   }
   
   public void save(File directory) {
-    String dump = new Yaml().dumpAs(this,Tag.MAP,DumperOptions.FlowStyle.BLOCK);
+    CustomClassLoaderConstructor constr = 
+            new CustomClassLoaderConstructor(this.getClass().getClassLoader());
+    String dump = 
+            new Yaml(constr)
+                    .dumpAs(this,Tag.MAP,DumperOptions.FlowStyle.BLOCK);
     File infoFile = new File(directory,FILENAME_INFO);
     //System.err.println("Saving engine to "+infoFile);
     OutputStreamWriter out = null;
@@ -91,7 +96,9 @@ public class Info {
     }
   }
   public static Info load(File directory) {
-    Yaml yaml = new Yaml();
+    CustomClassLoaderConstructor constr = 
+            new CustomClassLoaderConstructor(Info.class.getClassLoader());
+    Yaml yaml = new Yaml(constr);
     Object obj;
     File infoFile = new File(directory,FILENAME_INFO);
     try {
