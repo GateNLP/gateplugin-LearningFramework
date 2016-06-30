@@ -194,6 +194,8 @@ public class CorpusExporterARFF extends CorpusExporter {
       FeatureVector vector = (FeatureVector)data;
       sb.append("{");
       boolean first = true;
+      // TODO: maybe it is easier to do 
+      // for(int idx : vector.getIndices) 
       for(int i=0; i<vector.numLocations(); i++) {   
         int idx = vector.indexAtLocation(i);
         if(first) 
@@ -251,6 +253,8 @@ public class CorpusExporterARFF extends CorpusExporter {
         }
       } else {
         // target is null: do nothing, simply create the row without a target 
+        // TODO: not sure what I was thinking here, but admittedly, exporting without
+        // a target or a missing target could have its uses, so we leave this as it is
       }
       sb.append("}");
       // TODO: add instance weight here once we support instance weights?
@@ -258,6 +262,6 @@ public class CorpusExporterARFF extends CorpusExporter {
       throw new RuntimeException("Cannot export, instance is not a feature vector but "+data.getClass());
     }
     return sb.toString();
-  }
+  } 
   
 }

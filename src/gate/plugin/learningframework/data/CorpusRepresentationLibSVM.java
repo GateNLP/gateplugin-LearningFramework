@@ -10,9 +10,6 @@ import cc.mallet.types.InstanceList;
 import cc.mallet.types.Label;
 import cc.mallet.types.SparseVector;
 import gate.util.GateRuntimeException;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintStream;
 import libsvm.svm_node;
 import libsvm.svm_problem;
 
@@ -51,7 +48,7 @@ public class CorpusRepresentationLibSVM extends CorpusRepresentation {
     int index = 0;
     for (int j = 0; j < indices.length; j++) {
       svm_node node = new svm_node();
-      node.index = indices[j];
+      node.index = indices[j]+1;   // NOTE: LibSVM locations have to start with 1
       node.value = values[j];
       nodearray[index] = node;
       index++;
@@ -95,7 +92,7 @@ public class CorpusRepresentationLibSVM extends CorpusRepresentation {
       prob.x[i] = new svm_node[indices.length];
       for (int j = 0; j < indices.length; j++) {
         svm_node node = new svm_node();
-        node.index = indices[j];
+        node.index = indices[j]+1; // NOTE: LibSVM location indices have to start with 1
         node.value = values[j];
         prob.x[i][j] = node;
       }
