@@ -15,6 +15,7 @@ import gate.plugin.learningframework.export.CorpusExporterARFF;
 import gate.plugin.learningframework.export.CorpusExporterLibSVM;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.engines.Info;
+import gate.plugin.learningframework.export.CorpusExporterMatrixMarket2;
 import gate.plugin.learningframework.features.TargetType;
 import gate.plugin.learningframework.mallet.LFPipe;
 import java.io.File;
@@ -26,7 +27,9 @@ public enum Exporter {
   //EXPORTER_MALLET_CLASS(),
   //EXPORTER_MALLET_SEQ(),
   EXPORTER_LIBSVM_CLASS(CorpusExporterLibSVM.class,TargetType.NOMINAL),
-  EXPORTER_LIBSVM_REGRESSION(CorpusExporterLibSVM.class,TargetType.NUMERIC);
+  EXPORTER_LIBSVM_REGRESSION(CorpusExporterLibSVM.class,TargetType.NUMERIC),
+  EXPORTER_MATRIXMARKET2_CLASS(CorpusExporterMatrixMarket2.class,TargetType.NOMINAL),
+  EXPORTER_MATRIXMARKET2_REGRESSION(CorpusExporterMatrixMarket2.class,TargetType.NUMERIC);
 
   /**
    * Write the instances to one or more files.
