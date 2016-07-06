@@ -25,29 +25,18 @@ import org.yaml.snakeyaml.Yaml;
 
 /**
  * An engine that represents Weka through en external process.
- * This can only be used for application of the model at the moment.
  * 
- * For now, this engine gets only used for application, so it gets only
- * created by Engine.loadEngine. The only methods called in this context
- * are loadModel() and loadMalletCorpusRepresentation() and if the user
- * also specified an algorithm class in the info file, initializeAlgorithm, 
- * which at the moment does nothing.
  * 
- * This requires that the user also places a second yaml file into the 
- * directory: weka.yaml. This file needs to contain the following fields:
- * <ul>
- * <li>path: the path to a script or program that starts the weka wrapper 
- * (see the weka-wrapper project on github). If the path starts with a slash
+ * This requires that the user configures the location of where weka-wrapper is installed.
+ * This can be done by setting the environment variable WEKA_WRAPPPER_HOME, the Java property
+ * gate.plugin.learningframework.wekawrapper.home or by adding another yaml file "weka.yaml" 
+ * to the data directory which contains the setting wekawrapper.home.
+ * If the path starts with a slash
  * it is an absolute path, otherwise the path is resolved relative to the 
  * directory. 
- * </ul>
  * 
- * The directory also needs to contain files lf.model, pipe.pipe, header.arff
+ * The data directory also needs to contain files lf.model, pipe.pipe, header.arff
  * 
- * The weka-wrapper command will then get invoked with the first parameter
- * being the path to the model and the second parameter being the path to 
- * the head file.
- *
  * 
  * @author Johann Petrak
  */

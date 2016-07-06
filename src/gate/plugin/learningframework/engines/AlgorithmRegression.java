@@ -12,7 +12,8 @@ package gate.plugin.learningframework.engines;
  */
 public enum AlgorithmRegression implements Algorithm {
   LIBSVM_RG(EngineLibSVM.class,null),
-  WEKA_RG_WRAPPER(EngineWekaExternal.class,null);
+  WEKA_RG_WRAPPER(EngineWekaExternal.class,null),
+  SKLEARN_RG_WRAPPER(EngineSklearnExternal.class,null);
   private AlgorithmRegression() {
     
   }

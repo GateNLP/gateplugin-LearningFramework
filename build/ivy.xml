@@ -18,6 +18,7 @@
     -->
     <dependency org="cc.mallet" name="mallet" rev="2.0.8" />
     <dependency org="org.jdom" name="jdom" rev="1.1"/>
+    <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.6.3" />
     <!-- for simplicity, this is currently fixed in lib-static 
     <dependency org="uk.ac.gate.lib" name="interaction" rev="1.0-SNAPSHOT"/>
     -->
