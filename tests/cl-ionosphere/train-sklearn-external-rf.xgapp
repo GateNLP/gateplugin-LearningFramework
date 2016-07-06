@@ -177,7 +177,7 @@
                 </entry>
                 <entry>
                   <string>algorithmParameters</string>
-                  <string>sklearn.svm.SVC</string>
+                  <string>sklearn.ensemble.RandomForestClassifier n_estimators 100 </string>
                 </entry>
                 <entry>
                   <string>featureSpecURL</string>

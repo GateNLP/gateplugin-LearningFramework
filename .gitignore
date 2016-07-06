@@ -24,4 +24,6 @@ hs_err_*.log
 !/tests/*/*/.keep
 !/tests/*/model-*/weka.yaml
 /test-tmp-EngineMalletSeqOut/
-
+/tests/cl-ionosphere/model-sklearn-external-rf/sklmodel*
+/tests/cl-ionosphere/model-sklearn-external-rf/indep.mtx
+/tests/cl-ionosphere/model-sklearn-external-rf/dep.mtx
