@@ -20,7 +20,8 @@ ant || exit
 ant clean.classes || exit
 rm -rf build.properties
 rm -rf makedist.sh
-rm -rf tests
+## Temporarily include the tests in the distribution so we can easier test on mac/Windows
+## rm -rf tests
 rm $curdir/${name}-${version}-src.zip
 cd ..
 zip -r $curdir/$name-$version.zip $name
