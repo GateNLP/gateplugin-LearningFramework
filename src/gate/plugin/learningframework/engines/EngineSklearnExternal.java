@@ -44,6 +44,12 @@ public class EngineSklearnExternal extends Engine {
 
   ProcessBase process;
   
+  // These variables get set from the wrapper-specific config file, java properties or
+  // environment variables.
+  private String shellcmd = null;
+  private String shellparms = null;
+  private String wrapperhome = null;
+  
   /**
    * Try to find the script running the sklearn-Wrapper command.
    * If apply is true, the executable for application is searched,
@@ -72,17 +78,20 @@ public class EngineSklearnExternal extends Engine {
         throw new GateRuntimeException("Could not load yaml file "+sklearnInfoFile,ex);
       }    
       tmp = null;
+      Map map = null;
       if(obj instanceof Map) {
-        Map map = (Map)obj;
+        map = (Map)obj;
         tmp = (String)map.get("sklearnwrapper.home");      
       } else {
         throw new GateRuntimeException("Info file has strange format: "+sklearnInfoFile.getAbsolutePath());
       }
-      if(tmp == null) {
-        System.err.println("sklearn.yaml file present but does not contain sklearnwrapper.home setting");
-      } else {
+      if(tmp != null) {
         homeDir = tmp;
       }      
+      // Also get any other settings that may be present:
+      // shell command
+      shellcmd = (String)map.get("shellcmd");
+      shellparms = (String)map.get("shellparms");
     }
     if(homeDir == null) {
       throw new GateRuntimeException("SklearnWrapper home not set, please see https://github.com/GateNLP/gateplugin-LearningFramework/wiki/UsingSklearn");
@@ -94,6 +103,7 @@ public class EngineSklearnExternal extends Engine {
     if(!wrapperHome.isDirectory()) {
       throw new GateRuntimeException("SklearnWrapper home is not a directory: "+wrapperHome.getAbsolutePath());
     }
+    wrapperhome = wrapperHome.getAbsolutePath();
     // Now, depending on the operating system, and on train/apply,
     // find the correct script to execute
     File commandFile;
@@ -129,9 +139,18 @@ public class EngineSklearnExternal extends Engine {
   protected void loadModel(File directory, String parms) {
     // Instead of loading a model, this establishes a connection with the 
     // external sklearn process. 
+    
     File commandFile = findWrapperCommand(directory, true);
     String modelFileName = new File(directory,"sklmodel").getAbsolutePath();
-    String finalCommand = commandFile.getAbsolutePath()+" "+modelFileName;
+    String finalCommand = commandFile.getAbsolutePath()+" "+wrapperhome+" "+modelFileName;
+    // if we have a shell command prepend that, and if we have shell parms too, include them
+    if(shellcmd != null) {
+      String tmp = shellcmd;
+      if(shellparms != null) {
+        shellcmd += " " + shellparms;
+      }
+      finalCommand = shellcmd + " " + finalCommand;
+    }
     System.err.println("Running: "+finalCommand);
     // Create a fake Model jsut to make LF_Apply... happy which checks if this is null
     model = "ExternalSklearnWrapperModel";
@@ -173,7 +192,15 @@ public class EngineSklearnExternal extends Engine {
             Exporter.EXPORTER_MATRIXMARKET2_CLASS, dataDirectory, instanceType, parms);
     String dataFileName = dataDirectory.getAbsolutePath()+File.separator;
     String modelFileName = new File(dataDirectory, "sklmodel").getAbsolutePath();
-    String finalCommand = commandFile.getAbsolutePath()+" "+dataFileName+" "+modelFileName+" "+sklearnClass+" "+sklearnParms;
+    String finalCommand = commandFile.getAbsolutePath()+" "+wrapperhome+" "+dataFileName+" "+modelFileName+" "+sklearnClass+" "+sklearnParms;
+    // if we have a shell command prepend that, and if we have shell parms too, include them
+    if(shellcmd != null) {
+      String tmp = shellcmd;
+      if(shellparms != null) {
+        shellcmd += " " + shellparms;
+      }
+      finalCommand = shellcmd + " " + finalCommand;
+    }
     System.err.println("Running: "+finalCommand);
     // Create a fake Model jsut to make LF_Apply... happy which checks if this is null
     model = "ExternalSklearnWrapperModel";
@@ -310,5 +337,6 @@ public class EngineSklearnExternal extends Engine {
   protected void loadMalletCorpusRepresentation(File directory) {
     corpusRepresentationMallet = CorpusRepresentationMalletTarget.load(directory);
   }
+  
   
 }

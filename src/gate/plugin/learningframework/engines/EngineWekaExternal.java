@@ -44,6 +44,12 @@ public class EngineWekaExternal extends Engine {
 
   ProcessBase process;
   
+  // These variables get set from the wrapper-specific config file, java properties or
+  // environment variables.
+  private String shellcmd = null;
+  private String shellparms = null;
+  private String wrapperhome = null;
+
   /**
    * Try to find the script running the Weka-Wrapper command.
    * If apply is true, the executable for application is searched,
@@ -72,17 +78,20 @@ public class EngineWekaExternal extends Engine {
         throw new GateRuntimeException("Could not load yaml file "+wekaInfoFile,ex);
       }    
       tmp = null;
+      Map map = null;
       if(obj instanceof Map) {
-        Map map = (Map)obj;
+        map = (Map)obj;
         tmp = (String)map.get("wekawrapper.home");      
       } else {
         throw new GateRuntimeException("Info file has strange format: "+wekaInfoFile.getAbsolutePath());
       }
-      if(tmp == null) {
-        System.err.println("weka.yaml file present but does not contain wekawrapper.home setting");
-      } else {
+      if(tmp != null) {
         homeDir = tmp;
       }      
+      // Also get any other settings that may be present:
+      // shell command
+      shellcmd = (String)map.get("shellcmd");
+      shellparms = (String)map.get("shellparms");
     }
     if(homeDir == null) {
       throw new GateRuntimeException("WekaWrapper home not set, please see https://github.com/GateNLP/gateplugin-LearningFramework/wiki/UsingWeka");
@@ -94,6 +103,7 @@ public class EngineWekaExternal extends Engine {
     if(!wrapperHome.isDirectory()) {
       throw new GateRuntimeException("WekaWrapper home is not a directory: "+wrapperHome.getAbsolutePath());
     }
+    wrapperhome = wrapperHome.getAbsolutePath();
     // Now, depending on the operating system, and on train/apply,
     // find the correct script to execute
     File commandFile;
@@ -139,7 +149,15 @@ public class EngineWekaExternal extends Engine {
     if(!new File(header).exists()) {
       throw new GateRuntimeException("File not found: "+header);
     }
-    String finalCommand = commandFile.getAbsolutePath()+" "+modelFileName+" "+header;
+    String finalCommand = commandFile.getAbsolutePath()+" "+wrapperhome+" "+modelFileName+" "+header;
+    // if we have a shell command prepend that, and if we have shell parms too, include them
+    if(shellcmd != null) {
+      String tmp = shellcmd;
+      if(shellparms != null) {
+        shellcmd += " " + shellparms;
+      }
+      finalCommand = shellcmd + " " + finalCommand;
+    }
     System.err.println("Running: "+finalCommand);
     // Create a fake Model jsut to make LF_Apply... happy which checks if this is null
     model = "ExternalWekaWrapperModel";
@@ -181,7 +199,15 @@ public class EngineWekaExternal extends Engine {
             Exporter.EXPORTER_ARFF_CLASS, dataDirectory, instanceType, parms);
     String dataFileName = new File(dataDirectory,Globals.dataBasename+".arff").getAbsolutePath();
     String modelFileName = new File(dataDirectory, FILENAME_MODEL).getAbsolutePath();
-    String finalCommand = commandFile.getAbsolutePath()+" "+dataFileName+" "+modelFileName+" "+wekaClass+" "+wekaParms;
+    String finalCommand = commandFile.getAbsolutePath()+" "+wrapperhome+" "+dataFileName+" "+modelFileName+" "+wekaClass+" "+wekaParms;
+    // if we have a shell command prepend that, and if we have shell parms too, include them
+    if(shellcmd != null) {
+      String tmp = shellcmd;
+      if(shellparms != null) {
+        shellcmd += " " + shellparms;
+      }
+      finalCommand = shellcmd + " " + finalCommand;
+    }
     System.err.println("Running: "+finalCommand);
     // Create a fake Model jsut to make LF_Apply... happy which checks if this is null
     model = "ExternalWekaWrapperModel";
