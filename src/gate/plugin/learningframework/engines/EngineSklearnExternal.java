@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -137,19 +138,22 @@ public class EngineSklearnExternal extends Engine {
   
   @Override
   protected void loadModel(File directory, String parms) {
+    ArrayList<String> finalCommand = new ArrayList<String>();
     // Instead of loading a model, this establishes a connection with the 
     // external sklearn process. 
     
     File commandFile = findWrapperCommand(directory, true);
     String modelFileName = new File(directory,"sklmodel").getAbsolutePath();
-    String finalCommand = commandFile.getAbsolutePath()+" "+wrapperhome+" "+modelFileName;
+    finalCommand.add(commandFile.getAbsolutePath());
+    finalCommand.add(wrapperhome);
+    finalCommand.add(modelFileName);
     // if we have a shell command prepend that, and if we have shell parms too, include them
     if(shellcmd != null) {
       String tmp = shellcmd;
       if(shellparms != null) {
         shellcmd += " " + shellparms;
       }
-      finalCommand = shellcmd + " " + finalCommand;
+      finalCommand.add(0,shellcmd);
     }
     System.err.println("Running: "+finalCommand);
     // Create a fake Model jsut to make LF_Apply... happy which checks if this is null
@@ -168,13 +172,15 @@ public class EngineSklearnExternal extends Engine {
 
   @Override
   public void trainModel(File dataDirectory, String instanceType, String parms) {
+    ArrayList<String> finalCommand = new ArrayList<String>();
     // invoke the sklearn wrapper for training
     // NOTE: for this the first word in parms must be the full sklearn class name, the rest are parms
-    if(parms == null || parms.isEmpty()) {
+    if(parms == null || parms.trim().isEmpty()) {
       throw new GateRuntimeException("Cannot train using SklearnWrapper, algorithmParameter must contain fulle SciKit Learn algorithm class name as first word");
     }
     String sklearnClass = null;
     String sklearnParms = "";
+    parms = parms.trim();
     int spaceIdx = parms.indexOf(" ");
     if(spaceIdx<0) {
       sklearnClass = parms;
@@ -192,16 +198,27 @@ public class EngineSklearnExternal extends Engine {
             Exporter.EXPORTER_MATRIXMARKET2_CLASS, dataDirectory, instanceType, parms);
     String dataFileName = dataDirectory.getAbsolutePath()+File.separator;
     String modelFileName = new File(dataDirectory, "sklmodel").getAbsolutePath();
-    String finalCommand = commandFile.getAbsolutePath()+" "+wrapperhome+" "+dataFileName+" "+modelFileName+" "+sklearnClass+" "+sklearnParms;
+    finalCommand.add(commandFile.getAbsolutePath());
+    finalCommand.add(wrapperhome);
+    finalCommand.add(dataFileName);
+    finalCommand.add(modelFileName);
+    finalCommand.add(sklearnClass);
+    if(!sklearnParms.isEmpty()) {
+      String[] tmp = sklearnParms.split("\\s+",-1);
+      finalCommand.addAll(Arrays.asList(tmp));
+    }
     // if we have a shell command prepend that, and if we have shell parms too, include them
     if(shellcmd != null) {
       String tmp = shellcmd;
       if(shellparms != null) {
         shellcmd += " " + shellparms;
       }
-      finalCommand = shellcmd + " " + finalCommand;
+      finalCommand.add(0,shellcmd);
     }
-    System.err.println("Running: "+finalCommand);
+    System.err.println("Running: ");
+    for(int i=0; i<finalCommand.size();i++) {
+      System.err.println(i+": >"+finalCommand.get(i)+"<");
+    }
     // Create a fake Model jsut to make LF_Apply... happy which checks if this is null
     model = "ExternalSklearnWrapperModel";
     

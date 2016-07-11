@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import org.yaml.snakeyaml.Yaml;
@@ -49,6 +50,8 @@ public class EngineWekaExternal extends Engine {
   private String shellcmd = null;
   private String shellparms = null;
   private String wrapperhome = null;
+  private boolean linuxLike = true;
+  private boolean windowsLike = false;
 
   /**
    * Try to find the script running the Weka-Wrapper command.
@@ -110,8 +113,8 @@ public class EngineWekaExternal extends Engine {
     // we use the simple heuristic that if the file separator is "/" 
     // we assume we can use the bash script, if it is "\" we use the windows
     // script and otherwise we give up
-    boolean linuxLike = System.getProperty("file.separator").equals("/");
-    boolean windowsLike = System.getProperty("file.separator").equals("\\");
+    linuxLike = System.getProperty("file.separator").equals("/");
+    windowsLike = System.getProperty("file.separator").equals("\\");
     if(linuxLike) {
       if(apply) 
         commandFile = new File(new File(wrapperHome,"bin"),"wekaWrapperApply.sh");
@@ -137,6 +140,7 @@ public class EngineWekaExternal extends Engine {
   
   @Override
   protected void loadModel(File directory, String parms) {
+    ArrayList<String> finalCommand = new ArrayList<String>();
     // Instead of loading a model, this establishes a connection with the 
     // external weka process. For this, we expect an additional file in the 
     // directory, weka.yaml, which describes how to run the weka wrapper
@@ -149,14 +153,18 @@ public class EngineWekaExternal extends Engine {
     if(!new File(header).exists()) {
       throw new GateRuntimeException("File not found: "+header);
     }
-    String finalCommand = commandFile.getAbsolutePath()+" "+wrapperhome+" "+modelFileName+" "+header;
+    finalCommand.add(commandFile.getAbsolutePath());
+    finalCommand.add(wrapperhome);
+    finalCommand.add(modelFileName);
+    finalCommand.add(header);
+    
     // if we have a shell command prepend that, and if we have shell parms too, include them
     if(shellcmd != null) {
       String tmp = shellcmd;
       if(shellparms != null) {
         shellcmd += " " + shellparms;
       }
-      finalCommand = shellcmd + " " + finalCommand;
+      finalCommand.add(0,shellcmd);
     }
     System.err.println("Running: "+finalCommand);
     // Create a fake Model jsut to make LF_Apply... happy which checks if this is null
@@ -175,13 +183,15 @@ public class EngineWekaExternal extends Engine {
 
   @Override
   public void trainModel(File dataDirectory, String instanceType, String parms) {
+    ArrayList<String> finalCommand = new ArrayList<String>();
     // TODO: invoke the weka wrapper
     // NOTE: for this the first word in parms must be the full weka class name, the rest are parms
-    if(parms == null || parms.isEmpty()) {
+    if(parms == null || parms.trim().isEmpty()) {
       throw new GateRuntimeException("Cannot train using WekaWrapper, algorithmParameter must contain Weka algorithm class as first word");
     }
     String wekaClass = null;
     String wekaParms = "";
+    parms = parms.trim();
     int spaceIdx = parms.indexOf(" ");
     if(spaceIdx<0) {
       wekaClass = parms;
@@ -199,16 +209,28 @@ public class EngineWekaExternal extends Engine {
             Exporter.EXPORTER_ARFF_CLASS, dataDirectory, instanceType, parms);
     String dataFileName = new File(dataDirectory,Globals.dataBasename+".arff").getAbsolutePath();
     String modelFileName = new File(dataDirectory, FILENAME_MODEL).getAbsolutePath();
-    String finalCommand = commandFile.getAbsolutePath()+" "+wrapperhome+" "+dataFileName+" "+modelFileName+" "+wekaClass+" "+wekaParms;
+    
+    finalCommand.add(commandFile.getAbsolutePath());
+    finalCommand.add(wrapperhome);
+    finalCommand.add(dataFileName);
+    finalCommand.add(modelFileName);
+    finalCommand.add(wekaClass);
+    if(!wekaParms.isEmpty()) {
+      String[] tmp = wekaParms.split("\\s+",-1);
+      finalCommand.addAll(Arrays.asList(tmp));
+    }
     // if we have a shell command prepend that, and if we have shell parms too, include them
     if(shellcmd != null) {
       String tmp = shellcmd;
       if(shellparms != null) {
         shellcmd += " " + shellparms;
       }
-      finalCommand = shellcmd + " " + finalCommand;
+      finalCommand.add(0,shellcmd);
     }
-    System.err.println("Running: "+finalCommand);
+    System.err.println("Running: ");
+    for(int i=0; i<finalCommand.size();i++) {
+      System.err.println(i+": >"+finalCommand.get(i)+"<");
+    }
     // Create a fake Model jsut to make LF_Apply... happy which checks if this is null
     model = "ExternalWekaWrapperModel";
     
