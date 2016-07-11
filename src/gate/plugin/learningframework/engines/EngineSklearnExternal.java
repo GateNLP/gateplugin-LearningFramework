@@ -149,11 +149,11 @@ public class EngineSklearnExternal extends Engine {
     finalCommand.add(modelFileName);
     // if we have a shell command prepend that, and if we have shell parms too, include them
     if(shellcmd != null) {
-      String tmp = shellcmd;
-      if(shellparms != null) {
-        shellcmd += " " + shellparms;
-      }
       finalCommand.add(0,shellcmd);
+      if(shellparms != null) {
+        String[] sps = shellparms.trim().split("\\s+");
+        int i=0; for(String sp : sps) { finalCommand.add(++i,sp); }
+      }
     }
     System.err.println("Running: "+finalCommand);
     // Create a fake Model jsut to make LF_Apply... happy which checks if this is null
@@ -209,11 +209,11 @@ public class EngineSklearnExternal extends Engine {
     }
     // if we have a shell command prepend that, and if we have shell parms too, include them
     if(shellcmd != null) {
-      String tmp = shellcmd;
-      if(shellparms != null) {
-        shellcmd += " " + shellparms;
-      }
       finalCommand.add(0,shellcmd);
+      if(shellparms != null) {
+        String[] sps = shellparms.trim().split("\\s+");
+        int i=0; for(String sp : sps) { finalCommand.add(++i,sp); }
+      }
     }
     System.err.println("Running: ");
     for(int i=0; i<finalCommand.size();i++) {

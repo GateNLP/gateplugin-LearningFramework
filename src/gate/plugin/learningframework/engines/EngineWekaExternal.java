@@ -153,19 +153,20 @@ public class EngineWekaExternal extends Engine {
     if(!new File(header).exists()) {
       throw new GateRuntimeException("File not found: "+header);
     }
+    
+    if(shellcmd != null) {
+      finalCommand.add(shellcmd);
+      if(shellparms != null) {
+        String[] sps = shellparms.trim().split("\\s+");
+        for(String sp : sps) { finalCommand.add(sp); }
+      }
+    }
+    
     finalCommand.add(commandFile.getAbsolutePath());
     finalCommand.add(wrapperhome);
     finalCommand.add(modelFileName);
     finalCommand.add(header);
     
-    // if we have a shell command prepend that, and if we have shell parms too, include them
-    if(shellcmd != null) {
-      String tmp = shellcmd;
-      if(shellparms != null) {
-        shellcmd += " " + shellparms;
-      }
-      finalCommand.add(0,shellcmd);
-    }
     System.err.println("Running: "+finalCommand);
     // Create a fake Model jsut to make LF_Apply... happy which checks if this is null
     model = "ExternalWekaWrapperModel";
@@ -209,6 +210,14 @@ public class EngineWekaExternal extends Engine {
             Exporter.EXPORTER_ARFF_CLASS, dataDirectory, instanceType, parms);
     String dataFileName = new File(dataDirectory,Globals.dataBasename+".arff").getAbsolutePath();
     String modelFileName = new File(dataDirectory, FILENAME_MODEL).getAbsolutePath();
+
+    if(shellcmd != null) {
+      finalCommand.add(shellcmd);
+      if(shellparms != null) {
+        String[] sps = shellparms.trim().split("\\s+");
+        for(String sp : sps) { finalCommand.add(sp); }
+      }
+    }
     
     finalCommand.add(commandFile.getAbsolutePath());
     finalCommand.add(wrapperhome);
@@ -218,14 +227,6 @@ public class EngineWekaExternal extends Engine {
     if(!wekaParms.isEmpty()) {
       String[] tmp = wekaParms.split("\\s+",-1);
       finalCommand.addAll(Arrays.asList(tmp));
-    }
-    // if we have a shell command prepend that, and if we have shell parms too, include them
-    if(shellcmd != null) {
-      String tmp = shellcmd;
-      if(shellparms != null) {
-        shellcmd += " " + shellparms;
-      }
-      finalCommand.add(0,shellcmd);
     }
     System.err.println("Running: ");
     for(int i=0; i<finalCommand.size();i++) {
