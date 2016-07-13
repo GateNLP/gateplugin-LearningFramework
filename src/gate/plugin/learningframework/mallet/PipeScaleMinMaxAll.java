@@ -15,25 +15,42 @@ import cc.mallet.pipe.Pipe;
 import cc.mallet.types.Alphabet;
 import cc.mallet.types.FeatureVector;
 import cc.mallet.types.Instance;
+import gate.plugin.learningframework.stats.FVStatsMeanVarAll;
+import gate.plugin.learningframework.stats.PerFeatureStats;
 import gate.util.GateRuntimeException;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  *
  *
  */
-public class FeatureVector2NormalizedFeatureVector extends Pipe implements Serializable {
+public class PipeScaleMinMaxAll extends Pipe implements Serializable {
 
-  double[] means;
-  double[] variances;
-
-  public FeatureVector2NormalizedFeatureVector(double[] means, double[] variances,
-          Alphabet alphabet) {
+  double min[];
+  double max[];
+  boolean normalize[];
+  
+  public PipeScaleMinMaxAll(Alphabet alphabet, FVStatsMeanVarAll stats) {
     super(alphabet, null);
-    this.means = means;
-    this.variances = variances;
-    System.err.println("Creating FV2NF instance with means="+Arrays.toString(means)+",variances="+Arrays.toString(variances));
+    List<PerFeatureStats> pfss = stats.getStats();
+    int n = pfss.size();
+    min = new double[n];
+    max = new double[n];
+    normalize = new boolean[n];
+    for(int i=0; i<n; i++) {
+      PerFeatureStats pfs = pfss.get(i);
+      // we do not normalize binary features and we do not normalize features with no
+      // values at all
+      if(pfs.binary != null && pfs.binary != true) {
+        min[i] = pfs.min;
+        max[i] = pfs.max;
+      } else {
+        normalize[i] = false;
+      }
+    }
+    System.err.println("DEBUG: Creating PipeScaleMinMaxAll instance with mins="+Arrays.toString(min)+",maxs="+Arrays.toString(max));
   }
 
   public Instance pipe(Instance carrier) {
@@ -42,9 +59,9 @@ public class FeatureVector2NormalizedFeatureVector extends Pipe implements Seria
       throw new IllegalArgumentException("Data must be of type FeatureVector not " + carrier.getData().getClass() + " we got " + carrier.getData());
     }
 
-    if (this.means.length != this.getDataAlphabet().size()
-            || this.variances.length != this.getDataAlphabet().size()) {
-      throw new GateRuntimeException("Alphabet has grown, this should not happen!");
+    if (min.length != getDataAlphabet().size()
+            || max.length != getDataAlphabet().size()) {
+      throw new GateRuntimeException("Size mismatch, alphabet="+getDataAlphabet().size()+", stats="+min.length);
     }
 
     FeatureVector fv = (FeatureVector) carrier.getData();
@@ -52,23 +69,16 @@ public class FeatureVector2NormalizedFeatureVector extends Pipe implements Seria
     double[] values = fv.getValues();
     for (int i = 0; i < indices.length; i++) {
       int index = indices[i];
-      double value = values[i];
-      if (index < means.length) {
-        double mean = means[index];
-        double variance = variances[index];
-        double newvalue = (value - mean) / Math.sqrt(variance);
+      double mi = min[index];
+      double ma = max[index];
+      double span = ma - mi;
+      if(normalize[index] && span > 0.0) {
+        double value = values[i];
+        // NOTE: this could in theory cause an overflow error but we ignore this here!
+        double newvalue = (value - mi) / span;
         fv.setValue(index, newvalue);
       }
     }
-    // TODO: JP: this was here before but I think it is not needed, the code above should 
-    // already destructively modify the feature vector inside the instance?
-    /*
-    boolean isLocked = carrier.isLocked();
-    carrier.unLock();
-    carrier.setData(fv);
-    if(isLocked) carrier.lock();
-    */
-
     return carrier;
   }
 

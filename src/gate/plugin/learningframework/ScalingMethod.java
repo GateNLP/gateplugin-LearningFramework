@@ -14,5 +14,7 @@ package gate.plugin.learningframework;
 
 public enum ScalingMethod {
         NONE,
-	MEANVARIANCE_ALL_FEATURES;
+	MEANVARIANCE_ALL_FEATURES,
+	MINMAX_ALL_FEATURES;
+	// UNIT_LENGTH_L2; // normalize the vector to have length one (l1 or l2 norm)
 }

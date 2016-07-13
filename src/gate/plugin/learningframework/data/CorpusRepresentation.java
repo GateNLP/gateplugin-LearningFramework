@@ -4,12 +4,8 @@ package gate.plugin.learningframework.data;
 
 import cc.mallet.types.InstanceList;
 import gate.plugin.learningframework.ScalingMethod;
-import gate.plugin.learningframework.Exporter;
-import gate.plugin.learningframework.engines.Info;
 import gate.plugin.learningframework.features.FeatureInfo;
 import gate.plugin.learningframework.mallet.LFPipe;
-import java.io.File;
-import java.util.ArrayList;
 
 /**
  * The base class of all classes that handle the representation of instances.

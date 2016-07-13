@@ -87,7 +87,12 @@ public abstract class CorpusRepresentationMallet extends CorpusRepresentation {
   
   public abstract void add(AnnotationSet instancesAS, AnnotationSet sequenceAS, AnnotationSet inputAS, AnnotationSet classAS, String targetFeatureName, TargetType targetType, String nameFeatureName);
   
-  public abstract void addScaling(ScalingMethod scaleFeatures);
+  /**
+   * Finish adding data to the CR. This will do any re-scaling and other outstanding calculations
+   * on the whole corpus. 
+   * @param scaleFeatures 
+   */
+  public abstract void finish();
   
   // TODO: need to do this better: make sure if there are thousands of 
   // features that we only show a subset and the number?

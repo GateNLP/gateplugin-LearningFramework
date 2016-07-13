@@ -7,17 +7,18 @@ import cc.mallet.pipe.Noop;
 import cc.mallet.pipe.Pipe;
 import cc.mallet.types.Alphabet;
 import cc.mallet.types.AugmentableFeatureVector;
-import cc.mallet.types.FeatureVector;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelAlphabet;
 import gate.plugin.learningframework.ScalingMethod;
-import gate.plugin.learningframework.mallet.FeatureVector2NormalizedFeatureVector;
 import gate.plugin.learningframework.features.FeatureSpecAttribute;
 import gate.plugin.learningframework.features.FeatureExtraction;
 import gate.plugin.learningframework.features.FeatureInfo;
 import gate.plugin.learningframework.features.TargetType;
 import gate.plugin.learningframework.mallet.LFPipe;
+import gate.plugin.learningframework.mallet.PipeScaleMeanVarAll;
+import gate.plugin.learningframework.mallet.PipeScaleMinMaxAll;
+import gate.plugin.learningframework.stats.FVStatsMeanVarAll;
 import gate.util.GateRuntimeException;
 import java.io.File;
 import java.io.FileInputStream;
@@ -196,57 +197,35 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
       }
     }
   }
-
+  
   /**
-   * Add scale features and add a pipe for that scaling to the end of the current SerialPipes.
-   * If the ScalingMethod is NONE, this does nothing.
+   * Finish adding instances to the CR. 
+   * This will also do the rescaling and any other additional calculations, if necessary.
    * @param scaleFeatures 
    */
   @Override
-  public void addScaling(ScalingMethod scaleFeatures) {
-    if(scaleFeatures == ScalingMethod.NONE) return;
-    System.out.println("DEBUG normalize: getDataAlphabet=" + instances.getDataAlphabet());
-    System.out.println("DEBUG normalize: size=" + instances.getDataAlphabet().size());
-    double[] sums = new double[instances.getDataAlphabet().size()];
-    double[] sumsofsquares = new double[instances.getDataAlphabet().size()];
-    //double[] numvals = new double[instances.getDataAlphabet().size()];
-    double[] means = new double[instances.getDataAlphabet().size()];
-    double[] variances = new double[instances.getDataAlphabet().size()];
-
-    for (int i = 0; i < instances.size(); i++) {
-      FeatureVector data = (FeatureVector) instances.get(i).getData();
-      int[] indices = data.getIndices();
-      double[] values = data.getValues();
-      for (int j = 0; j < indices.length; j++) {
-        int index = indices[j];
-        double value = values[j];
-        sums[index] += value;
-        sumsofsquares[index] += (value * value);
-        //numvals[index]++;
-      }
+  public void finish() {    
+    if(scalingMethod == ScalingMethod.NONE) return;
+    Pipe normalizer = null;
+    if(scalingMethod == ScalingMethod.MEANVARIANCE_ALL_FEATURES) {
+      FVStatsMeanVarAll stats = new FVStatsMeanVarAll(instances);
+      //System.err.println("DEBUG: got stats:\n"+stats);
+      normalizer = new PipeScaleMeanVarAll(instances.getDataAlphabet(), stats);
+    } else if(scalingMethod == ScalingMethod.MINMAX_ALL_FEATURES) {
+      FVStatsMeanVarAll stats = new FVStatsMeanVarAll(instances);
+      //System.err.println("DEBUG: got stats:\n"+stats);
+      normalizer = new PipeScaleMinMaxAll(instances.getDataAlphabet(), stats);      
+    } else {
+      throw new GateRuntimeException("Internal error: unexpected scaling method");
     }
-
-    //Now use the accumulators to prepare means and variances
-    //for each feature in the alphabet, to be used for scaling.
-    for (int i = 0; i < sums.length; i++) {
-      means[i] = sums[i] / instances.getDataAlphabet().size();
-      variances[i] = sumsofsquares[i] / instances.getDataAlphabet().size();
-    }
-
-    //We make a new pipe and apply it to all the instances
-    FeatureVector2NormalizedFeatureVector normalizer
-            = new FeatureVector2NormalizedFeatureVector(means, variances, instances.getDataAlphabet());
-    
-    // Run all the instances through this pipe
+    //System.err.println("DEBUG: re-normalizing instances");
     for(Instance inst : instances) {
       inst = normalizer.pipe(inst);
     }
-
-    //Add the pipe to the pipes so application time data will go through it
     ArrayList<Pipe> pipeList = pipe.pipes();
     pipeList.add(normalizer);
-    System.out.println("DEBUG normalize: added normalizer pipe " + normalizer);
-    System.out.println("DEBUG pipes after normalization: " + pipe);
+    //System.out.println("DEBUG normalize: added normalizer pipe " + normalizer);
+    //System.out.println("DEBUG pipes after normalization: " + pipe);
   }
 
 }

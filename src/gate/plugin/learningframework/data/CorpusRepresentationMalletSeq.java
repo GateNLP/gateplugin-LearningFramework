@@ -200,8 +200,8 @@ public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
   }
 
   @Override
-  public void addScaling(ScalingMethod scaleFeatures) {  
-    if(scaleFeatures != ScalingMethod.NONE)
+  public void finish() {  
+    if(scalingMethod != ScalingMethod.NONE)
       throw new GateRuntimeException("Scaling not allowed/not yet implemented for sequence tagging representation");
   }
   

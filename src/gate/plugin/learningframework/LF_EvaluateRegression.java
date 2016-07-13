@@ -196,7 +196,7 @@ public class LF_EvaluateRegression extends LF_TrainBase {
     }
       //System.out.println("DEBUG: instances are "+corpusRepresentation.getRepresentationMallet());
 
-    corpusRepresentation.addScaling(getScaleFeatures());
+    corpusRepresentation.finish();
     
     EvaluationResult er = engine.evaluate(getAlgorithmParameters(),evaluationMethod,numberOfFolds,trainingFraction,numberOfRepeats);
     logger.info("LearningFramework: Evaluation complete!");

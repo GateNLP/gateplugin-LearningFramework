@@ -6,6 +6,7 @@
 package gate.plugin.learningframework.stats;
 
 import cc.mallet.types.FeatureVector;
+import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +20,14 @@ import java.util.List;
 public class FVStatsMeanVarAll implements FeatureVectorStats {
 
   public FVStatsMeanVarAll(InstanceList instances) {
-    
+    for(Instance instance : instances) {
+      FeatureVector fv = (FeatureVector)instance.getData();
+      addFeatureVector(fv);
+    }
+    finish();
   }
   
-  List<PerFeature> pfs = new ArrayList<PerFeature>();
+  List<PerFeatureStats> pfs = new ArrayList<PerFeatureStats>();
   int nrInstances = 0;
   boolean immutable = false;
   
@@ -42,11 +47,11 @@ public class FVStatsMeanVarAll implements FeatureVectorStats {
       // unaffected because we still count this feature vector (and not adding
       // anything to sum and sum squares is the same as adding 0).
       // However, the calculation of min or max may be wrong in some cases.
-      if(value == Double.NaN) {
+      if(Double.isNaN(value)) {
         continue;
       }
-      // get the PerFeature values for this feature or create it.
-      // also, if needed, extend the array of PerFeature objects
+      // get the PerFeatureStats values for this feature or create it.
+      // also, if needed, extend the array of PerFeatureStats objects
       
       // to accommodate index i we need size i+1
       if(pfs.size()<(index+1)) {
@@ -54,14 +59,17 @@ public class FVStatsMeanVarAll implements FeatureVectorStats {
           pfs.add(null);
         }
       }
-      PerFeature pf = pfs.get(index);
-      if(pf==null) pf = new PerFeature();
+      PerFeatureStats pf = pfs.get(index);
+      if(pf==null) {        
+        pf = new PerFeatureStats();
+        pfs.set(index, pf);
+      }
       
       // now do the actual stats collection: if the value in pf is still NaN
       // set it, otherwise recalculate it. However, we do not check all the 
       // values in pf for NaN because we can infer e.g. that sumofsquares is
       // NaN if sum is NaN.
-      if(pf.sum==Double.NaN) {
+      if(Double.isNaN(pf.sum)) {
         pf.sum = value;
         pf.sumOfSquares = value*value;
         pf.min = value;
@@ -78,22 +86,6 @@ public class FVStatsMeanVarAll implements FeatureVectorStats {
       pf.var = pf.sumOfSquares / nrInstances;
     } // for indices
 
-    /*
-    //We make a new pipe and apply it to all the instances
-    FeatureVector2NormalizedFeatureVector normalizer
-            = new FeatureVector2NormalizedFeatureVector(means, variances, instances.getDataAlphabet());
-    
-    // Run all the instances through this pipe
-    for(Instance inst : instances) {
-      inst = normalizer.pipe(inst);
-    }
-
-    //Add the pipe to the pipes so application time data will go through it
-    ArrayList<Pipe> pipeList = pipe.pipes();
-    pipeList.add(normalizer);
-    System.out.println("DEBUG normalize: added normalizer pipe " + normalizer);
-    System.out.println("DEBUG pipes after normalization: " + pipe);
-    */
   }
 
   @Override
@@ -102,37 +94,26 @@ public class FVStatsMeanVarAll implements FeatureVectorStats {
     immutable = true;
   }
   
-  private static class PerFeature {
-    double sum = Double.NaN;
-    double sumOfSquares = Double.NaN;
-    double mean = Double.NaN;
-    double var = Double.NaN;
-    double min = Double.NaN;
-    double max = Double.NaN;
-    Boolean binary = null;
-    public String toString() {
-      StringBuilder sb = new StringBuilder();
-      sb.append("PerFeature{");
-      sb.append("mean="); sb.append(mean);
-      sb.append("var="); sb.append(var);
-      sb.append("min="); sb.append(min);
-      sb.append("max="); sb.append(max);
-      sb.append("bin="); sb.append(binary);
-      sb.append("}");
-      return sb.toString();
-    }
+  public List<PerFeatureStats> getStats() {
+    return pfs;
   }
+
   
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("FVStatsMeanVarAll{");
     sb.append("n="); sb.append(nrInstances);
+    sb.append(",");
     int i = 0;
-    for(PerFeature pf : pfs) {
+    for(PerFeatureStats pf : pfs) {
       if(i!=0) sb.append(",");
       sb.append(i++);
       sb.append("=");
-      sb.append(pf.toString());
+      if(pf==null) {
+        sb.append("(null)");
+      } else {
+        sb.append(pf.toString());
+      }
     }
     sb.append("}");
     return sb.toString();

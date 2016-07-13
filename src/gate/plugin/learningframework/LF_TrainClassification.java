@@ -172,7 +172,7 @@ public class LF_TrainClassification extends LF_TrainBase {
     }
       //System.out.println("DEBUG: instances are "+corpusRepresentation.getRepresentationMallet());
 
-    corpusRepresentation.addScaling(getScaleFeatures());
+    corpusRepresentation.finish();
 
     // Store some additional information in the info datastructure which will be saved with the model
     engine.getInfo().nrTrainingDocuments = nrDocuments;
