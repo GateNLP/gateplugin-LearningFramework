@@ -189,6 +189,7 @@ public class FeatureExtraction {
     Datatype dt = att.datatype;
     Alphabet alphabet = att.alphabet;
     String listsep = att.listsep;
+    String featureName4Value = att.featureName4Value;
     // first of all get the annotation from where we want to construct the annotation.
     // If annType is the same type as the annType of the instance annotation, use the 
     // instance annotation directly. Otherwise, use an annotation of type annType that overlaps
@@ -236,7 +237,7 @@ public class FeatureExtraction {
     // vector, so we do not even check, we simply add the featureName.
     // How we add the featureName depends on the datatype, on the codeas setting if it is nominal,
     // and also on how we treat missing values.
-    extractFeatureWorker(att.name,"A",inst,sourceAnnotation,doc,annType,featureName,alphabet,dt,mvt,codeas,listsep);
+    extractFeatureWorker(att.name,"A",inst,sourceAnnotation,doc,annType,featureName,featureName4Value,alphabet,dt,mvt,codeas,listsep);
   }
     
   
@@ -267,6 +268,7 @@ public class FeatureExtraction {
           Document doc,
           String annType,
           String featureName,
+          String featureName4Value,
           Alphabet alphabet,
           Datatype dt,
           MissingValueTreatment mvt,
@@ -331,11 +333,7 @@ public class FeatureExtraction {
               }
             } else {            
               String val = valObj.toString();
-              // TODO: if we want to store a count rather than 1.0, we would need to make use
-              // of a pre-calculated feature vector here which should contain the count for 
-              // this feature over all instances in the document (or whatever the counting strategy is)
-              // For this we would have to modify this and the calling method to also take 
-              // an optional feature vector and use it if it is non-null
+              
               if(listsep!=null && !listsep.isEmpty()) {
                 // we need to have a look if the value needs the get split into elements
                 String[] vals = val.split(listsep,-1);
@@ -346,8 +344,16 @@ public class FeatureExtraction {
                   }
                 }
               } else {
-                // just take the value as is
-                addToFeatureVector(fv, internalFeatureNamePrefix+VALSEP+val, 1.0);
+                // just take the value as is.
+                // Only in this case we allow for optionally getting the score from a different
+                // feature of the same annotation we got the value from. 
+                if(featureName4Value.isEmpty()) {
+                  addToFeatureVector(fv, internalFeatureNamePrefix+VALSEP+val, 1.0);
+                } else {
+                  // NOTE: sourceAnnotation should always ne non-null here since valObj is non-null
+                  double score = anyToDoubleOrElse(sourceAnnotation.getFeatures().get(featureName4Value), 1.0);
+                  addToFeatureVector(fv, internalFeatureNamePrefix+VALSEP+val, score);
+                }
               }
             }
           } else {
@@ -544,6 +550,7 @@ public class FeatureExtraction {
     int number = ng.number;
     String annType = ng.annType;
     String featureName = ng.feature;
+    String featureName4Value = ng.featureName4Value;
     // TODO: this we rely on the ngram only having allowed field values, e.g. annType
     // has to be non-null and non-empty and number has to be > 0.
     // If featureName is null, then for ngrams, the string comes from the covered document
@@ -554,6 +561,10 @@ public class FeatureExtraction {
       if (al.size() < number) return;
         // this will hold the actual token strings to use for creating the n-grams
         List<String> strings = new ArrayList<String>();
+        // this will hold the score to use for each string we extract, but only of the
+        // featureName4Value was specified and exists.
+        List<Double> scores = new ArrayList<Double>();
+        
         for(Annotation ann : al) {
           // for ngrams we either have a featureName name 
           if(featureName != null) {
@@ -565,6 +576,11 @@ public class FeatureExtraction {
               // if the resulting string is empty, it is also ignored 
               if(!tmp.isEmpty()) {
                 strings.add(tmp);
+                double score = 1.0;
+                if(!featureName4Value.isEmpty()) {
+                  score = anyToDoubleOrElse(ann.getFeatures().get(featureName4Value),1.0);
+                }
+                scores.add(score);
               }
             }
           } else {
@@ -572,6 +588,11 @@ public class FeatureExtraction {
             String tmp = gate.Utils.cleanStringFor(doc, ann).trim();
             if(!tmp.isEmpty()) {
               strings.add(tmp);
+              double score = 1.0;
+              if(!featureName4Value.isEmpty()) {
+                score = anyToDoubleOrElse(ann.getFeatures().get(featureName4Value),1.0);
+              }
+              scores.add(score);
             }
           }
         } // for Annotation ann : al
@@ -593,9 +614,17 @@ public class FeatureExtraction {
         StringBuilder sb = new StringBuilder();
         for(int i = 0; i < (strings.size()-number+1); i++ ) {
           sb.setLength(0);
+          // NOTE: the score for an ngram is calculated by multiplying the scores
+          // for each part of the ngram. If there is no featureName4Value, then all those
+          // scores are 1.0 at this point as well, so the final score is also 1.0.
+          // If we have a featureName4Value and it is a 1-gram, then we get the value of that
+          // feature. If it is an n-gram with n>1, then we get the product of all the scores
+          // of each gram. 
+          double score = 1.0;
           for(int j = 0; j < number; j++) {
             if(j!=0) sb.append(NGRAMSEP);
             sb.append(strings.get(i+j));
+            score = score * scores.get(i+j);
           }
           String ngram = sb.toString();
           // we have got our ngram now, count it, but only add if we are allowed to!
@@ -606,19 +635,14 @@ public class FeatureExtraction {
             prefix = ng.name;
           }
           prefix = prefix + NAMESEP + "N" + number;
-          // NOTE: if the key is already in the feature vector, then 
-          // this will increment the current count by one!
-          // This means that the number of times the ngram is contained within the 
-          // instance annotation is counted!
-          // TODO: in order to use the number of times the ngram occurs in the sequence or 
-          // in the document instead, we would need to e.g. this:
-          // for each Ng attribute, we would first need to collect a feature vector over all
-          // instances in the document (or sequence), then when each individual instance is processed, look
-          // up the value we got there and use it to set (rather than add) it to the per-instance
-          // feature vector here.
-          // So this method would get the "global feature vector"  as an additional parameter
-          // which would be used that way if it is non-null
-          addToFeatureVector(fv, prefix+VALSEP+ngram, 1.0);
+          // NOTE: if we have a featureName4Value set, then we set the feature value to
+          // what we have calculated, otherwise we add one for each time the ngram occurs
+          // within the span.
+          if(featureName4Value.isEmpty()) {
+            addToFeatureVector(fv, prefix+VALSEP+ngram, score);            
+          } else {
+            setFeatureVector(fv, prefix+VALSEP+ngram, score);
+          }
         }
   } // extractFeature(NGram)
   
@@ -659,6 +683,7 @@ public class FeatureExtraction {
     MissingValueTreatment mvt = al.missingValueTreatment;
     CodeAs codeas = al.codeas;
     String listsep = al.listsep;
+    String featureName4Value = al.featureName4Value;
     
     // First of all, get the annotation 0 and also get the set of the 
     // annotation types we are interested in.
@@ -736,7 +761,7 @@ public class FeatureExtraction {
       if(albsize+i>=0) {
         Annotation ann = annlistbackward.get(albsize+i);
         extractFeatureWorker(al.name,"L"+i,inst,ann,doc,annType4Feature,
-                featureName,alphabet,dt,mvt,codeas,listsep);    
+                featureName,featureName4Value,alphabet,dt,mvt,codeas,listsep);    
       } else {
         break;
       }
@@ -744,7 +769,7 @@ public class FeatureExtraction {
     // if we have index 0 in the range, process for that one
     if(from<=0&&to>=0) {
       extractFeatureWorker(al.name,"L"+0,inst,sourceAnnotation,doc,annType4Feature,
-              featureName,alphabet,dt,mvt,codeas,listsep);          
+              featureName,featureName4Value,alphabet,dt,mvt,codeas,listsep);          
     }
     // do the ones to the right
     int alfsize = annlistforward.size();
@@ -754,7 +779,7 @@ public class FeatureExtraction {
       if(i<=alfsize) {
         Annotation ann = annlistforward.get(i-1);
         extractFeatureWorker(al.name,"L"+i,inst,ann,doc,annType4Feature,
-                featureName,alphabet,dt,mvt,codeas,listsep);    
+                featureName,featureName4Value,alphabet,dt,mvt,codeas,listsep);    
       } else {
         break;
       }
@@ -1004,6 +1029,14 @@ public class FeatureExtraction {
     fv.add(key,val);
   }
         
+  private static void setFeatureVector(AugmentableFeatureVector fv, Object key, double val) {
+    Alphabet a = fv.getAlphabet();
+    if(!a.contains(key) && a.growthStopped()) {
+      return;
+    }
+    int index = a.lookupIndex(key);
+    fv.setValue(index,val);
+  }
   
         
   // NOTE: we use an AugmentableFeatureVector to represent the growing featureName vector inputAS we 
@@ -1021,7 +1054,30 @@ public class FeatureExtraction {
   // afv.contains("x") is true if the featureName vector contains a value for "x" (which implies it must
   //   be in the alphabet)
   // afv.getAlphabet().contains("x") is true if "x" is in the alphabet. 
-        
-  
+    
+  /**
+   * Convert the object to a double or, if it is null or not convertible, use the orElse value.
+   * 
+   * @param any
+   * @param orElse
+   * @return 
+   */
+  public static double anyToDoubleOrElse(Object any, double orElse) {
+    if(any == null ) return orElse;
+    if(any instanceof Number) {
+      return ((Number)any).doubleValue();
+    } else if(any instanceof String) {
+      Double tmp = null;
+      try {
+        tmp = Double.parseDouble((String)any);
+      } catch (Exception ex) {
+        // do not do anything, we just are happy to find tmp=null in this case
+      }
+      if(tmp==null) return orElse;
+      else return tmp;
+    } else {
+      return orElse;
+    }
+  }
 
 }

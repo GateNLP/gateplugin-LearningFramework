@@ -163,8 +163,10 @@ public class FeatureSpecification {
     // number-coded nominal, but for one-of-k coded values, we use "zero_value"
     // because this is usually how the absence of such values is coded!
     String missingValueTreatmentStr = "";
+    String featureName4Value = "";
     if(dt==Datatype.nominal && codeas==CodeAs.one_of_k) {
       missingValueTreatmentStr = getChildTextOrElse(attributeElement, "MISSINGVALUETREATMENT", "keep");
+      featureName4Value = getChildTextOrElse(attributeElement,"FEATURENAME4VALUE","");
     } else if (dt==Datatype.bool) {
       missingValueTreatmentStr = getChildTextOrElse(attributeElement, "MISSINGVALUETREATMENT", "zero_value");
     } else {
@@ -193,7 +195,8 @@ public class FeatureSpecification {
             missingValueValue,
             scalingMethod,
             transformMethod,
-            listsep
+            listsep,
+            featureName4Value
     );
     return att;
   }
@@ -202,6 +205,7 @@ public class FeatureSpecification {
     String aname = getChildTextOrElse(ngramElement,"NAME","").trim();
     String annType = getChildTextOrElse(ngramElement,"TYPE","").trim();
     String numberString = getChildTextOrElse(ngramElement,"NUMBER","1").trim();
+    String featureName4Value = getChildTextOrElse(ngramElement,"FEATURENAME4VALUE","");
     if (annType.isEmpty()) {
       throw new GateRuntimeException("TYPE in NGRAM " + i + " must not be missing or empty");
     }
@@ -214,7 +218,8 @@ public class FeatureSpecification {
             aname,
             Integer.parseInt(numberString),
             annType,
-            feature
+            feature,
+            featureName4Value
     );
     return ng;
   }

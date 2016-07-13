@@ -22,7 +22,8 @@ public class FeatureSpecSimpleAttribute extends FeatureSpecAttribute implements 
           String missingValueValue, 
           String scalingMethod, 
           String transformMethod,
-          String listsep) {
+          String listsep,
+          String featureName4Value) {
     this.name = aname;
     this.annType = type;
     this.feature = feature;
@@ -33,12 +34,14 @@ public class FeatureSpecSimpleAttribute extends FeatureSpecAttribute implements 
       alphabet = new Alphabet();
     }
     this.listsep = listsep;
+    this.featureName4Value = featureName4Value;
   }
   public CodeAs codeas = CodeAs.one_of_k;
   public Datatype datatype;
   public MissingValueTreatment missingValueTreatment = MissingValueTreatment.zero_value;
   public Alphabet alphabet;
   public String listsep;
+  public String featureName4Value;
 
   @Override
   public void stopGrowth() {

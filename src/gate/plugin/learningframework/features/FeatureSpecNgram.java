@@ -16,13 +16,15 @@ import java.util.logging.Logger;
  */
 public class FeatureSpecNgram extends FeatureSpecAttribute implements Serializable, Cloneable {
 
-  public FeatureSpecNgram(String aname, int number, String type, String feature) {
+  public FeatureSpecNgram(String aname, int number, String type, String feature, String featureName4Value) {
     this.name = aname;
     this.number = number;
     this.annType = type;
     this.feature = feature;
+    this.featureName4Value = featureName4Value;
   }
-  int number = -1;
+  public int number = -1;
+  public String featureName4Value = "";
 
   @Override
   public void stopGrowth() {
