@@ -1,7 +1,7 @@
 <!-- creole.xml for Learning_Framework -->
 <CREOLE-DIRECTORY
   ID="gate.LearningFramework"
-  VERSION="3.4"
+  VERSION="3.5"
   DESCRIPTION="Learning Framework"
   HELPURL="https://github.com/GateNLP/gateplugin-LearningFramework/wiki"
 >
@@ -10,5 +10,5 @@
   <IVY>build/ivy.xml</IVY>
   <JAR>lib-static/commons-cli-1.4-modified.jar</JAR>
   <JAR>lib-static/libsvm.jar</JAR>
-  <JAR>lib-static/interaction-1.0-SNAPSHOT.jar</JAR>
+  <JAR>lib-static/interaction-3.5.jar</JAR>
 </CREOLE-DIRECTORY>

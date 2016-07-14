@@ -5,7 +5,6 @@
  */
 package gate.plugin.learningframework.engines;
 
-import cc.mallet.classify.BalancedWinnow;
 import cc.mallet.classify.BalancedWinnowTrainer;
 import cc.mallet.classify.C45Trainer;
 import cc.mallet.classify.Classification;

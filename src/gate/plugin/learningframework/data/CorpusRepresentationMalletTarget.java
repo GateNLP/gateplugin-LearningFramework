@@ -11,6 +11,7 @@ import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelAlphabet;
 import gate.plugin.learningframework.ScalingMethod;
+import gate.plugin.learningframework.Utils;
 import gate.plugin.learningframework.features.FeatureSpecAttribute;
 import gate.plugin.learningframework.features.FeatureExtraction;
 import gate.plugin.learningframework.features.FeatureInfo;
@@ -170,7 +171,7 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
    * @param nameFeatureName
    */
   @Override
-  public void add(AnnotationSet instancesAS, AnnotationSet sequenceAS, AnnotationSet inputAS, AnnotationSet classAS, String targetFeatureName, TargetType targetType, String nameFeatureName) {
+  public void add(AnnotationSet instancesAS, AnnotationSet sequenceAS, AnnotationSet inputAS, AnnotationSet classAS, String targetFeatureName, TargetType targetType, String instanceWeightFeature, String nameFeatureName) {
     if(sequenceAS != null) {
       throw new GateRuntimeException("LF invalid call to CorpusRepresentationMallet.add: sequenceAS must be null "+
               " for document "+inputAS.getDocument().getName());
@@ -191,6 +192,12 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
       // if a nameFeature is specified, add the name informatin to the instance
       if(nameFeatureName != null) {
         FeatureExtraction.extractName(inst, instanceAnnotation, inputAS.getDocument());
+      }
+      if(instanceWeightFeature != null && !instanceWeightFeature.isEmpty()) {
+        // If the instanceWeightFeature is not specified we do not set any weight, but if it is 
+        // specified then we either try to convert the value to double or use 1.0.
+        double score = Utils.anyToDoubleOrElse(instanceAnnotation.getFeatures().get(instanceWeightFeature), 1.0);
+        inst.setProperty("instanceWeight", score);
       }
       if(!FeatureExtraction.ignoreInstanceWithMV(inst)) {
         instances.add(inst);

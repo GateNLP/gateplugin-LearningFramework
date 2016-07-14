@@ -6,13 +6,12 @@ import gate.Annotation;
 import gate.AnnotationSet;
 import gate.lib.interaction.data.SparseDoubleVector;
 import gate.lib.interaction.process.Process4JsonStream;
-import gate.lib.interaction.process.Process4ObjectStream;
 import gate.lib.interaction.process.ProcessBase;
 import gate.lib.interaction.process.ProcessSimple;
 import gate.plugin.learningframework.EvaluationMethod;
 import gate.plugin.learningframework.Exporter;
 import gate.plugin.learningframework.GateClassification;
-import gate.plugin.learningframework.Globals;
+import gate.plugin.learningframework.Utils;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
 import gate.plugin.learningframework.mallet.LFPipe;
 import gate.util.GateRuntimeException;
@@ -155,7 +154,7 @@ public class EngineSklearnExternal extends Engine {
         int i=0; for(String sp : sps) { finalCommand.add(++i,sp); }
       }
     }
-    System.err.println("Running: "+finalCommand);
+    //System.err.println("Running: "+finalCommand);
     // Create a fake Model jsut to make LF_Apply... happy which checks if this is null
     model = "ExternalSklearnWrapperModel";
     process = new Process4JsonStream(directory,finalCommand);
@@ -215,10 +214,10 @@ public class EngineSklearnExternal extends Engine {
         int i=0; for(String sp : sps) { finalCommand.add(++i,sp); }
       }
     }
-    System.err.println("Running: ");
-    for(int i=0; i<finalCommand.size();i++) {
-      System.err.println(i+": >"+finalCommand.get(i)+"<");
-    }
+    //System.err.println("Running: ");
+    //for(int i=0; i<finalCommand.size();i++) {
+    //  System.err.println(i+": >"+finalCommand.get(i)+"<");
+    //}
     // Create a fake Model jsut to make LF_Apply... happy which checks if this is null
     model = "ExternalSklearnWrapperModel";
     
@@ -232,7 +231,8 @@ public class EngineSklearnExternal extends Engine {
   }
 
   @Override
-  public List<GateClassification> classify(AnnotationSet instanceAS, AnnotationSet inputAS, AnnotationSet sequenceAS, String parms) {
+  public List<GateClassification> classify(AnnotationSet instanceAS, AnnotationSet inputAS, 
+          AnnotationSet sequenceAS, String parms) {
     CorpusRepresentationMalletTarget data = (CorpusRepresentationMalletTarget)corpusRepresentationMallet;
     data.stopGrowth();
     int nrCols = data.getPipe().getDataAlphabet().size();
@@ -275,7 +275,6 @@ public class EngineSklearnExternal extends Engine {
       
       // Convert to the sparse vector we use to send to the weka process
       int locs = fv.numLocations();
-      SparseDoubleVector sdv = new SparseDoubleVector(locs);
       for(int i=0;i<locs;i++) {
         int index = fv.indexAtLocation(i);
         values.add(fv.value(index));
@@ -285,6 +284,7 @@ public class EngineSklearnExternal extends Engine {
       rowIndex++;
     }
     // send the matrix data over to the weka process
+    // TODO: add a key with the featureWeights to the map!
     map.put("values", values);
     map.put("rowinds", rowinds);
     map.put("colinds",colinds);

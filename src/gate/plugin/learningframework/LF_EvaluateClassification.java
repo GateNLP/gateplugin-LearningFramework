@@ -189,6 +189,16 @@ public class LF_EvaluateClassification extends LF_TrainBase {
     return this.classAnnotationType;
   }
 
+  protected String instanceWeightFeature = "";
+  @RunTime
+  @Optional
+  @CreoleParameter(comment = "The feature that constains the instance weight. If empty, no instance weights are used",
+          defaultValue="")
+  public void setInstanceWeightFeature(String val) {
+    instanceWeightFeature = val;
+  }
+  public String getInstanceWeightFeature() { return instanceWeightFeature; }
+  
 
   
   
@@ -230,7 +240,7 @@ public class LF_EvaluateClassification extends LF_TrainBase {
     }
     inputAS.get(getClassAnnotationType());
     String nameFeatureName = null;
-    corpusRepresentation.add(instanceAS, sequenceAS, inputAS, classAS, tfName, TargetType.NOMINAL, nameFeatureName);
+    corpusRepresentation.add(instanceAS, sequenceAS, inputAS, classAS, tfName, TargetType.NOMINAL, instanceWeightFeature, nameFeatureName);
     nrDocuments++;
     return doc;
   }

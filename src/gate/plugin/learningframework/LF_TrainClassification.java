@@ -54,6 +54,15 @@ public class LF_TrainClassification extends LF_TrainBase {
     return this.dataDirectory;
   }
 
+  protected String instanceWeightFeature = "";
+  @RunTime
+  @Optional
+  @CreoleParameter(comment = "The feature that constains the instance weight. If empty, no instance weights are used",
+          defaultValue="")
+  public void setInstanceWeightFeature(String val) {
+    instanceWeightFeature = val;
+  }
+  public String getInstanceWeightFeature() { return instanceWeightFeature; }
   
   
   /**
@@ -155,7 +164,7 @@ public class LF_TrainClassification extends LF_TrainBase {
     // the classAS is always null for the classification task!
     // the nameFeatureName is always null for now!
     String nameFeatureName = null;
-    corpusRepresentation.add(instanceAS, sequenceAS, inputAS, null, getTargetFeature(), TargetType.NOMINAL, nameFeatureName);
+    corpusRepresentation.add(instanceAS, sequenceAS, inputAS, null, getTargetFeature(), TargetType.NOMINAL, instanceWeightFeature, nameFeatureName);
     return doc;
   }
 

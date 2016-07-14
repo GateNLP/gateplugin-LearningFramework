@@ -163,6 +163,7 @@ public class EngineLibSVM extends Engine {
   @Override
   public List<GateClassification> classify(
           AnnotationSet instanceAS, AnnotationSet inputAS, AnnotationSet sequenceAS, String parms) {
+    
     CorpusRepresentationMalletTarget data = (CorpusRepresentationMalletTarget) corpusRepresentationMallet;
     data.stopGrowth();
     // try to figure out if we have regression or classification:

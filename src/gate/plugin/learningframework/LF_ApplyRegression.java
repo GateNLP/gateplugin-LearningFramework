@@ -87,7 +87,17 @@ public class LF_ApplyRegression extends LearningFrameworkPRBase {
     return targetFeature;
   }
   
-  
+  protected String instanceWeightFeature = "";
+  /*
+  @RunTime
+  @Optional
+  @CreoleParameter(comment = "The feature that constains the instance weight. If empty, no instance weights are used",
+          defaultValue="")
+  public void setInstanceWeightFeature(String val) {
+    instanceWeightFeature = val;
+  }
+  public String getInstanceWeightFeature() { return instanceWeightFeature; }
+  */
 
 ////////////////////////////////////////////////////////////////////////////
 

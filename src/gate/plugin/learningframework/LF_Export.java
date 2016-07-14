@@ -55,6 +55,17 @@ public class LF_Export extends LF_ExportBase {
     return this.dataDirectory;
   }
 
+  protected String instanceWeightFeature = "";
+  @RunTime
+  @Optional
+  @CreoleParameter(comment = "The feature that constains the instance weight. If empty, no instance weights are used",
+          defaultValue="")
+  public void setInstanceWeightFeature(String val) {
+    instanceWeightFeature = val;
+  }
+  public String getInstanceWeightFeature() { return instanceWeightFeature; }
+  
+  
   
   
   /**
@@ -171,15 +182,15 @@ public class LF_Export extends LF_ExportBase {
     String nameFeatureName = null;
     if(haveSequenceAlg) {
       if(haveSequenceProblem) {
-        corpusRepresentationSeq.add(instanceAS, inputAS.get(getSequenceSpan()), inputAS, inputAS.get(getClassAnnotationType()), null, targetType, nameFeatureName);
+        corpusRepresentationSeq.add(instanceAS, inputAS.get(getSequenceSpan()), inputAS, inputAS.get(getClassAnnotationType()), null, targetType, instanceWeightFeature, nameFeatureName);
       } else {
-        corpusRepresentationSeq.add(instanceAS, inputAS.get(getSequenceSpan()), inputAS, null, getTargetFeature(), targetType, nameFeatureName);        
+        corpusRepresentationSeq.add(instanceAS, inputAS.get(getSequenceSpan()), inputAS, null, getTargetFeature(), targetType, instanceWeightFeature, nameFeatureName);        
       }
     } else {
       if(haveSequenceProblem) {
-        corpusRepresentationClass.add(instanceAS, null, inputAS, inputAS.get(getClassAnnotationType()), null, targetType, nameFeatureName);
+        corpusRepresentationClass.add(instanceAS, null, inputAS, inputAS.get(getClassAnnotationType()), null, targetType, instanceWeightFeature, nameFeatureName);
       } else {
-        corpusRepresentationClass.add(instanceAS, null, inputAS, null, getTargetFeature(), targetType, nameFeatureName);
+        corpusRepresentationClass.add(instanceAS, null, inputAS, null, getTargetFeature(), targetType, instanceWeightFeature, nameFeatureName);
       }
     }
     return doc;

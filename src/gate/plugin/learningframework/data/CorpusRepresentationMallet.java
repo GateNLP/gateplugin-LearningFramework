@@ -85,7 +85,7 @@ public abstract class CorpusRepresentationMallet extends CorpusRepresentation {
     }
   }
   
-  public abstract void add(AnnotationSet instancesAS, AnnotationSet sequenceAS, AnnotationSet inputAS, AnnotationSet classAS, String targetFeatureName, TargetType targetType, String nameFeatureName);
+  public abstract void add(AnnotationSet instancesAS, AnnotationSet sequenceAS, AnnotationSet inputAS, AnnotationSet classAS, String targetFeatureName, TargetType targetType, String instanceWeightFeature, String nameFeatureName);
   
   /**
    * Finish adding data to the CR. This will do any re-scaling and other outstanding calculations

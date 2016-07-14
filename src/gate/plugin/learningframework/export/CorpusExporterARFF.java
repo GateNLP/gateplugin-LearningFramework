@@ -189,6 +189,7 @@ public class CorpusExporterARFF extends CorpusExporter {
       if(ignore != null && ignore.equals(true)) 
         return null;
     }
+    Double instanceWeight = (Double)inst.getProperty("instanceWeight");
     Object data = inst.getData();
     if(data instanceof FeatureVector) {
       FeatureVector vector = (FeatureVector)data;
@@ -257,7 +258,11 @@ public class CorpusExporterARFF extends CorpusExporter {
         // a target or a missing target could have its uses, so we leave this as it is
       }
       sb.append("}");
-      // TODO: add instance weight here once we support instance weights?
+      if(instanceWeight!=null) {
+        sb.append(", {");
+        sb.append(instanceWeight);
+        sb.append("}");
+      }
     } else {
       throw new RuntimeException("Cannot export, instance is not a feature vector but "+data.getClass());
     }

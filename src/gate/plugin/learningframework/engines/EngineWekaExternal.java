@@ -12,6 +12,7 @@ import gate.plugin.learningframework.EvaluationMethod;
 import gate.plugin.learningframework.Exporter;
 import gate.plugin.learningframework.GateClassification;
 import gate.plugin.learningframework.Globals;
+import gate.plugin.learningframework.Utils;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
 import gate.plugin.learningframework.mallet.LFPipe;
 import gate.util.GateRuntimeException;
@@ -167,7 +168,7 @@ public class EngineWekaExternal extends Engine {
     finalCommand.add(modelFileName);
     finalCommand.add(header);
     
-    System.err.println("Running: "+finalCommand);
+    //System.err.println("Running: "+finalCommand);
     // Create a fake Model jsut to make LF_Apply... happy which checks if this is null
     model = "ExternalWekaWrapperModel";
     process = new Process4ObjectStream(directory,finalCommand);
@@ -228,10 +229,6 @@ public class EngineWekaExternal extends Engine {
       String[] tmp = wekaParms.split("\\s+",-1);
       finalCommand.addAll(Arrays.asList(tmp));
     }
-    System.err.println("Running: ");
-    for(int i=0; i<finalCommand.size();i++) {
-      System.err.println(i+": >"+finalCommand.get(i)+"<");
-    }
     // Create a fake Model jsut to make LF_Apply... happy which checks if this is null
     model = "ExternalWekaWrapperModel";
     
@@ -245,7 +242,8 @@ public class EngineWekaExternal extends Engine {
   }
 
   @Override
-  public List<GateClassification> classify(AnnotationSet instanceAS, AnnotationSet inputAS, AnnotationSet sequenceAS, String parms) {
+  public List<GateClassification> classify(AnnotationSet instanceAS, AnnotationSet inputAS, 
+          AnnotationSet sequenceAS, String parms) {
     CorpusRepresentationMalletTarget data = (CorpusRepresentationMalletTarget)corpusRepresentationMallet;
     data.stopGrowth();
     //System.err.println("Running EngineWeka.classify on document "+instanceAS.getDocument().getName());
@@ -263,6 +261,7 @@ public class EngineWekaExternal extends Engine {
       
       // Convert to the sparse vector we use to send to the weka process
       int locs = fv.numLocations();
+      
       SparseDoubleVector sdv = new SparseDoubleVector(locs);
       int[] locations = sdv.getLocations();
       double[] values = sdv.getValues();

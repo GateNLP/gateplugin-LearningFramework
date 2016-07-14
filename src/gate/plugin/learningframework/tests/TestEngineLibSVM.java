@@ -64,7 +64,7 @@ public class TestEngineLibSVM {
     AnnotationSet classAS = null;
     String targetFeature = "class";
     String nameFeature = null;
-    crm.add(instanceAS, sequenceAS, inputAS, classAS, targetFeature, TargetType.NOMINAL, nameFeature);
+    crm.add(instanceAS, sequenceAS, inputAS, classAS, targetFeature, TargetType.NOMINAL, "", nameFeature);
     System.err.println("TESTS: added instances, number of instances now: "+crm.getRepresentationMallet().size());
     // Use the same parameters as we did in previous tests with previous versions so we can 
     // compare the results
@@ -134,7 +134,7 @@ public class TestEngineLibSVM {
     AnnotationSet classAS = null;
     String targetFeature = "class";
     String nameFeature = null;
-    crm.add(instanceAS, sequenceAS, inputAS, classAS, targetFeature, TargetType.NOMINAL, nameFeature);
+    crm.add(instanceAS, sequenceAS, inputAS, classAS, targetFeature, TargetType.NOMINAL, "", nameFeature);
     System.err.println("added instances, number of instances now: "+crm.getRepresentationMallet().size());
 
     // method parameters: algparameters, method, folds, fraction, repeats, stratification
@@ -166,7 +166,7 @@ public class TestEngineLibSVM {
     AnnotationSet classAS = null;
     String targetFeature = "target";
     String nameFeature = null;
-    crm.add(instanceAS, sequenceAS, inputAS, classAS, targetFeature, TargetType.NUMERIC, nameFeature);
+    crm.add(instanceAS, sequenceAS, inputAS, classAS, targetFeature, TargetType.NUMERIC, "", nameFeature);
     System.err.println("TESTS: added instances, number of instances now: "+crm.getRepresentationMallet().size());
     engine.trainModel(null,"","");
     System.err.println("TESTS: model trained");

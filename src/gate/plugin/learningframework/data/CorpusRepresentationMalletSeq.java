@@ -185,10 +185,11 @@ public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
    *
    * @param instancesAS
    * @param inputAS
+   * @param instanceWeightFeature ignored, this is only relevant for classification/regression
    * @param nameFeatureName
    */
   @Override
-  public void add(AnnotationSet instancesAS, AnnotationSet sequenceAS, AnnotationSet inputAS, AnnotationSet classAS, String targetFeatureName, TargetType targetType, String nameFeatureName) {
+  public void add(AnnotationSet instancesAS, AnnotationSet sequenceAS, AnnotationSet inputAS, AnnotationSet classAS, String targetFeatureName, TargetType targetType, String instanceWeightFeature, String nameFeatureName) {
     if (sequenceAS == null) {
       throw new GateRuntimeException("LF invalid call to CorpusRepresentationMallet.add: sequenceAS must not be null "
               + " for document " + inputAS.getDocument().getName());

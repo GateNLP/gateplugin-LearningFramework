@@ -160,9 +160,9 @@ public class LF_TrainChunking extends LF_TrainBase {
     String nameFeatureName = null;
     if(haveSequenceTagger) {
       AnnotationSet sequenceAS = inputAS.get(getSequenceSpan());
-      corpusRepresentation.add(instanceAS, sequenceAS, inputAS, classAS, null, TargetType.NOMINAL, nameFeatureName);
+      corpusRepresentation.add(instanceAS, sequenceAS, inputAS, classAS, null, TargetType.NOMINAL, "", nameFeatureName);
     } else {
-      corpusRepresentation.add(instanceAS, null, inputAS, classAS, null, TargetType.NOMINAL, nameFeatureName);
+      corpusRepresentation.add(instanceAS, null, inputAS, classAS, null, TargetType.NOMINAL, "", nameFeatureName);
     }
     nrDocuments++;
     return doc;

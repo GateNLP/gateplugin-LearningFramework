@@ -4,6 +4,7 @@ import cc.mallet.types.FeatureVector;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.Label;
+import gate.plugin.learningframework.Utils;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.engines.Info;
 import gate.plugin.learningframework.features.FeatureExtraction;
@@ -35,6 +36,7 @@ public class CorpusExporterMatrixMarket2 extends CorpusExporter {
   public void export(File directory, CorpusRepresentationMallet crm, String instanceType, String parms) {
     PrintStream outDep = null;
     PrintStream outIndep = null;
+    PrintStream outInstWeights = null;
     File outFileIndep = new File(directory, "indep.mtx");
     File outFileDep = new File(directory, "dep.mtx");
     try {
@@ -95,6 +97,35 @@ public class CorpusExporterMatrixMarket2 extends CorpusExporter {
       rowNr++;
       Boolean ignoreInstance = (Boolean)instance.getProperty(FeatureExtraction.PROP_IGNORE_HAS_MV);
       if(ignoreInstance) continue;
+      // to export instance weights, we check the first instance if a weight is set: 
+      // if yes, then a third file is created which will contain the weights for each instance
+      Object instanceWeightObject = instance.getProperty("instanceWeight");
+      if(rowNr==1) {
+        File outFileInstWeights = new File(directory, "instweights.mtx");
+        if(instanceWeightObject !=null) {
+          try {
+            outInstWeights = new PrintStream(outFileInstWeights);
+          } catch (Exception ex) {
+            throw new GateRuntimeException("Could not open output file "+outFileInstWeights,ex);
+          }        
+          outInstWeights.println("%%MatrixMarket matrix coordinate real general\n%");
+          outInstWeights.print(DFi.format(nrRows)); // Each row has one value, non-sparse
+          outInstWeights.print(" ");
+          outInstWeights.print(DFi.format(1));
+          outInstWeights.print(" ");
+          outInstWeights.print(DFi.format(nrRows));
+          outInstWeights.println();        
+        } else {
+          outFileInstWeights.delete();
+        }
+      }
+      if(outInstWeights!=null) {
+        double weight = Utils.anyToDoubleOrElse(instanceWeightObject, 1.0);
+        outInstWeights.print(rowNr);
+        outInstWeights.print(" ");
+        outInstWeights.print("1 ");
+        outInstWeights.println(DFf.format(weight));
+      }
       Boolean haveMV = (Boolean)instance.getProperty(FeatureExtraction.PROP_HAVE_MV);      
       Object targetObj = instance.getTarget();
       double target = 0.0;

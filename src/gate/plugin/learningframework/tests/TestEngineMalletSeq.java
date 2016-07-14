@@ -83,7 +83,7 @@ public class TestEngineMalletSeq {
       AnnotationSet classAS = doc.getAnnotations().get("Link");
       String targetFeature = null;
       String nameFeature = null;
-      crm.add(instanceAS, sequenceAS, inputAS, classAS, targetFeature, TargetType.NOMINAL, nameFeature);
+      crm.add(instanceAS, sequenceAS, inputAS, classAS, targetFeature, TargetType.NOMINAL, "", nameFeature);
       System.out.println("Doc="+doc.getName()+" seq="+sequenceAS.size()+" inst="+instanceAS.size()+
               " class="+classAS.size());
     }

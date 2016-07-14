@@ -19,7 +19,6 @@ import cc.mallet.fst.Transducer;
 import cc.mallet.fst.TransducerTrainer;
 import cc.mallet.fst.ViterbiWriter;
 import cc.mallet.optimize.Optimizable;
-import cc.mallet.pipe.Pipe;
 import cc.mallet.types.FeatureVectorSequence;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
@@ -240,7 +239,8 @@ public class EngineMalletSeq extends EngineMallet {
 
   @Override
   public List<GateClassification> classify(
-          AnnotationSet instanceAS, AnnotationSet inputAS, AnnotationSet sequenceAS, String parms) {
+          AnnotationSet instanceAS, AnnotationSet inputAS, AnnotationSet sequenceAS, 
+          String parms) {
     // stop growth
     CorpusRepresentationMalletSeq data = (CorpusRepresentationMalletSeq)corpusRepresentationMallet;
     data.stopGrowth();

@@ -162,6 +162,17 @@ public class LF_EvaluateRegression extends LF_TrainBase {
     return numberOfRepeats;
   }
   
+  protected String instanceWeightFeature = "";
+  @RunTime
+  @Optional
+  @CreoleParameter(comment = "The feature that constains the instance weight. If empty, no instance weights are used",
+          defaultValue="")
+  public void setInstanceWeightFeature(String val) {
+    instanceWeightFeature = val;
+  }
+  public String getInstanceWeightFeature() { return instanceWeightFeature; }
+  
+  
   
   private int nrDocuments;
   
@@ -180,7 +191,7 @@ public class LF_EvaluateRegression extends LF_TrainBase {
     AnnotationSet classAS = null;
     String tfName = getTargetFeature();
     String nameFeatureName = null;
-    corpusRepresentation.add(instanceAS, sequenceAS, inputAS, classAS, tfName, TargetType.NUMERIC, nameFeatureName);
+    corpusRepresentation.add(instanceAS, sequenceAS, inputAS, classAS, tfName, TargetType.NUMERIC, instanceWeightFeature, nameFeatureName);
     nrDocuments++;
     return doc;
   }
