@@ -124,7 +124,7 @@ public class GateClassification {
           Double minConfidence) {
     for(GateClassification gc : gcs) {
       if (minConfidence != null && 
-          minConfidence != Double.NaN &&
+          !Double.isNaN(minConfidence) &&
           gc.getConfidenceScore() < minConfidence) {
         //Skip it
         continue;

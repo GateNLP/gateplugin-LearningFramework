@@ -206,7 +206,7 @@ public class CorpusExporterARFF extends CorpusExporter {
         sb.append(idx);
         sb.append(" ");
         double value = vector.valueAtLocation(i);
-        if(value == Double.NaN) {
+        if(Double.isNaN(value)) {
           sb.append("?");
         } else {
           // TODO: proper handling of missing values!!!

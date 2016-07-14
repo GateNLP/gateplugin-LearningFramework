@@ -10,7 +10,7 @@ package gate.plugin.learningframework;
  *
  * @author Johann Petrak
  */
-public class Utils {
+public class LFUtils {
 
   // NOTE: we use an AugmentableFeatureVector to represent the growing featureName vector inputAS we
   // build it.

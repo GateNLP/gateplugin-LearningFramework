@@ -4,7 +4,7 @@ import cc.mallet.types.FeatureVector;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.Label;
-import gate.plugin.learningframework.Utils;
+import gate.plugin.learningframework.LFUtils;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.engines.Info;
 import gate.plugin.learningframework.features.FeatureExtraction;
@@ -120,7 +120,7 @@ public class CorpusExporterMatrixMarket2 extends CorpusExporter {
         }
       }
       if(outInstWeights!=null) {
-        double weight = Utils.anyToDoubleOrElse(instanceWeightObject, 1.0);
+        double weight = LFUtils.anyToDoubleOrElse(instanceWeightObject, 1.0);
         outInstWeights.print(rowNr);
         outInstWeights.print(" ");
         outInstWeights.print("1 ");
@@ -153,7 +153,7 @@ public class CorpusExporterMatrixMarket2 extends CorpusExporter {
         FeatureVector fv = (FeatureVector)fvObj;
         for(int idx : fv.getIndices()) {
           double val = fv.valueAtLocation(idx);
-          if(val!=Double.NaN) {
+          if(!Double.isNaN(val)) {
             outIndep.print(rowNr); outIndep.print(" ");
             outIndep.print(idx+1); outIndep.print(" ");
             outIndep.println(DFf.format(val));

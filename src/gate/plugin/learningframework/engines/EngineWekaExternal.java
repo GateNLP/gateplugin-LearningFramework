@@ -12,7 +12,7 @@ import gate.plugin.learningframework.EvaluationMethod;
 import gate.plugin.learningframework.Exporter;
 import gate.plugin.learningframework.GateClassification;
 import gate.plugin.learningframework.Globals;
-import gate.plugin.learningframework.Utils;
+import gate.plugin.learningframework.LFUtils;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
 import gate.plugin.learningframework.mallet.LFPipe;
 import gate.util.GateRuntimeException;

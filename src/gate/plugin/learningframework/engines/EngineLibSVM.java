@@ -103,7 +103,7 @@ public class EngineLibSVM extends Engine {
             } catch (Exception ex) {
               // ignore this
             }
-            if (value != Double.NaN) {
+            if (!Double.isNaN(value)) {
               int fn = Integer.parseInt(token.substring(2));
               if (fn < nrIndepFeatures) {
                 featureNumbers.add(fn);

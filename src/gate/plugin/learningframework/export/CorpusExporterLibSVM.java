@@ -9,17 +9,13 @@ import cc.mallet.types.FeatureVector;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.Label;
-import gate.plugin.learningframework.data.CorpusRepresentationLibSVM;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.engines.Info;
 import gate.plugin.learningframework.features.FeatureExtraction;
 import gate.util.GateRuntimeException;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.text.DecimalFormat;
-import libsvm.svm_problem;
 
 /**
  *
@@ -89,7 +85,7 @@ public class CorpusExporterLibSVM extends CorpusExporter {
         FeatureVector fv = (FeatureVector)fvObj;
         for(int idx : fv.getIndices()) {
           double val = fv.valueAtLocation(idx);
-          if(val!=Double.NaN) {
+          if(!Double.isNaN(val)) {
             out.print(idx+1); out.print(":");
             out.print(DFf.format(val));
           }

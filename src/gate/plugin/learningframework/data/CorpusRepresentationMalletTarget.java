@@ -11,7 +11,7 @@ import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelAlphabet;
 import gate.plugin.learningframework.ScalingMethod;
-import gate.plugin.learningframework.Utils;
+import gate.plugin.learningframework.LFUtils;
 import gate.plugin.learningframework.features.FeatureSpecAttribute;
 import gate.plugin.learningframework.features.FeatureExtraction;
 import gate.plugin.learningframework.features.FeatureInfo;
@@ -196,7 +196,7 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
       if(instanceWeightFeature != null && !instanceWeightFeature.isEmpty()) {
         // If the instanceWeightFeature is not specified we do not set any weight, but if it is 
         // specified then we either try to convert the value to double or use 1.0.
-        double score = Utils.anyToDoubleOrElse(instanceAnnotation.getFeatures().get(instanceWeightFeature), 1.0);
+        double score = LFUtils.anyToDoubleOrElse(instanceAnnotation.getFeatures().get(instanceWeightFeature), 1.0);
         inst.setProperty("instanceWeight", score);
       }
       if(!FeatureExtraction.ignoreInstanceWithMV(inst)) {
