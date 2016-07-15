@@ -216,12 +216,12 @@
                 </entry>
                 <entry>
                   <string>trainingAlgorithm</string>
-                  <gate.plugin.learningframework.engines.AlgorithmClassification>MALLET_CL_C45</gate.plugin.learningframework.engines.AlgorithmClassification>
+                  <gate.plugin.learningframework.engines.AlgorithmClassification>COSTCLA_CL_WRAPPER</gate.plugin.learningframework.engines.AlgorithmClassification>
                 </entry>
                 <entry>
                   <string>dataDirectory</string>
                   <gate.util.persistence.PersistenceManager-URLHolder>
-                    <urlString>$relpath$model-malletC45-costs</urlString>
+                    <urlString>$relpath$model-costcla-external-rf</urlString>
                   </gate.util.persistence.PersistenceManager-URLHolder>
                 </entry>
                 <entry>
@@ -238,7 +238,7 @@
                 </entry>
                 <entry>
                   <string>algorithmParameters</string>
-                  <string>  </string>
+                  <string>costcla.models.CostSensitiveRandomForestClassifier n_estimators 100 </string>
                 </entry>
                 <entry>
                   <string>featureSpecURL</string>
@@ -284,7 +284,7 @@
       <collectionType>java.util.ArrayList</collectionType>
     </prList>
     <resourceType>gate.creole.ConditionalSerialAnalyserController</resourceType>
-    <resourceName>train-malletC45costs</resourceName>
+    <resourceName>train-costcla-external-rf</resourceName>
     <initParams class="gate.util.persistence.MapPersistence">
       <mapType>gate.util.SimpleFeatureMapImpl</mapType>
       <localMap/>

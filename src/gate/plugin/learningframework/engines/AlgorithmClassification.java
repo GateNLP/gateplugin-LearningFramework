@@ -31,7 +31,8 @@ public enum AlgorithmClassification implements Algorithm {
   // MALLET_SEQ_CRF_VGS(EngineMalletSeq.class,null), // ByValueGradients  
   MALLET_SEQ_MEMM(EngineMalletSeq.class,null),
   WEKA_CL_WRAPPER(EngineWekaExternal.class,null),
-  SKLEARN_CL_WRAPPER(EngineSklearnExternal.class,null);
+  SKLEARN_CL_WRAPPER(EngineSklearnExternal.class,null),
+  COSTCLA_CL_WRAPPER(EngineCostclaExternal.class,null);
   private AlgorithmClassification() {
     
   }

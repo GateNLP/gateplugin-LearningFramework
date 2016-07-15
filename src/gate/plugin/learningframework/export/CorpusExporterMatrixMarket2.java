@@ -8,6 +8,7 @@ import gate.plugin.learningframework.LFUtils;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.engines.Info;
 import gate.plugin.learningframework.features.FeatureExtraction;
+import gate.plugin.learningframework.mallet.LabelWithCosts;
 import gate.util.GateRuntimeException;
 import java.io.File;
 import java.io.PrintStream;
@@ -37,8 +38,11 @@ public class CorpusExporterMatrixMarket2 extends CorpusExporter {
     PrintStream outDep = null;
     PrintStream outIndep = null;
     PrintStream outInstWeights = null;
+    PrintStream outCosts = null;
     File outFileIndep = new File(directory, "indep.mtx");
     File outFileDep = new File(directory, "dep.mtx");
+    File outFileCosts = new File(directory,"instcosts.mtx");
+    File outFileInstWeights = new File(directory, "instweights.mtx");
     try {
       outDep = new PrintStream(outFileDep);
       outIndep = new PrintStream(outFileIndep);
@@ -101,7 +105,6 @@ public class CorpusExporterMatrixMarket2 extends CorpusExporter {
       // if yes, then a third file is created which will contain the weights for each instance
       Object instanceWeightObject = instance.getProperty("instanceWeight");
       if(rowNr==1) {
-        File outFileInstWeights = new File(directory, "instweights.mtx");
         if(instanceWeightObject !=null) {
           try {
             outInstWeights = new PrintStream(outFileInstWeights);
@@ -142,7 +145,36 @@ public class CorpusExporterMatrixMarket2 extends CorpusExporter {
         // TODO: if we have row 1 and we find that the entry of this label is of type LabelWithCosts,
         // then open yet another output file for exporting the per-instance costss.
         // Then if that file is open, write subsequent costs!
-        
+        if(rowNr==1) {
+          if(label.getEntry() instanceof LabelWithCosts) {
+            LabelWithCosts lwc = (LabelWithCosts)label.getEntry();
+            try {
+              outCosts = new PrintStream(outFileCosts);
+            } catch (Exception ex) {
+              throw new GateRuntimeException("Could not open output file "+outFileCosts,ex);
+            }        
+            outCosts.println("%%MatrixMarket matrix coordinate real general\n%");
+            outCosts.print(DFi.format(nrRows)); // Each row has one value, non-sparse
+            outCosts.print(" ");
+            outCosts.print(DFi.format(lwc.getCosts().length));
+            outCosts.print(" ");
+            outCosts.print(DFi.format(nrRows*lwc.getCosts().length));
+            outCosts.println();                    
+          } else {
+            outFileCosts.delete();
+          }
+        }
+        if(outCosts != null) {
+          LabelWithCosts lwc = (LabelWithCosts)label.getEntry();
+          double[] costs = lwc.getCosts();
+          for(int i=0;i<costs.length;i++) {
+            outCosts.print(rowNr);
+            outCosts.print(" ");
+            outCosts.print(i+1);
+            outCosts.print(" ");
+            outCosts.println(DFf.format(costs[i]));
+          }
+        }
       }
       outDep.print(rowNr);
       outDep.print(" ");
@@ -173,7 +205,9 @@ public class CorpusExporterMatrixMarket2 extends CorpusExporter {
     if(outInstWeights!=null) {
       outInstWeights.close();
     }
-    // TODO: close outCosts.
+    if(outCosts != null) {
+      outCosts.close();
+    }
   }
   
 }

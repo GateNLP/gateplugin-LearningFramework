@@ -28,3 +28,6 @@ hs_err_*.log
 /tests/cl-ionosphere/model-sklearn-external-rf/indep.mtx
 /tests/cl-ionosphere/model-sklearn-external-rf/dep.mtx
 /tests/cl-ionosphere/model-sklearn-external-rf/instweights.mtx
+/tests/cl-ionosphere/model-costcla-external-rf/dep.mtx
+/tests/cl-ionosphere/model-costcla-external-rf/indep.mtx
+/tests/cl-ionosphere/model-costcla-external-rf/instcosts.mtx
