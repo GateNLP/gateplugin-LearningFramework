@@ -139,6 +139,10 @@ public class CorpusExporterMatrixMarket2 extends CorpusExporter {
       } else if(targetObj instanceof Label) {
         Label label = (Label)targetObj;
         target = label.getIndex();
+        // TODO: if we have row 1 and we find that the entry of this label is of type LabelWithCosts,
+        // then open yet another output file for exporting the per-instance costss.
+        // Then if that file is open, write subsequent costs!
+        
       }
       outDep.print(rowNr);
       outDep.print(" ");
@@ -163,6 +167,13 @@ public class CorpusExporterMatrixMarket2 extends CorpusExporter {
         throw new GateRuntimeException("Instance is not a FeatureVector but "+fvObj.getClass());
       }
     }
+    // close all the files
+    outIndep.close();
+    outDep.close();
+    if(outInstWeights!=null) {
+      outInstWeights.close();
+    }
+    // TODO: close outCosts.
   }
   
 }

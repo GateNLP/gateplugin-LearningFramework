@@ -12,7 +12,6 @@ import gate.plugin.learningframework.EvaluationMethod;
 import gate.plugin.learningframework.Exporter;
 import gate.plugin.learningframework.GateClassification;
 import gate.plugin.learningframework.Globals;
-import gate.plugin.learningframework.LFUtils;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
 import gate.plugin.learningframework.mallet.LFPipe;
 import gate.util.GateRuntimeException;
@@ -314,7 +313,7 @@ public class EngineWekaExternal extends Engine {
         for (int i = 0; i < ret.length; i++) {
           int thislabel = i;
           double thisprob = ret[i];
-          String labelstr = (String) pipe.getTargetAlphabet().lookupObject(thislabel);
+          String labelstr = pipe.getTargetAlphabet().lookupObject(thislabel).toString();
           classList.add(labelstr);
           confidenceList.add(thisprob);
           if (thisprob > bestprob) {
@@ -324,7 +323,7 @@ public class EngineWekaExternal extends Engine {
         } // end for i < predictionDistribution.length
 
         String cl
-                = (String) pipe.getTargetAlphabet().lookupObject(bestlabel);
+                = pipe.getTargetAlphabet().lookupObject(bestlabel).toString();
 
         gc = new GateClassification(
                 instAnn, cl, bestprob, classList, confidenceList);

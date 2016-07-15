@@ -160,7 +160,7 @@ public class CorpusExporterARFF extends CorpusExporter {
     sb.append("{");
     for(int i=0; i<alph.size(); i++) {
       if(i>0) sb.append(",");
-      String val = (String)alph.lookupObject(i);
+      String val = alph.lookupObject(i).toString();
       sb.append(escape4Arff(val));
     }
     sb.append("}");

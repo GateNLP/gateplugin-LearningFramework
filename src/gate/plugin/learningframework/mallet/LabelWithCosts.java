@@ -11,24 +11,39 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- *
+ * Represent a cost vector in a way that Mallet can use as a classification label.
+ * 
+ * This can be created from a List<Double> or double[] of per-instance costs, 
+ * in which case the "label" used will be the String representation of the class index
+ * with the minimum cost. 
+ * If the instance is used directly as a target, then instead of the index, the label
+ * can be stored directly as well. 
+ * 
  * @author Johann Petrak
  */
 public class LabelWithCosts implements Serializable {
 
   private static final long serialVersionUID = 2552102403617791653L;
   
-  Integer idx = null;
-  String label = null;
-  double[] costs = null;
+  private Integer idx = null;
+  private String label = null;
+  private double[] costs = null;
   public LabelWithCosts(List<Double> costs) {
     this.costs = new double[costs.size()];
     for(int i=0;i<costs.size();i++) this.costs[i] = costs.get(i);
     storeLabel();
   }
+  public LabelWithCosts(String l, List<Double> costs) {
+    this(costs);
+    label = l;
+  }
   public LabelWithCosts(double[] costs) {
     this.costs = costs;
     storeLabel();
+  }
+  public LabelWithCosts(String l, double[] costs) {
+    this(costs);
+    label = l;
   }
   private void storeLabel() {
       int firstMin = -1;

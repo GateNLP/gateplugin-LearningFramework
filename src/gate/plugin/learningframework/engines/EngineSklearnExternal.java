@@ -4,14 +4,12 @@ import cc.mallet.types.FeatureVector;
 import cc.mallet.types.Instance;
 import gate.Annotation;
 import gate.AnnotationSet;
-import gate.lib.interaction.data.SparseDoubleVector;
 import gate.lib.interaction.process.Process4JsonStream;
 import gate.lib.interaction.process.ProcessBase;
 import gate.lib.interaction.process.ProcessSimple;
 import gate.plugin.learningframework.EvaluationMethod;
 import gate.plugin.learningframework.Exporter;
 import gate.plugin.learningframework.GateClassification;
-import gate.plugin.learningframework.LFUtils;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
 import gate.plugin.learningframework.mallet.LFPipe;
 import gate.util.GateRuntimeException;
@@ -244,7 +242,7 @@ public class EngineSklearnExternal extends Engine {
     if(pipe.getTargetAlphabet() != null) {
       classList = new ArrayList<String>();
       for(int i = 0; i<pipe.getTargetAlphabet().size(); i++) {
-        String labelstr = (String) pipe.getTargetAlphabet().lookupObject(i);
+        String labelstr = pipe.getTargetAlphabet().lookupObject(i).toString();
         classList.add(labelstr);
       }
     }
@@ -330,7 +328,7 @@ public class EngineSklearnExternal extends Engine {
       } else {
         int bestlabel = targets.get(instNr).intValue();
         String cl
-                = (String) pipe.getTargetAlphabet().lookupObject(bestlabel);
+                = pipe.getTargetAlphabet().lookupObject(bestlabel).toString();
         double bestprob = Double.NaN;
         if(probas != null) {
           bestprob = Collections.max(probas.get(instNr));
