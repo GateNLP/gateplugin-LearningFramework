@@ -9,6 +9,7 @@ import gate.AnnotationSet;
 import gate.Document;
 import gate.Utils;
 import gate.plugin.learningframework.LFUtils;
+import gate.plugin.learningframework.mallet.LabelWithCosts;
 import gate.util.GateRuntimeException;
 import java.util.ArrayList;
 import java.util.List;
@@ -821,6 +822,13 @@ public class FeatureExtraction {
    * This gets used when the task performed is classification (using either a classification
    * algorithm or a sequence tagging algorithm). In both cases, the class label is fetched
    * from the instance annotation as the value of the targetFeature. 
+   * 
+   * Mallet relies on the target alphabet having as many entries as there are classes. To 
+   * support per instance cost distributions, we store the distribution as a LabelWithCosts
+   * instance. This instance is used as the Entry for a mallet Label and as long as the 
+   * minimum cost class is the same, the hashcodes and equals function will consider them
+   * to be identical.
+   * 
    * @param inst
    * @param alphabet the label alphabet, must be of type LabelAlphabet
    * @param targetFeature
@@ -835,22 +843,12 @@ public class FeatureExtraction {
     if(obj == null) {
       throw new GateRuntimeException("No target value for feature "+targetFeature+
               " for instance at offset "+gate.Utils.start(instanceAnnotation)+" in document "+doc.getName());
-    } else if(obj instanceof List || obj instanceof double[]) {
-      // if we have a list, or an array, this is expected to contain numbers that indicate the cost for 
-      // each class index
-      double costs[];
-      if(obj instanceof List) {
-        // try to convert to doubles
-        List l = (List)obj;
-        costs = new double[l.size()];
-        for(int i=0; i<l.size(); i++) {
-          costs[i] = LFUtils.anyToDoubleOrElse(l.get(i), Double.NaN);
-          if(Double.isNaN(costs[i])) {
-            throw new RuntimeException("Cost cannot be converted to double: "+l.get(i));
-          }
-        }
-      }
-      // now costs should contain the costs ...
+    } else if(obj instanceof List) {
+      LabelWithCosts lwc = new LabelWithCosts((List<Double>)obj);
+      inst.setTarget(labelalphabet.lookupLabel(lwc));
+    } else if(obj instanceof double[]) {
+      LabelWithCosts lwc = new LabelWithCosts((double[])obj);
+      inst.setTarget(labelalphabet.lookupLabel(lwc));
     } else {
       // all other things are treated as a string
       String value = obj.toString();
