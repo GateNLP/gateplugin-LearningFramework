@@ -31,3 +31,11 @@ hs_err_*.log
 /tests/cl-ionosphere/model-costcla-external-rf/dep.mtx
 /tests/cl-ionosphere/model-costcla-external-rf/indep.mtx
 /tests/cl-ionosphere/model-costcla-external-rf/instcosts.mtx
+/tests/cl-ionosphere/model-costcla-external-rf/costclamodel
+/tests/cl-ionosphere/model-costcla-external-rf/costclamodel_01.npy
+/tests/cl-ionosphere/model-costcla-external-rf/data.zip
+/tests/cl-ionosphere/model-costcla-external-rf/m1
+/tests/cl-ionosphere/model-costcla-external-rf/m2
+/tests/cl-ionosphere/model-costcla-external-rf/m2_01.npy
+/tests/cl-ionosphere/model-costcla-external-rf/model
+
