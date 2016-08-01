@@ -15,6 +15,7 @@ import gate.plugin.learningframework.export.CorpusExporterARFF;
 import gate.plugin.learningframework.export.CorpusExporterLibSVM;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.engines.Info;
+import gate.plugin.learningframework.export.CorpusExporterCSV;
 import gate.plugin.learningframework.export.CorpusExporterMatrixMarket2;
 import gate.plugin.learningframework.features.TargetType;
 import gate.plugin.learningframework.mallet.LFPipe;
@@ -24,6 +25,8 @@ import java.util.ArrayList;
 public enum Exporter {
   EXPORTER_ARFF_CLASS(CorpusExporterARFF.class,TargetType.NOMINAL),  
   EXPORTER_ARFF_REGRESSION(CorpusExporterARFF.class,TargetType.NUMERIC),  
+  EXPORTER_CSV_CLASS(CorpusExporterCSV.class,TargetType.NOMINAL),  
+  EXPORTER_CSV_REGRESSION(CorpusExporterCSV.class,TargetType.NUMERIC),  
   //EXPORTER_MALLET_CLASS(),
   //EXPORTER_MALLET_SEQ(),
   EXPORTER_LIBSVM_CLASS(CorpusExporterLibSVM.class,TargetType.NOMINAL),

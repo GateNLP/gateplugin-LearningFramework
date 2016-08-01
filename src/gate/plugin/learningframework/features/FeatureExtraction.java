@@ -9,7 +9,7 @@ import gate.AnnotationSet;
 import gate.Document;
 import gate.Utils;
 import gate.plugin.learningframework.LFUtils;
-import gate.plugin.learningframework.mallet.LabelWithCosts;
+import gate.plugin.learningframework.mallet.NominalTargetWithCosts;
 import gate.util.GateRuntimeException;
 import java.util.ArrayList;
 import java.util.List;
@@ -875,13 +875,13 @@ public class FeatureExtraction {
       throw new GateRuntimeException("No target value for feature " + targetFeature
               + " for instance at offset " + gate.Utils.start(instanceAnnotation) + " in document " + doc.getName());
     } else if (obj instanceof List) {
-      LabelWithCosts lwc = new LabelWithCosts((List<Double>) obj);
+      NominalTargetWithCosts lwc = new NominalTargetWithCosts((List<Double>) obj);
       inst.setTarget(labelalphabet.lookupLabel(lwc));
     } else if (obj instanceof double[]) {
-      LabelWithCosts lwc = new LabelWithCosts((double[]) obj);
+      NominalTargetWithCosts lwc = new NominalTargetWithCosts((double[]) obj);
       inst.setTarget(labelalphabet.lookupLabel(lwc));
     } else {
-      // all other things are treated as a string
+      // all other things are treated as a string 
       String value = obj.toString();
       inst.setTarget(labelalphabet.lookupLabel(value));
     }

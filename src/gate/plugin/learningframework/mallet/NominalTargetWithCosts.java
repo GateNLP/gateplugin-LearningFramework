@@ -16,32 +16,40 @@ import java.util.Objects;
  * This can be created from a List<Double> or double[] of per-instance costs, 
  * in which case the "label" used will be the String representation of the class index
  * with the minimum cost. 
- * If the instance is used directly as a target, then instead of the index, the label
- * can be stored directly as well. 
+ * If the instance is used directly as a target, then instead of the index, the 
+ * nominal clas label can be stored directly as well.
+ * 
+ * NOTE: this is not related to or implements the interface from the Mallet
+ * Label class. It can be stored as the value of a LabelAlphabet but 
+ * the purpose of this class is essentially to be a replacement of String
+ * which can also carry around a cost vector which is added information 
+ * that does not influence the "target semanticness" of the value: two instances
+ * of this class compare or have hash values based only on the target string,
+ * not the cost vector.
  * 
  * @author Johann Petrak
  */
-public class LabelWithCosts implements Serializable {
+public class NominalTargetWithCosts implements Serializable {
 
   private static final long serialVersionUID = 2552102403617791653L;
   
   private Integer idx = null;
   private String label = null;
   private double[] costs = null;
-  public LabelWithCosts(List<Double> costs) {
+  public NominalTargetWithCosts(List<Double> costs) {
     this.costs = new double[costs.size()];
     for(int i=0;i<costs.size();i++) this.costs[i] = costs.get(i);
     storeLabel();
   }
-  public LabelWithCosts(String l, List<Double> costs) {
+  public NominalTargetWithCosts(String l, List<Double> costs) {
     this(costs);
     label = l;
   }
-  public LabelWithCosts(double[] costs) {
+  public NominalTargetWithCosts(double[] costs) {
     this.costs = costs;
     storeLabel();
   }
-  public LabelWithCosts(String l, double[] costs) {
+  public NominalTargetWithCosts(String l, double[] costs) {
     this(costs);
     label = l;
   }
@@ -108,7 +116,7 @@ public class LabelWithCosts implements Serializable {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final LabelWithCosts other = (LabelWithCosts) obj;
+    final NominalTargetWithCosts other = (NominalTargetWithCosts) obj;
     if (!Objects.equals(this.label, other.label)) {
       return false;
     }

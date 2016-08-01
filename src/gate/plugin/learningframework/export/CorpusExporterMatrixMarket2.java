@@ -8,7 +8,7 @@ import gate.plugin.learningframework.LFUtils;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.engines.Info;
 import gate.plugin.learningframework.features.FeatureExtraction;
-import gate.plugin.learningframework.mallet.LabelWithCosts;
+import gate.plugin.learningframework.mallet.NominalTargetWithCosts;
 import gate.util.GateRuntimeException;
 import java.io.File;
 import java.io.PrintStream;
@@ -146,8 +146,8 @@ public class CorpusExporterMatrixMarket2 extends CorpusExporter {
         // then open yet another output file for exporting the per-instance costss.
         // Then if that file is open, write subsequent costs!
         if(rowNr==1) {
-          if(label.getEntry() instanceof LabelWithCosts) {
-            LabelWithCosts lwc = (LabelWithCosts)label.getEntry();
+          if(label.getEntry() instanceof NominalTargetWithCosts) {
+            NominalTargetWithCosts lwc = (NominalTargetWithCosts)label.getEntry();
             try {
               outCosts = new PrintStream(outFileCosts);
             } catch (Exception ex) {
@@ -165,7 +165,7 @@ public class CorpusExporterMatrixMarket2 extends CorpusExporter {
           }
         }
         if(outCosts != null) {
-          LabelWithCosts lwc = (LabelWithCosts)label.getEntry();
+          NominalTargetWithCosts lwc = (NominalTargetWithCosts)label.getEntry();
           double[] costs = lwc.getCosts();
           for(int i=0;i<costs.length;i++) {
             outCosts.print(rowNr);
