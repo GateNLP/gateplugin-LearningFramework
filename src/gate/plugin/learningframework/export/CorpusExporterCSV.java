@@ -7,7 +7,6 @@ import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.Label;
 import cc.mallet.types.LabelAlphabet;
-import gate.creole.coref.NominalCoref;
 import gate.plugin.learningframework.Globals;
 import gate.plugin.learningframework.data.Attribute;
 import gate.plugin.learningframework.data.Attributes;
@@ -98,21 +97,26 @@ public class CorpusExporterCSV extends CorpusExporter {
     } else {
       targetOut = dataOut;
     }
-    boolean firstField = true;
-    for(Attribute attr : attrs) {
-      if(firstField) firstField = false;
-      else dataOut.print(separator);
-      // get the name, if necessary, escape it properly
-      String name = escape4CSV(attr.name);
-      dataOut.print(name);
-    } // for attr : attrs
-    // Now add the header for the target column if we just have one file,
-    // otherwise write it into the target file
-    if(twofiles) {
-      targetOut.println("target");
-    } else {
-      targetOut.print(separator);
-      targetOut.println("target");
+    if(!noheader) {
+      boolean firstField = true;
+      for (Attribute attr : attrs) {
+        if (firstField) {
+          firstField = false;
+        } else {
+          dataOut.print(separator);
+        }
+        // get the name, if necessary, escape it properly
+        String name = escape4CSV(attr.name);
+        dataOut.print(name);
+      } // for attr : attrs
+      // Now add the header for the target column if we just have one file,
+      // otherwise write it into the target file
+      if (twofiles) {
+        targetOut.println("target");
+      } else {
+        targetOut.print(separator);
+        targetOut.println("target");
+      }
     }
     int nrFeatures = pipe.getDataAlphabet().size();
     // export the actual data in dense format

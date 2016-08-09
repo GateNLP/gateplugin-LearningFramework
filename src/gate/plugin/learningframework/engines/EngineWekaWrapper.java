@@ -41,7 +41,7 @@ import org.yaml.snakeyaml.Yaml;
  * 
  * @author Johann Petrak
  */
-public class EngineWekaExternal extends Engine {
+public class EngineWekaWrapper extends Engine {
 
   ProcessBase process;
   
@@ -178,7 +178,7 @@ public class EngineWekaExternal extends Engine {
     // NOTE: we do not need to save the model here because the external
     // WekaWrapper command does this.
     // However we still need to make sure a usable info file is saved!
-    info.engineClass = EngineWekaExternal.class.getName();
+    info.engineClass = EngineWekaWrapper.class.getName();
     info.save(directory);
   }
 

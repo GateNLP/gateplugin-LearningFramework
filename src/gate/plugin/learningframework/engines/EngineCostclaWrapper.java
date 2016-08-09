@@ -10,9 +10,9 @@ package gate.plugin.learningframework.engines;
  *
  * @author Johann Petrak
  */
-public class EngineCostclaExternal extends EngineSklearnBase {
+public class EngineCostclaWrapper extends EngineSklearnBase {
 
-  public EngineCostclaExternal() {
+  public EngineCostclaWrapper() {
     WRAPPER_NAME = "SklearnWrapper";
     ENV_WRAPPER_HOME = "SKLEARN_WRAPPER_HOME";
     PROP_WRAPPER_HOME = "gate.plugin.learningframework.sklearnwrapper.home";

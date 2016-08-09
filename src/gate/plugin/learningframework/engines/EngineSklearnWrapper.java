@@ -1,29 +1,5 @@
 package gate.plugin.learningframework.engines;
 
-import cc.mallet.types.FeatureVector;
-import cc.mallet.types.Instance;
-import gate.Annotation;
-import gate.AnnotationSet;
-import gate.lib.interaction.process.Process4JsonStream;
-import gate.lib.interaction.process.ProcessBase;
-import gate.lib.interaction.process.ProcessSimple;
-import gate.plugin.learningframework.EvaluationMethod;
-import gate.plugin.learningframework.Exporter;
-import gate.plugin.learningframework.GateClassification;
-import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
-import gate.plugin.learningframework.mallet.LFPipe;
-import gate.util.GateRuntimeException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.yaml.snakeyaml.Yaml;
-
 /**
  * An engine that represents Python Scikit Learn through en external process.
  * 
@@ -38,9 +14,9 @@ import org.yaml.snakeyaml.Yaml;
  * 
  * @author Johann Petrak
  */
-public class EngineSklearnExternal extends EngineSklearnBase {
+public class EngineSklearnWrapper extends EngineSklearnBase {
 
-  public EngineSklearnExternal() {
+  public EngineSklearnWrapper() {    
     WRAPPER_NAME = "SklearnWrapper";
     ENV_WRAPPER_HOME = "SKLEARN_WRAPPER_HOME";
     PROP_WRAPPER_HOME = "gate.plugin.learningframework.sklearnwrapper.home";
