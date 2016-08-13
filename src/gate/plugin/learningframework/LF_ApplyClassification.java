@@ -25,7 +25,6 @@ import gate.creole.metadata.RunTime;
 import gate.plugin.learningframework.engines.AlgorithmKind;
 import gate.plugin.learningframework.engines.Engine;
 import gate.plugin.learningframework.engines.EngineServer;
-import gate.plugin.learningframework.engines.Info;
 import gate.util.GateRuntimeException;
 import java.net.URL;
 
@@ -125,7 +124,7 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
 
   @RunTime
   @Optional
-  @CreoleParameter(comment = "Classify from a server instead of a stored model, will override data directory")
+  @CreoleParameter(comment = "Classify from a server instead of a stored model")
   public void setServerUrl(String url) {
     serverUrl = url;
   }

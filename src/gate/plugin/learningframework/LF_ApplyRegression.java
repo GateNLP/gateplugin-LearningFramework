@@ -23,6 +23,7 @@ import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
 import gate.plugin.learningframework.engines.Engine;
+import gate.plugin.learningframework.engines.EngineServer;
 import gate.util.GateRuntimeException;
 import java.net.URL;
 
@@ -86,6 +87,20 @@ public class LF_ApplyRegression extends LearningFrameworkPRBase {
   public String getTargetFeature() {
     return targetFeature;
   }
+  
+  String serverUrl;
+
+  @RunTime
+  @Optional
+  @CreoleParameter(comment = "Classify from a server instead of a stored model")
+  public void setServerUrl(String url) {
+    serverUrl = url;
+  }
+
+  public String getServerUrl() {
+    return serverUrl;
+  }
+  
   
   protected String instanceWeightFeature = "";
   /*
@@ -158,15 +173,21 @@ public class LF_ApplyRegression extends LearningFrameworkPRBase {
     // if the URL has changed since the last time (if ever) it was loaded.
     savedModelDirectoryFile = gate.util.Files.fileFromURL(dataDirectory);
 
-    // Restore the Engine
-    engine = Engine.loadEngine(savedModelDirectoryFile, getAlgorithmParameters());
-    System.out.println("LF-Info: model loaded is now "+engine);
-
-    if (engine.getModel() == null) {
-      throw new GateRuntimeException("Do not have a model, something went wrong.");
+    if (serverUrl != null && !serverUrl.isEmpty()) {
+      engine = new EngineServer(gate.util.Files.fileFromURL(dataDirectory),serverUrl);      
     } else {
-      System.out.println("LearningFramework: Applying model "
-              + engine.getModel().getClass() + " ...");
+
+      // Restore the Engine
+      engine = Engine.loadEngine(savedModelDirectoryFile, getAlgorithmParameters());
+      System.out.println("LF-Info: model loaded is now " + engine);
+
+      if (engine.getModel() == null) {
+        throw new GateRuntimeException("Do not have a model, something went wrong.");
+      } else {
+        System.out.println("LearningFramework: Applying model "
+                + engine.getModel().getClass() + " ...");
+      }
+
     }
     
     if(getTargetFeature()==null || getTargetFeature().isEmpty()) {
