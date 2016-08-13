@@ -33,7 +33,7 @@ public enum AlgorithmClassification implements Algorithm {
   //GENERIC_CL_SERVER(EngineServer.class,null),
   WEKA_CL_WRAPPER(EngineWekaWrapper.class,null),
   SKLEARN_CL_WRAPPER(EngineSklearnWrapper.class,null),
-  TENSORFLOW_CL_WRAPPER(EngineTensorFlowWrapper.class,null),
+  //TENSORFLOW_CL_WRAPPER(EngineTensorFlowWrapper.class,null),
   KERAS_CL_WRAPPER(EngineKerasWrapper.class,null),
   COSTCLA_CL_WRAPPER(EngineCostclaWrapper.class,null);
   private AlgorithmClassification() {

@@ -15,7 +15,7 @@ public enum AlgorithmRegression implements Algorithm {
   //GENERIC_RG_SERVER(EngineServer.class,null),
   WEKA_RG_WRAPPER(EngineWekaWrapper.class,null),
   SKLEARN_RG_WRAPPER(EngineSklearnWrapper.class,null),
-  TENSORFLOW_RG_WRAPPER(EngineTensorFlowWrapper.class,null),
+  //TENSORFLOW_RG_WRAPPER(EngineTensorFlowWrapper.class,null),
   KERAS_RG_WRAPPER(EngineKerasWrapper.class,null);
   private AlgorithmRegression() {
     
