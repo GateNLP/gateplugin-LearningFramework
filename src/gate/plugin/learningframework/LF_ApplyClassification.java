@@ -22,10 +22,10 @@ import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
-import gate.plugin.learningframework.engines.AlgorithmClassification;
 import gate.plugin.learningframework.engines.AlgorithmKind;
 import gate.plugin.learningframework.engines.Engine;
 import gate.plugin.learningframework.engines.EngineServer;
+import gate.plugin.learningframework.engines.Info;
 import gate.util.GateRuntimeException;
 import java.net.URL;
 
@@ -57,13 +57,12 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
   public URL getDataDirectory() {
     return this.dataDirectory;
   }
-    
-  
+
   protected String outputASName;
 
   @RunTime
   @Optional
-  @CreoleParameter(comment="If identical to the input AS, existing annotations are updated", 
+  @CreoleParameter(comment = "If identical to the input AS, existing annotations are updated",
           defaultValue = "LearningFramework")
   public void setOutputASName(String oasn) {
     this.outputASName = oasn;
@@ -106,9 +105,9 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
   public String getTargetFeature() {
     return targetFeature;
   }
-  
+
   String sequenceSpan;
-  
+
   @RunTime
   @Optional
   @CreoleParameter(comment = "For sequence learners, an annotation type "
@@ -121,17 +120,20 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
   public String getSequenceSpan() {
     return sequenceSpan;
   }
-  
+
   String serverUrl;
+
   @RunTime
   @Optional
   @CreoleParameter(comment = "Classify from a server instead of a stored model, will override data directory")
   public void setServerUrl(String url) {
     serverUrl = url;
   }
-  public String getServerUrl() { return serverUrl; }
-  
-  
+
+  public String getServerUrl() {
+    return serverUrl;
+  }
+
   // TODO: we probably should not bother to allow instanceWeighgs at application time!!!
   protected String instanceWeightFeature = "";
   /*
@@ -143,22 +145,20 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
     instanceWeightFeature = val;
   }
   public String getInstanceWeightFeature() { return instanceWeightFeature; }
-  */
-  
+   */
 
 ////////////////////////////////////////////////////////////////////////////
-
   private Engine engine;
 
   private File savedModelDirectoryFile;
 
   // this is either what the user specifies as the PR parameter, or what we have stored 
   // with the saved model.
-  private String targetFeatureToUse; 
+  private String targetFeatureToUse;
 
   @Override
   public Document process(Document doc) {
-    if(isInterrupted()) {
+    if (isInterrupted()) {
       interrupted = false;
       throw new GateRuntimeException("Execution was requested to be interrupted");
     }
@@ -169,7 +169,7 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
     // the sequenceAS must be specified for a sequence tagging algorithm and most not be specified
     // for a non-sequence tagging algorithm!
     AnnotationSet sequenceAS = null;
-    if(engine.getAlgorithmKind() == AlgorithmKind.SEQUENCE_TAGGER) {
+    if (engine.getAlgorithmKind() == AlgorithmKind.SEQUENCE_TAGGER) {
       // NOTE: we already have checked earlier, that in that case, the sequenceSpan parameter is 
       // given!
       sequenceAS = doc.getAnnotations(getSequenceSpan());
@@ -178,24 +178,23 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
     //System.out.println("LF_ApplyClassification debug: instanceAS="+instanceAS.size()+", inputAS="+inputAS.size()+
     //  ", sequenceAS="+sequenceAS);
     List<GateClassification> gcs = engine.classify(
-          instanceAS, inputAS,
-          sequenceAS, getAlgorithmParameters());
-    
+            instanceAS, inputAS,
+            sequenceAS, getAlgorithmParameters());
+
     // If the outputSet is the same as the inputSet, we do not create new 
     // annotations
     // So if they are both null or both the same non-null value we leave the outputAS null, otherwise we 
     // set it to something (in the case of null, the default set).
     AnnotationSet outputAS = null;
-    if(getOutputASName()==null && getInputASName()==null || 
-       getOutputASName()!= null && getInputASName() != null && getOutputASName().equals(getInputASName())) {
+    if (getOutputASName() == null && getInputASName() == null
+            || getOutputASName() != null && getInputASName() != null && getOutputASName().equals(getInputASName())) {
     } else {
       outputAS = doc.getAnnotations(getOutputASName());
     }
 
-    GateClassification.applyClassification(doc, gcs, targetFeatureToUse, outputAS, null);    
+    GateClassification.applyClassification(doc, gcs, targetFeatureToUse, outputAS, null);
     return doc;
   }
-
 
   @Override
   public void afterLastDocument(Controller arg0, Throwable throwable) {
@@ -209,45 +208,54 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
   @Override
   protected void beforeFirstDocument(Controller controller) {
 
-    if(serverUrl != null && !serverUrl.isEmpty()) {
-      engine = new EngineServer();
-    } 
-    // TODO: figure out which information we still need to get from the data directory
-    // so we can correctly use the server!
-    
-    // if the engine is still null, or the dataDirectory has changed since 
-    // we last loaded the engine, or the algorithmParameters were changed,
-    // reload the engine.
-    if(engine == null || !dataDirectory.equals(oldDataDirectory) || getAlgorithmParametersIsChanged()) {
-      savedModelDirectoryFile = gate.util.Files.fileFromURL(dataDirectory);
-      oldDataDirectory = dataDirectory;       engine = Engine.loadEngine(savedModelDirectoryFile, getAlgorithmParameters());
-    }
-    System.out.println("LF-Info: loaded model is "+engine);
-
-    if (engine.getModel() == null) {
-      throw new GateRuntimeException("Do not have a model, something went wrong.");
+    // If a server URL is specified, use the server engine. In that case the 
+    // data directory only needs to contain an info file, but most of the information
+    // in the info file is ignored. 
+    // For now, only the target feature is used if it is not specified as a runtime parameter.
+    // For now, the server does not support sequence taggers, so the sequence annotation must
+    // be empty 
+    if (serverUrl != null && !serverUrl.isEmpty()) {
+      if (getSequenceSpan() != null && !getSequenceSpan().isEmpty()) {
+        throw new GateRuntimeException("Sequence span not supported for server");
+      }
+      engine = new EngineServer(gate.util.Files.fileFromURL(dataDirectory),serverUrl);      
     } else {
-      System.out.println("LearningFramework: Applying model "
-              + engine.getModel().getClass() + " ...");
-    }
-    
-    if(engine.getAlgorithmKind() == AlgorithmKind.SEQUENCE_TAGGER) {
-      if(getSequenceSpan() == null || getSequenceSpan().isEmpty()) {
-        throw new GateRuntimeException("sequenceSpan parameter must not be empty when a sequence tagging algorithm is used for classification");
+
+      // if the engine is still null, or the dataDirectory has changed since 
+      // we last loaded the engine, or the algorithmParameters were changed,
+      // reload the engine.
+      if (engine == null || !dataDirectory.equals(oldDataDirectory) || getAlgorithmParametersIsChanged()) {
+        savedModelDirectoryFile = gate.util.Files.fileFromURL(dataDirectory);
+        oldDataDirectory = dataDirectory;
+        engine = Engine.loadEngine(savedModelDirectoryFile, getAlgorithmParameters());
+      }
+      System.out.println("LF-Info: loaded model is " + engine);
+
+      if (engine.getModel() == null) {
+        throw new GateRuntimeException("Do not have a model, something went wrong.");
+      } else {
+        System.out.println("LearningFramework: Applying model "
+                + engine.getModel().getClass() + " ...");
+      }
+
+      if (engine.getAlgorithmKind() == AlgorithmKind.SEQUENCE_TAGGER) {
+        if (getSequenceSpan() == null || getSequenceSpan().isEmpty()) {
+          throw new GateRuntimeException("sequenceSpan parameter must not be empty when a sequence tagging algorithm is used for classification");
+        }
       }
     }
-    
-    if(getTargetFeature()==null || getTargetFeature().isEmpty()) {
+
+    if (getTargetFeature() == null || getTargetFeature().isEmpty()) {
       // try to get the target feature from the model instead
       String targetFeatureFromModel = engine.getInfo().targetFeature;
-      if(targetFeatureFromModel == null || targetFeatureFromModel.isEmpty()) {
+      if (targetFeatureFromModel == null || targetFeatureFromModel.isEmpty()) {
         throw new GateRuntimeException("Not targetFeature parameter specified and none available from the model info file either.");
       }
       targetFeatureToUse = targetFeatureFromModel;
-      System.err.println("Using target feature name from model: "+targetFeatureToUse);
+      System.err.println("Using target feature name from model: " + targetFeatureToUse);
     } else {
       targetFeatureToUse = getTargetFeature();
-      System.err.println("Using target feature name from PR parameter: "+targetFeatureToUse);
+      System.err.println("Using target feature name from PR parameter: " + targetFeatureToUse);
     }
   }
 

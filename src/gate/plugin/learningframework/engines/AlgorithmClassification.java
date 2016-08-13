@@ -30,7 +30,7 @@ public enum AlgorithmClassification implements Algorithm {
   // We only add this after figuring out exactly how it needs to get set up!
   // MALLET_SEQ_CRF_VGS(EngineMalletSeq.class,null), // ByValueGradients  
   MALLET_SEQ_MEMM(EngineMalletSeq.class,null),
-  GENERIC_CL_SERVER(EngineServer.class,null),
+  //GENERIC_CL_SERVER(EngineServer.class,null),
   WEKA_CL_WRAPPER(EngineWekaWrapper.class,null),
   SKLEARN_CL_WRAPPER(EngineSklearnWrapper.class,null),
   TENSORFLOW_CL_WRAPPER(EngineTensorFlowWrapper.class,null),

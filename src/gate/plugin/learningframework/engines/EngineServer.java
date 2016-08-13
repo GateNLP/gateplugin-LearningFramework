@@ -59,6 +59,12 @@ public class EngineServer extends Engine {
 
   protected String serverUrl = "http://127.0.0.1:7000";
   
+  public EngineServer(File directory, String serverUrl) {
+    this.serverUrl = serverUrl;
+    info = Info.load(directory);
+    loadMalletCorpusRepresentation(directory);
+  }
+  
   @Override
   protected void loadModel(File directory, String parms) {
     
@@ -145,7 +151,7 @@ public class EngineServer extends Engine {
     } catch (JsonProcessingException ex) {
       throw new GateRuntimeException("Could not convert instances to json",ex);
     }
-    System.err.println("GOT JSON: "+json);
+    //System.err.println("GOT JSON: "+json);
     
     HttpResponse<String> response;
     try {
@@ -163,6 +169,7 @@ public class EngineServer extends Engine {
     if(status != 200) {
       throw new GateRuntimeException("Response von server is NOK, status="+status+" msg="+response.getBody());
     }
+    //System.err.println("Got response, status is OK, data is: "+response.getBody());
     Map responseMap = null;
     try {
       // Parse the json
@@ -171,7 +178,12 @@ public class EngineServer extends Engine {
       Logger.getLogger(EngineServer.class.getName()).log(Level.SEVERE, null, ex);
     }
     
-    ArrayList<ArrayList<Double>> targets = (ArrayList<ArrayList<Double>>)responseMap.get("preds");
+    // NOTE: the json created by the weka server currently automatically creates 1 instead
+    // of 1.0 if the value is 1.0, and the parser then creates an Inteer from this. 
+    // We could probably change the parsing behaviour into always creating doubles somehow but
+    // for now we simply first parse the arrays into Number, then convert each vector into
+    // a vector of Double
+    ArrayList<ArrayList<Number>> targets = (ArrayList<ArrayList<Number>>)responseMap.get("preds");
     
     GateClassification gc = null;
     
@@ -179,20 +191,23 @@ public class EngineServer extends Engine {
     int instNr = 0;
     for(Annotation instAnn : instances) {
       if(pipe.getTargetAlphabet() == null) { // we have regression        
-        gc = new GateClassification(instAnn, targets.get(instNr).get(0));
+        gc = new GateClassification(instAnn, (double)targets.get(instNr).get(0));
       } else {
-        ArrayList<Double> vals = targets.get(instNr);
-        double target = vals.get(0);
+        ArrayList<Number> valsN = targets.get(instNr);
+        ArrayList<Double> vals = new ArrayList<Double>(valsN.size());
+        for(Number valN : valsN) vals.add(valN.doubleValue());
+        double target = vals.get(0); // if vals contains just one value, this will be what to use
         if(vals.size()>1) {
           // find the maximum probability and use the index as target
           double maxProb = Double.NEGATIVE_INFINITY;
           double bestIndex = -1;
           int curIdx = 0;
-          for(Double val : vals) {
+          for(double val : vals) {
             if(val > maxProb) {
               maxProb = val;
               bestIndex = (double)curIdx;
             }
+            curIdx++;
           } // for
           target = bestIndex;
         }
@@ -233,5 +248,5 @@ public class EngineServer extends Engine {
     corpusRepresentationMallet = CorpusRepresentationMalletTarget.load(directory);
   }
   
-  
+    
 }
