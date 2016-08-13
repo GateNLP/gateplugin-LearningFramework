@@ -22,8 +22,10 @@ import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
+import gate.plugin.learningframework.engines.AlgorithmClassification;
 import gate.plugin.learningframework.engines.AlgorithmKind;
 import gate.plugin.learningframework.engines.Engine;
+import gate.plugin.learningframework.engines.EngineServer;
 import gate.util.GateRuntimeException;
 import java.net.URL;
 
@@ -120,6 +122,15 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
     return sequenceSpan;
   }
   
+  String serverUrl;
+  @RunTime
+  @Optional
+  @CreoleParameter(comment = "Classify from a server instead of a stored model, will override data directory")
+  public void setServerUrl(String url) {
+    serverUrl = url;
+  }
+  public String getServerUrl() { return serverUrl; }
+  
   
   // TODO: we probably should not bother to allow instanceWeighgs at application time!!!
   protected String instanceWeightFeature = "";
@@ -198,13 +209,18 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
   @Override
   protected void beforeFirstDocument(Controller controller) {
 
+    if(serverUrl != null && !serverUrl.isEmpty()) {
+      engine = new EngineServer();
+    } 
+    // TODO: figure out which information we still need to get from the data directory
+    // so we can correctly use the server!
+    
     // if the engine is still null, or the dataDirectory has changed since 
     // we last loaded the engine, or the algorithmParameters were changed,
     // reload the engine.
     if(engine == null || !dataDirectory.equals(oldDataDirectory) || getAlgorithmParametersIsChanged()) {
       savedModelDirectoryFile = gate.util.Files.fileFromURL(dataDirectory);
-      oldDataDirectory = dataDirectory;
-      engine = Engine.loadEngine(savedModelDirectoryFile, getAlgorithmParameters());
+      oldDataDirectory = dataDirectory;       engine = Engine.loadEngine(savedModelDirectoryFile, getAlgorithmParameters());
     }
     System.out.println("LF-Info: loaded model is "+engine);
 

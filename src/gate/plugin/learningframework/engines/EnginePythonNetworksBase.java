@@ -176,21 +176,7 @@ public abstract class EnginePythonNetworksBase extends Engine {
   @Override
   public void trainModel(File dataDirectory, String instanceType, String parms) {
     ArrayList<String> finalCommand = new ArrayList<String>();
-    // invoke the sklearn wrapper for training
-    // NOTE: for this the first word in parms must be the full sklearn class name, the rest are parms
-    if(parms == null || parms.trim().isEmpty()) {
-      throw new GateRuntimeException(WRAPPER_NAME+": Cannot train, algorithmParameter must contain full algorithm class name as first word");
-    }
-    String wrapperClass = null;
-    String wrapperParms = "";
-    parms = parms.trim();
-    int spaceIdx = parms.indexOf(" ");
-    if(spaceIdx<0) {
-      wrapperClass = parms;
-    } else {
-      wrapperClass = parms.substring(0,spaceIdx);
-      wrapperParms = parms.substring(spaceIdx).trim();
-    }
+    // invoke wrapper for training
     File commandFile = findWrapperCommand(dataDirectory, false);
     // Export the data 
     // Note: any scaling was already done in the PR before calling this method!
@@ -206,9 +192,8 @@ public abstract class EnginePythonNetworksBase extends Engine {
     finalCommand.add(wrapperhome);
     finalCommand.add(dataFileName);
     finalCommand.add(modelFileName);
-    finalCommand.add(wrapperClass);
-    if(!wrapperParms.isEmpty()) {
-      String[] tmp = wrapperParms.split("\\s+",-1);
+    if(!parms.trim().isEmpty()) {
+      String[] tmp = parms.split("\\s+",-1);
       finalCommand.addAll(Arrays.asList(tmp));
     }
     // if we have a shell command prepend that, and if we have shell parms too, include them

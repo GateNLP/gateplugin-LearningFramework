@@ -258,10 +258,15 @@ public class EngineWekaWrapper extends Engine {
       FeatureVector fv = (FeatureVector)inst.getData();
       //System.out.println("Mallet instance, fv: "+fv.toString(true)+", len="+fv.numLocations());
       
+      double weight = Double.NaN;
+      Object weightObj = inst.getProperty("instanceWeight");
+      if(weightObj != null) {
+        weight = (double)weightObj;
+      }
       // Convert to the sparse vector we use to send to the weka process
       int locs = fv.numLocations();
-      
       SparseDoubleVector sdv = new SparseDoubleVector(locs);
+      sdv.setInstanceWeight(weight);
       int[] locations = sdv.getLocations();
       double[] values = sdv.getValues();
       for(int i=0;i<locs;i++) {
