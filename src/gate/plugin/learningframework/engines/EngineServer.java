@@ -87,6 +87,9 @@ public class EngineServer extends Engine {
   @Override
   public List<GateClassification> classify(AnnotationSet instanceAS, AnnotationSet inputAS, 
           AnnotationSet sequenceAS, String parms) {
+    Parms ps = new Parms(parms, "d:dense:b");
+    boolean dense = (boolean)ps.getValueOrElse("dense", false);    
+    
     CorpusRepresentationMalletTarget data = (CorpusRepresentationMalletTarget)corpusRepresentationMallet;
     data.stopGrowth();
     int nrCols = data.getPipe().getDataAlphabet().size();
@@ -122,16 +125,24 @@ public class EngineServer extends Engine {
       // Convert to the sparse vector we use to send to the process
       // TODO: depending on a parameter send sparse or dense vectors, for now always send sparse
       
-      // To send a sparse vector, we need the indices and the values      
-      int locs = fv.numLocations();
-      int[] indices = new int[locs];
-      double[] values = new double[locs];
-      for(int i=0;i<locs;i++) {
-        indices[i] = fv.indexAtLocation(i);
-        values[i] = fv.valueAtLocation(i);
+      if (dense) {
+        double[] values = new double[nrCols];
+        for(int i=0; i<nrCols; i++) {
+          values[i] = fv.value(i);
+        }
+        valuesvec.add(values);
+      } else {
+        // To send a sparse vector, we need the indices and the values      
+        int locs = fv.numLocations();
+        int[] indices = new int[locs];
+        double[] values = new double[locs];
+        for (int i = 0; i < locs; i++) {
+          indices[i] = fv.indexAtLocation(i);
+          values[i] = fv.valueAtLocation(i);
+        }
+        valuesvec.add(values);
+        indicesvec.add(indices);
       }
-      valuesvec.add(values);
-      indicesvec.add(indices);
       double weight = Double.NaN;
       Object weightObj = inst.getProperty("instanceWeight");
       if(weightObj != null) {
@@ -142,8 +153,10 @@ public class EngineServer extends Engine {
     }
     // create the JSON for the request
     Map data4json = new HashMap<String,Object>();
-    data4json.put("indices",indicesvec);
+    if(!dense)
+      data4json.put("indices",indicesvec);
     data4json.put("values",valuesvec);
+    data4json.put("n",nrCols);
     if(haveWeights) data4json.put("weights",weights);
     String json = null;
     try {
