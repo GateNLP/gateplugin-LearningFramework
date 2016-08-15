@@ -1,7 +1,9 @@
 package gate.plugin.learningframework.engines;
 
+import cc.mallet.types.Alphabet;
 import cc.mallet.types.FeatureVector;
 import cc.mallet.types.Instance;
+import cc.mallet.types.InstanceList;
 import gate.Annotation;
 import gate.AnnotationSet;
 import gate.lib.interaction.process.Process4JsonStream;
@@ -12,10 +14,13 @@ import gate.plugin.learningframework.Exporter;
 import gate.plugin.learningframework.GateClassification;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
 import gate.plugin.learningframework.mallet.LFPipe;
+import gate.plugin.learningframework.mallet.NominalTargetWithCosts;
 import gate.util.GateRuntimeException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.util.AbstractMap;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -142,6 +147,10 @@ public abstract class EnginePythonNetworksBase extends Engine {
   @Override
   protected void loadModel(File directory, String parms) {
     ArrayList<String> finalCommand = new ArrayList<String>();
+    CorpusRepresentationMalletTarget data = (CorpusRepresentationMalletTarget)corpusRepresentationMallet;
+    SimpleEntry<String,Integer> modeAndNrC = findOutMode(data);
+    String mode = modeAndNrC.getKey();
+    Integer nrClasses = modeAndNrC.getValue();
     // Instead of loading a model, this establishes a connection with the 
     // external wrapper process. 
     
@@ -150,6 +159,8 @@ public abstract class EnginePythonNetworksBase extends Engine {
     finalCommand.add(commandFile.getAbsolutePath());
     finalCommand.add(wrapperhome);
     finalCommand.add(modelFileName);
+    finalCommand.add(mode);
+    finalCommand.add(nrClasses.toString());
     // if we have a shell command prepend that, and if we have shell parms too, include them
     if(shellcmd != null) {
       finalCommand.add(0,shellcmd);
@@ -176,6 +187,11 @@ public abstract class EnginePythonNetworksBase extends Engine {
   @Override
   public void trainModel(File dataDirectory, String instanceType, String parms) {
     ArrayList<String> finalCommand = new ArrayList<String>();
+    CorpusRepresentationMalletTarget data = (CorpusRepresentationMalletTarget)corpusRepresentationMallet;
+    SimpleEntry<String,Integer> modeAndNrC = findOutMode(data);
+    String mode = modeAndNrC.getKey();
+    Integer nrClasses = modeAndNrC.getValue();
+    
     // invoke wrapper for training
     File commandFile = findWrapperCommand(dataDirectory, false);
     // Export the data 
@@ -184,14 +200,20 @@ public abstract class EnginePythonNetworksBase extends Engine {
     // TODO: NOTE: not sure if classification/regression matters here as long as
     // the actual exporter class does the right thing based on the corpus representation!
     // TODO: we have to choose the correct target type here!!!
+    // NOTE: the last argument here are the parameters for the exporter method.
+    // we use the CSV exporter with parameters:
+    // -t: twofiles, export indep and dep into separate files
+    // -n: noheaders, do not add a header row
     Exporter.export(getCorpusRepresentationMallet(), 
-            Exporter.EXPORTER_CSV_CLASS, dataDirectory, instanceType, parms);
+            Exporter.EXPORTER_CSV_CLASS, dataDirectory, instanceType, "-t -n");
     String dataFileName = dataDirectory.getAbsolutePath()+File.separator;
     String modelFileName = new File(dataDirectory, MODEL_BASENAME).getAbsolutePath();
     finalCommand.add(commandFile.getAbsolutePath());
     finalCommand.add(wrapperhome);
     finalCommand.add(dataFileName);
     finalCommand.add(modelFileName);
+    finalCommand.add(mode);
+    finalCommand.add(nrClasses.toString());
     if(!parms.trim().isEmpty()) {
       String[] tmp = parms.split("\\s+",-1);
       finalCommand.addAll(Arrays.asList(tmp));
@@ -240,17 +262,19 @@ public abstract class EnginePythonNetworksBase extends Engine {
     }
     // create the datastructure we need for the application script: 
     // a map that contains the following fields:
-    // - cmd: either STOP or CSR1
+    // - cmd: either STOP or "AC" for apply classification or "AR" for apply regression
     // - values: the non-zero values, for increasing rows and increasing cols within rows
     // - rowinds: for the k-th value which row number it is in
     // - colinds: for the k-th value which column number (location index) it is in
     // - shaperows: number of rows in total
     // - shapecols: maximum number of cols in a vector
     Map map = new HashMap<String,Object>();
-    map.put("cmd", "CSR1");
+    if(classList==null)
+      map.put("cmd", "AR");
+    else 
+      map.put("cmd","AC");
     ArrayList<double[]> rows = new ArrayList<double[]>();
     int rowIndex = 0;
-    pipe.getDataAlphabet().size();
     List<Annotation> instances = instanceAS.inDocumentOrder();
     for(Annotation instAnn : instances) {
       Instance inst = data.extractIndependentFeatures(instAnn, inputAS);
@@ -272,9 +296,8 @@ public abstract class EnginePythonNetworksBase extends Engine {
     }
     // send the matrix data over to the weka process
     // TODO: add a key with the featureWeights to the map!
-    map.put("rows", rows);
-    map.put("nrRows", rowIndex);
-    map.put("nrCols", nrCols);
+    map.put("values", rows);
+    map.put("n", nrCols);
     process.writeObject(map);
     // get the result back
     Object ret = process.readObject();
@@ -339,6 +362,38 @@ public abstract class EnginePythonNetworksBase extends Engine {
   protected void loadMalletCorpusRepresentation(File directory) {
     corpusRepresentationMallet = CorpusRepresentationMalletTarget.load(directory);
   }
-  
+ 
+  protected AbstractMap.SimpleEntry<String,Integer> findOutMode(CorpusRepresentationMalletTarget crm)  {
+    InstanceList instances = crm.getRepresentationMallet();
+    if(instances.size() == 0) {
+      throw new GateRuntimeException("No instances in the training set, cannot train");
+    }
+    // we pass on a "mode" for the learning problem, which is one of the following:
+    // - classind: predict the index of a class
+    // - classcosts: targets are vectors of class costs
+    // - regr: regression
+    // we also pass on another parameter which provides details of the learning problem:
+    // - the number of class indices in case of classind and classcosts
+    // - 0 as a dummy value in case of "regr"
+    
+    int nrClasses = 0;
+    String mode = "regr";
+    Alphabet ta = crm.getPipe().getTargetAlphabet();
+    
+    if(ta != null) {
+      Instance firstInstance = instances.get(0);
+      Object targetObj = firstInstance.getTarget();
+      if(targetObj instanceof NominalTargetWithCosts) {
+        NominalTargetWithCosts target = (NominalTargetWithCosts)targetObj;
+        nrClasses = target.getCosts().length;
+        mode = "classcosts";
+      } else {
+        mode = "classind";
+        nrClasses = ta.size();
+      }
+    } 
+    AbstractMap.SimpleEntry<String,Integer> ret = new AbstractMap.SimpleEntry<String, Integer>(mode,nrClasses);
+    return ret;
+  }
   
 }
