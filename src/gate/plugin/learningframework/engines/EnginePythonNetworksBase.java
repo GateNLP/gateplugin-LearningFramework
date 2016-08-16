@@ -147,6 +147,10 @@ public abstract class EnginePythonNetworksBase extends Engine {
   @Override
   protected void loadModel(File directory, String parms) {
     ArrayList<String> finalCommand = new ArrayList<String>();
+    // we need the corpus representation here! Normally this is done from loadEngine and after
+    // load model, but we do it here. The load crm method only loads anything if it is still
+    // null, so we will do this only once anyway.
+    loadMalletCorpusRepresentation(directory);
     CorpusRepresentationMalletTarget data = (CorpusRepresentationMalletTarget)corpusRepresentationMallet;
     SimpleEntry<String,Integer> modeAndNrC = findOutMode(data);
     String mode = modeAndNrC.getKey();
@@ -360,14 +364,12 @@ public abstract class EnginePythonNetworksBase extends Engine {
 
   @Override
   protected void loadMalletCorpusRepresentation(File directory) {
-    corpusRepresentationMallet = CorpusRepresentationMalletTarget.load(directory);
+    if(corpusRepresentationMallet==null)
+      corpusRepresentationMallet = CorpusRepresentationMalletTarget.load(directory);
   }
  
   protected AbstractMap.SimpleEntry<String,Integer> findOutMode(CorpusRepresentationMalletTarget crm)  {
     InstanceList instances = crm.getRepresentationMallet();
-    if(instances.size() == 0) {
-      throw new GateRuntimeException("No instances in the training set, cannot train");
-    }
     // we pass on a "mode" for the learning problem, which is one of the following:
     // - classind: predict the index of a class
     // - classcosts: targets are vectors of class costs
@@ -381,15 +383,24 @@ public abstract class EnginePythonNetworksBase extends Engine {
     Alphabet ta = crm.getPipe().getTargetAlphabet();
     
     if(ta != null) {
-      Instance firstInstance = instances.get(0);
-      Object targetObj = firstInstance.getTarget();
-      if(targetObj instanceof NominalTargetWithCosts) {
-        NominalTargetWithCosts target = (NominalTargetWithCosts)targetObj;
-        nrClasses = target.getCosts().length;
-        mode = "classcosts";
+      // if this is invoked for training, we should have a first instance, but for 
+      // application, we do not have any instances yet. If we do not have any instances, we 
+      // just use dummy values for now since at the moment we do not need this information
+      // at application time. Should we ever need it we need to store this in the pipe!
+      if(instances==null || instances.isEmpty()) {
+        mode="classind";
+        nrClasses=-1;
       } else {
-        mode = "classind";
-        nrClasses = ta.size();
+        Instance firstInstance = instances.get(0);
+        Object targetObj = firstInstance.getTarget();
+        if(targetObj instanceof NominalTargetWithCosts) {
+          NominalTargetWithCosts target = (NominalTargetWithCosts)targetObj;
+          nrClasses = target.getCosts().length;
+          mode = "classcosts";
+        } else {
+          mode = "classind";
+          nrClasses = ta.size();
+        }
       }
     } 
     AbstractMap.SimpleEntry<String,Integer> ret = new AbstractMap.SimpleEntry<String, Integer>(mode,nrClasses);
