@@ -39,3 +39,8 @@ hs_err_*.log
 /tests/cl-ionosphere/model-costcla-external-rf/m2_01.npy
 /tests/cl-ionosphere/model-costcla-external-rf/model
 
+/tests/cl-ionosphere/model-keras-m1/dep.csv
+/tests/cl-ionosphere/model-keras-m1/indep.csv
+/tests/cl-ionosphere/model-keras-m1/kerasmodel.h5
+
+
