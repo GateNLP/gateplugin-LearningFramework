@@ -83,8 +83,10 @@ public class CorpusExporterLibSVM extends CorpusExporter {
       Object fvObj = instance.getData();
       if(fvObj instanceof FeatureVector) {
         FeatureVector fv = (FeatureVector)fvObj;
-        for(int idx : fv.getIndices()) {
-          double val = fv.valueAtLocation(idx);
+        //for(int idx : fv.getIndices()) {
+        for(int loc=0; loc<fv.numLocations(); loc++) {
+          int idx = fv.indexAtLocation(loc);
+          double val = fv.valueAtLocation(loc);
           if(!Double.isNaN(val)) {
             out.print(idx+1); out.print(":");
             out.print(DFf.format(val));

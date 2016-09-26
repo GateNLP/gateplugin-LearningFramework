@@ -187,8 +187,9 @@ public class CorpusExporterMatrixMarket2 extends CorpusExporter {
       Object fvObj = instance.getData();
       if(fvObj instanceof FeatureVector) {
         FeatureVector fv = (FeatureVector)fvObj;
-        for(int idx : fv.getIndices()) {
-          double val = fv.valueAtLocation(idx);
+        for(int loc=0; loc<fv.numLocations(); loc++ ) {
+          int idx = fv.indexAtLocation(loc);
+          double val = fv.valueAtLocation(loc);
           if(!Double.isNaN(val)) {
             outIndep.print(rowNr); outIndep.print(" ");
             outIndep.print(idx+1); outIndep.print(" ");
