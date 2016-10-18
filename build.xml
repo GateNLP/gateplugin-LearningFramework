@@ -59,6 +59,16 @@ along with this software. If not, see <http://www.gnu.org/licenses/>.
                    uri="antlib:org.apache.ivy.ant"
                    classpathref="ivy.lib.path"/>
 
+  <taskdef classname="gate.util.ant.ExpandIvy" name="expandivy">
+    <classpath>
+      <pathelement location="${gate.jar}" />
+      <fileset dir="${gate.lib}" includes="*.jar" />
+    </classpath>
+  </taskdef>
+  <target name="expandivy">
+    <expandivy dir="." />
+  </target>
+
 
   <target name="initivy">
     <ivy:configure file="${build.dir}/ivysettings.xml"/> 
