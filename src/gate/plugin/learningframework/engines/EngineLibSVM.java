@@ -440,8 +440,8 @@ public class EngineLibSVM extends Engine {
         double target[] = new double[svmprob.l];
 
         libsvm.svm.svm_cross_validation(svmprob, svmparms, numberOfFolds, target);
-        int sumSquared = 0;
-        int sumAbsolute = 0;
+        double sumSquared = 0;
+        double sumAbsolute = 0;
         int nTotal = 0;
         for(int i=0; i<target.length; i++) {
           double diff = target[i] - svmprob.y[i];
