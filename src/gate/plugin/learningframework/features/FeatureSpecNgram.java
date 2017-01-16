@@ -56,6 +56,7 @@ public class FeatureSpecNgram extends FeatureSpecAttribute implements Serializab
     return "NgramAttribute(name="+name+
             ",type="+annType+
             ",feature="+feature+
+            ",featureName4Value="+featureName4Value+
             ",number="+number;
   }
   
