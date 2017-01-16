@@ -165,6 +165,7 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
           Pipe pipe) {
     
     AugmentableFeatureVector afv = new AugmentableFeatureVector(pipe.getDataAlphabet());
+    // Constructor parms: data, target, name, source
     Instance inst = new Instance(afv, null, null, null);
     for(FeatureSpecAttribute attr : featureInfo.getAttributes()) {
       FeatureExtraction.extractFeature(inst, attr, inputAS, instanceAnnotation);
