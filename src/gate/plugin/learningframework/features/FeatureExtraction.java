@@ -314,7 +314,7 @@ public class FeatureExtraction {
       // construct the featureName name and set to 1.0
       // however, only add the featureName if the featureName alphabet is allowed to grow.
       String fname = internalFeatureNamePrefix;
-      addToFeatureVector(fv, fname, 1.0);
+      setInFeatureVector(fv, fname, 1.0);
     } else {
       // First get the value inputAS an Object, if there is no value, we have an Object that is null
       // If the sourceAnnotation is null, we already did not find the source at all,
@@ -344,22 +344,22 @@ public class FeatureExtraction {
               Iterable iterable = (Iterable) valObj;
               for (Object obj : iterable) {
                 String val = obj.toString();
-                addToFeatureVector(fv, internalFeatureNamePrefix + VALSEP + val, 1.0);
+                setInFeatureVector(fv, internalFeatureNamePrefix + VALSEP + val, 1.0);
               }
             } else if (valObj instanceof Map) {
               Map map = (Map) valObj;
               for (Object key : map.keySet()) {
                 Object mapval = map.get(key);
                 String val = key.toString() + "=" + mapval.toString();
-                addToFeatureVector(fv, internalFeatureNamePrefix + VALSEP + val, 1.0);
+                setInFeatureVector(fv, internalFeatureNamePrefix + VALSEP + val, 1.0);
               }
             } else if (valObj instanceof Object[]) {
               for (Object obj : ((Object[]) valObj)) {
-                addToFeatureVector(fv, internalFeatureNamePrefix + VALSEP + obj.toString(), 1.0);
+                setInFeatureVector(fv, internalFeatureNamePrefix + VALSEP + obj.toString(), 1.0);
               }
             } else if (valObj instanceof int[]) {
               for (int intval : ((int[]) valObj)) {
-                addToFeatureVector(fv, internalFeatureNamePrefix + VALSEP + intval, 1.0);
+                setInFeatureVector(fv, internalFeatureNamePrefix + VALSEP + intval, 1.0);
               }
               // TODO: other array types??
             } else {
@@ -371,18 +371,18 @@ public class FeatureExtraction {
                 for (String v : vals) {
                   // NOTE: we automatically remove any empty elements here
                   if (!v.trim().isEmpty()) {
-                    addToFeatureVector(fv, internalFeatureNamePrefix + VALSEP + v.trim(), 1.0);
+                    setInFeatureVector(fv, internalFeatureNamePrefix + VALSEP + v.trim(), 1.0);
                   }
                 }
               } else // just take the value as is.
               // Only in this case we allow for optionally getting the score from a different
               // feature of the same annotation we got the value from. 
               if (featureName4Value.isEmpty()) {
-                addToFeatureVector(fv, internalFeatureNamePrefix + VALSEP + val, 1.0);
+                setInFeatureVector(fv, internalFeatureNamePrefix + VALSEP + val, 1.0);
               } else {
                 // NOTE: sourceAnnotation should always ne non-null here since valObj is non-null
                 double score = gate.plugin.learningframework.LFUtils.anyToDoubleOrElse(sourceAnnotation.getFeatures().get(featureName4Value), 1.0);
-                addToFeatureVector(fv, internalFeatureNamePrefix + VALSEP + val, score);
+                setInFeatureVector(fv, internalFeatureNamePrefix + VALSEP + val, score);
               }
             }
           } else {
@@ -397,7 +397,7 @@ public class FeatureExtraction {
               case zero_value: // we treat this identical to keep: no feature set
                 break;
               case special_value: // we use the predefined special value
-                addToFeatureVector(fv, internalFeatureNamePrefix + VALSEP + MVVALUE, 1.0);
+                setInFeatureVector(fv, internalFeatureNamePrefix + VALSEP + MVVALUE, 1.0);
                 break;
               default:
                 throw new NotImplementedException("MV-Handling");
@@ -416,12 +416,12 @@ public class FeatureExtraction {
             if (alphabet.contains(val)) {
               // add the featureName, using the value we have stored for it, but only if the featureName
               // itself can be added
-              addToFeatureVector(fv, internalFeatureNamePrefix, alphabet.lookupIndex(val));
+              setInFeatureVector(fv, internalFeatureNamePrefix, alphabet.lookupIndex(val));
             } else // we have not seen this value: if the alphabet is allowed to grow add it and
             // then try to add the featureName, otherwise, do nothing
             if (!alphabet.growthStopped()) {
               // the lookupIndex method automatically adds the value if it is not there yet
-              addToFeatureVector(fv, internalFeatureNamePrefix, alphabet.lookupIndex(val));
+              setInFeatureVector(fv, internalFeatureNamePrefix, alphabet.lookupIndex(val));
             } else {
               //System.out.println("DEBUG: number, growStopped");
             }
@@ -433,21 +433,21 @@ public class FeatureExtraction {
                 //System.out.println("DEBUG: other, mv, setProp");
                 break;
               case keep:
-                addToFeatureVector(fv, internalFeatureNamePrefix, Double.NaN);
+                setInFeatureVector(fv, internalFeatureNamePrefix, Double.NaN);
                 break;
               case zero_value: // use the "special_value" 
-                addToFeatureVector(fv, internalFeatureNamePrefix, 0.0);
+                setInFeatureVector(fv, internalFeatureNamePrefix, 0.0);
                 String val = MVVALUE;
                 if (alphabet.contains(val)) {
-                  addToFeatureVector(fv, internalFeatureNamePrefix, alphabet.lookupIndex(MVVALUE));
+                  setInFeatureVector(fv, internalFeatureNamePrefix, alphabet.lookupIndex(MVVALUE));
                 } else if (!alphabet.growthStopped()) {
-                  addToFeatureVector(fv, internalFeatureNamePrefix, alphabet.lookupIndex(MVVALUE));
+                  setInFeatureVector(fv, internalFeatureNamePrefix, alphabet.lookupIndex(MVVALUE));
                 } else {
                   //System.out.println("DEBUG: number, growStopped");
                 }
                 break;
               case special_value: // we use the special value -1.0 which should get handled by Mallet somehow
-                addToFeatureVector(fv, internalFeatureNamePrefix, -1.0);
+                setInFeatureVector(fv, internalFeatureNamePrefix, -1.0);
                 break;
               default:
                 throw new NotImplementedException("MV-Handling");
@@ -462,19 +462,19 @@ public class FeatureExtraction {
           double val = 0.0;
           if (valObj instanceof Number) {
             val = ((Number) valObj).doubleValue();
-            addToFeatureVector(fv, internalFeatureNamePrefix, val);
+            setInFeatureVector(fv, internalFeatureNamePrefix, val);
           } else if (valObj instanceof Boolean) {
             if ((Boolean) valObj) {
               val = 1.0;
             } else {
               val = 0.0;
             }
-            addToFeatureVector(fv, internalFeatureNamePrefix, val);
+            setInFeatureVector(fv, internalFeatureNamePrefix, val);
           } else if (valObj instanceof double[]) {
             // create one feature for each entry in the array
             int i = 0;
             for (double el : ((double[]) valObj)) {
-              addToFeatureVector(fv, internalFeatureNamePrefix + ELEMSEP + i, el);
+              setInFeatureVector(fv, internalFeatureNamePrefix + ELEMSEP + i, el);
               i++;
             }
           } else if (valObj instanceof Iterable) {
@@ -482,7 +482,7 @@ public class FeatureExtraction {
             for (Object el : (Iterable) valObj) {
               val = LFUtils.anyToDoubleOrElse(el, 0.0);
               if (val != 0.0) {
-                addToFeatureVector(fv, internalFeatureNamePrefix + ELEMSEP + i, LFUtils.anyToDoubleOrElse(el, val));
+                setInFeatureVector(fv, internalFeatureNamePrefix + ELEMSEP + i, LFUtils.anyToDoubleOrElse(el, val));
               }
               i++;
             }
@@ -497,7 +497,7 @@ public class FeatureExtraction {
                       + // take it from the annotation, annType can be empty!
                       " at offset " + gate.Utils.start(sourceAnnotation) + " in document " + doc.getName());
             }
-            addToFeatureVector(fv, internalFeatureNamePrefix, val);
+            setInFeatureVector(fv, internalFeatureNamePrefix, val);
           }
           //System.err.println("DEBUG: for fname="+featureName+",dt="+dt+", valObj="+valObj+", fv="+fv.numLocations());
         } else {
@@ -508,14 +508,14 @@ public class FeatureExtraction {
               //System.out.println("DEBUG: numeric, mv, setProp");
               break;
             case keep:  // for this kind of codeas, we use the value NaN
-              addToFeatureVector(fv, internalFeatureNamePrefix, Double.NaN);
+              setInFeatureVector(fv, internalFeatureNamePrefix, Double.NaN);
               break;
             case zero_value: // use the first value, does not make much sense really, but ...
               // TODO: document that this combination should be avoided, probably
-              addToFeatureVector(fv, internalFeatureNamePrefix, 0.0);
+              setInFeatureVector(fv, internalFeatureNamePrefix, 0.0);
               break;
             case special_value: // we use the special value -1.0 which should get handled by Mallet somehow
-              addToFeatureVector(fv, internalFeatureNamePrefix, -1.0);
+              setInFeatureVector(fv, internalFeatureNamePrefix, -1.0);
               break;
             default:
               throw new NotImplementedException("MV-Handling");
@@ -547,7 +547,7 @@ public class FeatureExtraction {
                       " at offset " + gate.Utils.start(sourceAnnotation) + " in document " + doc.getName());
             }
           }
-          addToFeatureVector(fv, internalFeatureNamePrefix, val);
+          setInFeatureVector(fv, internalFeatureNamePrefix, val);
         } else {
           // we have a missing boolean value
           switch (mvt) {
@@ -556,14 +556,14 @@ public class FeatureExtraction {
               inst.setProperty(PROP_IGNORE_HAS_MV, true);
               break;
             case keep:  // for this kind of codeas, we use the value NaN
-              addToFeatureVector(fv, internalFeatureNamePrefix, Double.NaN);
+              setInFeatureVector(fv, internalFeatureNamePrefix, Double.NaN);
               break;
             case zero_value: // Use zero which will make false identical to missing
               // and work well with sparse vectors
-              addToFeatureVector(fv, internalFeatureNamePrefix, 0.0);
+              setInFeatureVector(fv, internalFeatureNamePrefix, 0.0);
               break;
             case special_value: // we use the special value -1.0 which should get handled by Mallet somehow
-              addToFeatureVector(fv, internalFeatureNamePrefix, 0.5);
+              setInFeatureVector(fv, internalFeatureNamePrefix, 0.5);
               break;
             default:
               throw new NotImplementedException("MV-Handling");
@@ -693,15 +693,20 @@ public class FeatureExtraction {
         prefix = ng.name;
       }
       prefix = prefix + NAMESEP + "N" + number;
-      // NOTE: if we have a featureName4Value set, then we set the feature value to
-      // what we have calculated, otherwise we add one for each time the ngram occurs
-      // within the span.
-      if (featureName4Value.isEmpty()) {
-        addToFeatureVector(fv, prefix + VALSEP + ngram, score);
-      } else {
-        setFeatureVector(fv, prefix + VALSEP + ngram, score);
-      }
+      // NOTE: for now, we always add to any existing value of the feature vector we 
+      // may already have. That way, if some ngram occurs multiple times, we use the 
+      // sum its scores (and the score either is just 1.0 or whatever we got from using
+      // the featureName4Value value).
+      accumulateInFeatureVector(fv, prefix + VALSEP + ngram, score);
+      // NOTE: previously, we only accumulated if there was no weight feature, otherwise
+      // the weight was directly used without accumulation
+      //if (featureName4Value.isEmpty()) {
+      //  accumulateInFeatureVector(fv, prefix + VALSEP + ngram, score);
+      //} else {
+      //  setInFeatureVector(fv, prefix + VALSEP + ngram, score);
+      //}
     }
+    //System.err.println("DEBUG: Vector after adding feature "+ng+" is now "+fv);
   } // extractFeature(NGram)
 
   private static void extractFeature(
@@ -1079,28 +1084,44 @@ public class FeatureExtraction {
   /// HELPER AND UTILITY METHODS
   ///=======================================
   /**
-   * Same inputAS the method, but makes sure a non-growable Alphabet is considered.
+   * Set a feature in the feature vector, to the given value.
+   * However, if growth is stopped, do not set the feature if the key is not known.
    *
+   * This method assumes that the key for this feature vector is only set once, if it 
+   * is set another time for the same feature vector, any old value is overridden!
+   * 
    * @param fv
    * @param key
    * @param val
    */
-  private static void addToFeatureVector(AugmentableFeatureVector fv, Object key, double val) {
+  private static void setInFeatureVector(AugmentableFeatureVector fv, Object key, double val) {
     Alphabet a = fv.getAlphabet();
     if (!a.contains(key) && a.growthStopped()) {
       //System.err.println("DEBUG: GROWTH STOPPED! key="+key+",a="+a);
       return;
     }
-    fv.add(key, val);
+    if(fv.contains(key)) {
+      System.err.println("LF DEBUG: setting/overriding a value where there is already one! key="+key);      
+      fv.setValue(a.lookupIndex(key), val);
+    } else {
+      fv.add(key, val);
+    }
   }
 
-  private static void setFeatureVector(AugmentableFeatureVector fv, Object key, double val) {
+  private static void accumulateInFeatureVector(AugmentableFeatureVector fv, Object key, double val) {
     Alphabet a = fv.getAlphabet();
     if (!a.contains(key) && a.growthStopped()) {
       return;
     }
-    int index = a.lookupIndex(key);
-    fv.setValue(index, val);
+    fv.add(key,val);
+    // Instead of the previous statement the following was used for debugging:
+    //if(fv.contains(key)) {
+    //  fv.add(key,val);
+      //System.err.println("DEBUG accumulate: adding to existing: key="+key+" index="+a.lookupIndex(key)+" loc="+fv.location(a.lookupIndex(key)));
+    //} else {
+    //  fv.add(key,val);
+      //System.err.println("DEBUG accumulate: creating new: key="+key+" index="+a.lookupIndex(key)+" loc="+fv.location(a.lookupIndex(key)));
+    //}
   }
 
 }

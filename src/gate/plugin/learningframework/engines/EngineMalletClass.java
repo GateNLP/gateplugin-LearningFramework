@@ -122,7 +122,7 @@ public class EngineMalletClass extends EngineMallet {
       // there are parameters, so if it is one of the algorithms were we support setting
       // a parameter do this      
       if (algorithm.equals(AlgorithmClassification.MALLET_CL_C45)) {      
-        Parms ps = new Parms(parms, "m:maxDepth:i", "p:prune:b","n:minNumInsts:i");
+        Parms ps = new Parms(parms, "m:maxDepth:i", "p:prune:B","n:minNumInsts:i");
         int maxDepth = (int)ps.getValueOrElse("maxDepth", 0);
         int minNumInsts = (int)ps.getValueOrElse("minNumInsts", 2);
         boolean prune = (boolean)ps.getValueOrElse("prune",true);
