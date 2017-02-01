@@ -159,6 +159,11 @@ public class LF_TrainRegression extends LF_TrainBase {
 
   @Override
   public void afterLastDocument(Controller arg0, Throwable t) {
+    if(t!=null) {
+      System.err.println("An exception occurred during processing of documents, no training will be done");
+      System.err.println("Exception was "+t.getClass()+": "+t.getMessage());
+      return;
+    }
     System.out.println("LearningFramework: Starting training engine " + engine);
     System.out.println("Training set size: " + corpusRepresentation.getRepresentationMallet().size());
     if (corpusRepresentation.getRepresentationMallet().getDataAlphabet().size() > 20) {
