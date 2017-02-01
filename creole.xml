@@ -20,14 +20,14 @@ along with this software. If not, see <http://www.gnu.org/licenses/>.
 -->
 <CREOLE-DIRECTORY
   ID="gate.LearningFramework"
-  VERSION="3.5.3"
+  VERSION="3.6"
   DESCRIPTION="Learning Framework"
   HELPURL="https://github.com/GateNLP/gateplugin-LearningFramework/wiki"
 >
   <JAR scan="true">gateplugin-LearningFramework.jar</JAR>
   <JAR>lib-static/snakeyaml-1.16.jar</JAR> 
   <IVY>build/ivy.xml</IVY>
-  <JAR>lib-static/commons-cli-1.4-modified.jar</JAR>
+  <JAR>lib-static/commons-cli-patched-1.4-SNAPSHOT.jar</JAR>
   <JAR>lib-static/libsvm.jar</JAR>
   <JAR>lib-static/interaction-3.5.1.jar</JAR>
 </CREOLE-DIRECTORY>

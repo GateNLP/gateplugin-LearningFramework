@@ -26,10 +26,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.ParseException;
+import org.apache.commons.clipatched.CommandLine;
+import org.apache.commons.clipatched.Options;
+import org.apache.commons.clipatched.DefaultParser;
+import org.apache.commons.clipatched.ParseException;
 import org.apache.log4j.Logger;
 
 /**
