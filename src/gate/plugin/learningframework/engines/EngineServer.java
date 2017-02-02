@@ -171,7 +171,7 @@ public class EngineServer extends Engine {
       weights.add(weight);
     }
     // create the JSON for the request
-    Map data4json = new HashMap<String,Object>();
+    Map<String,Object> data4json = new HashMap<String,Object>();
     if(!dense)
       data4json.put("indices",indicesvec);
     data4json.put("values",valuesvec);
@@ -215,6 +215,7 @@ public class EngineServer extends Engine {
     // We could probably change the parsing behaviour into always creating doubles somehow but
     // for now we simply first parse the arrays into Number, then convert each vector into
     // a vector of Double
+    @SuppressWarnings("unchecked")
     ArrayList<ArrayList<Number>> targets = (ArrayList<ArrayList<Number>>)responseMap.get("preds");
     
     GateClassification gc = null;

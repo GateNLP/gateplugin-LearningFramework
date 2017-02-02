@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with this software. If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<project name="gateplugin-LearningFramework" basedir="."  default="build"  xmlns:ivy="antlib:org.apache.ivy.ant" >
+<project name="gateplugin-LearningFramework" basedir="."  default="jar" >
   <!-- Prevent Ant from warning about includeantruntime not being set -->
   <property name="build.sysclasspath" value="ignore" />
 
@@ -46,42 +46,9 @@ along with this software. If not, see <http://www.gnu.org/licenses/>.
   <property name="src.dir" location="src" />
   <property name="classes.dir" location="classes" />
   <property name="doc.dir" location="doc" />
-  <property name="build.dir" location="build" />
   <property name="javadoc.dir" location="${doc.dir}/javadoc" />
   <property name="jar.location" location="gateplugin-${plugin.name}.jar" />
 
-  <!-- Ivy setup -->
-  <property name="ivy.dir" location="build" />
-  <path id="ivy.lib.path">
-      <fileset file="${gate.home}/build/lib/ivy.jar" />
-  </path>
-  <taskdef resource="org/apache/ivy/ant/antlib.xml"
-                   uri="antlib:org.apache.ivy.ant"
-                   classpathref="ivy.lib.path"/>
-
-  <taskdef classname="gate.util.ant.ExpandIvy" name="expandivy">
-    <classpath>
-      <pathelement location="${gate.jar}" />
-      <fileset dir="${gate.lib}" includes="*.jar" />
-    </classpath>
-  </taskdef>
-  <target name="expandivy">
-    <expandivy dir="." />
-  </target>
-
-
-  <target name="initivy">
-    <ivy:configure file="${build.dir}/ivysettings.xml"/> 
-    <!-- <ivy:retrieve sync="true" file="${build.dir}/ivy.xml" pattern="${libDir}/[artifact]-[revision].[ext]" /> -->
-    <!-- <ivy:retrieve file="${build.dir}/ivy.xml"/> -->
-    <ivy:resolve file="${build.dir}/ivy.xml"/>
-    <!-- <ivy:report todir="${ivy.dir}/ivy-report" /> -->
-    <ivy:cachepath pathid="ivylibs"/>
-  </target>
-
-  <target name="prepare" depends="initivy">
-    <mkdir dir="${classes.dir}" />
-    
   <!-- Path to compile - includes gate.jar and GATE/lib/*.jar -->
   <path id="gate.classpath">
     <pathelement location="${gate.jar}" />
@@ -94,13 +61,7 @@ along with this software. If not, see <http://www.gnu.org/licenses/>.
   <!-- GATE classes plus local lib jars -->
   <path id="compile.classpath">
     <path refid="gate.classpath" />
-    <path refid="ivylibs" />
-    <!--
     <fileset dir="lib"> 
-      <include name="*.jar"/>
-    </fileset>
-    -->
-    <fileset dir="lib-static">
       <include name="*.jar"/>
     </fileset>
   </path>
@@ -109,6 +70,9 @@ along with this software. If not, see <http://www.gnu.org/licenses/>.
     <path refid="compile.classpath" />
     <pathelement location="${jar.location}" />
   </path>
+
+  <target name="prepare">
+    <mkdir dir="classes"/>
   </target>
 
   <!-- compile the source -->
@@ -119,8 +83,8 @@ along with this software. If not, see <http://www.gnu.org/licenses/>.
            deprecation="true"
            debug="true"
            debuglevel="lines,source"
-           source="1.7" 
-           target="1.7">
+           source="1.8" 
+           target="1.8">
        <compilerarg value="-Xlint:unchecked"/>
      </javac>
   </target>
@@ -172,10 +136,6 @@ along with this software. If not, see <http://www.gnu.org/licenses/>.
   <!-- remove the generated .class files -->
   <target name="clean.classes" >
     <delete dir="${classes.dir}" />
-  </target>
-
-  <target name="clean.all" depends="clean" >
-    <ivy:cleancache/> 
   </target>
 
   <!-- Clean up - remove .class and .jar files -->

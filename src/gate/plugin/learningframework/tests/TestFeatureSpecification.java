@@ -68,7 +68,7 @@ public class TestFeatureSpecification {
     as = fi.getAttributes();
     assertNotNull(as);
     assertEquals(1,as.size());
-    assertEquals("NgramAttribute(name=,type=theType,feature=theFeature,number=3",as.get(0).toString());
+    assertEquals("NgramAttribute(name=,type=theType,feature=theFeature,featureName4Value=,number=3",as.get(0).toString());
     
     // make sure that the feature info object we get from the feature specification is a clone
     FeatureInfo fi2 = fs.getFeatureInfo();

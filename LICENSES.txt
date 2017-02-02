@@ -1,7 +1,7 @@
-This plugin depends on the following software:
+This plugin directly depends on the following software:
 
   Mallet: http://mallet.cs.umass.edu/
-  License: https://opensource.org/licenses/cpl1.0.php
+  License: Apache 2.0 https://github.com/mimno/Mallet/blob/master/LICENSE
 
   SnakeYaml: https://bitbucket.org/asomov/snakeyaml
   License: Apache License 2.0
@@ -9,6 +9,9 @@ This plugin depends on the following software:
   LibSVM: https://www.csie.ntu.edu.tw/~cjlin/libsvm/
   License: http://www.csie.ntu.edu.tw/~cjlin/libsvm/COPYRIGHT
 
+  Modified CommonsCLI: https://github.com/johann-petrak/commons-cli
+  License: Apache License 2.0
+  based on:
   CommonsCLI: https://commons.apache.org/proper/commons-cli/
   License: Apache License 2.0 
 
@@ -17,3 +20,13 @@ This plugin depends on the following software:
 
   JDOM: http://jdom.org/
   License: http://jdom.org/docs/faq.html#a0030 (Apache-like, more permissive)    
+
+  Jackson Databind: https://github.com/FasterXML/jackson-databind
+  License: Apache 2.0 http://www.apache.org/licenses/LICENSE-2.0
+
+  Unirest: http://unirest.io/
+  License: MIT https://github.com/Mashape/unirest-java/blob/master/LICENSE
+
+Please see each software for their own dependencies and their licenses.
+
+

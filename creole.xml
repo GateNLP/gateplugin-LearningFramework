@@ -25,9 +25,29 @@ along with this software. If not, see <http://www.gnu.org/licenses/>.
   HELPURL="https://github.com/GateNLP/gateplugin-LearningFramework/wiki"
 >
   <JAR scan="true">gateplugin-LearningFramework.jar</JAR>
-  <JAR>lib-static/snakeyaml-1.16.jar</JAR> 
-  <IVY>build/ivy.xml</IVY>
-  <JAR>lib-static/commons-cli-patched-1.4-SNAPSHOT.jar</JAR>
-  <JAR>lib-static/libsvm.jar</JAR>
-  <JAR>lib-static/interaction-3.5.1.jar</JAR>
+  <JAR>lib/arpack_combined_all-0.1.jar</JAR>
+  <JAR>lib/bsh-2.0b4.jar</JAR>
+  <JAR>lib/commons-cli-patched-1.4-SNAPSHOT.jar</JAR>
+  <JAR>lib/commons-codec-1.9.jar</JAR>
+  <JAR>lib/commons-logging-1.2.jar</JAR>
+  <JAR>lib/Evaluation.jar</JAR>
+  <JAR>lib/hamcrest-core-1.1.jar</JAR>
+  <JAR>lib/httpasyncclient-4.1.1.jar</JAR>
+  <JAR>lib/httpclient-4.5.1.jar</JAR>
+  <JAR>lib/httpcore-4.4.4.jar</JAR>
+  <JAR>lib/httpcore-nio-4.4.4.jar</JAR>
+  <JAR>lib/httpmime-4.5.2.jar</JAR>
+  <JAR>lib/interaction-3.5.1.jar</JAR>
+  <JAR>lib/jdom-1.1.jar</JAR>
+  <JAR>lib/jgrapht-0.6.0.jar</JAR>
+  <JAR>lib/json-20160212.jar</JAR>
+  <JAR>lib/junit-4.10.jar</JAR>
+  <JAR>lib/jwnl-1.4_rc3.jar</JAR>
+  <JAR>lib/libsvm.jar</JAR>
+  <JAR>lib/mallet-2.0.8.jar</JAR>
+  <JAR>lib/mtj-0.9.14.jar</JAR>
+  <JAR>lib/netlib-java-0.9.3.jar</JAR>
+  <JAR>lib/snakeyaml-1.16.jar</JAR>
+  <JAR>lib/trove4j-2.0.2.jar</JAR>
+  <JAR>lib/unirest-java-1.4.9.jar</JAR>
 </CREOLE-DIRECTORY>
