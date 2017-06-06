@@ -119,7 +119,7 @@ public class CorpusExporterMatrixMarket2 extends CorpusExporter {
     for(Instance instance : instances) {
       rowNr++;
       Boolean ignoreInstance = (Boolean)instance.getProperty(FeatureExtraction.PROP_IGNORE_HAS_MV);
-      if(ignoreInstance) continue;
+      if(ignoreInstance != null && ignoreInstance) continue;
       // to export instance weights, we check the first instance if a weight is set: 
       // if yes, then a third file is created which will contain the weights for each instance
       Object instanceWeightObject = instance.getProperty("instanceWeight");
