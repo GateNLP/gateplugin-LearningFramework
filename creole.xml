@@ -20,7 +20,7 @@ along with this software. If not, see <http://www.gnu.org/licenses/>.
 -->
 <CREOLE-DIRECTORY
   ID="gate.LearningFramework"
-  VERSION="3.6"
+  VERSION="3.7"
   DESCRIPTION="Learning Framework"
   HELPURL="https://github.com/GateNLP/gateplugin-LearningFramework/wiki"
 >
