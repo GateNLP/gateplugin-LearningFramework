@@ -37,7 +37,7 @@ along with this software. If not, see <http://www.gnu.org/licenses/>.
   <JAR>lib/httpcore-4.4.4.jar</JAR>
   <JAR>lib/httpcore-nio-4.4.4.jar</JAR>
   <JAR>lib/httpmime-4.5.2.jar</JAR>
-  <JAR>lib/interaction-3.5.1.jar</JAR>
+  <JAR>lib/interaction-3.8.jar</JAR>
   <JAR>lib/jdom-1.1.jar</JAR>
   <JAR>lib/jgrapht-0.6.0.jar</JAR>
   <JAR>lib/json-20160212.jar</JAR>

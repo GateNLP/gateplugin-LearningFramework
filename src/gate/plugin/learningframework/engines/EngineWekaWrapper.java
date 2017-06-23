@@ -39,6 +39,7 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.yaml.snakeyaml.Yaml;
@@ -71,6 +72,8 @@ public class EngineWekaWrapper extends Engine {
   private String wrapperhome = null;
   private boolean linuxLike = true;
   private boolean windowsLike = false;
+  
+  protected final String ENV_WRAPPER_HOME = "WEKA_WRAPPER_HOME";
 
   /**
    * Try to find the script running the Weka-Wrapper command.
@@ -87,7 +90,7 @@ public class EngineWekaWrapper extends Engine {
    * @return 
    */
   private File findWrapperCommand(File dataDirectory, boolean apply) {
-    String homeDir = System.getenv("WEKA_WRAPPER_HOME");
+    String homeDir = System.getenv(ENV_WRAPPER_HOME);
     String tmp = System.getProperty("gate.plugin.learningframework.wekawrapper.home");
     if(tmp!=null) homeDir = tmp;
     File wekaInfoFile = new File(dataDirectory,"weka.yaml");
@@ -182,14 +185,15 @@ public class EngineWekaWrapper extends Engine {
     }
     
     finalCommand.add(commandFile.getAbsolutePath());
-    finalCommand.add(wrapperhome);
     finalCommand.add(modelFileName);
     finalCommand.add(header);
     
     //System.err.println("Running: "+finalCommand);
     // Create a fake Model jsut to make LF_Apply... happy which checks if this is null
     model = "ExternalWekaWrapperModel";
-    process = new Process4ObjectStream(directory,finalCommand);
+    Map<String,String> env = new HashMap<>();
+    env.put(ENV_WRAPPER_HOME,wrapperhome);
+    process = Process4ObjectStream.create(directory,env,finalCommand);
   }
 
   @Override
@@ -239,7 +243,6 @@ public class EngineWekaWrapper extends Engine {
     }
     
     finalCommand.add(commandFile.getAbsolutePath());
-    finalCommand.add(wrapperhome);
     finalCommand.add(dataFileName);
     finalCommand.add(modelFileName);
     finalCommand.add(wekaClass);
@@ -250,7 +253,9 @@ public class EngineWekaWrapper extends Engine {
     // Create a fake Model jsut to make LF_Apply... happy which checks if this is null
     model = "ExternalWekaWrapperModel";
     
-    process = new ProcessSimple(dataDirectory,finalCommand);
+    model = "ExternalWekaWrapperModel";
+    Map<String,String> env = new HashMap<>();
+    process = ProcessSimple.create(dataDirectory,env,finalCommand);
     process.waitFor();
   }
 

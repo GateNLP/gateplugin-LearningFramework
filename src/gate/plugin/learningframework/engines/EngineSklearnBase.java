@@ -173,7 +173,6 @@ public abstract class EngineSklearnBase extends Engine {
     File commandFile = findWrapperCommand(directory, true);
     String modelFileName = new File(directory,MODEL_BASENAME).getAbsolutePath();
     finalCommand.add(commandFile.getAbsolutePath());
-    finalCommand.add(wrapperhome);
     finalCommand.add(modelFileName);
     // if we have a shell command prepend that, and if we have shell parms too, include them
     if(shellcmd != null) {
@@ -186,7 +185,9 @@ public abstract class EngineSklearnBase extends Engine {
     //System.err.println("Running: "+finalCommand);
     // Create a fake Model jsut to make LF_Apply... happy which checks if this is null
     model = MODEL_INSTANCE;
-    process = new Process4JsonStream(directory,finalCommand);
+    Map<String,String> env = new HashMap<>();
+    env.put(ENV_WRAPPER_HOME, wrapperhome);
+    process = Process4JsonStream.create(directory,env,finalCommand);
   }
 
   @Override
@@ -227,7 +228,6 @@ public abstract class EngineSklearnBase extends Engine {
     String dataFileName = dataDirectory.getAbsolutePath()+File.separator;
     String modelFileName = new File(dataDirectory, MODEL_BASENAME).getAbsolutePath();
     finalCommand.add(commandFile.getAbsolutePath());
-    finalCommand.add(wrapperhome);
     finalCommand.add(dataFileName);
     finalCommand.add(modelFileName);
     finalCommand.add(sklearnClass);
@@ -249,8 +249,9 @@ public abstract class EngineSklearnBase extends Engine {
     //}
     // Create a fake Model jsut to make LF_Apply... happy which checks if this is null
     model = MODEL_INSTANCE;
-    
-    process = new ProcessSimple(dataDirectory,finalCommand);
+    Map<String,String> env = new HashMap<>();
+    env.put(ENV_WRAPPER_HOME,wrapperhome);
+    process = ProcessSimple.create(dataDirectory,env,finalCommand);
     process.waitFor();
   }
 
