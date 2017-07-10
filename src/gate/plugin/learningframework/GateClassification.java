@@ -254,6 +254,7 @@ public class GateClassification {
           String[] tac = typeAndCode.split(SeqEncoder.CODESEP_PATTERN);
           //System.err.println("type/code="+tac[0]+"/"+tac[1]);
           if(tac[1].equals(SeqEncoder.CODE_BEGIN)) {
+            touchedTypes.add(tac[0]);
             // finish any ann which is of the same type and remove
             Iterator<Map.Entry<String, AnnToAdd>> it = annsToAdd.entrySet().iterator();
             while(it.hasNext()) {
@@ -261,7 +262,6 @@ public class GateClassification {
               if(entry.getKey().equals(tac[0])) {
                 addSequenceAnn(entry.getValue(), outputAS, minConfidence);
                 it.remove();
-                touchedTypes.add(tac[0]);
               }
             }
             // now add a new open annotation for that type
@@ -280,6 +280,7 @@ public class GateClassification {
             while(it.hasNext()) {
               Map.Entry<String,AnnToAdd> entry = it.next();              
               if(entry.getKey().equals(tac[0])) {
+                //System.err.println("extending existing annotation to offset "+inst.getEndNode().getOffset());
                 touchedTypes.add(tac[0]);
                 // continue the ann and extend the span
                 entry.getValue().conf += (Double) inst.getFeatures().get(Globals.outputProbFeature);
@@ -294,12 +295,14 @@ public class GateClassification {
         } // for typeAndCode : typesAndCodes
         // after processing all the types/codes in the target, go through the 
         // open annotations and close those which have not been touched by this target
+        //System.err.println("Set of touched types: "+touchedTypes);
         Iterator<Map.Entry<String, AnnToAdd>> it = annsToAdd.entrySet().iterator();
         while(it.hasNext()) {
           Map.Entry<String,AnnToAdd> entry = it.next();              
           // if this is an open annotation with a type which has not been included
           // in the target, close and remove it
           if(!touchedTypes.contains(entry.getKey())) {
+            //System.err.println("finishing untouched ann at "+entry.getValue().thisStart);
             addSequenceAnn(entry.getValue(), outputAS, minConfidence);
             it.remove();
           }
