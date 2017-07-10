@@ -217,13 +217,15 @@ public class GateClassification {
         // if the oldSeqId is -1, do not worry, this is just the first instance annotation
         if(oldSeqId == -1) oldSeqId = sequenceSpanID;
         else {
-          // close any annotations still open and remove
+          // close any annotations still open and remove            
             Iterator<Map.Entry<String, AnnToAdd>> it = annsToAdd.entrySet().iterator();
             while(it.hasNext()) {
               Map.Entry<String,AnnToAdd> entry = it.next();              
+              //System.err.println("Finishing at seq end: "+entry.getValue().thisEnd);
               addSequenceAnn(entry.getValue(), outputAS, minConfidence);
               it.remove();
             }
+            oldSeqId = sequenceSpanID;
         }
       }
       
@@ -240,7 +242,8 @@ public class GateClassification {
             // finish any open anns of the same type and remove the open anns
             Iterator<Map.Entry<String, AnnToAdd>> it = annsToAdd.entrySet().iterator();
             while(it.hasNext()) {
-              Map.Entry<String,AnnToAdd> entry = it.next();              
+              Map.Entry<String,AnnToAdd> entry = it.next();          
+              //System.err.println("Finishing because of O "+entry.getValue().thisEnd);
               addSequenceAnn(entry.getValue(), outputAS, minConfidence);
               it.remove();
             }
@@ -260,6 +263,7 @@ public class GateClassification {
             while(it.hasNext()) {
               Map.Entry<String,AnnToAdd> entry = it.next();              
               if(entry.getKey().equals(tac[0])) {
+                //System.err.println("Finishing because B: "+entry.getValue().thisEnd);
                 addSequenceAnn(entry.getValue(), outputAS, minConfidence);
                 it.remove();
               }
@@ -302,7 +306,7 @@ public class GateClassification {
           // if this is an open annotation with a type which has not been included
           // in the target, close and remove it
           if(!touchedTypes.contains(entry.getKey())) {
-            //System.err.println("finishing untouched ann at "+entry.getValue().thisStart);
+            //System.err.println("finishing untouched ann at "+entry.getValue().thisEnd);
             addSequenceAnn(entry.getValue(), outputAS, minConfidence);
             it.remove();
           }
