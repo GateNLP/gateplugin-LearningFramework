@@ -34,6 +34,8 @@ import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletSeq;
 import gate.plugin.learningframework.engines.Engine;
 import gate.plugin.learningframework.features.FeatureSpecification;
+import gate.plugin.learningframework.features.SeqEncoder;
+import gate.plugin.learningframework.features.SeqEncoderEnum;
 import gate.plugin.learningframework.features.TargetType;
 import gate.util.Files;
 import gate.util.GateRuntimeException;
@@ -172,6 +174,24 @@ public class LF_Export extends LF_ExportBase {
 
   private Exporter exporter;
   
+  private SeqEncoderEnum seqEncoderEnum = SeqEncoderEnum.BIO;
+  private SeqEncoder seqEncoder;
+  /**
+   * The sequence to classification algorithm to use.
+   */
+  @RunTime
+  @Optional
+  @CreoleParameter(comment = "The sequence to classification algorithm to use." )
+  public void setSeqEncoder(SeqEncoderEnum val) {
+    seqEncoderEnum = val;
+  }
+  
+  public SeqEncoderEnum getSeqEncoder() {
+    return seqEncoderEnum;
+  }
+  
+  
+  
   // ----------------------------------------------------------------------------
   
   private boolean haveSequenceProblem = false;  // true if a classAnnotationType is specified
@@ -191,15 +211,15 @@ public class LF_Export extends LF_ExportBase {
     String nameFeatureName = null;
     if(haveSequenceAlg) {
       if(haveSequenceProblem) {
-        corpusRepresentationSeq.add(instanceAS, inputAS.get(getSequenceSpan()), inputAS, inputAS.get(getClassAnnotationType()), null, targetType, instanceWeightFeature, nameFeatureName);
+        corpusRepresentationSeq.add(instanceAS, inputAS.get(getSequenceSpan()), inputAS, inputAS.get(getClassAnnotationType()), null, targetType, instanceWeightFeature, nameFeatureName, seqEncoder);
       } else {
-        corpusRepresentationSeq.add(instanceAS, inputAS.get(getSequenceSpan()), inputAS, null, getTargetFeature(), targetType, instanceWeightFeature, nameFeatureName);        
+        corpusRepresentationSeq.add(instanceAS, inputAS.get(getSequenceSpan()), inputAS, null, getTargetFeature(), targetType, instanceWeightFeature, nameFeatureName, seqEncoder);        
       }
     } else {
       if(haveSequenceProblem) {
-        corpusRepresentationClass.add(instanceAS, null, inputAS, inputAS.get(getClassAnnotationType()), null, targetType, instanceWeightFeature, nameFeatureName);
+        corpusRepresentationClass.add(instanceAS, null, inputAS, inputAS.get(getClassAnnotationType()), null, targetType, instanceWeightFeature, nameFeatureName, seqEncoder);
       } else {
-        corpusRepresentationClass.add(instanceAS, null, inputAS, null, getTargetFeature(), targetType, instanceWeightFeature, nameFeatureName);
+        corpusRepresentationClass.add(instanceAS, null, inputAS, null, getTargetFeature(), targetType, instanceWeightFeature, nameFeatureName, seqEncoder);
       }
     }
     return doc;
@@ -208,6 +228,7 @@ public class LF_Export extends LF_ExportBase {
   @Override
   public void afterLastDocument(Controller arg0, Throwable t) {
     File outDir = Files.fileFromURL(getDataDirectory());
+    
     if(!haveSequenceAlg) { 
       corpusRepresentationClass.finish();
       Exporter.export(corpusRepresentationClass, exporter, outDir, getInstanceType(), getAlgorithmParameters());
@@ -224,6 +245,19 @@ public class LF_Export extends LF_ExportBase {
 
   @Override
   protected void beforeFirstDocument(Controller controller) {
+
+    System.err.println("DEBUG: Before Documents.");
+    if(getSeqEncoder().getEncoderClass() == null) {
+      throw new GateRuntimeException("SeqEncoder class not yet implemented, please choose another one: "+getSeqEncoder());
+    }
+    
+    try {
+      seqEncoder = (SeqEncoder) getSeqEncoder().getEncoderClass().newInstance();
+      seqEncoder.setOptions(getSeqEncoder().getOptions());
+    } catch (Exception ex) {
+      throw new GateRuntimeException("Could not create SeqEncoder instance",ex);
+    }
+    
     
     /*
     if(getExporter() == Exporter.EXPORTER_MALLET_SEQ) {
@@ -239,7 +273,6 @@ public class LF_Export extends LF_ExportBase {
     //}
     
     
-    System.err.println("DEBUG: Before Documents.");
     
     // Read and parse the feature specification
     featureSpec = new FeatureSpecification(featureSpecURL);

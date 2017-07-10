@@ -34,6 +34,7 @@ import gate.plugin.learningframework.LFUtils;
 import gate.plugin.learningframework.features.FeatureSpecAttribute;
 import gate.plugin.learningframework.features.FeatureExtraction;
 import gate.plugin.learningframework.features.FeatureInfo;
+import gate.plugin.learningframework.features.SeqEncoder;
 import gate.plugin.learningframework.features.TargetType;
 import gate.plugin.learningframework.mallet.LFPipe;
 import gate.plugin.learningframework.mallet.PipeScaleMeanVarAll;
@@ -191,7 +192,7 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
    * @param nameFeatureName
    */
   @Override
-  public void add(AnnotationSet instancesAS, AnnotationSet sequenceAS, AnnotationSet inputAS, AnnotationSet classAS, String targetFeatureName, TargetType targetType, String instanceWeightFeature, String nameFeatureName) {
+  public void add(AnnotationSet instancesAS, AnnotationSet sequenceAS, AnnotationSet inputAS, AnnotationSet classAS, String targetFeatureName, TargetType targetType, String instanceWeightFeature, String nameFeatureName, SeqEncoder seqEncoder) {
     if(sequenceAS != null) {
       throw new GateRuntimeException("LF invalid call to CorpusRepresentationMallet.add: sequenceAS must be null "+
               " for document "+inputAS.getDocument().getName());
@@ -201,7 +202,7 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
       Instance inst = extractIndependentFeaturesHelper(instanceAnnotation, inputAS, featureInfo, pipe);
       if (classAS != null) {
         // extract the target as required for sequence tagging
-        FeatureExtraction.extractClassForSeqTagging(inst, pipe.getTargetAlphabet(), classAS, instanceAnnotation);
+        FeatureExtraction.extractClassForSeqTagging(inst, pipe.getTargetAlphabet(), classAS, instanceAnnotation, seqEncoder);
       } else {
         if(targetType == TargetType.NOMINAL) {
           FeatureExtraction.extractClassTarget(inst, pipe.getTargetAlphabet(), targetFeatureName, instanceAnnotation, inputAS);

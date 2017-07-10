@@ -153,7 +153,7 @@ public class LF_TrainRegression extends LF_TrainBase {
     // the sequenceAS is always null for the regression task!
     // the nameFeatureName is always null for now!
     String nameFeatureName = null;
-    corpusRepresentation.add(instanceAS, null, inputAS, null, getTargetFeature(), TargetType.NUMERIC, instanceWeightFeature, nameFeatureName);
+    corpusRepresentation.add(instanceAS, null, inputAS, null, getTargetFeature(), TargetType.NUMERIC, instanceWeightFeature, nameFeatureName, null);
     return doc;
   }
 

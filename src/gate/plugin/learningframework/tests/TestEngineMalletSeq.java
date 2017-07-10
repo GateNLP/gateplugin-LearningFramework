@@ -42,6 +42,7 @@ import gate.plugin.learningframework.engines.AlgorithmClassification;
 import gate.plugin.learningframework.engines.Engine;
 import gate.plugin.learningframework.features.FeatureInfo;
 import gate.plugin.learningframework.features.FeatureSpecification;
+import gate.plugin.learningframework.features.SeqEncoder_SimpleBIO;
 import gate.plugin.learningframework.features.TargetType;
 import gate.plugin.learningframework.mallet.LFPipe;
 import gate.util.GateException;
@@ -102,7 +103,7 @@ public class TestEngineMalletSeq {
       AnnotationSet classAS = doc.getAnnotations().get("Link");
       String targetFeature = null;
       String nameFeature = null;
-      crm.add(instanceAS, sequenceAS, inputAS, classAS, targetFeature, TargetType.NOMINAL, "", nameFeature);
+      crm.add(instanceAS, sequenceAS, inputAS, classAS, targetFeature, TargetType.NOMINAL, "", nameFeature, new SeqEncoder_SimpleBIO());
       System.out.println("Doc="+doc.getName()+" seq="+sequenceAS.size()+" inst="+instanceAS.size()+
               " class="+classAS.size());
     }
@@ -178,7 +179,7 @@ public class TestEngineMalletSeq {
       AnnotationSet outputAS = doc.getAnnotations("LF");
       String outputType = "Link";
       instanceAS = lfAS;
-      GateClassification.addSurroundingAnnotations(inputAS, instanceAS, outputAS, outputType, null);
+      GateClassification.addSurroundingAnnotations(inputAS, instanceAS, outputAS, outputType, null, new SeqEncoder_SimpleBIO());
       System.out.println("Doc="+doc.getName()+", Links: "+outputAS.get("Link").size());
       
       AnnotationDifferTagging docDiffer = new AnnotationDifferTagging(

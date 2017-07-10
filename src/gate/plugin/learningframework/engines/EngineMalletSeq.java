@@ -266,7 +266,7 @@ public class EngineMalletSeq extends EngineMallet {
     for(Annotation sequenceAnn : sequenceAS) {
       int sequenceSpanId = sequenceAnn.getId();
       Instance inst = data.getInstanceForSequence( 
-              instanceAS, sequenceAnn, inputAS, null, null, TargetType.NONE, null);
+              instanceAS, sequenceAnn, inputAS, null, null, TargetType.NONE, null, null);
 
       //Always put the instance through the same pipe used for training.
       inst = crf.getInputPipe().instanceFrom(inst);

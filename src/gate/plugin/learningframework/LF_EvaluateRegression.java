@@ -200,7 +200,7 @@ public class LF_EvaluateRegression extends LF_TrainBase {
     AnnotationSet classAS = null;
     String tfName = getTargetFeature();
     String nameFeatureName = null;
-    corpusRepresentation.add(instanceAS, sequenceAS, inputAS, classAS, tfName, TargetType.NUMERIC, instanceWeightFeature, nameFeatureName);
+    corpusRepresentation.add(instanceAS, sequenceAS, inputAS, classAS, tfName, TargetType.NUMERIC, instanceWeightFeature, nameFeatureName, null);
     nrDocuments++;
     return doc;
   }

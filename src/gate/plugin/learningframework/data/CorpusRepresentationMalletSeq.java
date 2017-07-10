@@ -42,6 +42,7 @@ import gate.util.GateRuntimeException;
 import java.io.File;
 import org.apache.log4j.Logger;
 import static gate.plugin.learningframework.data.CorpusRepresentationMalletTarget.extractIndependentFeaturesHelper;
+import gate.plugin.learningframework.features.SeqEncoder;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -122,7 +123,7 @@ public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
    * @param inputAS
    * @param nameFeatureName
    */
-  public void addOld(AnnotationSet instancesAS, AnnotationSet sequenceAS, AnnotationSet inputAS, AnnotationSet classAS, String targetFeatureName, TargetType targetType, String nameFeatureName) {
+  public void addOld(AnnotationSet instancesAS, AnnotationSet sequenceAS, AnnotationSet inputAS, AnnotationSet classAS, String targetFeatureName, TargetType targetType, String nameFeatureName, SeqEncoder seqEncoder) {
     if (sequenceAS == null) {
       throw new GateRuntimeException("LF invalid call to CorpusRepresentationMallet.add: sequenceAS must not be null "
               + " for document " + inputAS.getDocument().getName());
@@ -140,7 +141,7 @@ public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
         Instance inst = extractIndependentFeaturesHelper(instanceAnnotation, inputAS, featureInfo, pipe);
         if (classAS != null) {
           // extract the target as required for sequence tagging
-          FeatureExtraction.extractClassForSeqTagging(inst, pipe.getTargetAlphabet(), classAS, instanceAnnotation);
+          FeatureExtraction.extractClassForSeqTagging(inst, pipe.getTargetAlphabet(), classAS, instanceAnnotation, seqEncoder);
         } else if (targetType == TargetType.NOMINAL) {
           FeatureExtraction.extractClassTarget(inst, pipe.getTargetAlphabet(), targetFeatureName, instanceAnnotation, inputAS);
         } else if (targetType == TargetType.NUMERIC) {
@@ -194,13 +195,13 @@ public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
    * @param nameFeatureName
    */
   @Override
-  public void add(AnnotationSet instancesAS, AnnotationSet sequenceAS, AnnotationSet inputAS, AnnotationSet classAS, String targetFeatureName, TargetType targetType, String instanceWeightFeature, String nameFeatureName) {
+  public void add(AnnotationSet instancesAS, AnnotationSet sequenceAS, AnnotationSet inputAS, AnnotationSet classAS, String targetFeatureName, TargetType targetType, String instanceWeightFeature, String nameFeatureName, SeqEncoder seqEncoder) {
     if (sequenceAS == null) {
       throw new GateRuntimeException("LF invalid call to CorpusRepresentationMallet.add: sequenceAS must not be null "
               + " for document " + inputAS.getDocument().getName());
     }
     for (Annotation sequenceAnnotation : sequenceAS.inDocumentOrder()) {
-      Instance inst = getInstanceForSequence(instancesAS, sequenceAnnotation, inputAS, classAS, targetFeatureName, targetType, nameFeatureName);
+      Instance inst = getInstanceForSequence(instancesAS, sequenceAnnotation, inputAS, classAS, targetFeatureName, targetType, nameFeatureName, seqEncoder);
         instances.add(inst);
     }
   }
@@ -230,7 +231,8 @@ public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
           AnnotationSet classAS,
           String targetFeatureName,
           TargetType targetType,
-          String nameFeatureName) {
+          String nameFeatureName,
+          SeqEncoder seqEncoder) {
 
     List<Annotation> instanceAnnotations = gate.Utils.getContainedAnnotations(instancesAS, sequenceAnnotation).inDocumentOrder();
     List<Instance> instanceList = new ArrayList<Instance>(instanceAnnotations.size());
@@ -239,7 +241,7 @@ public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
       if (targetType != TargetType.NONE) {
         if (classAS != null) {
           // extract the target as required for sequence tagging
-          FeatureExtraction.extractClassForSeqTagging(inst, pipe.getTargetAlphabet(), classAS, instanceAnnotation);
+          FeatureExtraction.extractClassForSeqTagging(inst, pipe.getTargetAlphabet(), classAS, instanceAnnotation, seqEncoder);
         } else if (targetType == TargetType.NOMINAL) {
           FeatureExtraction.extractClassTarget(inst, pipe.getTargetAlphabet(), targetFeatureName, instanceAnnotation, inputAS);
         } else if (targetType == TargetType.NUMERIC) {
