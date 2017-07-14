@@ -58,11 +58,11 @@ public class LF_GenFeatures_Misc extends AbstractDocumentProcessor {
   public Boolean getGenWordShape() {
     return genWordShape;
   }
-  protected Boolean genWordShapeShort = false;  
+  protected Boolean genWordShapeShort = true;  
   @RunTime
   @CreoleParameter(
           comment = "Generate short word shape",
-          defaultValue = "false")
+          defaultValue = "true")
   public void setGenWordShapeShort(Boolean val) {
     genWordShapeShort = val;
   }
@@ -112,6 +112,7 @@ public class LF_GenFeatures_Misc extends AbstractDocumentProcessor {
   }
   
   
+  
   @Override
   public Document process(Document doc) {
     if(isInterrupted()) {
@@ -135,7 +136,12 @@ public class LF_GenFeatures_Misc extends AbstractDocumentProcessor {
         char[] out = new char[arr.length];
         for(int i = 0; i<arr.length; i++) {
           char c = arr[i];
-          if(Character.isLetter(c)) out[i]='a';
+          if(Character.isLetter(c)) {
+            if(Character.isUpperCase(c))
+              out[i]='A';
+            else
+              out[i]='a';
+          }
           else if(Character.isDigit(c)) out[i]='9';
           else out[i] = c;
         }
@@ -150,7 +156,12 @@ public class LF_GenFeatures_Misc extends AbstractDocumentProcessor {
         char tmp = 0;
         for(int i = 0; i<arr.length; i++) {
           char c = arr[i];
-          if(Character.isLetter(c)) tmp='a';
+          if(Character.isLetter(c)) {
+            if(Character.isUpperCase(c))
+              tmp='A';
+            else
+              tmp='a';
+          }
           else if(Character.isDigit(c)) tmp='9';
           else tmp = c;
           if(tmp!=last) {
