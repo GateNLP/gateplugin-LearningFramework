@@ -130,7 +130,7 @@ public class LF_GenFeatures_Affixes extends AbstractDocumentProcessor {
     return genSuffixes;
   }
   
-  protected String suffixFeatureName = "pref";
+  protected String suffixFeatureName = "suf";
   @RunTime
   @CreoleParameter(
           comment = "The name pattern to use for the feature names for suffixes",
@@ -292,7 +292,7 @@ public class LF_GenFeatures_Affixes extends AbstractDocumentProcessor {
         int len = string.length();
         int max = len - getMinNonSuffixLength();
         for(int i = getMinSuffixLength(); i <= max; i++) {
-          fm.put(getPrefixFeatureName()+i, string.substring(len-i));
+          fm.put(getSuffixFeatureName()+i, string.substring(len-i));
         }        
       } // if long enough for suffix
     }
@@ -300,14 +300,14 @@ public class LF_GenFeatures_Affixes extends AbstractDocumentProcessor {
   }
 
   
-  //@Override
-  //public void afterLastDocument(Controller arg0, Throwable t) {
-  //}
+  @Override
+  public void afterLastDocument(Controller arg0, Throwable t) {
+  }
 
-  //@Override
-  //protected void finishedNoDocument(Controller c, Throwable t) {
-  //  logger.error("Processing finished, but got an error, no documents seen, or the PR was disabled in the pipeline - cannot train!");
-  //}
+  @Override
+  protected void finishedNoDocument(Controller c, Throwable t) {
+    logger.error("Processing finished, but got an error, no documents seen, or the PR was disabled in the pipeline - cannot train!");
+  }
 
   @Override
   protected void beforeFirstDocument(Controller controller) {
