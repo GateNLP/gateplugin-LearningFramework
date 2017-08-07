@@ -148,6 +148,9 @@ public class FeatureExtraction {
 
   public static final String PROP_HAVE_MV = "haveMV";
   public static final String PROP_IGNORE_HAS_MV = "ignore-MV";
+  
+  public static final String START_SYMBOL = "╔START╗";
+  public static final String STOP_SYMBOL = "╔STOP╗";
 
   private static Logger logger = Logger.getLogger(FeatureExtraction.class.getName());
 
@@ -754,6 +757,12 @@ public class FeatureExtraction {
     Annotation sourceAnnotation = null;
     long rangeFrom = 0L;
     long rangeTo = doc.getContent().size();
+    // the following are only set if we actually do have a within annotaiton and will remain at -1
+    // otherwise. This is needed so we can quickly check if we need to set the START/STOP features
+    // which are only set if there is a within annotation at all (to enable this for document start/end
+    // a document annotation needs to be used as within annotation type).
+    long withinFrom = -1L;
+    long withinTo = -1L;
     AnnotationSet withinSet = inputAS;
     if (withinType != null) {
       AnnotationSet withins = gate.Utils.getCoveringAnnotations(inputAS, instanceAnnotation, withinType);
@@ -767,6 +776,8 @@ public class FeatureExtraction {
       Annotation within = withins.iterator().next(); // get an arbitrary one
       rangeFrom = within.getStartNode().getOffset();
       rangeTo = within.getEndNode().getOffset();
+      withinFrom = rangeFrom;
+      withinTo = rangeTo;
       withinSet = gate.Utils.getContainedAnnotations(inputAS, within, annType4Getting);
     }
     if (annType.isEmpty() || instanceAnnotation.getType().equals(annType)) {
@@ -823,6 +834,13 @@ public class FeatureExtraction {
         Annotation ann = annlistbackward.get(albsize + i);
         extractFeatureWorker(al.name, "L" + i, inst, ann, doc, annType4Feature,
                 featureName, featureName4Value, alphabet, dt, mvt, codeas, listsep);
+        // if we have the leftmost annotation and the offset of the annotation is equals to
+        // the start of the within annotation or the document start, then also set the start
+        // feature for this instance
+        if(i==from && gate.Utils.start(ann)==withinFrom) {
+          extractFeatureWorker(al.name,"L"+i+START_SYMBOL,inst,ann,doc,annType4Feature,
+                  null, null, alphabet, dt, MissingValueTreatment.zero_value, CodeAs.one_of_k, "");
+        }
       } else {
         break;
       }
@@ -831,6 +849,14 @@ public class FeatureExtraction {
     if (from <= 0 && to >= 0) {
       extractFeatureWorker(al.name, "L" + 0, inst, sourceAnnotation, doc, annType4Feature,
               featureName, featureName4Value, alphabet, dt, mvt, codeas, listsep);
+      if(gate.Utils.start(sourceAnnotation)==withinFrom) {
+          extractFeatureWorker(al.name,"L"+0+START_SYMBOL,inst,sourceAnnotation,doc,annType4Feature,
+                  null, null, alphabet, dt, MissingValueTreatment.zero_value, CodeAs.one_of_k, "");
+        }
+      if(gate.Utils.end(sourceAnnotation)==withinTo) {
+          extractFeatureWorker(al.name,"L"+0+STOP_SYMBOL,inst,sourceAnnotation,doc,annType4Feature,
+                  null, null, alphabet, dt, MissingValueTreatment.zero_value, CodeAs.one_of_k, "");
+        }
     }
     // do the ones to the right
     int alfsize = annlistforward.size();
@@ -841,6 +867,10 @@ public class FeatureExtraction {
         Annotation ann = annlistforward.get(i - 1);
         extractFeatureWorker(al.name, "L" + i, inst, ann, doc, annType4Feature,
                 featureName, featureName4Value, alphabet, dt, mvt, codeas, listsep);
+        if(i==to && gate.Utils.end(ann)==withinTo) {
+          extractFeatureWorker(al.name,"L"+i+STOP_SYMBOL,inst,ann,doc,annType4Feature,
+                  null, null, alphabet, dt, MissingValueTreatment.zero_value, CodeAs.one_of_k, "");
+        }
       } else {
         break;
       }
