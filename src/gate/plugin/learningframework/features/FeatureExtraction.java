@@ -900,7 +900,7 @@ public class FeatureExtraction {
     
     List<Annotation> annlistforward = withinSet.getContained(end, rangeTo).get(annType4Getting).inDocumentOrder();
     List<Annotation> annlistbackward = withinSet.getContained(rangeFrom, start).get(annType4Getting).inDocumentOrder();
-    System.err.println("rangeFrom=" + rangeFrom + ", rangeTo=" + rangeTo + ",START=" + start + ", END=" + end + ", forwardsize=" + annlistforward.size() + ", backwardsize=" + annlistbackward.size());
+    //System.err.println("rangeFrom=" + rangeFrom + ", rangeTo=" + rangeTo + ",START=" + start + ", END=" + end + ", forwardsize=" + annlistforward.size() + ", backwardsize=" + annlistbackward.size());
     // go through each of the members in the attribute list and get the annotation
     // then process each annotation just like a simple annotation, only that the name of 
     // featureName gets derived from this list attribute plus the location in the list.
