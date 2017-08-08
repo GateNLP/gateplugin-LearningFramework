@@ -164,7 +164,7 @@ public class CorpusExporterARFF extends CorpusExporter {
   public String escape4Arff(String what) {
     int len = what.length();
     what = what.replaceAll("([\"'%\\n\\r \\t\\\\])", "\\\\$1");
-    if(what.length()!=len || what.contains("{") || what.contains("}")) {
+    if(what.length()!=len || what.contains("{") || what.contains("}") || what.contains(",")) {
       what = "'" + what + "'";
     }
     return what;
