@@ -141,9 +141,8 @@ public class FeatureSpecification {
     // TODO: this should be named ANNOTATIONTYPE or ANNTYPE to avoid confusion
     // with the datatype
     String atype = getChildTextOrElse(attributeElement, "TYPE", "");
-    // must not be empty
+    // if empty we use the instance annotation type, whatever that is
     if (atype.isEmpty()) {
-      //throw new GateRuntimeException("TYPE in ATTRIBUTE " + i + " must not be missing or empty");
       System.err.println("Warning: TYPE in ATTRIBUTE "+i+" is empty, using instance annotation type");
     }
     String codeasstr = getChildTextOrElse(attributeElement, "CODEAS", "").toLowerCase();
