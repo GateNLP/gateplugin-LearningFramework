@@ -257,7 +257,7 @@ public class CorpusExporterARFF extends CorpusExporter {
           }
           Label malletLabel = (Label)target;
           String targetString = malletLabel.toString();
-          sb.append(targetString);
+          sb.append(escape4Arff(targetString));
           // TODO: could check here if the label index is the same as expected from
           // the attribute defintion!
         } else {
