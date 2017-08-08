@@ -1153,6 +1153,14 @@ public class FeatureExtraction {
   public static FeatureSpecAttribute lookupAttributeForFeatureName(List<FeatureSpecAttribute> attributes,
           String mlFeatureName, String instanceType) {
     FeatureSpecAttribute ret = null;
+    // these features are created by the LF and will not be present in the list of specifications.
+    // We create a new specification on the fly for those.
+    if(mlFeatureName.endsWith(START_SYMBOL) || mlFeatureName.endsWith(STOP_SYMBOL)) {
+      // TODO!!!
+      // return a newly constructed dummy feature spec attribute
+      // NOTE: for now we handle the case that this method does not find anything and returns
+      // null if we get a START/STOP indicator feature directly where this method is called!
+    }
     String attrName = attrName4MlFeature(mlFeatureName);
     // now if the attrName contains a TYPESEP, we have to find the attribute by
     // type and feature name, otherwise we simply find it by name

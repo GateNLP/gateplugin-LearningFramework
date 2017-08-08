@@ -109,9 +109,17 @@ public class Attributes implements Iterable<Attribute> {
         } else if(fsAttr instanceof FeatureSpecNgram) {
           // nothing to do here
         } else if(fsAttr==null) {
-          throw new RuntimeException("FeatureSpecification is null for feature "+
+          // This can also happen if we try to look up a START/STOP feature which 
+          // is created by us and for which not specification exists. In this case,
+          // we simply do nothing and use the default attr we have created above
+          if(malletFeatureName.endsWith(FeatureExtraction.START_SYMBOL) || 
+             malletFeatureName.endsWith(FeatureExtraction.STOP_SYMBOL)) {
+            // do nothing
+          } else {
+            throw new RuntimeException("FeatureSpecification is null for feature "+
                   i+", name="+malletFeatureName+ 
                   "\nFeatureSpecification is "+featureInfo);
+          }
         } else {
           throw new RuntimeException(
                   "Impossible: found odd FeatureSpecAttribute type "+fsAttr.getClass());
