@@ -187,6 +187,7 @@ public class FeatureSpecification {
         throw new GateRuntimeException("LISTSEP only allowed if datatype is nominal");
       }      
     }
+    String withinType = getChildTextOrElse(attributeElement, "WITHIN", null); 
     // TODO: not implemented yet, but we should add this!!
     String scalingMethod = "";
     String transformMethod = "";
@@ -201,6 +202,7 @@ public class FeatureSpecification {
             missingValueValue,
             scalingMethod,
             transformMethod,
+            withinType,
             listsep,
             featureName4Value
     );

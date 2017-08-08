@@ -48,7 +48,7 @@ public class TestFeatureSpecification {
     as = fi.getAttributes();
     assertNotNull(as);
     assertEquals(1,as.size());
-    assertEquals("SimpleAttribute(name=,type=theType,feature=,datatype=bool,missingvaluetreatment=zero_value,codeas=number",as.get(0).toString());
+    assertEquals("SimpleAttribute(name=,type=theType,feature=,datatype=bool,missingvaluetreatment=zero_value,within=null,codeas=number",as.get(0).toString());
         
     spec = "<ROOT>"+
             "<ATTRIBUTELIST><TYPE>theType</TYPE><FEATURE>string</FEATURE><DATATYPE>nominal</DATATYPE><FROM>-2</FROM><TO>1</TO></ATTRIBUTELIST>"+

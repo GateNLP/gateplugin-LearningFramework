@@ -41,6 +41,7 @@ public class FeatureSpecSimpleAttribute extends FeatureSpecAttribute implements 
           String missingValueValue, 
           String scalingMethod, 
           String transformMethod,
+          String withinType,
           String listsep,
           String featureName4Value) {
     this.name = aname;
@@ -52,6 +53,7 @@ public class FeatureSpecSimpleAttribute extends FeatureSpecAttribute implements 
     if (datatype == Datatype.nominal && codeas == CodeAs.number) {
       alphabet = new Alphabet();
     }
+    this.withinType = withinType;
     this.listsep = listsep;
     this.featureName4Value = featureName4Value;
   }
@@ -60,6 +62,7 @@ public class FeatureSpecSimpleAttribute extends FeatureSpecAttribute implements 
   public MissingValueTreatment missingValueTreatment = MissingValueTreatment.zero_value;
   public Alphabet alphabet;
   public String listsep;
+  public String withinType;
   public String featureName4Value;
 
   @Override
@@ -79,6 +82,7 @@ public class FeatureSpecSimpleAttribute extends FeatureSpecAttribute implements 
             ",feature="+feature+
             ",datatype="+datatype+
             ",missingvaluetreatment="+missingValueTreatment+
+            ",within="+withinType+
             ",codeas="+codeas;
   }
   

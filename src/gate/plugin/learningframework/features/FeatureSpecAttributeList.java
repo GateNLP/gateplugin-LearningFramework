@@ -45,10 +45,9 @@ public class FeatureSpecAttributeList extends FeatureSpecSimpleAttribute impleme
           String listsep,
           String featureName4Value) {
     super(aname, type, feature, datatype, codeas, missingValueTreatment, 
-            missingValueValue, scalingMethod, transformMethod, listsep, featureName4Value);
+            missingValueValue, scalingMethod, transformMethod, withinType, listsep, featureName4Value);
     this.from = from;
     this.to = to;
-    this.withinType = withinType;
   }
   
   /**
@@ -57,15 +56,13 @@ public class FeatureSpecAttributeList extends FeatureSpecSimpleAttribute impleme
   public FeatureSpecAttributeList(FeatureSpecSimpleAttribute att, String withinType, int from, int to) {
     super(att.name, att.annType, att.feature, att.datatype, att.codeas, 
             att.missingValueTreatment, 
-            "dummy", "dummy", "dummy", "", att.featureName4Value);
+            "dummy", "dummy", "dummy", withinType, "", att.featureName4Value);
     this.from = from;
     this.to = to;
-    this.withinType = withinType;
   }
   
   public int from;
   public int to;
-  public String withinType = null;
   
   // NOTE: this inherits the alphabet from SimpleAttribute: even though this object represents a 
   // whole set of features, the alphabet gets shared by all of them!

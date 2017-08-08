@@ -186,6 +186,9 @@ public class FeatureExtraction {
    * If no featureName is specified, we give an indicator of the presence, artificial featureName
    * name for binary featureName.
    *
+   * NOTE: if a within type is specified for this attribute, then no features are created 
+   * if the instance annotation or the source annotation is not covered by an within annotation.
+   * 
    *
    * @param inst
    * @param att
@@ -204,8 +207,9 @@ public class FeatureExtraction {
      * do so, they mean to extract the featureName from the instance, not just
      * the first colocated same annType annotation. This matters in
      * disambiguation, where we have many colocated same annType annotations.
-     * Fix it up front by wiping out annType if it's the same inputAS the instance.
+     * Fix it up front by wiping out annType if it's the same as the instance.
      */
+    
     AugmentableFeatureVector fv = (AugmentableFeatureVector) inst.getData();
     String annType = att.annType;
     String featureName = att.feature;
@@ -215,10 +219,12 @@ public class FeatureExtraction {
     Alphabet alphabet = att.alphabet;
     String listsep = att.listsep;
     String featureName4Value = att.featureName4Value;
+    String withinType = att.withinType;
     // first of all get the annotation from where we want to construct the annotation.
     // If annType is the same type as the annType of the instance annotation, use the 
     // instance annotation directly. Otherwise, use an annotation of type annType that overlaps
     // with the instance annotation.
+    
     // TODO: what do if there are several such overlapping annotations?
     // For now, we log a warning and use the longest!
     // Throwing an exception could be too harsh since there may be cases 
@@ -228,13 +234,40 @@ public class FeatureExtraction {
     // happen that Marie-Luise is annotated as a single token but Marie and 
     // Luise end up being annotated as separate Person annotations.
 
+
+    long rangeFrom = 0;
+    long rangeTo = doc.getContent().size();
+    long withinFrom = -1;
+    long withinTo = -1;
+    AnnotationSet withinSet = inputAS;
+    if (withinType != null) {
+      AnnotationSet withins = gate.Utils.getCoveringAnnotations(inputAS, instanceAnnotation, withinType);
+      if (withins.size() != 1) {
+        logger.warn("More than one covering WITHIN annotation for " + instanceAnnotation + " in document " + doc.getName());
+      }
+      if (withins.size() == 0) {
+        logger.warn("No covering WITHIN annotation for " + instanceAnnotation + " in document " + doc.getName());
+        return; // Skip this instance!
+      }
+      Annotation within = withins.iterator().next(); // get an arbitrary one
+      rangeFrom = within.getStartNode().getOffset();
+      rangeTo = within.getEndNode().getOffset();
+      withinFrom = rangeFrom;
+      withinTo = rangeTo;
+      withinSet = gate.Utils.getContainedAnnotations(inputAS, within);
+    }
+    
+    // The source annotation is the actual annotation to use: it may be the instance annotation
+    // if the type stored with the feature specification is empty or identical to the instance
+    // annotation type, otherwise it is the annotation of the specified type covered by the 
+    // instance annotation.
     Annotation sourceAnnotation = null;
     if (annType.isEmpty() || instanceAnnotation.getType().equals(annType)) {
       sourceAnnotation = instanceAnnotation;
       // annType = sourceAnnotation.getType();
       annType = "";
     } else {
-      AnnotationSet overlappings = gate.Utils.getOverlappingAnnotations(inputAS, instanceAnnotation, annType);
+      AnnotationSet overlappings = gate.Utils.getOverlappingAnnotations(withinSet, instanceAnnotation, annType);
       if (overlappings.size() > 1) {
         logger.warn("More than one overlapping annotation of type " + annType + " for instance annotation at offset "
                 + gate.Utils.start(instanceAnnotation) + " in document " + doc.getName());
@@ -263,6 +296,14 @@ public class FeatureExtraction {
     // How we add the featureName depends on the datatype, on the codeas setting if it is nominal,
     // and also on how we treat missing values.
     extractFeatureWorker(att.name, "A", inst, sourceAnnotation, doc, annType, featureName, featureName4Value, alphabet, dt, mvt, codeas, listsep);
+    // now if the source annotation was not null (missing) and the source annotation started with
+    // and/or ended with the within annotation, we also add special START/STOP features 
+    if(sourceAnnotation != null && withinFrom == gate.Utils.start(sourceAnnotation)) {
+      extractFeatureWorker(att.name, "A"+START_SYMBOL, inst, sourceAnnotation, doc, annType, featureName, featureName4Value, alphabet, Datatype.nominal, MissingValueTreatment.zero_value, CodeAs.one_of_k, listsep);
+    }
+    if(sourceAnnotation != null && withinTo == gate.Utils.end(sourceAnnotation)) {
+      extractFeatureWorker(att.name, "A"+START_SYMBOL, inst, sourceAnnotation, doc, annType, featureName, featureName4Value, alphabet, Datatype.nominal, MissingValueTreatment.zero_value, CodeAs.one_of_k, listsep);
+    }
   }
 
   /**
@@ -712,6 +753,22 @@ public class FeatureExtraction {
     //System.err.println("DEBUG: Vector after adding feature "+ng+" is now "+fv);
   } // extractFeature(NGram)
 
+  /**
+   * Extract a attribute list feature for an instance.
+   * 
+   * This extracts all the features that correspond to a single attribute list feature 
+   * specification for a single instance. 
+   * 
+   * Note that the annotation type used to identify instances specified as a PR parameter
+   * can refer to the annotations described by the feature spec file (either because the type
+   * is identical or because the feature spec file does not specify a type) or it is just used
+   * to tell us where to take the actual annotations for this spec from. 
+   * 
+   * @param inst The instance representation to which the features should get added
+   * @param al the feature specification
+   * @param inputAS the annotation set that contains all relevant annotations
+   * @param instanceAnnotation the actual instance annotation
+   */
   private static void extractFeature(
           Instance inst,
           FeatureSpecAttributeList al,
@@ -719,9 +776,34 @@ public class FeatureExtraction {
           Annotation instanceAnnotation
   ) {
 
+
+    Document doc = inputAS.getDocument();
+    AugmentableFeatureVector fv = (AugmentableFeatureVector) inst.getData();
+
+    Datatype dt = al.datatype;        // feature data type
+    String featureName = al.feature;  // feature name, if empty use the document text
+    // type of a containing annotation, if specified, restrict everything to within the longest
+    // annotation covering the instance annotation
+    String withinType = al.withinType; 
+    int from = al.from;  // list element from
+    int to = al.to;      // list element to
+    Alphabet alphabet = al.alphabet;
+    MissingValueTreatment mvt = al.missingValueTreatment;
+    CodeAs codeas = al.codeas;
+    String listsep = al.listsep; 
+    String featureName4Value = al.featureName4Value;
+
     // If the type from the attribute specification is the same as the 
     // instance annotation type or if it is empty, we create the elements
     // from the instance annotations. Otherwise we use the specified type. 
+    String annType = al.annType;
+    String annType4Feature = annType;  // the name to use in the data and model, possibly empty
+    String annType4Getting = annType;  // the name to access the annotations in the document, never empty
+    if (annType4Getting == null || annType4Getting.isEmpty()) {
+      annType4Getting = instanceAnnotation.getType();  // make sure it is identical to the type of the inst ann
+    }
+    
+    
     // 
     // The annotation -1 is one that ends before the beginning of annotation 0
     // Annotation -2 is one that ends before the beginning of annottion -1
@@ -730,33 +812,21 @@ public class FeatureExtraction {
     // Annotation 0 is the one which is either current instance (if we use 
     // instance annotations) or the longest one that overlaps with the current 
     // instance (similar to a Simple Attr).
-    Document doc = inputAS.getDocument();
-    AugmentableFeatureVector fv = (AugmentableFeatureVector) inst.getData();
-
-    Datatype dt = al.datatype;
-    String annType = al.annType;
-    String annType4Feature = annType;
-    String annType4Getting = annType;
-    if (annType4Getting == null || annType4Getting.isEmpty()) {
-      annType4Getting = instanceAnnotation.getType();
-    }
-    String featureName = al.feature;
-    String withinType = al.withinType;
-    int from = al.from;
-    int to = al.to;
-    Alphabet alphabet = al.alphabet;
-    MissingValueTreatment mvt = al.missingValueTreatment;
-    CodeAs codeas = al.codeas;
-    String listsep = al.listsep;
-    String featureName4Value = al.featureName4Value;
 
     // First of all, get the annotation 0 and also get the set of the 
     // annotation types we are interested in.
     // If we have a "WITHIN" declaration, we immediately limit the 
     // set of interesting annotations to those within the containing annotation.
+    
+    // The sourceAnnotation is the annotation from which to actually take the the feature values
+    // and its type is annType4Getting. This may be different from the instance annotation and 
+    // instance annotation type if the instance annotation is just used to identify the span
+    // where to take the sourceAnnotation from. 
     Annotation sourceAnnotation = null;
+    // By default, the annotations for this list can come from within this range
     long rangeFrom = 0L;
     long rangeTo = doc.getContent().size();
+    
     // the following are only set if we actually do have a within annotaiton and will remain at -1
     // otherwise. This is needed so we can quickly check if we need to set the START/STOP features
     // which are only set if there is a within annotation at all (to enable this for document start/end
@@ -765,6 +835,9 @@ public class FeatureExtraction {
     long withinTo = -1L;
     AnnotationSet withinSet = inputAS;
     if (withinType != null) {
+      // find out which within annotation covers our instance annotation
+      // If there is none, the instance is not within a within annotation and we ignore it.
+      // If there is more than one, we currently take an arbitrary one.
       AnnotationSet withins = gate.Utils.getCoveringAnnotations(inputAS, instanceAnnotation, withinType);
       if (withins.size() != 1) {
         logger.warn("More than one covering WITHIN annotation for " + instanceAnnotation + " in document " + doc.getName());
@@ -781,15 +854,20 @@ public class FeatureExtraction {
       withinSet = gate.Utils.getContainedAnnotations(inputAS, within, annType4Getting);
     }
     if (annType.isEmpty() || instanceAnnotation.getType().equals(annType)) {
+      // if the type specified for this attribute list is empty or equal to the type of the 
+      // instance annotation, we directly use the instance annotation. In that case we also
+      // use an empty feature name for the outputfile/model so that at application time we 
+      // can match it with instance annotations which have a different type
       sourceAnnotation = instanceAnnotation;
-      // TODO: if we have within, get set of instance annotations within within.
-      // If not even the original annotation is within, do nothing but log 
-      // a warning
       annType4Feature = "";
     } else {
+      // the instance annotation is not the one we want to use, we need to find the actual source
+      // annotation. 
+      // If there is more than one overlapping source annotation, pick the last longest one when 
+      // going through them in document order. 
       AnnotationSet overlappings = gate.Utils.getOverlappingAnnotations(inputAS, instanceAnnotation, annType4Getting);
       if (overlappings.size() > 1) {
-        logger.warn("More than one overlapping annotation of type " + annType4Getting + " for instance annotation at offset "
+        logger.warn("More than one overlapping source annotation of type " + annType4Getting + " for instance annotation at offset "
                 + gate.Utils.start(instanceAnnotation) + " in document " + doc.getName());
         // find the last longest (try to make this deterministic, there is 
         // still a small chance of non-determinism if there are more than one
@@ -806,24 +884,34 @@ public class FeatureExtraction {
         // there is no overlappign annotation 
         // For lists we do not treat this as a missing value and instead 
         // just do not create anything for this instance annotation
-        // TODO: log this
+        logger.warn("No overlapping source annotation of type " + annType4Getting + " for instance annotation at offset "
+                + gate.Utils.start(instanceAnnotation) + " in document " + doc.getName() + " instance ignored");
         return;
       } else {
         // we have exactly one annotation, use that one
         sourceAnnotation = gate.Utils.getOnlyAnn(overlappings);
       }
     }
-
+    
+    // Now we have annotation [0]
     long start = sourceAnnotation.getStartNode().getOffset();
     long end = sourceAnnotation.getEndNode().getOffset();
-    List<Annotation> annlistforward = inputAS.getContained(end, rangeTo).get(annType4Getting).inDocumentOrder();
-    List<Annotation> annlistbackward = inputAS.getContained(rangeFrom, start).get(annType4Getting).inDocumentOrder();
+    
+    
+    List<Annotation> annlistforward = withinSet.getContained(end, rangeTo).get(annType4Getting).inDocumentOrder();
+    List<Annotation> annlistbackward = withinSet.getContained(rangeFrom, start).get(annType4Getting).inDocumentOrder();
     System.err.println("rangeFrom=" + rangeFrom + ", rangeTo=" + rangeTo + ",START=" + start + ", END=" + end + ", forwardsize=" + annlistforward.size() + ", backwardsize=" + annlistbackward.size());
     // go through each of the members in the attribute list and get the annotation
     // then process each annotation just like a simple annotation, only that the name of 
     // featureName gets derived from this list attribute plus the location in the list.
     // TODO: this does not work if the annotations are overlapping!!!
 
+    // TODO: this could also create n-grams of consecutive elements, based on an AttributeList
+    // parameter N. Instead of creating the feature from a single source annotation, the 
+    // features of N successive elements would get combined to form an ngram feature.
+    // The identifier for such a feature would have to include the starting list element and N
+    // e.g. "L"+i+"N"+n
+    
     // First loop: go from index -1 to the smallest from index to the left
     int albsize = annlistbackward.size();
     for (int i = -1; i >= from; i--) {
@@ -839,7 +927,7 @@ public class FeatureExtraction {
         // feature for this instance
         if(i==from && gate.Utils.start(ann)==withinFrom) {
           extractFeatureWorker(al.name,"L"+i+START_SYMBOL,inst,ann,doc,annType4Feature,
-                  null, null, alphabet, dt, MissingValueTreatment.zero_value, CodeAs.one_of_k, "");
+                  null, null, alphabet, Datatype.nominal, MissingValueTreatment.zero_value, CodeAs.one_of_k, "");
         }
       } else {
         break;
@@ -851,11 +939,11 @@ public class FeatureExtraction {
               featureName, featureName4Value, alphabet, dt, mvt, codeas, listsep);
       if(gate.Utils.start(sourceAnnotation)==withinFrom) {
           extractFeatureWorker(al.name,"L"+0+START_SYMBOL,inst,sourceAnnotation,doc,annType4Feature,
-                  null, null, alphabet, dt, MissingValueTreatment.zero_value, CodeAs.one_of_k, "");
+                  null, null, alphabet, Datatype.nominal, MissingValueTreatment.zero_value, CodeAs.one_of_k, "");
         }
       if(gate.Utils.end(sourceAnnotation)==withinTo) {
           extractFeatureWorker(al.name,"L"+0+STOP_SYMBOL,inst,sourceAnnotation,doc,annType4Feature,
-                  null, null, alphabet, dt, MissingValueTreatment.zero_value, CodeAs.one_of_k, "");
+                  null, null, alphabet, Datatype.nominal, MissingValueTreatment.zero_value, CodeAs.one_of_k, "");
         }
     }
     // do the ones to the right
@@ -869,7 +957,7 @@ public class FeatureExtraction {
                 featureName, featureName4Value, alphabet, dt, mvt, codeas, listsep);
         if(i==to && gate.Utils.end(ann)==withinTo) {
           extractFeatureWorker(al.name,"L"+i+STOP_SYMBOL,inst,ann,doc,annType4Feature,
-                  null, null, alphabet, dt, MissingValueTreatment.zero_value, CodeAs.one_of_k, "");
+                  null, null, alphabet, Datatype.nominal, MissingValueTreatment.zero_value, CodeAs.one_of_k, "");
         }
       } else {
         break;
