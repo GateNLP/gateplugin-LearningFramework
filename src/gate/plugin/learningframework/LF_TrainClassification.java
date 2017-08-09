@@ -30,6 +30,8 @@ import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
+import gate.plugin.learningframework.data.CorpusRepresentationMallet;
+import gate.plugin.learningframework.data.CorpusRepresentationMalletSeq;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
 import gate.plugin.learningframework.engines.AlgorithmClassification;
 import gate.plugin.learningframework.engines.Engine;
@@ -128,7 +130,7 @@ public class LF_TrainClassification extends LF_TrainBase {
     return this.targetFeature;
   }
 
-  private CorpusRepresentationMalletTarget corpusRepresentation = null;
+  private CorpusRepresentationMallet corpusRepresentation = null;
   private FeatureSpecification featureSpec = null;
 
   private Engine engine = null;
@@ -223,9 +225,12 @@ public class LF_TrainClassification extends LF_TrainBase {
     if (getTrainingAlgorithm() == null) {
       throw new GateRuntimeException("LearningFramework: no training algorithm specified");
     }
-    if (getTrainingAlgorithm() == AlgorithmClassification.MALLET_SEQ_CRF) {
+    if (getTrainingAlgorithm() == AlgorithmClassification.MALLET_SEQ_CRF || 
+        getTrainingAlgorithm() == AlgorithmClassification.MALLET_SEQ_CRF_SG ||
+        getTrainingAlgorithm() == AlgorithmClassification.MALLET_SEQ_CRF_VG ||
+        getTrainingAlgorithm() == AlgorithmClassification.MALLET_SEQ_MEMM) {
       if (getSequenceSpan() == null || getSequenceSpan().isEmpty()) {
-        throw new GateRuntimeException("SequenceSpan parameter is required for MALLET_SEQ_CRF");
+        throw new GateRuntimeException("SequenceSpan parameter is required for MALLET_SEQ_*");
       }
     } else {
       if (getSequenceSpan() != null && !getSequenceSpan().isEmpty()) {
@@ -244,7 +249,11 @@ public class LF_TrainClassification extends LF_TrainBase {
     System.err.println("DEBUG Read the feature specification: " + featureSpec);
 
     // create the corpus representation for creating the training instances
-    corpusRepresentation = new CorpusRepresentationMalletTarget(featureSpec.getFeatureInfo(), scaleFeatures, TargetType.NOMINAL);
+    if(getSequenceSpan() != null && !getSequenceSpan().isEmpty()) {
+      corpusRepresentation = new CorpusRepresentationMalletSeq(featureSpec.getFeatureInfo(), scaleFeatures);
+    } else {
+      corpusRepresentation = new CorpusRepresentationMalletTarget(featureSpec.getFeatureInfo(), scaleFeatures, TargetType.NOMINAL);
+    }
     System.err.println("DEBUG: created the corpusRepresentationMallet: " + corpusRepresentation);
 
     // Create the engine from the Algorithm parameter
