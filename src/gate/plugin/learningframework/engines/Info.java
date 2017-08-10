@@ -54,7 +54,10 @@ public class Info {
   public List<String> classLabels; // empty for regression
   public String trainingCorpusName;
   public String targetFeature;
-  public String classAnnotationType;  // classAnnotationType 
+  public String classAnnotationType;  // classAnnotationType for classification
+  public List<String> classAnnotationTypes; // for sequence tagging
+  public String seqEncoderClass;
+  public String seqEncoderOptions;
   
   /**
    * TODO: NOTE: this is incomplete!! Should contain all fields that are also in the hashCode method!

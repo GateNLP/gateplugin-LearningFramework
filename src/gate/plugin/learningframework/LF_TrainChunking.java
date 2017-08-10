@@ -40,8 +40,14 @@ import gate.plugin.learningframework.data.CorpusRepresentationMalletSeq;
 import gate.plugin.learningframework.engines.AlgorithmClassification;
 import gate.plugin.learningframework.engines.Engine;
 import gate.plugin.learningframework.features.FeatureSpecification;
+import gate.plugin.learningframework.features.SeqEncoder;
+import gate.plugin.learningframework.features.SeqEncoderEnum;
 import gate.plugin.learningframework.features.TargetType;
 import gate.util.GateRuntimeException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -70,7 +76,7 @@ public class LF_TrainChunking extends LF_TrainBase {
   public URL getDataDirectory() {
     return this.dataDirectory;
   }
-
+  
   
   /**
    * The configuration file.
@@ -105,6 +111,24 @@ public class LF_TrainChunking extends LF_TrainBase {
     return this.trainingAlgorithm;
   }
 
+  private SeqEncoderEnum seqEncoderEnum = SeqEncoderEnum.BIO;
+  private SeqEncoder seqEncoder;
+  /**
+   * The sequence to classification algorithm to use.
+   * @param val
+   */
+  @RunTime
+  @Optional
+  @CreoleParameter(comment = "The sequence to classification algorithm to use.", defaultValue = "BIO" )
+  public void setSeqEncoder(SeqEncoderEnum val) {
+    seqEncoderEnum = val;
+  }
+  
+  public SeqEncoderEnum getSeqEncoder() {
+    return seqEncoderEnum;
+  }
+  
+  
   protected ScalingMethod scaleFeatures = ScalingMethod.NONE;
 
   @RunTime
@@ -132,18 +156,17 @@ public class LF_TrainChunking extends LF_TrainBase {
     return this.sequenceSpan;
   }
   
-  protected String classAnnotationType;
-
+  protected List<String> classAnnotationTypes;
+  protected Set<String> classAnnotationTypesSet;
   @RunTime
-  @CreoleParameter(comment = "Annotation type containing/indicating the class.")
-  public void setClassAnnotationType(String classType) {
-    this.classAnnotationType = classType;
+  @CreoleParameter(comment = "Annotation types which indicate the class, at least one required.")
+  public void setClassAnnotationTypes(List<String> classTypes) {
+    this.classAnnotationTypes = classTypes;
   }
-
-  public String getClassAnnotationType() {
-    return this.classAnnotationType;
+  public List<String> getClassAnnotationTypes() {
+    return this.classAnnotationTypes;
   }
-
+  
 
   private boolean haveSequenceTagger;
 
@@ -167,7 +190,7 @@ public class LF_TrainChunking extends LF_TrainBase {
     AnnotationSet inputAS = doc.getAnnotations(getInputASName());
     AnnotationSet instanceAS = inputAS.get(getInstanceType());
     // the classAS 
-    AnnotationSet classAS = inputAS.get(getClassAnnotationType());
+    AnnotationSet classAS = inputAS.get(classAnnotationTypesSet);
     // the nameFeatureName is always null for now!
     String nameFeatureName = null;
     // TODO: we should put the gate.LF.target feature on each instance here, using the exact same
@@ -177,9 +200,9 @@ public class LF_TrainChunking extends LF_TrainBase {
     
     if(haveSequenceTagger) {
       AnnotationSet sequenceAS = inputAS.get(getSequenceSpan());
-      corpusRepresentation.add(instanceAS, sequenceAS, inputAS, classAS, null, TargetType.NOMINAL, "", nameFeatureName);
+      corpusRepresentation.add(instanceAS, sequenceAS, inputAS, classAS, null, TargetType.NOMINAL, "", nameFeatureName, seqEncoder);
     } else {
-      corpusRepresentation.add(instanceAS, null, inputAS, classAS, null, TargetType.NOMINAL, "", nameFeatureName);
+      corpusRepresentation.add(instanceAS, null, inputAS, classAS, null, TargetType.NOMINAL, "", nameFeatureName, seqEncoder);
     }
     nrDocuments++;
     return doc;
@@ -212,7 +235,12 @@ public class LF_TrainChunking extends LF_TrainBase {
     // TODO: what if we do sequence tagging by classification???
     engine.getInfo().targetFeature = "LF_class";
     engine.getInfo().trainingCorpusName = corpus.getName();
-    engine.getInfo().classAnnotationType = getClassAnnotationType();
+    engine.getInfo().classAnnotationTypes = getClassAnnotationTypes();
+    
+    if(seqEncoder!=null) { 
+      engine.getInfo().seqEncoderClass = seqEncoder.getClass().getName();
+      engine.getInfo().seqEncoderOptions = seqEncoder.getOptions().toString();
+    }   
     
     engine.trainModel(gate.util.Files.fileFromURL(dataDirectory),
             getInstanceType(),
@@ -228,13 +256,30 @@ public class LF_TrainChunking extends LF_TrainBase {
 
   @Override
   protected void beforeFirstDocument(Controller controller) {
+    
+    if(getSeqEncoder().getEncoderClass() == null) {
+      throw new GateRuntimeException("SeqEncoder class not yet implemented, please choose another one: "+getSeqEncoder());
+    }
+    
+    try {
+      System.err.println("Trying to create instance of "+getSeqEncoder().getEncoderClass());
+      seqEncoder = (SeqEncoder) getSeqEncoder().getEncoderClass().newInstance();
+      seqEncoder.setOptions(getSeqEncoder().getOptions());
+    } catch (Exception ex) {
+      throw new GateRuntimeException("Could not create SeqEncoder instance",ex);
+    }
+    
+    // process the class annotation types: 
+    if(getClassAnnotationTypes() == null) setClassAnnotationTypes(new ArrayList<>());
+    if(getClassAnnotationTypes().isEmpty()) {
+      throw new GateRuntimeException("Need at least one class annotation type!");
+    }
+    classAnnotationTypesSet = new HashSet<String>();
+    classAnnotationTypesSet.addAll(classAnnotationTypes);
     featureSpec = new FeatureSpecification(featureSpecURL);
     dataDir = gate.util.Files.fileFromURL(dataDirectory);
     if(!dataDir.exists()) throw new GateRuntimeException("Data directory not found: "+dataDir.getAbsolutePath());
 
-    if(getClassAnnotationType()==null || getClassAnnotationType().isEmpty()) {
-      throw new GateRuntimeException("classAnnotationType must be specified for sequence tagging!");
-    }
     if (getTrainingAlgorithm() == null) {
       throw new GateRuntimeException("LearningFramework: no training algorithm specified");
     }

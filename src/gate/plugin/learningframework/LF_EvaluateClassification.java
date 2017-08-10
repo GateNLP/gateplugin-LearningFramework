@@ -249,7 +249,7 @@ public class LF_EvaluateClassification extends LF_TrainBase {
     }
     inputAS.get(getClassAnnotationType());
     String nameFeatureName = null;
-    corpusRepresentation.add(instanceAS, sequenceAS, inputAS, classAS, tfName, TargetType.NOMINAL, instanceWeightFeature, nameFeatureName);
+    corpusRepresentation.add(instanceAS, sequenceAS, inputAS, classAS, tfName, TargetType.NOMINAL, instanceWeightFeature, nameFeatureName, null);
     nrDocuments++;
     return doc;
   }

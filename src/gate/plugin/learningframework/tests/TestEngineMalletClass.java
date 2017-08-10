@@ -76,7 +76,7 @@ public class TestEngineMalletClass {
     AnnotationSet classAS = null;
     String targetFeature = "class";
     String nameFeature = null;
-    crm.add(instanceAS, sequenceAS, inputAS, classAS, targetFeature, TargetType.NOMINAL, "", nameFeature);
+    crm.add(instanceAS, sequenceAS, inputAS, classAS, targetFeature, TargetType.NOMINAL, "", nameFeature, null);
     System.err.println("TESTS: added instances, number of instances now: "+crm.getRepresentationMallet().size());
     engine.trainModel(null,"","");
     System.err.println("TESTS: model trained");

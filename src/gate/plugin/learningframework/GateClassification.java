@@ -27,10 +27,16 @@ import gate.Document;
 import gate.Factory;
 import gate.FeatureMap;
 import gate.plugin.learningframework.features.FeatureExtraction;
+import gate.plugin.learningframework.features.SeqEncoder;
+import gate.plugin.learningframework.features.SeqEncoder_SimpleBIO;
+import gate.util.GateRuntimeException;
 import gate.util.InvalidOffsetException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 public class GateClassification {
 
@@ -162,116 +168,188 @@ public class GateClassification {
     } // for
   }
   
-  
+  /**
+   * From an annotation set with e.g. BIO class annotations on the instances,
+   * create an output annotation set with the actual sequence annotations.
+   * 
+   * 
+   * TODO/NOTE: for some reasons this passes on intputAS but we do not use it.
+   * TODO/NOTE: we should really also get the sequence annotation and limit
+   * resolving BIO to within each sequence.
+   * 
+   * NOTE: originally, this was just using B/I/O, we now changed to using Type|B
+   * Type|I and O. However, this should really get moved to the corresponding SeqEncode subclass.
+   * 
+   * @param unused
+   * @param instanceAS
+   * @param outputAS
+   * @param outputAnnType
+   * @param minConfidence 
+   * @param seqEncoder 
+   */
   public static void addSurroundingAnnotations( 
-          AnnotationSet inputAS, 
+          AnnotationSet unused, 
           AnnotationSet instanceAS, 
           AnnotationSet outputAS,
           String outputAnnType,
-          Double minConfidence) {
+          Double minConfidence,
+          SeqEncoder seqEncoder) {
 
-    class AnnToAdd {
+
+    // TODO!! we need to delegate this to the proper method of seqEncoder, in a way
+    // that abstracts away a little from annotations etc., ideally!!!
+    // Probably best to process a whole sequence everytime we call the seqEncoder method,
+    // if we do not have a sequence, then a whole document. 
+    
+    // map of open annotations, per sequence annotation type
+    Map<String, AnnToAdd> annsToAdd = new HashMap<String, AnnToAdd>();
+
+    int oldSeqId = -1;  // keep track of which sequence annotation we are in
+    
+    for (Annotation inst : instanceAS.inDocumentOrder()) {
+
+      // get the sequence id of the current instance, or 0 if no sequence (whole document)
+      Integer sequenceSpanID = (Integer) inst.getFeatures().get(Globals.outputSequenceSpanIDFeature);
+      if (sequenceSpanID == null) {
+        sequenceSpanID = 0;
+      }
+      if(sequenceSpanID != oldSeqId) {
+        // if the oldSeqId is -1, do not worry, this is just the first instance annotation
+        if(oldSeqId == -1) oldSeqId = sequenceSpanID;
+        else {
+          // close any annotations still open and remove            
+            Iterator<Map.Entry<String, AnnToAdd>> it = annsToAdd.entrySet().iterator();
+            while(it.hasNext()) {
+              Map.Entry<String,AnnToAdd> entry = it.next();              
+              //System.err.println("Finishing at seq end: "+entry.getValue().thisEnd);
+              addSequenceAnn(entry.getValue(), outputAS, minConfidence);
+              it.remove();
+            }
+            oldSeqId = sequenceSpanID;
+        }
+      }
+      
+      // Type|B, Type|I or Type|O??
+      // We could also get a sequence of different TypeX|B or TypeY|I here
+      String target = (String) inst.getFeatures().get(Globals.outputClassFeature);
+      String[] typesAndCodes;
+      if(target == null) target = SeqEncoder.CODE_OUTSIDE;
+      // now we have two cases: either we got an outside or we got one or more 
+      // type/code pairs
+      
+      // if we have an outside, just end all the open annotations, if any
+      if(target.equals(SeqEncoder.CODE_OUTSIDE)) {
+            // finish any open anns of the same type and remove the open anns
+            Iterator<Map.Entry<String, AnnToAdd>> it = annsToAdd.entrySet().iterator();
+            while(it.hasNext()) {
+              Map.Entry<String,AnnToAdd> entry = it.next();          
+              //System.err.println("Finishing because of O "+entry.getValue().thisEnd);
+              addSequenceAnn(entry.getValue(), outputAS, minConfidence);
+              it.remove();
+            }
+      } else {
+        typesAndCodes = target.split(SeqEncoder.TYPESEP_PATTERN);
+        // otherwise: iterate over all types and codes and process accordingly
+        // after processing all types and codes, finish all the types which
+        // are open but where not in the target
+        Set<String> touchedTypes = new HashSet<>();
+        for(String typeAndCode : typesAndCodes) {
+          String[] tac = typeAndCode.split(SeqEncoder.CODESEP_PATTERN);
+          //System.err.println("type/code="+tac[0]+"/"+tac[1]);
+          if(tac[1].equals(SeqEncoder.CODE_BEGIN)) {
+            touchedTypes.add(tac[0]);
+            // finish any ann which is of the same type and remove
+            Iterator<Map.Entry<String, AnnToAdd>> it = annsToAdd.entrySet().iterator();
+            while(it.hasNext()) {
+              Map.Entry<String,AnnToAdd> entry = it.next();              
+              if(entry.getKey().equals(tac[0])) {
+                //System.err.println("Finishing because B: "+entry.getValue().thisEnd);
+                addSequenceAnn(entry.getValue(), outputAS, minConfidence);
+                it.remove();
+              }
+            }
+            // now add a new open annotation for that type
+            AnnToAdd ata = new AnnToAdd();
+            ata.thisStart = inst.getStartNode().getOffset();
+            ata.annType = tac[0];
+            //Update the end on the offchance that this is it
+            ata.thisEnd = inst.getEndNode().getOffset();
+            ata.conf = (Double) inst.getFeatures().get(Globals.outputProbFeature);
+            ata.len++;
+            annsToAdd.put(tac[0], ata);            
+          } else if(tac[1].equals(SeqEncoder.CODE_INSIDE)) {
+            // go through the open annotations and if we find one with that type, continue
+            // it
+            Iterator<Map.Entry<String, AnnToAdd>> it = annsToAdd.entrySet().iterator();
+            while(it.hasNext()) {
+              Map.Entry<String,AnnToAdd> entry = it.next();              
+              if(entry.getKey().equals(tac[0])) {
+                //System.err.println("extending existing annotation to offset "+inst.getEndNode().getOffset());
+                touchedTypes.add(tac[0]);
+                // continue the ann and extend the span
+                entry.getValue().conf += (Double) inst.getFeatures().get(Globals.outputProbFeature);
+                entry.getValue().len++;
+                //Update the end on the offchance that this is it
+                entry.getValue().thisEnd = inst.getEndNode().getOffset();
+              }
+            }            
+          } else {
+            throw new GateRuntimeException("Unexpected SeqEncoder code: "+tac[1]);
+          }
+        } // for typeAndCode : typesAndCodes
+        // after processing all the types/codes in the target, go through the 
+        // open annotations and close those which have not been touched by this target
+        //System.err.println("Set of touched types: "+touchedTypes);
+        Iterator<Map.Entry<String, AnnToAdd>> it = annsToAdd.entrySet().iterator();
+        while(it.hasNext()) {
+          Map.Entry<String,AnnToAdd> entry = it.next();              
+          // if this is an open annotation with a type which has not been included
+          // in the target, close and remove it
+          if(!touchedTypes.contains(entry.getKey())) {
+            //System.err.println("finishing untouched ann at "+entry.getValue().thisEnd);
+            addSequenceAnn(entry.getValue(), outputAS, minConfidence);
+            it.remove();
+          }
+        }        
+      } // if we do not have CODE_OUTSIDE
+      
+    } // for all instance annotations
+  }
+  
+  /**
+   * If confidence constraint is satisfied, add Annotation and return it, otherwise
+   * add nothing and return null.
+   * 
+   * @param annToAdd
+   * @param outputAS
+   * @param outputAnnType
+   * @param minConfidence
+   * @return 
+   */
+  public static Annotation addSequenceAnn(AnnToAdd annToAdd, AnnotationSet outputAS, Double minConfidence) {
+    double entityConfidence = annToAdd.conf / annToAdd.len;
+    if(annToAdd.thisStart != -1 && annToAdd.thisEnd != -1 && 
+            (minConfidence == null || entityConfidence >= minConfidence)) {
+      FeatureMap fm = Factory.newFeatureMap();
+      fm.put(Globals.outputProbFeature, entityConfidence);
+      // TODO: add the sequence span id? UPDATE: since we return the annotation
+      // we just created, the caller can add anything to the feature map
+      int id = gate.Utils.addAnn(outputAS, annToAdd.thisStart, annToAdd.thisEnd, annToAdd.annType, fm);
+      return outputAS.get(id);
+    } else {
+      return null;
+    }
+  }
+  
+  private static class AnnToAdd {
 
       long thisStart = -1;
       long thisEnd = -1;
       int len = 0;
       double conf = 0.0;
+      String annType = "INVALID";
     }
-
-    Map<Integer, AnnToAdd> annsToAdd = new HashMap<Integer, AnnToAdd>();
-
-    Iterator<Annotation> it = instanceAS.inDocumentOrder().iterator();
-    while (it.hasNext()) {
-      Annotation inst = it.next();
-
-      //Do we have an annotation in progress for this sequence span ID?
-      //If we didn't use sequence learning, just use the same ID repeatedly.
-      Integer sequenceSpanID = (Integer) inst.getFeatures().get(Globals.outputSequenceSpanIDFeature);
-      if (sequenceSpanID == null) {
-        sequenceSpanID = 0;
-      }
-      AnnToAdd thisAnnToAdd = annsToAdd.get(sequenceSpanID);
-
-      //B, I or O??
-      String status = (String) inst.getFeatures().get(Globals.outputClassFeature);
-      if (status == null) {
-        status = FeatureExtraction.SEQ_OUTSIDE;
-      }
-
-      if (thisAnnToAdd != null && (status.equals(FeatureExtraction.SEQ_BEGINNING) || status.equals(FeatureExtraction.SEQ_OUTSIDE))) {
-        //If we've found a beginning or an end, this indicates that a current
-        //incomplete annotation is now completed. We should write it on and
-        //remove it from the map.
-        double entityconf = thisAnnToAdd.conf / thisAnnToAdd.len;
-
-        if (thisAnnToAdd.thisStart != -1 && thisAnnToAdd.thisEnd != -1
-                && (minConfidence == null || entityconf >= minConfidence) ) {
-          FeatureMap fm = Factory.newFeatureMap();
-          fm.put(Globals.outputProbFeature, entityconf);
-          if (sequenceSpanID != null) {
-            fm.put(Globals.outputSequenceSpanIDFeature, sequenceSpanID);
-          }
-          try {
-            // TODO: get an invalid offset exception here: Offsets [31060:31059] not valid for this document of size 43447
-            // so the end offset is before the start offset?
-            outputAS.add(
-                    thisAnnToAdd.thisStart, thisAnnToAdd.thisEnd,
-                    outputAnnType, fm);
-          } catch (InvalidOffsetException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-          }
-        }
-
-        annsToAdd.remove(sequenceSpanID);
-      }
-
-      if (status.equals(FeatureExtraction.SEQ_BEGINNING)) {
-        AnnToAdd ata = new AnnToAdd();
-        ata.thisStart = inst.getStartNode().getOffset();
-        //Update the end on the offchance that this is it
-        ata.thisEnd = inst.getEndNode().getOffset();
-        ata.conf = (Double) inst.getFeatures().get(Globals.outputProbFeature);
-        ata.len++;
-        annsToAdd.put(sequenceSpanID, ata);
-      }
-
-      if (status.equals(FeatureExtraction.SEQ_INSIDE) && thisAnnToAdd != null) {
-        thisAnnToAdd.conf += (Double) inst.getFeatures().get(Globals.outputProbFeature);
-        thisAnnToAdd.len++;
-        //Update the end on the offchance that this is it
-        thisAnnToAdd.thisEnd = inst.getEndNode().getOffset();
-      }
-
-      //Remove each inst ann as we consume it
-      //inputAS.remove(inst);
-    }
-
-    //Add any hanging entities at the end.
-    Iterator<Integer> atait = annsToAdd.keySet().iterator();
-    while (atait.hasNext()) {
-      Integer sequenceSpanID = (Integer) atait.next();
-      AnnToAdd thisAnnToAdd = annsToAdd.get(sequenceSpanID);
-      double entityconf = thisAnnToAdd.conf / thisAnnToAdd.len;
-
-      if (thisAnnToAdd.thisStart != -1 && thisAnnToAdd.thisEnd != -1
-              && (minConfidence == null || entityconf >= minConfidence) ) {
-        FeatureMap fm = Factory.newFeatureMap();
-        fm.put(Globals.outputProbFeature, entityconf);
-        if (sequenceSpanID != null) {
-          fm.put(Globals.outputSequenceSpanIDFeature, sequenceSpanID);
-        }
-        try {
-          outputAS.add(
-                  thisAnnToAdd.thisStart, thisAnnToAdd.thisEnd,
-                  outputAnnType, fm);
-        } catch (InvalidOffsetException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
-        }
-      }
-    }
-  }
+  
   
   @Override
   public String toString() {

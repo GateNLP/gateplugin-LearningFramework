@@ -44,6 +44,9 @@ import org.apache.log4j.Logger;
  * need to get refactored to an Interface or base class, with different implementations for
  * different internal representations.
  *
+ * NOTE: currently this is mostly static methods, we should probably move to a usage pattern where 
+ * we use an instance. Then, the instance can get configured, debugging enabled etc. 
+ * 
  * @author Johann Petrak
  */
 public class FeatureExtraction {
@@ -154,6 +157,8 @@ public class FeatureExtraction {
 
   private static Logger logger = Logger.getLogger(FeatureExtraction.class.getName());
 
+  private static final boolean debugSequenceClass = true;
+  
   public static void extractFeature(
           Instance inst,
           FeatureSpecAttribute att,
@@ -1037,20 +1042,10 @@ public class FeatureExtraction {
    * annotation, it's a "beginning". In the middle or at the end, it's an "inside". Instances that
    * don't occur in the span of a class annotation are an "outside".
    *
-   * This directly sets the target of the instance to a Label object that corresponds to one of the
-   * three classes. In the case of NER classes, the target alphabet is always a labelalphabet and
-   * pre-filled with all possible class labels when this method is invoked, so it does not matter if
-   * the growth of the alphabet is stopped or not.
-   *
-   * @param inst The instance where the target should be set
-   * @param classType The annotation name of the annotation that represents the class, e.g. "Person"
-   * (this is required for the sequence tagging task!)
    * @param alph the label alphabet to use, must be an instance of LabelAlphabet
-   * @param inputASname, the annotation set name of the set which contains the class annotations
    * @param instanceAnnotation, the instance annotation, e.g. "Token".
-   * @param doc the document which is currently being processed
    */
-  public static void extractClassForSeqTagging(Instance inst, Alphabet alph, AnnotationSet classAS, Annotation instanceAnnotation) {
+  public static void extractClassForSeqTagging(Instance inst, Alphabet alph, AnnotationSet classAS, Annotation instanceAnnotation, SeqEncoder seqEncoder) {
     String target = "";
     Document doc = classAS.getDocument();
     if (!(alph instanceof LabelAlphabet)) {
@@ -1060,37 +1055,40 @@ public class FeatureExtraction {
     }
     LabelAlphabet labelalph = (LabelAlphabet) alph;
     AnnotationSet overlappingClassAnns = Utils.getOverlappingAnnotations(classAS, instanceAnnotation);
-    // Note: each instance annotation should only overlap with at most one class annotation.
-    // Like with overlapping annotations from the feature specification, we log a warning and 
-    // pick the longest here
+    // NOTE: previously we only allowed at most one class annotation, but now we are as flexible
+    // as possible here: any number of class annotations of any number of types can overlap.
+    // The class label for each instance is generated from the complete list of what overlaps,
+    // e.g. beginning of T1, beginning of another T1, continuation of T2 and end of T3 
+    // The class labels for such combinations only get generated if an overlap actually occurs,
+    // so if we only ever see nicely separated annotations, then we will never see the combined labels.
+    // Labels are dynamically generated as a string of pipe-separated type names, with the flag
+    // (beginning=B, inside=I) appended, or class "O" if outside of all types. 
+    // The ordering of types in the class label name must be consistent: TODO!!
+    // NOTE: this should be one of several possible ways to do it, implemented in several
+    // methods/classes and choosable through e.g. the "algorithmParameter" settings.
+    // Then we could use approaches like BIO, BMEWO, BMEWO+ (see
+    // https://lingpipe-blog.com/2009/10/14/coding-chunkers-as-taggers-io-bio-bmewo-and-bmewo/)
+    // or the ones listed in http://cs229.stanford.edu/proj2005/KrishnanGanapathy-NamedEntityRecognition.pdf
+    // Whenever we choose a strategy here, the strategy needs to get stored in the 
+    // model info file and re-used at application time!
+    // NOTE: need to see if the label alphabet growing setting is handled correctly!
+    
+    // if there is at least one overlapping class annotation
     if (overlappingClassAnns.size() > 0) {
-      Annotation classAnn = null;
-      if (overlappingClassAnns.size() > 1) {
-        logger.warn("More than one class annotation for instance at offset "
-                + gate.Utils.start(instanceAnnotation) + " in document " + doc.getName());
-        // find the longest
-        int maxSize = 0;
-        for (Annotation ann : overlappingClassAnns.inDocumentOrder()) {
-          if (gate.Utils.length(ann) > maxSize) {
-            maxSize = gate.Utils.length(ann);
-            classAnn = ann;
-          }
-        }
-      } else {
-        classAnn = gate.Utils.getOnlyAnn(overlappingClassAnns);
-      }
-      // NOTE: this does allow situations where an instance annotation starts with the class
-      // annotation and goes beyond the end of the class annotation or where it starts within
-      // a class annotation and goes beyond the end. This is weird, but still probably the best
-      // way to handle this. 
-      if (classAnn.getStartNode().getOffset().equals(instanceAnnotation.getStartNode().getOffset())) {
-        target = SEQ_BEGINNING;
-      } else {
-        target = SEQ_INSIDE;
-      }
+      // convert the set of annotation types to a list of type|code names
+      // this should eventually be parametrizable so we can choose one of several methods
+      // ideally we implement this as a method of one of an instance of several Seq2Class 
+      // subclasses. If it is an instance we could maybe also implement methods where we
+      // need to remember something about the last instance for which we did it!
+      target = seqEncoder.seqAnns2ClassLabel(overlappingClassAnns, instanceAnnotation);
     } else {
       //No overlapping mentions so it's an outside
-      target = SEQ_OUTSIDE;
+      target = seqEncoder.CODE_OUTSIDE;
+    }
+    // if debugging is enabled, we put the 
+    // the target class on the instance annotation
+    if (debugSequenceClass) {
+      instanceAnnotation.getFeatures().put("LF_sequenceClass", target);
     }
     // we now have the target label as a string, now set the target of the instance to 
     // to the actual label

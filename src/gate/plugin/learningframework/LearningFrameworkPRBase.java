@@ -22,11 +22,6 @@ package gate.plugin.learningframework;
 
 import org.apache.log4j.Logger;
 
-import gate.Controller;
-import gate.Document;
-import gate.Resource;
-import gate.creole.ResourceInstantiationException;
-import gate.creole.ExecutionException;
 import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;

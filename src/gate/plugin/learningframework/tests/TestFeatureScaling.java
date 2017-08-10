@@ -23,7 +23,6 @@ package gate.plugin.learningframework.tests;
 import gate.AnnotationSet;
 import gate.Document;
 import gate.creole.ResourceInstantiationException;
-import gate.plugin.learningframework.Exporter;
 import gate.plugin.learningframework.ScalingMethod;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
 import gate.plugin.learningframework.features.FeatureInfo;
@@ -64,7 +63,7 @@ public class TestFeatureScaling {
     AnnotationSet classAS = null;
     String targetFeature = "class";
     String nameFeature = null;
-    crm.add(instanceAS, sequenceAS, inputAS, classAS, targetFeature, TargetType.NOMINAL, "", nameFeature);
+    crm.add(instanceAS, sequenceAS, inputAS, classAS, targetFeature, TargetType.NOMINAL, "", nameFeature, null);
     
     System.err.println("TESTS Scaling 1: added instances, number of instances now: "+crm.getRepresentationMallet().size());
 

@@ -33,6 +33,7 @@ import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
 import gate.plugin.learningframework.engines.AlgorithmKind;
 import gate.plugin.learningframework.engines.Engine;
+import gate.plugin.learningframework.features.SeqEncoder;
 import gate.util.GateRuntimeException;
 import java.net.URL;
 
@@ -115,6 +116,7 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
     return sequenceSpan;
   }
   
+  private SeqEncoder seqEncoder;
   
 
 ////////////////////////////////////////////////////////////////////////////
@@ -159,7 +161,7 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
     // TODO: maybe make confidence threshold more flexible for sequence annotations?
     String classAnnotationType = engine.getInfo().classAnnotationType;
     
-    GateClassification.addSurroundingAnnotations(tmpAS, tmpInstanceAS, outputAS, classAnnotationType, getConfidenceThreshold());
+    GateClassification.addSurroundingAnnotations(tmpAS, tmpInstanceAS, outputAS, classAnnotationType, getConfidenceThreshold(), seqEncoder);
     return doc;
   }
 
@@ -185,6 +187,16 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
     engine = gate.plugin.learningframework.engines.Engine.loadEngine(dataDir, getAlgorithmParameters());
     System.out.println("LF-Info: model loaded is now "+engine);
 
+    // TODO: the Info file for a sequence tagger should include the SeqEncoder class and options to be used
+    String secn = engine.getInfo().seqEncoderClass;
+    String seco = engine.getInfo().seqEncoderOptions;
+    
+    try {
+      seqEncoder = (SeqEncoder) Class.forName(secn).newInstance();
+    } catch (Exception ex) {
+      throw new GateRuntimeException("Could not create SeqEncoder instance",ex);
+    }
+    
     if (engine.getModel() == null) {
       throw new GateRuntimeException("Do not have a model, something went wrong.");
     } else {
