@@ -19,6 +19,7 @@
  */
 package gate.plugin.learningframework;
 
+import gate.Annotation;
 import gate.AnnotationSet;
 import java.io.File;
 import java.net.URL;
@@ -27,6 +28,8 @@ import org.apache.log4j.Logger;
 
 import gate.Controller;
 import gate.Document;
+import gate.FeatureMap;
+import gate.Utils;
 import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.Optional;
@@ -167,6 +170,11 @@ public class LF_TrainChunking extends LF_TrainBase {
     AnnotationSet classAS = inputAS.get(getClassAnnotationType());
     // the nameFeatureName is always null for now!
     String nameFeatureName = null;
+    // TODO: we should put the gate.LF.target feature on each instance here, using the exact same
+    // way to find the class (BIO for each class etc) as in FeatureExtraction.
+    // We need to do this here because  the FeatureExtraction code is used at training and 
+    // application time while the copying must only be done at training time!
+    
     if(haveSequenceTagger) {
       AnnotationSet sequenceAS = inputAS.get(getSequenceSpan());
       corpusRepresentation.add(instanceAS, sequenceAS, inputAS, classAS, null, TargetType.NOMINAL, "", nameFeatureName);

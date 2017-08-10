@@ -19,6 +19,7 @@
  */
 package gate.plugin.learningframework;
 
+import gate.Annotation;
 import gate.AnnotationSet;
 import java.net.URL;
 
@@ -26,6 +27,8 @@ import org.apache.log4j.Logger;
 
 import gate.Controller;
 import gate.Document;
+import gate.FeatureMap;
+import gate.Utils;
 import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.Optional;
@@ -163,7 +166,6 @@ public class LF_TrainClassification extends LF_TrainBase {
     // extract the required annotation sets,
     AnnotationSet inputAS = doc.getAnnotations(getInputASName());
     AnnotationSet instanceAS = inputAS.get(getInstanceType());
-    // the classAS 
     // the sequenceAS must be specified for a sequence tagging algorithm and most not be specified
     // for a non-sequence tagging algorithm!
     AnnotationSet sequenceAS = null;
@@ -172,8 +174,21 @@ public class LF_TrainClassification extends LF_TrainBase {
       // given!
       sequenceAS = inputAS.get(getSequenceSpan());
     }
+
+    // before we add the instances, put the LF internal class feature gate.LF.target on the instance
+    // annotations!
+    // This makes sure that for training, any attribute which makes use of the internal class feature
+    // will get the correct value from the training set, even if the gate.LF.target feature has
+    // been set differently before this PR is run.
+    for(Annotation inst : instanceAS) {
+      FeatureMap fm = inst.getFeatures();
+      fm.put("gate.LF.target",fm.get(getTargetFeature()));
+    }
+
+    
     // the classAS is always null for the classification task!
     // the nameFeatureName is always null for now!
+    
     String nameFeatureName = null;
     corpusRepresentation.add(instanceAS, sequenceAS, inputAS, null, getTargetFeature(), TargetType.NOMINAL, instanceWeightFeature, nameFeatureName);
     return doc;

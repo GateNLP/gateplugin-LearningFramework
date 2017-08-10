@@ -99,6 +99,8 @@ public class EngineMalletClass extends EngineMallet {
       GateClassification gc = new GateClassification(instAnn, labeling.getBestLabel().toString(), 
               labeling.getBestValue(), classes, confidences);
       //System.err.println("ADDING GC "+gc);
+      // now save the class in our special class feature on the instance as well
+      instAnn.getFeatures().put("gate.LF.target",labeling.getBestLabel().toString());
       gcs.add(gc);
     }
     data.startGrowth();
