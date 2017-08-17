@@ -146,14 +146,14 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
     }
     //System.err.println("instanceAS.size="+instanceAS.size()+", inputAS.size="+inputAS.size()+"sequenceAS.size="+
     //        sequenceAS.size());
-    List<GateClassification> gcs = engine.classify(
+    List<ModelApplication> gcs = engine.applyModel(
           instanceAS, inputAS,
           sequenceAS, getAlgorithmParameters());
 
     AnnotationSet tmpAS = doc.getAnnotations("LF_SEQ_TMP");
     // since we specify the output annotation set tmpAS, new instance annotations are created there
     String featureName = engine.getInfo().targetFeature;    
-    GateClassification.applyClassification(doc, gcs, Globals.outputClassFeature, tmpAS, null);
+    ModelApplication.applyClassification(doc, gcs, Globals.outputClassFeature, tmpAS, null);
     // TODO: tmpAS only contains the instances we have just created, so we can probably get
     // read of the tmpInstanceAS parameter alltogether?
     AnnotationSet tmpInstanceAS = tmpAS.get(getInstanceType());
@@ -161,7 +161,7 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
     // TODO: maybe make confidence threshold more flexible for sequence annotations?
     String classAnnotationType = engine.getInfo().classAnnotationType;
     
-    GateClassification.addSurroundingAnnotations(tmpAS, tmpInstanceAS, outputAS, classAnnotationType, getConfidenceThreshold(), seqEncoder);
+    ModelApplication.addSurroundingAnnotations(tmpAS, tmpInstanceAS, outputAS, classAnnotationType, getConfidenceThreshold(), seqEncoder);
     return doc;
   }
 

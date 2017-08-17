@@ -23,7 +23,8 @@ package gate.plugin.learningframework.engines;
 import cc.mallet.types.Alphabet;
 import gate.AnnotationSet;
 import gate.plugin.learningframework.EvaluationMethod;
-import gate.plugin.learningframework.GateClassification;
+import gate.plugin.learningframework.ModelApplication;
+import gate.plugin.learningframework.data.CorpusRepresentation;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.mallet.LFPipe;
 import gate.util.GateRuntimeException;
@@ -48,7 +49,13 @@ public abstract class Engine {
   /**
    * The Mallet Corpus Representation associated with this engine. 
    */
+  @Deprecated
   CorpusRepresentationMallet corpusRepresentationMallet;
+  
+  /**
+   * The corpus representation to use with the concrete instance of the engine.
+   */
+  CorpusRepresentation corpusRepresentation;
   
   Algorithm algorithm;
   
@@ -64,6 +71,9 @@ public abstract class Engine {
    * where an external model was trained. For this the user has to provide
    * an info.yaml file manually. This file must contain the Engine class,
    * all other entries can be missing.
+   * 
+   * NOTE: the details of how the Engine is initialised once the specific subclass has been 
+   * created are implemented in the init() instance method. 
    * 
    * @param directory
    * @return 
@@ -85,17 +95,31 @@ public abstract class Engine {
     }
     // store the info we have just obtained in the new engine instance
     eng.info = info;
+    eng.initAfterLoad(directory, parms);
+    return eng;
+  }
+  
+  /**
+   * The details of how to initialise a specific instance of an Engine subclass from 
+   * 
+   * 
+   * The Engine class implements a default implementation which can be overridden and called 
+   * by subclasses. The default implementation does the following: 1) call the instance specific
+   * loadModel method, 2) call the instance specific loadCorpusRepresentation method, 3) set the
+   * Algorithm according to what is in the info.
+   */
+  protected void initAfterLoad(File directory, String parms) {
     // now use the specific engine's loadModel method to complete the loading: each engine
     // knows best how to load its own kinds of models.
     // NOTE: loadModel also loads the Mallet corpus representation and initializes any non-Mallet
     // representation if necessary.
-    eng.loadModel(directory, parms);
-    eng.loadMalletCorpusRepresentation(directory);
+    this.loadModel(directory, parms);
+    this.loadMalletCorpusRepresentation(directory);
     //System.err.println("Loaded mallet corpus representation: "+eng.getCorpusRepresentationMallet());
 
     // we could stop growh right after loading, but that would interfere with engines which
     // allow updating, incremental learning etc. 
-    // Instead we stop growth at the beginning of each classify method and re-enabled it 
+    // Instead we stop growth at the beginning of each applyModel method and re-enabled it 
     // at the end. 
     // eng.corpusRepresentationMallet.stopGrowth();
     
@@ -120,12 +144,21 @@ public abstract class Engine {
           throw new GateRuntimeException("Could not find the trainer class "+info.trainerClass);
         }
       }    
-      eng.initializeAlgorithm(algorithm,parms);
-      eng.algorithm = algorithm;
+      this.initializeAlgorithm(algorithm,parms);
+      this.algorithm = algorithm;
     } // if we have an algorithm class in the info file
-    return eng;
+    
   }
   
+  /**
+   * Re-create the mallet corpus representation from the directory.
+   * 
+   * This was used previously since we always saved a mallet corpus representation.
+   * Since we can now save other kinds of corpus representations, this is deprecated.
+   * 
+   * @param directory 
+   */
+  @Deprecated
   protected abstract void loadMalletCorpusRepresentation(File directory);
   
   
@@ -246,7 +279,7 @@ public abstract class Engine {
    * they must not be given. 
    * @return 
    */
-  public abstract List<GateClassification> classify(
+  public abstract List<ModelApplication> applyModel(
           AnnotationSet instanceAS, AnnotationSet inputAS,
           AnnotationSet sequenceAS, String parms);
   
@@ -287,8 +320,13 @@ public abstract class Engine {
   
   public Info getInfo() { return info; }
   
+  @Deprecated
   public CorpusRepresentationMallet getCorpusRepresentationMallet() {
     return corpusRepresentationMallet;
+  }
+  
+  public CorpusRepresentation getCorpusRepresentation() {
+    return corpusRepresentation;
   }
   
   public String toString() {
@@ -297,5 +335,17 @@ public abstract class Engine {
             ",alg="+trainer+",info="+info+
             ",model="+this.getModel()+",CR="+corpusRepresentationMallet+"}";
   }
+  
+  /**
+   * Re-create and return the corpus representation that was stored for this engine.
+   * 
+   *
+   * @param dir
+   * @return 
+   */
+  protected CorpusRepresentation recreateCorpusRepresentation(File dir) {
+    throw new RuntimeException("Method recreateCorpusRepresentation not yet implemented for "+this.getClass().getName());
+  }
+  
   
 }

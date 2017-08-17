@@ -34,7 +34,7 @@ import gate.plugin.evaluation.api.AnnotationTypeSpecs;
 import gate.plugin.evaluation.api.EvalStatsTagging;
 import gate.plugin.evaluation.api.EvalStatsTagging4Score;
 import gate.plugin.evaluation.api.FeatureComparison;
-import gate.plugin.learningframework.GateClassification;
+import gate.plugin.learningframework.ModelApplication;
 import gate.plugin.learningframework.ScalingMethod;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletSeq;
@@ -165,21 +165,21 @@ public class TestEngineMalletSeq {
       AnnotationSet instanceAS = doc.getAnnotations().get("Token");
       AnnotationSet sequenceAS = doc.getAnnotations().get("Sentence");
       AnnotationSet inputAS = doc.getAnnotations();
-      List<GateClassification> gcs = engine2.classify(instanceAS, inputAS, sequenceAS, parms);
+      List<ModelApplication> gcs = engine2.applyModel(instanceAS, inputAS, sequenceAS, parms);
       
-      // actually create annotations for the GateClassification instances
+      // actually create annotations for the ModelApplication instances
       AnnotationSet lfAS = doc.getAnnotations("LF_TMP");
       // First null: targetFeature name, we do not need this and maybe should remove that 
       // parameter alltogether
       // Second null: confidence threshold: if null, do not check the threshold at all
       //GateClassification.addClassificationAnnotations(doc, gcs, lfAS, null, null);
-      GateClassification.applyClassification(doc, gcs, null, lfAS, null);
+      ModelApplication.applyClassification(doc, gcs, null, lfAS, null);
       System.out.println("Doc="+doc.getName()+", Anns in LF_TMP: "+lfAS.size());
       
       AnnotationSet outputAS = doc.getAnnotations("LF");
       String outputType = "Link";
       instanceAS = lfAS;
-      GateClassification.addSurroundingAnnotations(inputAS, instanceAS, outputAS, outputType, null, new SeqEncoder_SimpleBIO());
+      ModelApplication.addSurroundingAnnotations(inputAS, instanceAS, outputAS, outputType, null, new SeqEncoder_SimpleBIO());
       System.out.println("Doc="+doc.getName()+", Links: "+outputAS.get("Link").size());
       
       AnnotationDifferTagging docDiffer = new AnnotationDifferTagging(

@@ -143,7 +143,7 @@ public class LF_ApplyRegression extends LearningFrameworkPRBase {
     AnnotationSet inputAS = doc.getAnnotations(getInputASName());
     AnnotationSet instanceAS = inputAS.get(getInstanceType());
 
-    List<GateClassification> gcs = engine.classify(
+    List<ModelApplication> gcs = engine.applyModel(
           instanceAS, inputAS,
           null, getAlgorithmParameters());
 
@@ -160,7 +160,7 @@ public class LF_ApplyRegression extends LearningFrameworkPRBase {
 
     
     
-    GateClassification.applyClassification(doc, gcs, targetFeatureToUse, outputAS, null);   
+    ModelApplication.applyClassification(doc, gcs, targetFeatureToUse, outputAS, null);   
     return doc;
   }
 

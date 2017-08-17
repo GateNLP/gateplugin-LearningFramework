@@ -38,7 +38,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-public class GateClassification {
+public class ModelApplication {
 
   private Annotation instance;
   private String classAssigned;
@@ -49,19 +49,19 @@ public class GateClassification {
   private List<String> classList;
   private List<Double> confidenceList;
 
-  public GateClassification(Annotation instance, String classAssigned,
+  public ModelApplication(Annotation instance, String classAssigned,
           Double confidenceScore) {
     this.instance = instance;
     this.classAssigned = classAssigned;
     this.confidenceScore = confidenceScore;
   }
-  public GateClassification(Annotation instance, double targetAssigned) {
+  public ModelApplication(Annotation instance, double targetAssigned) {
     this.instance = instance;
     this.targetAssigned = targetAssigned;
     numericTarget = true;
   }
 
-  public GateClassification(Annotation instance, String classAssigned,
+  public ModelApplication(Annotation instance, String classAssigned,
           Double confidenceScore, List<String> classes, List<Double> confidences) {
     this.instance = instance;
     this.classAssigned = classAssigned;
@@ -70,7 +70,7 @@ public class GateClassification {
     this.confidenceList = confidences;
   }
 
-  public GateClassification(Annotation instance, String classAssigned,
+  public ModelApplication(Annotation instance, String classAssigned,
           Double confidenceScore, Integer sequenceSpanID) {
     this.instance = instance;
     this.classAssigned = classAssigned;
@@ -119,21 +119,21 @@ public class GateClassification {
   }
   
   /**
-   * Utility function to apply a list of GateClassification to a document.
-   * This creates classification/regression output from a list of GateClassification objects.
-   * If outputAS is null, then the original instance annotations are modified and receive the
-   * target features and additional LearningFramework-specific features (confidence etc.).
-   * If outputAS is specified, new annotations which are a copy of the instance annotations
-   * are created in the outputAS and the target features are stored in those copies.
+   * Utility function to apply a list of ModelApplication to a document.
+   * This creates classification/regression output from a list of ModelApplication objects.
+ If outputAS is null, then the original instance annotations are modified and receive the
+ target features and additional LearningFramework-specific features (confidence etc.).
+ If outputAS is specified, new annotations which are a copy of the instance annotations
+ are created in the outputAS and the target features are stored in those copies.
    * @param doc
    * @param gcs 
    */
   public static void applyClassification(Document doc, 
-          List<GateClassification> gcs, 
+          List<ModelApplication> gcs, 
           String targetFeature, 
           AnnotationSet outputAS,
           Double minConfidence) {
-    for(GateClassification gc : gcs) {
+    for(ModelApplication gc : gcs) {
       if (minConfidence != null && 
           !Double.isNaN(minConfidence) &&
           gc.getConfidenceScore() < minConfidence) {

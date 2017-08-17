@@ -29,7 +29,7 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import gate.Annotation;
 import gate.AnnotationSet;
 import gate.plugin.learningframework.EvaluationMethod;
-import gate.plugin.learningframework.GateClassification;
+import gate.plugin.learningframework.ModelApplication;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
 import gate.plugin.learningframework.mallet.LFPipe;
 import gate.util.GateRuntimeException;
@@ -104,7 +104,7 @@ public class EngineServer extends Engine {
   }
 
   @Override
-  public List<GateClassification> classify(AnnotationSet instanceAS, AnnotationSet inputAS, 
+  public List<ModelApplication> applyModel(AnnotationSet instanceAS, AnnotationSet inputAS, 
           AnnotationSet sequenceAS, String parms) {
     Parms ps = new Parms(parms, "d:dense:b");
     boolean dense = (boolean)ps.getValueOrElse("dense", false);    
@@ -112,8 +112,8 @@ public class EngineServer extends Engine {
     CorpusRepresentationMalletTarget data = (CorpusRepresentationMalletTarget)corpusRepresentationMallet;
     data.stopGrowth();
     int nrCols = data.getPipe().getDataAlphabet().size();
-    //System.err.println("Running EngineSklearn.classify on document "+instanceAS.getDocument().getName());
-    List<GateClassification> gcs = new ArrayList<GateClassification>();
+    //System.err.println("Running EngineSklearn.applyModel on document "+instanceAS.getDocument().getName());
+    List<ModelApplication> gcs = new ArrayList<ModelApplication>();
     LFPipe pipe = (LFPipe)data.getRepresentationMallet().getPipe();
     ArrayList<String> classList = null;
     // If we have a classification problem, pre-calculate the class label list
@@ -218,13 +218,13 @@ public class EngineServer extends Engine {
     @SuppressWarnings("unchecked")
     ArrayList<ArrayList<Number>> targets = (ArrayList<ArrayList<Number>>)responseMap.get("preds");
     
-    GateClassification gc = null;
+    ModelApplication gc = null;
     
     // now go through all the instances again and do the target assignment from the vector(s) we got
     int instNr = 0;
     for(Annotation instAnn : instances) {
       if(pipe.getTargetAlphabet() == null) { // we have regression        
-        gc = new GateClassification(instAnn, (double)targets.get(instNr).get(0));
+        gc = new ModelApplication(instAnn, (double)targets.get(instNr).get(0));
       } else {
         ArrayList<Number> valsN = targets.get(instNr);
         ArrayList<Double> vals = new ArrayList<Double>(valsN.size());
@@ -250,7 +250,7 @@ public class EngineServer extends Engine {
         double bestprob = Double.NaN;
         if(vals.size()>1) {
           bestprob = Collections.max(vals);
-          gc = new GateClassification(
+          gc = new ModelApplication(
                 instAnn, cl, bestprob, classList, vals);
         } else {
           // create a fake probability distribution with 1.0/0.0 probabilities
@@ -259,7 +259,7 @@ public class EngineServer extends Engine {
             if(i==bestlabel) probs.add(1.0);
             else probs.add(0.0);
           }
-          gc = new GateClassification(            
+          gc = new ModelApplication(            
                 instAnn, cl, bestprob, classList, probs);
           
         }

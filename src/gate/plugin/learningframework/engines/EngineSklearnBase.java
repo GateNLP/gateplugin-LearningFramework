@@ -28,7 +28,7 @@ import gate.lib.interaction.process.ProcessBase;
 import gate.lib.interaction.process.ProcessSimple;
 import gate.plugin.learningframework.EvaluationMethod;
 import gate.plugin.learningframework.Exporter;
-import gate.plugin.learningframework.GateClassification;
+import gate.plugin.learningframework.ModelApplication;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
 import gate.plugin.learningframework.mallet.LFPipe;
 import gate.util.GateRuntimeException;
@@ -261,13 +261,13 @@ public abstract class EngineSklearnBase extends Engine {
   }
 
   @Override
-  public List<GateClassification> classify(AnnotationSet instanceAS, AnnotationSet inputAS, 
+  public List<ModelApplication> applyModel(AnnotationSet instanceAS, AnnotationSet inputAS, 
           AnnotationSet sequenceAS, String parms) {
     CorpusRepresentationMalletTarget data = (CorpusRepresentationMalletTarget)corpusRepresentationMallet;
     data.stopGrowth();
     int nrCols = data.getPipe().getDataAlphabet().size();
-    //System.err.println("Running EngineSklearn.classify on document "+instanceAS.getDocument().getName());
-    List<GateClassification> gcs = new ArrayList<GateClassification>();
+    //System.err.println("Running EngineSklearn.applyModel on document "+instanceAS.getDocument().getName());
+    List<ModelApplication> gcs = new ArrayList<ModelApplication>();
     LFPipe pipe = (LFPipe)data.getRepresentationMallet().getPipe();
     ArrayList<String> classList = null;
     // If we have a classification problem, pre-calculate the class label list
@@ -342,7 +342,7 @@ public abstract class EngineSklearnBase extends Engine {
     ArrayList<Double> targets = (ArrayList<Double>)response.get("targets");
     ArrayList<ArrayList<Double>> probas = (ArrayList<ArrayList<Double>>)response.get("probas");
     
-    GateClassification gc = null;
+    ModelApplication gc = null;
     
     // now check if the mallet representation and the weka process agree 
     // on if we have regression or classification
@@ -356,7 +356,7 @@ public abstract class EngineSklearnBase extends Engine {
     int instNr = 0;
     for(Annotation instAnn : instances) {
       if(pipe.getTargetAlphabet() == null) { // we have regression
-        gc = new GateClassification(instAnn, targets.get(instNr));
+        gc = new ModelApplication(instAnn, targets.get(instNr));
       } else {
         int bestlabel = targets.get(instNr).intValue();
         String cl
@@ -365,7 +365,7 @@ public abstract class EngineSklearnBase extends Engine {
         if(probas != null) {
           bestprob = Collections.max(probas.get(instNr));
         }
-        gc = new GateClassification(
+        gc = new ModelApplication(
                 instAnn, cl, bestprob, classList, probas.get(instNr));
       }
       gcs.add(gc);

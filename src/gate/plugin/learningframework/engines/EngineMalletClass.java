@@ -38,7 +38,7 @@ import cc.mallet.types.Labeling;
 import gate.Annotation;
 import gate.AnnotationSet;
 import gate.plugin.learningframework.EvaluationMethod;
-import gate.plugin.learningframework.GateClassification;
+import gate.plugin.learningframework.ModelApplication;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
 import static gate.plugin.learningframework.engines.Engine.FILENAME_MODEL;
 import gate.plugin.learningframework.mallet.LFPipe;
@@ -72,7 +72,7 @@ public class EngineMalletClass extends EngineMallet {
   }
 
   @Override
-  public List<GateClassification> classify(
+  public List<ModelApplication> applyModel(
           AnnotationSet instanceAS, AnnotationSet inputAS, AnnotationSet sequenceAS, String parms) {
     // NOTE: the crm should be of type CorpusRepresentationMalletClass for this to work!
     if(!(corpusRepresentationMallet instanceof CorpusRepresentationMalletTarget)) {
@@ -80,7 +80,7 @@ public class EngineMalletClass extends EngineMallet {
     }
     CorpusRepresentationMalletTarget data = (CorpusRepresentationMalletTarget)corpusRepresentationMallet;
     data.stopGrowth();
-    List<GateClassification> gcs = new ArrayList<GateClassification>();
+    List<ModelApplication> gcs = new ArrayList<ModelApplication>();
     LFPipe pipe = (LFPipe)data.getRepresentationMallet().getPipe();
     Classifier classifier = (Classifier)model;
     // iterate over the instance annotations and create mallet instances 
@@ -96,7 +96,7 @@ public class EngineMalletClass extends EngineMallet {
         classes.add(labelvec.getLabelAtRank(i).toString());
         confidences.add(labelvec.getValueAtRank(i));
       }      
-      GateClassification gc = new GateClassification(instAnn, labeling.getBestLabel().toString(), 
+      ModelApplication gc = new ModelApplication(instAnn, labeling.getBestLabel().toString(), 
               labeling.getBestValue(), classes, confidences);
       //System.err.println("ADDING GC "+gc);
       // now save the class in our special class feature on the instance as well

@@ -190,7 +190,7 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
     } else {
       System.err.println("DEBUG: classifying doc "+doc.getName()+" instanceAS:"+instanceAS.size()+", inputAS:"+inputAS.size()+", sequenceAS:"+sequenceAS.size());      
     }
-    List<GateClassification> gcs = engine.classify(
+    List<ModelApplication> gcs = engine.applyModel(
             instanceAS, inputAS,
             sequenceAS, getAlgorithmParameters());
 
@@ -205,7 +205,7 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
       outputAS = doc.getAnnotations(getOutputASName());
     }
 
-    GateClassification.applyClassification(doc, gcs, targetFeatureToUse, outputAS, null);
+    ModelApplication.applyClassification(doc, gcs, targetFeatureToUse, outputAS, null);
     return doc;
   }
 

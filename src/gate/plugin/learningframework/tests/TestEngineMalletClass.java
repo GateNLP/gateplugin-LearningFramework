@@ -25,7 +25,7 @@ import gate.Annotation;
 import gate.AnnotationSet;
 import gate.Document;
 import gate.creole.ResourceInstantiationException;
-import gate.plugin.learningframework.GateClassification;
+import gate.plugin.learningframework.ModelApplication;
 import gate.plugin.learningframework.ScalingMethod;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
@@ -101,9 +101,9 @@ public class TestEngineMalletClass {
     
     AnnotationSet lfAS = doc.getAnnotations("LF");
     String parms = "";
-    List<GateClassification> gcs = engine2.classify(instanceAS, inputAS, sequenceAS, parms);
+    List<ModelApplication> gcs = engine2.applyModel(instanceAS, inputAS, sequenceAS, parms);
     System.err.println("Number of classifications: "+gcs.size());
-    GateClassification.applyClassification(doc, gcs, "target", lfAS, null);
+    ModelApplication.applyClassification(doc, gcs, "target", lfAS, null);
     
     System.err.println("Original instances: "+instanceAS.size()+", classification: "+lfAS.size());
     

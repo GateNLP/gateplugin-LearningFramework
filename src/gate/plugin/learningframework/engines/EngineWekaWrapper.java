@@ -29,8 +29,9 @@ import gate.lib.interaction.process.ProcessBase;
 import gate.lib.interaction.process.ProcessSimple;
 import gate.plugin.learningframework.EvaluationMethod;
 import gate.plugin.learningframework.Exporter;
-import gate.plugin.learningframework.GateClassification;
+import gate.plugin.learningframework.ModelApplication;
 import gate.plugin.learningframework.Globals;
+import gate.plugin.learningframework.data.CorpusRepresentation;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
 import gate.plugin.learningframework.mallet.LFPipe;
 import gate.util.GateRuntimeException;
@@ -265,12 +266,12 @@ public class EngineWekaWrapper extends Engine {
   }
 
   @Override
-  public List<GateClassification> classify(AnnotationSet instanceAS, AnnotationSet inputAS, 
+  public List<ModelApplication> applyModel(AnnotationSet instanceAS, AnnotationSet inputAS, 
           AnnotationSet sequenceAS, String parms) {
     CorpusRepresentationMalletTarget data = (CorpusRepresentationMalletTarget)corpusRepresentationMallet;
     data.stopGrowth();
-    //System.err.println("Running EngineWeka.classify on document "+instanceAS.getDocument().getName());
-    List<GateClassification> gcs = new ArrayList<GateClassification>();
+    //System.err.println("Running EngineWeka.applyModel on document "+instanceAS.getDocument().getName());
+    List<ModelApplication> gcs = new ArrayList<ModelApplication>();
     LFPipe pipe = (LFPipe)data.getRepresentationMallet().getPipe();
     for(Annotation instAnn : instanceAS.inDocumentOrder()) {
       Instance inst = data.extractIndependentFeatures(instAnn, inputAS);
@@ -311,7 +312,7 @@ public class EngineWekaWrapper extends Engine {
         throw new RuntimeException("Got a response from the Weka process which is not double[] but "+obj.getClass());
       }
       //System.err.println("Sent vector: locs/values="+Arrays.toString(locations)+"/"+Arrays.toString(values)+", ret="+Arrays.toString(ret));
-      GateClassification gc = null;
+      ModelApplication gc = null;
       // now check if the mallet representation and the weka process agree 
       // on if we have regression or classification
       if(pipe.getTargetAlphabet() == null) {
@@ -319,7 +320,7 @@ public class EngineWekaWrapper extends Engine {
         if(ret.length != 1) {
           throw new RuntimeException("We think we have regression but the Weka process sent a ret of length "+ret.length);
         }
-        gc = new GateClassification(instAnn, ret[0]);
+        gc = new ModelApplication(instAnn, ret[0]);
       } else {
         // classification, we expect ret to have length >= 2
         if(ret.length < 2) {
@@ -354,7 +355,7 @@ public class EngineWekaWrapper extends Engine {
         String cl
                 = pipe.getTargetAlphabet().lookupObject(bestlabel).toString();
 
-        gc = new GateClassification(
+        gc = new ModelApplication(
                 instAnn, cl, bestprob, classList, confidenceList);
       }
       gcs.add(gc);
@@ -372,5 +373,11 @@ public class EngineWekaWrapper extends Engine {
   protected void loadMalletCorpusRepresentation(File directory) {
     corpusRepresentationMallet = CorpusRepresentationMalletTarget.load(directory);
   }
+
+  @Override
+  protected CorpusRepresentation recreateCorpusRepresentation(File directory) {
+    throw new RuntimeException("not yet implemented");
+  }
+
   
 }

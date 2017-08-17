@@ -25,7 +25,7 @@ import cc.mallet.types.Instance;
 import gate.Annotation;
 import gate.AnnotationSet;
 import gate.plugin.learningframework.EvaluationMethod;
-import gate.plugin.learningframework.GateClassification;
+import gate.plugin.learningframework.ModelApplication;
 import gate.plugin.learningframework.data.CorpusRepresentationLibSVM;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
 import gate.plugin.learningframework.mallet.LFPipe;
@@ -176,7 +176,7 @@ public class EngineLibSVM extends Engine {
   }
 
   @Override
-  public List<GateClassification> classify(
+  public List<ModelApplication> applyModel(
           AnnotationSet instanceAS, AnnotationSet inputAS, AnnotationSet sequenceAS, String parms) {
     
     CorpusRepresentationMalletTarget data = (CorpusRepresentationMalletTarget) corpusRepresentationMallet;
@@ -193,7 +193,7 @@ public class EngineLibSVM extends Engine {
     }
     svm_model svmModel = (svm_model) model;
     // iterate over all the mallet instances
-    List<GateClassification> gcs = new ArrayList<GateClassification>();
+    List<ModelApplication> gcs = new ArrayList<ModelApplication>();
     for (Annotation instAnn : instanceAS.inDocumentOrder()) {
       Instance malletInstance = data.extractIndependentFeatures(instAnn, inputAS);
       malletInstance = pipe.instanceFrom(malletInstance);
@@ -205,7 +205,7 @@ public class EngineLibSVM extends Engine {
       // classification!?!
       if(algorithm instanceof AlgorithmRegression) {
         double prediction = svm.svm_predict(svmModel, svmInstance);
-        GateClassification gc = new GateClassification(instAnn, prediction);
+        ModelApplication gc = new ModelApplication(instAnn, prediction);
         gcs.add(gc);
       } else {
         int bestLabel = (new Double(svm.svm_predict(svmModel, svmInstance))).intValue();
@@ -222,7 +222,7 @@ public class EngineLibSVM extends Engine {
         }
 
         String labelstr = pipe.getTargetAlphabet().lookupObject(bestLabel).toString();
-        GateClassification gc = new GateClassification(
+        ModelApplication gc = new ModelApplication(
               instAnn, labelstr, bestConf);
         gcs.add(gc);
       }

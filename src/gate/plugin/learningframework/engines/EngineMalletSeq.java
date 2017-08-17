@@ -39,7 +39,7 @@ import cc.mallet.types.InstanceList;
 import gate.Annotation;
 import gate.AnnotationSet;
 import gate.plugin.learningframework.EvaluationMethod;
-import gate.plugin.learningframework.GateClassification;
+import gate.plugin.learningframework.ModelApplication;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletSeq;
 import static gate.plugin.learningframework.engines.Engine.FILENAME_MODEL;
 import gate.plugin.learningframework.features.TargetType;
@@ -252,14 +252,14 @@ public class EngineMalletSeq extends EngineMallet {
   }
 
   @Override
-  public List<GateClassification> classify(
+  public List<ModelApplication> applyModel(
           AnnotationSet instanceAS, AnnotationSet inputAS, AnnotationSet sequenceAS, 
           String parms) {
     // stop growth
     CorpusRepresentationMalletSeq data = (CorpusRepresentationMalletSeq)corpusRepresentationMallet;
     data.stopGrowth();
     
-    List<GateClassification> gcs = new ArrayList<GateClassification>();
+    List<ModelApplication> gcs = new ArrayList<ModelApplication>();
 
     Transducer crf = (Transducer)model;
     
@@ -312,7 +312,7 @@ public class EngineMalletSeq extends EngineMallet {
               bestProb = marg;
             }
           }
-          GateClassification gc = new GateClassification(
+          ModelApplication gc = new ModelApplication(
                   instanceAnn, bestLabel, bestProb, sequenceSpanId);
 
           gcs.add(gc);
