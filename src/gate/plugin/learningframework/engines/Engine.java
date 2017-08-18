@@ -20,23 +20,21 @@
 
 package gate.plugin.learningframework.engines;
 
-import cc.mallet.types.Alphabet;
 import gate.AnnotationSet;
 import gate.plugin.learningframework.EvaluationMethod;
 import gate.plugin.learningframework.ModelApplication;
 import gate.plugin.learningframework.data.CorpusRepresentation;
-import gate.plugin.learningframework.data.CorpusRepresentationMallet;
-import gate.plugin.learningframework.mallet.LFPipe;
+import gate.plugin.learningframework.features.FeatureInfo;
+import gate.plugin.learningframework.features.TargetType;
 import gate.util.GateRuntimeException;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Logger;
 
 /**
  * Base class for all engines.
- * This is the base class for all engines. It also provides the static factory method 
- * loadEngine(directory) which will return a subclass of the appropriate type, if possible.
+ * This is the base class for all engines. It also provides the static factory methods 
+ * createEngine and loadEngine for creating and re-loading engines.
  * @author Johann Petrak
  */
 public abstract class Engine {
@@ -46,18 +44,113 @@ public abstract class Engine {
   
   private static Logger logger = Logger.getLogger(Engine.class);
   
-  /**
-   * The Mallet Corpus Representation associated with this engine. 
-   */
-  @Deprecated
-  CorpusRepresentationMallet corpusRepresentationMallet;
+  // =============================================================
+  // FIELDS shared by all subclasses and their setters/getters 
+  // =============================================================
+  
+  // TODO: decide which fields should get declared here and which only in Engine subclasses
+  // and the accessor method only declared here ...
   
   /**
    * The corpus representation to use with the concrete instance of the engine.
    */
-  CorpusRepresentation corpusRepresentation;
+  //CorpusRepresentation corpusRepresentation;
   
-  Algorithm algorithm;
+  protected Info info;
+
+  /**
+   * Return the info instance for this Engine. 
+   * @return 
+   */
+  public Info getInfo() { return info; }
+  
+  
+  /**
+   * Get the corpus representation for the engine. This will return the specific subclass of 
+   * CorpusRepresentation used for the specific subclass of the Engine. Engine subclasses 
+   * define their own field for storing the CorpusRepresentation.
+   * @return 
+   */
+  public abstract CorpusRepresentation getCorpusRepresentation();
+  
+  // TODO: maybe only declare and store type-specific in each group of Engine subclasses?
+  protected Algorithm algorithm;
+  public Algorithm getAlgorithm() {
+    return algorithm;
+  }
+
+  /**
+   * The model is the result of the training step and is what is stored/loaded.
+   * This will only have a value if an engine was loaded successfully or if training was 
+   * completed successfully.
+   * <p>
+   * TODO: maybe we can make this engine specific and only provide the declaration of an 
+   * abstract getModel method here?
+   * 
+   */
+  protected Object model;
+  
+  public Object getModel() { return model; }
+  
+  
+  /**
+   * The trainer is the instance of something that can be used to create a trained model.
+   * This should be set right after the EngineXXX instance is created. 
+   */
+  protected Object trainer;
+  public Object getTrainer() { return trainer; }
+  
+  // ===========================================================================
+  // FACTORY METHODS FOR CREATING ENGINE INSTANCES
+  // ===========================================================================
+  
+  /** 
+   * A factory method to create a new instance of an engine with the given backend algorithm.
+   * This works in two steps: first the instance of the engine is created, then that instance's
+   * method for initializing the algorithm is called (initializeAlgorithm) with the given parameters.
+   * However, some training algorithms cannot be instantiated until all the training data is
+   * there (e.g. Mallet CRF) - for these, the initializeAlgorithm method does nothing and the
+   * actual algorithm initialization happens when the train method is called. 
+   * The engine also stores a reference to the Mallet corpus representation (and thus, the Pipe),
+   * which enables the Engine to know about the fields and other meta-information.
+   * <p>
+   * The creation of a specific Engine subclass is influenced by its implementation of the following
+   * methods:
+   * <ul>
+   * <li>
+   * </ul>
+   * @param algorithm
+   * @param parms
+   * @param featureInfo
+   * @param directory
+   * @return 
+   */
+  public static Engine createEngine(Algorithm algorithm, String parms, FeatureInfo featureInfo, TargetType targetType, File directory) {
+    Engine eng;
+    try {
+      System.err.println("CREATE ENGINE: trying to create for class "+algorithm.getEngineClass());
+      eng = (Engine)algorithm.getEngineClass().newInstance();
+    } catch (Exception ex) {
+      throw new GateRuntimeException("Could not create the Engine "+algorithm.getEngineClass(),ex);
+    }
+    eng.algorithm = algorithm;
+    eng.initializeAlgorithm(algorithm,parms);
+    eng.initWhenCreating(directory, algorithm, parms, featureInfo, targetType);
+    eng.info = new Info();
+    // we have to prevent a NPE for those algorithms where the trainer class is not stored
+    // in the Algorithm instance
+    if(algorithm.getTrainerClass()!=null) {
+      eng.info.trainerClass = algorithm.getTrainerClass().getName();
+    }
+    eng.info.engineClass = algorithm.getEngineClass().getName();
+    eng.info.task = eng.getAlgorithm().getAlgorithmKind().toString();
+    eng.info.algorithmClass = algorithm.getClass().getName();
+    eng.info.algorithmName = algorithm.toString();
+    eng.algorithm = algorithm;
+    return eng;
+  }
+  
+  
   
   /**
    * A factory method to return the engine which is stored in the given directory.
@@ -66,14 +159,17 @@ public abstract class Engine {
    * then construct the Engine instance and initialize it.
    * If there are parameters that will influence the initialization of the algorithm,
    * they will be used.
-   * 
+   * <p>
    * NOTE: this will also be used for creating an Engine for those situations
    * where an external model was trained. For this the user has to provide
    * an info.yaml file manually. This file must contain the Engine class,
    * all other entries can be missing.
-   * 
-   * NOTE: the details of how the Engine is initialised once the specific subclass has been 
-   * created are implemented in the init() instance method. 
+   * <p>
+   * The loading and creation of a specific Engine subclass is influenced by its implementation of the following
+   * methods:
+   * <ul>
+   * <li>
+   * </ul>
    * 
    * @param directory
    * @return 
@@ -95,9 +191,56 @@ public abstract class Engine {
     }
     // store the info we have just obtained in the new engine instance
     eng.info = info;
-    eng.initAfterLoad(directory, parms);
+    eng.initWhenLoading(directory, parms);
     return eng;
   }
+  
+  
+  // ==================================================================
+  // SAVING THE ENGINE 
+  // ==================================================================
+  
+  /**
+   * Save an engine to a directory.
+   * This saves the information about the engine and the training algorithm together with
+   * a trained model.
+   * It does not make sense to save an engine before all that information is present, a
+   * GateRuntimeException is thrown if the engine is not in a state where it can be reasonably 
+   * saved.
+   * <p>
+   * The saving of a specific Engine subclass is influenced by its implementation of the following
+   * methods:
+   * <ul>
+   * <li>
+   * </ul>
+   * @param directory 
+   */
+  public void saveEngine(File directory) {
+    // First save the info, but before that, update the info!
+    // NOTE: for external algorithms the model will be null
+    // or a string at this point, if that is the case, we 
+    // do not save the info file here, but expect saveModel to do this!
+    if(info.modelClass==null) {
+      // do nothing
+    } else {
+      info.modelClass = model.getClass().getName();
+      info.save(directory);
+    }
+    // Then delegate to the engine to save the model
+    saveModel(directory);
+    // finally save the corpus representation
+    saveCorpusRepresentation(directory);
+  }
+  
+  
+  // ================================================================
+  // INSTANCE-SPECIFIC METHODS THAT NEED TO GET IMPLEMENTED FOR ENGINES
+  // =================================================================
+  
+  // DETAILS OF HOW TO CREATE 
+  protected abstract void initWhenCreating(File directory, Algorithm algorithm, String parms, FeatureInfo featureInfo, TargetType targetType);
+
+  // DETAILS OF HOW TO LOAD
   
   /**
    * The details of how to initialise a specific instance of an Engine subclass from 
@@ -108,13 +251,13 @@ public abstract class Engine {
    * loadModel method, 2) call the instance specific loadCorpusRepresentation method, 3) set the
    * Algorithm according to what is in the info.
    */
-  protected void initAfterLoad(File directory, String parms) {
+  protected void initWhenLoading(File directory, String parms) {
     // now use the specific engine's loadModel method to complete the loading: each engine
     // knows best how to load its own kinds of models.
     // NOTE: loadModel also loads the Mallet corpus representation and initializes any non-Mallet
     // representation if necessary.
     this.loadModel(directory, parms);
-    this.loadMalletCorpusRepresentation(directory);
+    this.loadAndSetCorpusRepresentation(directory);
     //System.err.println("Loaded mallet corpus representation: "+eng.getCorpusRepresentationMallet());
 
     // we could stop growh right after loading, but that would interfere with engines which
@@ -150,80 +293,18 @@ public abstract class Engine {
     
   }
   
-  /**
-   * Re-create the mallet corpus representation from the directory.
-   * 
-   * This was used previously since we always saved a mallet corpus representation.
-   * Since we can now save other kinds of corpus representations, this is deprecated.
-   * 
-   * @param directory 
-   */
-  @Deprecated
-  protected abstract void loadMalletCorpusRepresentation(File directory);
-  
   
   
   /**
-   * Save an engine to a directory.
-   * This saves the information about the engine and the training algorithm together with
-   * a trained model.
-   * It does not make sense to save an engine before all that information is present, a
-   * GateRuntimeException is thrown if the engine is not in a state where it can be reasonably 
-   * saved.
+   * Re-create the corpus representation we need for this engine.
+   * 
+   * This loads the corpus representation from the directory and sets it into the engine instance.
+   * This method may use data stored in the directory or the info metadata which already must
+   * be set in the engine to figure out what and how to re-create.
+   * 
    * @param directory 
    */
-  public void saveEngine(File directory) {
-    // First save the info, but before that, update the info!
-    // NOTE: for external algorithms the model will be null
-    // or a string at this point, if that is the case, we 
-    // do not save the info file here, but expect saveModel to do this!
-    if(info.modelClass==null) {
-      // do nothing
-    } else {
-      info.modelClass = model.getClass().getName();
-      info.save(directory);
-    }
-    // Then delegate to the engine to save the model
-    saveModel(directory);
-    // finally save the Mallet corpus representation
-    corpusRepresentationMallet.savePipe(directory);
-  }
-  
-  
-  /** 
-   * A factory method to create a new instance of an engine with the given backend algorithm.
-   * This works in two steps: first the instance of the engine is created, then that instance's
-   * method for initializing the algorithm is called (initializeAlgorithm) with the given parameters.
-   * However, some training algorithms cannot be instantiated until all the training data is
-   * there (e.g. Mallet CRF) - for these, the initializeAlgorithm method does nothing and the
-   * actual algorithm initialization happens when the train method is called. 
-   * The engine also stores a reference to the Mallet corpus representation (and thus, the Pipe),
-   * which enables the Engine to know about the fields and other meta-information.
-   * @return 
-   */
-  public static Engine createEngine(Algorithm algorithm, String parms, CorpusRepresentationMallet crm) {
-    Engine eng;
-    try {
-      System.err.println("CREATE ENGINE: trying to create for class "+algorithm.getEngineClass());
-      eng = (Engine)algorithm.getEngineClass().newInstance();
-    } catch (Exception ex) {
-      throw new GateRuntimeException("Could not create the Engine "+algorithm.getEngineClass(),ex);
-    }
-    eng.initializeAlgorithm(algorithm,parms);
-    eng.corpusRepresentationMallet = crm;
-    eng.info = new Info();
-    // we have to prevent a NPE for those algorithms where the trainer class is not stored
-    // in the Algorithm instance
-    if(algorithm.getTrainerClass()!=null) {
-      eng.info.trainerClass = algorithm.getTrainerClass().getName();
-    }
-    eng.info.engineClass = algorithm.getEngineClass().getName();
-    eng.info.task = eng.getAlgorithmKind().toString();
-    eng.info.algorithmClass = algorithm.getClass().getName();
-    eng.info.algorithmName = algorithm.toString();
-    eng.algorithm = algorithm;
-    return eng;
-  }
+  protected abstract void loadAndSetCorpusRepresentation(File directory);
   
   
   
@@ -238,8 +319,23 @@ public abstract class Engine {
    */
   protected abstract void loadModel(File directory, String parms);
   
+  
+
+  // DETAILS OF HOW TO SAVE
+  
+  /**
+   * Save the corpus representation used by the engine instance in some way to the directory.
+   * 
+   * For some representations this may be a null action.
+   * 
+   * @param directory 
+   */
+  protected abstract void saveCorpusRepresentation(File directory);
+  
+  
   protected abstract void saveModel(File directory);
   
+  // DETAILS OF HOW TO USE THE ENGINE 
   
   /**
    * Train a model from the instances.
@@ -251,27 +347,6 @@ public abstract class Engine {
   
   public abstract EvaluationResult evaluate(String algorithmParameters,EvaluationMethod evaluationMethod,int numberOfFolds,double trainingFraction,int numberOfRepeats);
   
-  protected void updateInfo() {
-    //System.err.println("In updateInfo, model is "+model);
-    if(model!=null) {
-      info.modelClass = model.getClass().getName();
-    }
-    info.nrTrainingInstances = corpusRepresentationMallet.getRepresentationMallet().size();
-    info.nrTrainingDimensions = corpusRepresentationMallet.getRepresentationMallet().getDataAlphabet().size();    
-    LFPipe pipe = (LFPipe)corpusRepresentationMallet.getPipe();
-    Alphabet targetAlph = pipe.getTargetAlphabet();
-    if(targetAlph == null) {
-      info.nrTargetValues = 0;
-    } else {
-      info.nrTargetValues = targetAlph.size();
-      //info.classLabels = 
-      Object[] objs = targetAlph.toArray();
-      ArrayList<String> labels = new ArrayList<String>();
-      for(Object obj : objs) { labels.add(obj.toString()); }
-      info.classLabels = labels;
-    }
-    
-  }
   
   /**
    * Classify all instance annotations.
@@ -292,48 +367,14 @@ public abstract class Engine {
   // TODO: not sure if this will work for all situations, we may have to distinguish between
   // trainer, applier, and model
   
-  /**
-   * The model is the result of the training step and is what is stored/loaded.
-   * This will only have a value if an engine was loaded successfully or if training was 
-   * completed successfully.
-   */
-  protected Object model;
   
-  public Object getModel() { return model; }
   
-  public AlgorithmKind getAlgorithmKind() { 
-    // Most algorithms are classification algorithm, those which are not will return 
-    // a different value. This does not tell about what task (classification, sequence tagging etc.)
-    // the algorithm is used for, it says what the ability of the algorithm is, and hence what kind
-    // of independent features or targets it needs to handle.
-    return AlgorithmKind.CLASSIFIER; 
-  }
-  
-  /**
-   * The trainer is the instance of something that can be used to create a trained model.
-   * This should be set right after the EngineXXX instance is created.
-   */
-  protected Object trainer;
-  public Object getTrainer() { return trainer; }
-  
-  protected Info info;
-  
-  public Info getInfo() { return info; }
-  
-  @Deprecated
-  public CorpusRepresentationMallet getCorpusRepresentationMallet() {
-    return corpusRepresentationMallet;
-  }
-  
-  public CorpusRepresentation getCorpusRepresentation() {
-    return corpusRepresentation;
-  }
-  
+  @Override
   public String toString() {
     return "Engine{"+getClass()+"/"+
             (algorithm==null ? "(null)" : algorithm.getClass())+
             ",alg="+trainer+",info="+info+
-            ",model="+this.getModel()+",CR="+corpusRepresentationMallet+"}";
+            ",model="+this.getModel()+",CR="+getCorpusRepresentation()+"}";
   }
   
   /**

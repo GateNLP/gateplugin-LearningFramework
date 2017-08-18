@@ -104,10 +104,6 @@ public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
     return crms;
   }
 
-  public void clear() {
-    LFPipe pipe = (LFPipe) instances.getPipe();
-    instances = new InstanceList(pipe);
-  }
 
   /**
    * Add instances. The exact way of how the target is created to the instances depends on which

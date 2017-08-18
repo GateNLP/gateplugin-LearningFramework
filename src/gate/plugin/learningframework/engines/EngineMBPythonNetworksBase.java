@@ -54,7 +54,7 @@ import org.yaml.snakeyaml.Yaml;
  * 
  * @author Johann Petrak
  */
-public abstract class EnginePythonNetworksBase extends Engine {
+public abstract class EngineMBPythonNetworksBase extends EngineMB {
 
   // constants for the wrapper
   protected String WRAPPER_NAME;
@@ -170,8 +170,8 @@ public abstract class EnginePythonNetworksBase extends Engine {
     // we need the corpus representation here! Normally this is done from loadEngine and after
     // load model, but we do it here. The load crm method only loads anything if it is still
     // null, so we will do this only once anyway.
-    loadMalletCorpusRepresentation(directory);
-    CorpusRepresentationMalletTarget data = (CorpusRepresentationMalletTarget)corpusRepresentationMallet;
+    loadAndSetCorpusRepresentation(directory);
+    CorpusRepresentationMalletTarget data = (CorpusRepresentationMalletTarget)corpusRepresentation;
     SimpleEntry<String,Integer> modeAndNrC = findOutMode(data);
     String mode = modeAndNrC.getKey();
     Integer nrClasses = modeAndNrC.getValue();
@@ -212,7 +212,7 @@ public abstract class EnginePythonNetworksBase extends Engine {
   @Override
   public void trainModel(File dataDirectory, String instanceType, String parms) {
     ArrayList<String> finalCommand = new ArrayList<String>();
-    CorpusRepresentationMalletTarget data = (CorpusRepresentationMalletTarget)corpusRepresentationMallet;
+    CorpusRepresentationMalletTarget data = (CorpusRepresentationMalletTarget)corpusRepresentation;
     SimpleEntry<String,Integer> modeAndNrC = findOutMode(data);
     String mode = modeAndNrC.getKey();
     Integer nrClasses = modeAndNrC.getValue();
@@ -229,7 +229,7 @@ public abstract class EnginePythonNetworksBase extends Engine {
     // we use the CSV exporter with parameters:
     // -t: twofiles, export indep and dep into separate files
     // -n: noheaders, do not add a header row
-    Exporter.export(getCorpusRepresentationMallet(), 
+    Exporter.export(corpusRepresentation, 
             Exporter.EXPORTER_CSV_CLASS, dataDirectory, instanceType, "-t -n");
     String dataFileName = dataDirectory.getAbsolutePath()+File.separator;
     String modelFileName = new File(dataDirectory, MODEL_BASENAME).getAbsolutePath();
@@ -270,7 +270,7 @@ public abstract class EnginePythonNetworksBase extends Engine {
   @Override
   public List<ModelApplication> applyModel(AnnotationSet instanceAS, AnnotationSet inputAS, 
           AnnotationSet sequenceAS, String parms) {
-    CorpusRepresentationMalletTarget data = (CorpusRepresentationMalletTarget)corpusRepresentationMallet;
+    CorpusRepresentationMalletTarget data = (CorpusRepresentationMalletTarget)corpusRepresentation;
     data.stopGrowth();
     int nrCols = data.getPipe().getDataAlphabet().size();
     //System.err.println("Running EngineSklearn.applyModel on document "+instanceAS.getDocument().getName());
@@ -383,11 +383,6 @@ public abstract class EnginePythonNetworksBase extends Engine {
     // do not do anything
   }
 
-  @Override
-  protected void loadMalletCorpusRepresentation(File directory) {
-    if(corpusRepresentationMallet==null)
-      corpusRepresentationMallet = CorpusRepresentationMalletTarget.load(directory);
-  }
  
   protected AbstractMap.SimpleEntry<String,Integer> findOutMode(CorpusRepresentationMalletTarget crm)  {
     InstanceList instances = crm.getRepresentationMallet();

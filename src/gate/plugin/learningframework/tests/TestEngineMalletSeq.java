@@ -35,8 +35,7 @@ import gate.plugin.evaluation.api.EvalStatsTagging;
 import gate.plugin.evaluation.api.EvalStatsTagging4Score;
 import gate.plugin.evaluation.api.FeatureComparison;
 import gate.plugin.learningframework.ModelApplication;
-import gate.plugin.learningframework.ScalingMethod;
-import gate.plugin.learningframework.data.CorpusRepresentationMallet;
+import gate.plugin.learningframework.data.CorpusRepresentation;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletSeq;
 import gate.plugin.learningframework.engines.AlgorithmClassification;
 import gate.plugin.learningframework.engines.Engine;
@@ -79,8 +78,8 @@ public class TestEngineMalletSeq {
     FeatureSpecification spec = new FeatureSpecification(configFile);
     FeatureInfo featureInfo = spec.getFeatureInfo();
     System.out.println("FeatureInfo="+featureInfo);
-    CorpusRepresentationMalletSeq crm = new CorpusRepresentationMalletSeq(featureInfo, ScalingMethod.NONE);
-    Engine engine = Engine.createEngine(AlgorithmClassification.MALLET_SEQ_CRF, "", crm);
+    Engine engine = Engine.createEngine(AlgorithmClassification.MALLET_SEQ_CRF, "", featureInfo, TargetType.NOMINAL, null);
+    CorpusRepresentationMalletSeq crm = (CorpusRepresentationMalletSeq)engine.getCorpusRepresentation();
     System.err.println("TESTS: have engine "+engine);
     
     // for this we need to go through a number of documents and train on all of them
@@ -131,10 +130,10 @@ public class TestEngineMalletSeq {
     System.err.println("RESTORED engine is "+engine2);
     
     // check if the corpusRepresentation has been restored correctly
-    CorpusRepresentationMallet crm2 = engine2.getCorpusRepresentationMallet();
-    assertNotNull(crm2);
-    assertTrue(crm2 instanceof CorpusRepresentationMalletSeq);
-    CorpusRepresentationMalletSeq crmc2 = (CorpusRepresentationMalletSeq)crm2;
+    CorpusRepresentation cr2 = engine2.getCorpusRepresentation();
+    assertNotNull(cr2);
+    assertTrue(cr2 instanceof CorpusRepresentationMalletSeq);
+    CorpusRepresentationMalletSeq crmc2 = (CorpusRepresentationMalletSeq)cr2;
     Pipe pipe = crmc2.getPipe();
     assertNotNull(pipe);
     assertTrue(pipe instanceof LFPipe);

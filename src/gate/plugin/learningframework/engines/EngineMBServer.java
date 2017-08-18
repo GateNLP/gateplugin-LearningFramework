@@ -74,14 +74,14 @@ import java.util.logging.Logger;
  * 
  * @author Johann Petrak
  */
-public class EngineServer extends Engine {
+public class EngineMBServer extends EngineMB {
 
   protected String serverUrl = "http://127.0.0.1:7000";
   
-  public EngineServer(File directory, String serverUrl) {
+  public EngineMBServer(File directory, String serverUrl) {
     this.serverUrl = serverUrl;
     info = Info.load(directory);
-    loadMalletCorpusRepresentation(directory);
+    loadAndSetCorpusRepresentation(directory);
   }
   
   @Override
@@ -109,7 +109,7 @@ public class EngineServer extends Engine {
     Parms ps = new Parms(parms, "d:dense:b");
     boolean dense = (boolean)ps.getValueOrElse("dense", false);    
     
-    CorpusRepresentationMalletTarget data = (CorpusRepresentationMalletTarget)corpusRepresentationMallet;
+    CorpusRepresentationMalletTarget data = (CorpusRepresentationMalletTarget)corpusRepresentation;
     data.stopGrowth();
     int nrCols = data.getPipe().getDataAlphabet().size();
     //System.err.println("Running EngineSklearn.applyModel on document "+instanceAS.getDocument().getName());
@@ -207,7 +207,7 @@ public class EngineServer extends Engine {
       // Parse the json
       responseMap = mapper.readValue(response.getBody(), HashMap.class);
     } catch (IOException ex) {
-      Logger.getLogger(EngineServer.class.getName()).log(Level.SEVERE, null, ex);
+      Logger.getLogger(EngineMBServer.class.getName()).log(Level.SEVERE, null, ex);
     }
     
     // NOTE: the json created by the weka server currently automatically creates 1 instead
@@ -276,10 +276,6 @@ public class EngineServer extends Engine {
     // do not do anything
   }
 
-  @Override
-  protected void loadMalletCorpusRepresentation(File directory) {
-    corpusRepresentationMallet = CorpusRepresentationMalletTarget.load(directory);
-  }
   
     
 }

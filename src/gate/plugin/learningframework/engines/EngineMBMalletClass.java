@@ -56,18 +56,18 @@ import org.apache.log4j.Logger;
  *
  * @author Johann Petrak
  */
-public class EngineMalletClass extends EngineMallet {
+public class EngineMBMalletClass extends EngineMBMallet {
 
-  private static Logger logger = Logger.getLogger(EngineMalletClass.class);
+  private static Logger logger = Logger.getLogger(EngineMBMalletClass.class);
 
-  public EngineMalletClass() { }
+  public EngineMBMalletClass() { }
 
   @Override
   public void trainModel(File dataDirectory, String instanceType, String parms) {
     System.err.println("EngineMalletClass.trainModel: trainer="+trainer);
-    System.err.println("EngineMalletClass.trainModel: CR="+corpusRepresentationMallet);
+    System.err.println("EngineMalletClass.trainModel: CR="+corpusRepresentation);
     
-    model=((ClassifierTrainer) trainer).train(corpusRepresentationMallet.getRepresentationMallet());
+    model=((ClassifierTrainer) trainer).train(corpusRepresentation.getRepresentationMallet());
     updateInfo();
   }
 
@@ -75,10 +75,10 @@ public class EngineMalletClass extends EngineMallet {
   public List<ModelApplication> applyModel(
           AnnotationSet instanceAS, AnnotationSet inputAS, AnnotationSet sequenceAS, String parms) {
     // NOTE: the crm should be of type CorpusRepresentationMalletClass for this to work!
-    if(!(corpusRepresentationMallet instanceof CorpusRepresentationMalletTarget)) {
-      throw new GateRuntimeException("Cannot perform classification with data from "+corpusRepresentationMallet.getClass());
+    if(!(corpusRepresentation instanceof CorpusRepresentationMalletTarget)) {
+      throw new GateRuntimeException("Cannot perform classification with data from "+corpusRepresentation.getClass());
     }
-    CorpusRepresentationMalletTarget data = (CorpusRepresentationMalletTarget)corpusRepresentationMallet;
+    CorpusRepresentationMalletTarget data = (CorpusRepresentationMalletTarget)corpusRepresentation;
     data.stopGrowth();
     List<ModelApplication> gcs = new ArrayList<ModelApplication>();
     LFPipe pipe = (LFPipe)data.getRepresentationMallet().getPipe();
@@ -204,11 +204,6 @@ public class EngineMalletClass extends EngineMallet {
 
 
   @Override
-  protected void loadMalletCorpusRepresentation(File directory) {
-    corpusRepresentationMallet = CorpusRepresentationMalletTarget.load(directory);
-  }
-  
-  @Override
   protected void loadModel(File directory, String parms) {
     File modelFile = new File(directory, FILENAME_MODEL);
     if (!modelFile.exists()) {
@@ -239,7 +234,7 @@ public class EngineMalletClass extends EngineMallet {
     Parms parms = new Parms(algorithmParameters,"s:seed:i");
     int seed = (Integer)parms.getValueOrElse("seed", 1);
     if(evaluationMethod == EvaluationMethod.CROSSVALIDATION) {
-      CrossValidationIterator cvi = corpusRepresentationMallet.getRepresentationMallet().crossValidationIterator(numberOfFolds, seed);
+      CrossValidationIterator cvi = corpusRepresentation.getRepresentationMallet().crossValidationIterator(numberOfFolds, seed);
       if(algorithm instanceof AlgorithmClassification) {
         double sumOfAccs = 0.0;
         while(cvi.hasNext()) {
@@ -262,7 +257,7 @@ public class EngineMalletClass extends EngineMallet {
         Random rnd = new Random(seed);
         double sumOfAccs = 0.0;
         for(int i = 0; i<numberOfRepeats; i++) {
-          InstanceList[] sets = corpusRepresentationMallet.getRepresentationMallet().split(rnd,
+          InstanceList[] sets = corpusRepresentation.getRepresentationMallet().split(rnd,
 				new double[]{trainingFraction, 1-trainingFraction});
           Classifier cl = ((ClassifierTrainer) trainer).train(sets[0]);
           sumOfAccs += cl.getAccuracy(sets[1]);

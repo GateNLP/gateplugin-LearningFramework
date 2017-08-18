@@ -32,7 +32,7 @@ import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
 import gate.plugin.learningframework.engines.Engine;
-import gate.plugin.learningframework.engines.EngineServer;
+import gate.plugin.learningframework.engines.EngineMBServer;
 import gate.util.GateRuntimeException;
 import java.net.URL;
 
@@ -183,7 +183,7 @@ public class LF_ApplyRegression extends LearningFrameworkPRBase {
     savedModelDirectoryFile = gate.util.Files.fileFromURL(dataDirectory);
 
     if (serverUrl != null && !serverUrl.isEmpty()) {
-      engine = new EngineServer(gate.util.Files.fileFromURL(dataDirectory),serverUrl);      
+      engine = new EngineMBServer(gate.util.Files.fileFromURL(dataDirectory),serverUrl);      
     } else {
 
       // Restore the Engine

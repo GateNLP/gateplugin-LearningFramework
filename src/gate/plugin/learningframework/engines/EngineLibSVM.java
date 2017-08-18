@@ -46,7 +46,7 @@ import libsvm.svm_problem;
  *
  * @author Johann Petrak
  */
-public class EngineLibSVM extends Engine {
+public class EngineLibSVM extends EngineMB {
 
 
   @Override
@@ -61,7 +61,7 @@ public class EngineLibSVM extends Engine {
   }
 
   private svm_parameter makeSvmParms(String parms) {
-    int nrIndepFeatures = corpusRepresentationMallet.getRepresentationMallet().getDataAlphabet().size();
+    int nrIndepFeatures = corpusRepresentation.getRepresentationMallet().getDataAlphabet().size();
     double defaultGamma = 1.0 / nrIndepFeatures;
     // Parse all the necessary parameters. see
     // https://www.csie.ntu.edu.tw/~cjlin/libsvm/
@@ -169,7 +169,7 @@ public class EngineLibSVM extends Engine {
 
     // convert the mallet instances to svm problem. For this we can simply use the static method,
     // no need really to create an instance of CorpusRepresentationLibSVM for now
-    svm_problem svmprob = CorpusRepresentationLibSVM.getFromMallet(corpusRepresentationMallet);
+    svm_problem svmprob = CorpusRepresentationLibSVM.getFromMallet(corpusRepresentation);
 
     svm_model svmModel = libsvm.svm.svm_train(svmprob, svmparms);
     model = svmModel;
@@ -179,7 +179,7 @@ public class EngineLibSVM extends Engine {
   public List<ModelApplication> applyModel(
           AnnotationSet instanceAS, AnnotationSet inputAS, AnnotationSet sequenceAS, String parms) {
     
-    CorpusRepresentationMalletTarget data = (CorpusRepresentationMalletTarget) corpusRepresentationMallet;
+    CorpusRepresentationMalletTarget data = (CorpusRepresentationMalletTarget) corpusRepresentation;
     data.stopGrowth();
     // try to figure out if we have regression or classification:
     LFPipe pipe = (LFPipe) data.getPipe();
@@ -248,10 +248,6 @@ public class EngineLibSVM extends Engine {
     info.save(directory);
   }
 
-  @Override
-  protected void loadMalletCorpusRepresentation(File directory) {
-    corpusRepresentationMallet = CorpusRepresentationMalletTarget.load(directory);
-  }
   
   private String libsvmParmsAsString(libsvm.svm_parameter parms) {
     StringBuilder sb = new StringBuilder();
@@ -330,7 +326,7 @@ public class EngineLibSVM extends Engine {
         int seed = (int) ps.getValueOrElse("seed", 1);
         libsvm.svm.rand.setSeed(seed);
         
-        svm_problem svmprob = CorpusRepresentationLibSVM.getFromMallet(corpusRepresentationMallet);
+        svm_problem svmprob = CorpusRepresentationLibSVM.getFromMallet(corpusRepresentation);
         
         double target[] = new double[svmprob.l];
 
@@ -362,7 +358,7 @@ public class EngineLibSVM extends Engine {
         libsvm.svm.rand.setSeed(seed);
         
         List<Double> accuracies = new ArrayList<Double>(numberOfRepeats);
-        svm_problem svmprob = CorpusRepresentationLibSVM.getFromMallet(corpusRepresentationMallet);
+        svm_problem svmprob = CorpusRepresentationLibSVM.getFromMallet(corpusRepresentation);
         int total = svmprob.l;
         int trainsize = (int)(total * trainingFraction);
         int testsize = total - trainsize;
@@ -435,7 +431,7 @@ public class EngineLibSVM extends Engine {
         System.err.println("Random seed set to "+seed);
         libsvm.svm.rand.setSeed(seed);
         
-        svm_problem svmprob = CorpusRepresentationLibSVM.getFromMallet(corpusRepresentationMallet);
+        svm_problem svmprob = CorpusRepresentationLibSVM.getFromMallet(corpusRepresentation);
         
         double target[] = new double[svmprob.l];
 
@@ -468,7 +464,7 @@ public class EngineLibSVM extends Engine {
         libsvm.svm.rand.setSeed(seed);
         
         List<Double> accuracies = new ArrayList<Double>(numberOfRepeats);
-        svm_problem svmprob = CorpusRepresentationLibSVM.getFromMallet(corpusRepresentationMallet);
+        svm_problem svmprob = CorpusRepresentationLibSVM.getFromMallet(corpusRepresentation);
         int total = svmprob.l;
         int trainsize = (int)(total * trainingFraction);
         int testsize = total - trainsize;

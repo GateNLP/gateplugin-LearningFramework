@@ -48,13 +48,4 @@ public abstract class CorpusRepresentation {
   public abstract InstanceList getRepresentationMallet();
   
   
-  
-  
-  /**
-   * Remove all instances but leave other information intact.
-   * This removes all the instances but retains information about the features/attributes 
-   * and how instances should get transformed or scaled.
-   */
-  public abstract void clear();
-  
 }

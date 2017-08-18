@@ -57,23 +57,19 @@ import org.apache.log4j.Logger;
  *
  * @author Johann Petrak
  */
-public class EngineMalletSeq extends EngineMallet {
+public class EngineMBMalletSeq extends EngineMBMallet {
 
-  private static Logger logger = Logger.getLogger(EngineMalletSeq.class);
+  private static Logger logger = Logger.getLogger(EngineMBMalletSeq.class);
   
   @Override
   public void initializeAlgorithm(Algorithm algorithm, String parms) {
     // DOES NOTHINIG?
   }
-
-  public AlgorithmKind getAlgorithmKind() { 
-    return AlgorithmKind.SEQUENCE_TAGGER; 
-  }
  
 
   @Override
   public void trainModel(File DataDirectory, String instanceType, String options) {
-    InstanceList trainingData = corpusRepresentationMallet.getRepresentationMallet();
+    InstanceList trainingData = corpusRepresentation.getRepresentationMallet();
     Transducer td = trainModel(trainingData,options);
     model = td;
     updateInfo();
@@ -256,7 +252,7 @@ public class EngineMalletSeq extends EngineMallet {
           AnnotationSet instanceAS, AnnotationSet inputAS, AnnotationSet sequenceAS, 
           String parms) {
     // stop growth
-    CorpusRepresentationMalletSeq data = (CorpusRepresentationMalletSeq)corpusRepresentationMallet;
+    CorpusRepresentationMalletSeq data = (CorpusRepresentationMalletSeq)corpusRepresentation;
     data.stopGrowth();
     
     List<ModelApplication> gcs = new ArrayList<ModelApplication>();
@@ -324,10 +320,6 @@ public class EngineMalletSeq extends EngineMallet {
   }
 
 
-  @Override
-  protected void loadMalletCorpusRepresentation(File directory) {
-    corpusRepresentationMallet = CorpusRepresentationMalletSeq.load(directory);
-  }
   
   @Override
   protected void loadModel(File directory, String parms) {
@@ -364,7 +356,7 @@ public class EngineMalletSeq extends EngineMallet {
     Parms parms = new Parms(algorithmParameters,"s:seed:i");
     int seed = (Integer)parms.getValueOrElse("seed", 1);
     if(evaluationMethod == EvaluationMethod.CROSSVALIDATION) {
-      InstanceList.CrossValidationIterator cvi = corpusRepresentationMallet.getRepresentationMallet().crossValidationIterator(numberOfFolds, seed);
+      InstanceList.CrossValidationIterator cvi = corpusRepresentation.getRepresentationMallet().crossValidationIterator(numberOfFolds, seed);
       if(algorithm instanceof AlgorithmClassification) {
         double sumOfAccs = 0.0;
         while(cvi.hasNext()) {
@@ -387,7 +379,7 @@ public class EngineMalletSeq extends EngineMallet {
         Random rnd = new Random(seed);
         double sumOfAccs = 0.0;
         for(int i = 0; i<numberOfRepeats; i++) {
-          InstanceList[] sets = corpusRepresentationMallet.getRepresentationMallet().split(rnd,
+          InstanceList[] sets = corpusRepresentation.getRepresentationMallet().split(rnd,
 				new double[]{trainingFraction, 1-trainingFraction});
           Transducer crf = trainModel(sets[0], algorithmParameters);
           sumOfAccs += crf.averageTokenAccuracy(sets[1]);

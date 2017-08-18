@@ -31,15 +31,18 @@ import java.io.ObjectOutputStream;
 import org.apache.log4j.Logger;
 
 /**
- *
+ * Base class for all engines which wrap a Mallet algorithm.
+ * 
+ * This kind of engines always used Mallet corpus representation.
+ * 
  * @author Johann Petrak
  */
-public abstract class EngineMallet extends Engine {
+public abstract class EngineMBMallet extends EngineMB {
   
-  private static Logger logger = Logger.getLogger(EngineMallet.class);
+  private static Logger logger = Logger.getLogger(EngineMBMallet.class);
   
   public CorpusRepresentationMallet getCorpusRepresentationMallet() {
-    return corpusRepresentationMallet;
+    return corpusRepresentation;
   }
 
 

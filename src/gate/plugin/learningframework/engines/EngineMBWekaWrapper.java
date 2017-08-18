@@ -62,7 +62,7 @@ import org.yaml.snakeyaml.Yaml;
  * 
  * @author Johann Petrak
  */
-public class EngineWekaWrapper extends Engine {
+public class EngineMBWekaWrapper extends EngineMB {
 
   ProcessBase process;
   
@@ -202,7 +202,7 @@ public class EngineWekaWrapper extends Engine {
     // NOTE: we do not need to save the model here because the external
     // WekaWrapper command does this.
     // However we still need to make sure a usable info file is saved!
-    info.engineClass = EngineWekaWrapper.class.getName();
+    info.engineClass = EngineMBWekaWrapper.class.getName();
     info.save(directory);
   }
 
@@ -230,7 +230,7 @@ public class EngineWekaWrapper extends Engine {
     // find out if we train classification or regression
     // NOTE: not sure if classification/regression matters here as long as
     // the actual exporter class does the right thing based on the corpus representation!
-    Exporter.export(getCorpusRepresentationMallet(), 
+    Exporter.export(corpusRepresentation, 
             Exporter.EXPORTER_ARFF_CLASS, dataDirectory, instanceType, parms);
     String dataFileName = new File(dataDirectory,Globals.dataBasename+".arff").getAbsolutePath();
     String modelFileName = new File(dataDirectory, FILENAME_MODEL).getAbsolutePath();
@@ -268,7 +268,7 @@ public class EngineWekaWrapper extends Engine {
   @Override
   public List<ModelApplication> applyModel(AnnotationSet instanceAS, AnnotationSet inputAS, 
           AnnotationSet sequenceAS, String parms) {
-    CorpusRepresentationMalletTarget data = (CorpusRepresentationMalletTarget)corpusRepresentationMallet;
+    CorpusRepresentationMalletTarget data = (CorpusRepresentationMalletTarget)corpusRepresentation;
     data.stopGrowth();
     //System.err.println("Running EngineWeka.applyModel on document "+instanceAS.getDocument().getName());
     List<ModelApplication> gcs = new ArrayList<ModelApplication>();
@@ -367,16 +367,6 @@ public class EngineWekaWrapper extends Engine {
   @Override
   public void initializeAlgorithm(Algorithm algorithm, String parms) {
     // do not do anything
-  }
-
-  @Override
-  protected void loadMalletCorpusRepresentation(File directory) {
-    corpusRepresentationMallet = CorpusRepresentationMalletTarget.load(directory);
-  }
-
-  @Override
-  protected CorpusRepresentation recreateCorpusRepresentation(File directory) {
-    throw new RuntimeException("not yet implemented");
   }
 
   

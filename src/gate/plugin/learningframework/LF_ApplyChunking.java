@@ -139,7 +139,7 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
     // the sequenceAS must be specified for a sequence tagging algorithm and most not be specified
     // for a non-sequence tagging algorithm!
     AnnotationSet sequenceAS = null;
-    if(engine.getAlgorithmKind()==AlgorithmKind.SEQUENCE_TAGGER) {
+    if(engine.getAlgorithm().getAlgorithmKind()==AlgorithmKind.SEQUENCE_TAGGER) {
       // NOTE: we already have checked earlier, that in that case, the sequenceSpan parameter is 
       // given!
       sequenceAS = inputAS.get(getSequenceSpan());
@@ -204,7 +204,7 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
               + engine.getModel().getClass() + " ...");
     }
     
-    if(engine.getAlgorithmKind() == AlgorithmKind.SEQUENCE_TAGGER) {
+    if(engine.getAlgorithm().getAlgorithmKind() == AlgorithmKind.SEQUENCE_TAGGER) {
       if(getSequenceSpan() == null || getSequenceSpan().isEmpty()) {
         throw new GateRuntimeException("sequenceSpan parameter must not be empty when a sequence tagging algorithm is used for classification");
       }

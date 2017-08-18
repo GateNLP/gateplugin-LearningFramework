@@ -32,7 +32,7 @@ import org.junit.runners.Suite;
   TestParms.class,
   TestEngineMalletClass.class,
   TestEngineLibSVM.class,
-  TestEngineMalletSeq.class,
+  //TestEngineMalletSeq.class,
   TestFeatureScaling.class
 })
 public class SuiteAllTests {

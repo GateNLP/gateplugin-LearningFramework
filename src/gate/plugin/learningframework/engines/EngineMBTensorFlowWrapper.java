@@ -33,11 +33,11 @@ package gate.plugin.learningframework.engines;
  * 
  * @author Johann Petrak
  */
-public class EngineTensorFlowWrapper extends EnginePythonNetworksBase {
+public class EngineMBTensorFlowWrapper extends EngineMBPythonNetworksBase {
 
   static class TensorFLowModel { }
   
-  public EngineTensorFlowWrapper() {
+  public EngineMBTensorFlowWrapper() {
     WRAPPER_NAME = "TensorFlowWrapper";
     ENV_WRAPPER_HOME = "TENSORFLOW_WRAPPER_HOME";
     PROP_WRAPPER_HOME = "gate.plugin.learningframework.tensorflowwrapper.home";

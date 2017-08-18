@@ -33,7 +33,7 @@ import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
 import gate.plugin.learningframework.engines.AlgorithmKind;
 import gate.plugin.learningframework.engines.Engine;
-import gate.plugin.learningframework.engines.EngineServer;
+import gate.plugin.learningframework.engines.EngineMBServer;
 import gate.util.GateRuntimeException;
 import java.net.URL;
 
@@ -177,7 +177,7 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
     // the sequenceAS must be specified for a sequence tagging algorithm and most not be specified
     // for a non-sequence tagging algorithm!
     AnnotationSet sequenceAS = null;
-    if (engine.getAlgorithmKind() == AlgorithmKind.SEQUENCE_TAGGER) {
+    if (engine.getAlgorithm().getAlgorithmKind() == AlgorithmKind.SEQUENCE_TAGGER) {
       // NOTE: we already have checked earlier, that in that case, the sequenceSpan parameter is 
       // given!
       sequenceAS = inputAS.get(getSequenceSpan());
@@ -231,7 +231,7 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
       if (getSequenceSpan() != null && !getSequenceSpan().isEmpty()) {
         throw new GateRuntimeException("Sequence span not supported for server");
       }
-      engine = new EngineServer(gate.util.Files.fileFromURL(dataDirectory),serverUrl);      
+      engine = new EngineMBServer(gate.util.Files.fileFromURL(dataDirectory),serverUrl);      
     } else {
 
       // if the engine is still null, or the dataDirectory has changed since 
@@ -251,7 +251,7 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
                 + engine.getModel().getClass() + " ...");
       }
 
-      if (engine.getAlgorithmKind() == AlgorithmKind.SEQUENCE_TAGGER) {
+      if (engine.getAlgorithm().getAlgorithmKind() == AlgorithmKind.SEQUENCE_TAGGER) {
         if (getSequenceSpan() == null || getSequenceSpan().isEmpty()) {
           throw new GateRuntimeException("sequenceSpan parameter must not be empty when a sequence tagging algorithm is used for classification");
         }

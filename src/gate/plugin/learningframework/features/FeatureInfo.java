@@ -20,6 +20,7 @@
 
 package gate.plugin.learningframework.features;
 
+import gate.plugin.learningframework.ScalingMethod;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,10 +41,10 @@ public class FeatureInfo implements Serializable {
   protected boolean growthStopped = false;
 
   /**
-   * Create an instance with an empty list of attributes.
+   * Create an instance with an empty list of featureSpecs.
    */
   public FeatureInfo() {
-    attributes = new ArrayList<FeatureSpecAttribute>();
+    featureSpecs = new ArrayList<FeatureSpecAttribute>();
   }
 
   /**
@@ -51,16 +52,16 @@ public class FeatureInfo implements Serializable {
    */
   public FeatureInfo(FeatureInfo other) {
     this.growthStopped = other.growthStopped;
-    attributes = new ArrayList<FeatureSpecAttribute>();
+    featureSpecs = new ArrayList<FeatureSpecAttribute>();
     for(FeatureSpecAttribute attr : other.getAttributes()) {
-      attributes.add(attr.clone());
+      featureSpecs.add(attr.clone());
     }
   }
   
   public void stopGrowth() {
-    // make sure that all alphabets we have stored with some of the attributes are
+    // make sure that all alphabets we have stored with some of the featureSpecs are
     // locked too!
-    for(FeatureSpecAttribute attr : attributes) {
+    for(FeatureSpecAttribute attr : featureSpecs) {
       attr.stopGrowth();
     }
     growthStopped = true;
@@ -74,17 +75,27 @@ public class FeatureInfo implements Serializable {
     return growthStopped;
   }
 
-  protected List<FeatureSpecAttribute> attributes;
+  protected List<FeatureSpecAttribute> featureSpecs;
 
 
-  public List<FeatureSpecAttribute> getAttributes() { return attributes; }
+  protected ScalingMethod globalScalingMethod = ScalingMethod.NONE;
+  
+  public void setGlobalScalingMethod(ScalingMethod sm) {
+    globalScalingMethod = sm;
+  }
+  
+  public ScalingMethod getGlobalScalingMethod() {
+    return globalScalingMethod;
+  }
+  
+  public List<FeatureSpecAttribute> getAttributes() { return featureSpecs; }
   
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("FeatureInfo{growthStopped=");
     sb.append(growthStopped);
     sb.append(",attrs=");
-    sb.append(attributes);
+    sb.append(featureSpecs);
     sb.append("}");
     return sb.toString();
   }

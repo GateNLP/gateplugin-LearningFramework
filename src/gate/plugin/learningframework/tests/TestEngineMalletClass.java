@@ -27,6 +27,7 @@ import gate.Document;
 import gate.creole.ResourceInstantiationException;
 import gate.plugin.learningframework.ModelApplication;
 import gate.plugin.learningframework.ScalingMethod;
+import gate.plugin.learningframework.data.CorpusRepresentation;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
 import gate.plugin.learningframework.engines.AlgorithmClassification;
@@ -62,8 +63,8 @@ public class TestEngineMalletClass {
     File configFile = new File("tests/cl-ionosphere/feats.xml");
     FeatureSpecification spec = new FeatureSpecification(configFile);
     FeatureInfo featureInfo = spec.getFeatureInfo();
-    CorpusRepresentationMalletTarget crm = new CorpusRepresentationMalletTarget(featureInfo, ScalingMethod.NONE,TargetType.NOMINAL);
-    Engine engine = Engine.createEngine(AlgorithmClassification.MALLET_CL_C45, "", crm);
+    Engine engine = Engine.createEngine(AlgorithmClassification.MALLET_CL_C45, "", featureInfo, TargetType.NOMINAL, null);
+    CorpusRepresentationMalletTarget crm = (CorpusRepresentationMalletTarget)engine.getCorpusRepresentation();
     System.err.println("TESTS: have engine "+engine);
     
     // load a document and train the model
@@ -88,10 +89,10 @@ public class TestEngineMalletClass {
     System.err.println("RESTORED engine is "+engine2);
     
     // check if the corpusRepresentation has been restored correctly
-    CorpusRepresentationMallet crm2 = engine2.getCorpusRepresentationMallet();
-    assertNotNull(crm2);
-    assertTrue(crm2 instanceof CorpusRepresentationMalletTarget);
-    CorpusRepresentationMalletTarget crmc2 = (CorpusRepresentationMalletTarget)crm2;
+    CorpusRepresentation cr2 = engine2.getCorpusRepresentation();
+    assertNotNull(cr2);
+    assertTrue(cr2 instanceof CorpusRepresentationMalletTarget);
+    CorpusRepresentationMalletTarget crmc2 = (CorpusRepresentationMalletTarget)cr2;
     Pipe pipe = crmc2.getPipe();
     assertNotNull(pipe);
     assertTrue(pipe instanceof LFPipe);

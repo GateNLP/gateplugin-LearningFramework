@@ -121,11 +121,6 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
   
   
   
-  public void clear() {
-    LFPipe pipe = (LFPipe)instances.getPipe();
-    instances = new InstanceList(pipe);
-  }
-  
   // NOTE: at application time we do not explicitly create a CorpusRepresentatioMallet object.
   // Instead, the pipe gets saved with the model and can get retrieved from the loaded model 
   // later. The method extractIndependentFeaturesHelper is also used at application time to 

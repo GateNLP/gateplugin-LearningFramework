@@ -19,7 +19,6 @@
  */
 package gate.plugin.learningframework;
 
-import gate.Annotation;
 import gate.AnnotationSet;
 import java.io.File;
 import java.net.URL;
@@ -28,17 +27,14 @@ import org.apache.log4j.Logger;
 
 import gate.Controller;
 import gate.Document;
-import gate.FeatureMap;
-import gate.Utils;
 import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
-import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
-import gate.plugin.learningframework.data.CorpusRepresentationMalletSeq;
 import gate.plugin.learningframework.engines.AlgorithmClassification;
 import gate.plugin.learningframework.engines.Engine;
+import gate.plugin.learningframework.features.FeatureInfo;
 import gate.plugin.learningframework.features.FeatureSpecification;
 import gate.plugin.learningframework.features.SeqEncoder;
 import gate.plugin.learningframework.features.SeqEncoderEnum;
@@ -295,15 +291,12 @@ public class LF_TrainChunking extends LF_TrainBase {
       haveSequenceTagger = false;
     }
     
-    // we need to choose our representation based on if we have a classification algorithm or 
-    // a sequence tagger
-    if(haveSequenceTagger) {
-      corpusRepresentation = new CorpusRepresentationMalletSeq(featureSpec.getFeatureInfo(), scaleFeatures);
-    } else {
-      corpusRepresentation = new CorpusRepresentationMalletTarget(featureSpec.getFeatureInfo(),scaleFeatures, TargetType.NOMINAL);      
-    }
-    engine = Engine.createEngine(trainingAlgorithm, getAlgorithmParameters(), corpusRepresentation);
-    System.err.println("DEBUG: created the engine: " + engine);  
+    
+    FeatureInfo fi = featureSpec.getFeatureInfo();
+    fi.setGlobalScalingMethod(scaleFeatures);
+    engine = Engine.createEngine(trainingAlgorithm, getAlgorithmParameters(), fi, TargetType.NOMINAL, dataDir);
+    corpusRepresentation = (CorpusRepresentationMallet)engine.getCorpusRepresentation();
+    System.err.println("DEBUG: created the engine: " + engine + " with CR="+engine.getCorpusRepresentation());  
     nrDocuments = 0;
   }
 

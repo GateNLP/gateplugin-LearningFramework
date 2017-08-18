@@ -57,7 +57,7 @@ import org.yaml.snakeyaml.Yaml;
  * 
  * @author Johann Petrak
  */
-public abstract class EngineSklearnBase extends Engine {
+public abstract class EngineMBSklearnBase extends EngineMB {
 
   // constants for the wrapper
   protected String WRAPPER_NAME;
@@ -223,7 +223,7 @@ public abstract class EngineSklearnBase extends Engine {
     // find out if we train classification or regression
     // TODO: NOTE: not sure if classification/regression matters here as long as
     // the actual exporter class does the right thing based on the corpus representation!
-    Exporter.export(getCorpusRepresentationMallet(), 
+    Exporter.export(corpusRepresentation, 
             Exporter.EXPORTER_MATRIXMARKET2_CLASS, dataDirectory, instanceType, parms);
     String dataFileName = dataDirectory.getAbsolutePath()+File.separator;
     String modelFileName = new File(dataDirectory, MODEL_BASENAME).getAbsolutePath();
@@ -263,7 +263,7 @@ public abstract class EngineSklearnBase extends Engine {
   @Override
   public List<ModelApplication> applyModel(AnnotationSet instanceAS, AnnotationSet inputAS, 
           AnnotationSet sequenceAS, String parms) {
-    CorpusRepresentationMalletTarget data = (CorpusRepresentationMalletTarget)corpusRepresentationMallet;
+    CorpusRepresentationMalletTarget data = (CorpusRepresentationMalletTarget)corpusRepresentation;
     data.stopGrowth();
     int nrCols = data.getPipe().getDataAlphabet().size();
     //System.err.println("Running EngineSklearn.applyModel on document "+instanceAS.getDocument().getName());
@@ -380,10 +380,6 @@ public abstract class EngineSklearnBase extends Engine {
     // do not do anything
   }
 
-  @Override
-  protected void loadMalletCorpusRepresentation(File directory) {
-    corpusRepresentationMallet = CorpusRepresentationMalletTarget.load(directory);
-  }
   
   
 }

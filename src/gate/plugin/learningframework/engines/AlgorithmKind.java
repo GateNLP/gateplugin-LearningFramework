@@ -21,9 +21,12 @@
 package gate.plugin.learningframework.engines;
 
 /**
- *
+ * Describe what task an algorithm is performing. 
  * @author johann
  */
 public enum AlgorithmKind {
-  CLASSIFIER, SEQUENCE_TAGGER, REGRESSOR
+  CLASSIFIER,        // map an instance to a nominal value
+  SEQUENCE_TAGGER,   // map instances within a sequence to nominal values
+  REGRESSOR,         // map an instance to a numeric value
+  CLUSTERING         // assign one or more cluster ids (integers) to instances
 }

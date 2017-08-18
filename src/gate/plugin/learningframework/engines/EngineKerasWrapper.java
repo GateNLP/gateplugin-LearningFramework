@@ -33,7 +33,7 @@ package gate.plugin.learningframework.engines;
  * 
  * @author Johann Petrak
  */
-public class EngineKerasWrapper extends EnginePythonNetworksBase {
+public class EngineKerasWrapper extends EngineMBPythonNetworksBase {
 
   static class KerasModel { }
   

@@ -28,8 +28,8 @@ package gate.plugin.learningframework.engines;
 public enum AlgorithmRegression implements Algorithm {
   LIBSVM_RG(EngineLibSVM.class,null),
   //GENERIC_RG_SERVER(EngineServer.class,null),
-  WEKA_RG_WRAPPER(EngineWekaWrapper.class,null),
-  SKLEARN_RG_WRAPPER(EngineSklearnWrapper.class,null),
+  WEKA_RG_WRAPPER(EngineMBWekaWrapper.class,null),
+  SKLEARN_RG_WRAPPER(EngineMBSklearnWrapper.class,null),
   //TENSORFLOW_RG_WRAPPER(EngineTensorFlowWrapper.class,null),
   KERAS_RG_WRAPPER(EngineKerasWrapper.class,null);
   private AlgorithmRegression() {
@@ -38,16 +38,17 @@ public enum AlgorithmRegression implements Algorithm {
   private AlgorithmRegression(Class engineClass, Class algorithmClass) {
     this.engineClass = engineClass;
     this.trainerClass = algorithmClass;
+    this.algorithmKind = AlgorithmKind.REGRESSOR;
   }
   private Class engineClass;
   private Class trainerClass;
+  private AlgorithmKind algorithmKind;
   @Override
   public Class getEngineClass() { return engineClass; }
-
   @Override
-  public Class getTrainerClass() {
-    return trainerClass;
-  }
+  public Class getTrainerClass() { return trainerClass; }
+  @Override 
+  public AlgorithmKind getAlgorithmKind() { return algorithmKind; }
 
   @Override
   public void setTrainerClass(Class trainerClass) {

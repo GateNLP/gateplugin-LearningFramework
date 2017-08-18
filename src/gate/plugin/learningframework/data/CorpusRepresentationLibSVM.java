@@ -115,14 +115,6 @@ public class CorpusRepresentationLibSVM extends CorpusRepresentation {
   }
 
   @Override
-  public void clear() {
-    // NOTE: ok, for LibSVM there is not much other info that could be kept, we just 
-    // set this to null for now. 
-    // There is not much reason why this should ever get used anyway.
-    data = null;
-  }
-
-  @Override
   public InstanceList getRepresentationMallet() {
    return crm.instances;
   }

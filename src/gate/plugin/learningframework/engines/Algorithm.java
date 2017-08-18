@@ -27,6 +27,7 @@ package gate.plugin.learningframework.engines;
 public interface Algorithm {
   public Class getTrainerClass();
   public Class getEngineClass();
+  public AlgorithmKind getAlgorithmKind();
   // For those algorithms called SOMETHING_SPECIFY_CLASS, the trainer class is initially null,
   // but we use this method to set it to whatever class the user actually specifies
   public void setTrainerClass(Class trainerClass);

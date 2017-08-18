@@ -30,9 +30,11 @@ import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
+import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
 import gate.plugin.learningframework.engines.AlgorithmRegression;
 import gate.plugin.learningframework.engines.Engine;
+import gate.plugin.learningframework.features.FeatureInfo;
 import gate.plugin.learningframework.features.FeatureSpecification;
 import gate.plugin.learningframework.features.TargetType;
 import gate.util.GateRuntimeException;
@@ -211,13 +213,11 @@ public class LF_TrainRegression extends LF_TrainBase {
     featureSpec = new FeatureSpecification(featureSpecURL);
     System.err.println("DEBUG Read the feature specification: " + featureSpec);
 
-    // create the corpus representation for creating the training instances
-    corpusRepresentation = new CorpusRepresentationMalletTarget(featureSpec.getFeatureInfo(), scaleFeatures, TargetType.NUMERIC);
-    System.err.println("DEBUG: created the corpusRepresentationMallet: " + corpusRepresentation);
-
     // Create the engine from the Algorithm parameter
-    engine = Engine.createEngine(trainingAlgorithm, getAlgorithmParameters(), corpusRepresentation);
-    
+    FeatureInfo fi = featureSpec.getFeatureInfo();
+    fi.setGlobalScalingMethod(scaleFeatures);
+    engine = Engine.createEngine(trainingAlgorithm, getAlgorithmParameters(), fi, TargetType.NUMERIC, dataDir);
+    corpusRepresentation = (CorpusRepresentationMalletTarget)engine.getCorpusRepresentation();
     System.err.println("DEBUG: created the engine: " + engine);
 
     nrDocuments = 0;

@@ -67,7 +67,6 @@ public abstract class LearningFrameworkPRBase
     return this.instanceType;
   }
 
-  protected Mode mode;
 
   protected String algorithmParameters;
   protected boolean algorithmParamtersChanged = true;

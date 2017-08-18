@@ -38,6 +38,7 @@ import gate.plugin.learningframework.data.CorpusRepresentationMalletSeq;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
 import gate.plugin.learningframework.engines.AlgorithmClassification;
 import gate.plugin.learningframework.engines.Engine;
+import gate.plugin.learningframework.features.FeatureInfo;
 import gate.plugin.learningframework.features.FeatureSpecification;
 import gate.plugin.learningframework.features.TargetType;
 import gate.util.GateRuntimeException;
@@ -263,18 +264,13 @@ public class LF_TrainClassification extends LF_TrainBase {
     featureSpec = new FeatureSpecification(featureSpecURL);
     System.err.println("DEBUG Read the feature specification: " + featureSpec);
 
-    // create the corpus representation for creating the training instances
-    if(getSequenceSpan() != null && !getSequenceSpan().isEmpty()) {
-      corpusRepresentation = new CorpusRepresentationMalletSeq(featureSpec.getFeatureInfo(), scaleFeatures);
-    } else {
-      corpusRepresentation = new CorpusRepresentationMalletTarget(featureSpec.getFeatureInfo(), scaleFeatures, TargetType.NOMINAL);
-    }
-    System.err.println("DEBUG: created the corpusRepresentationMallet: " + corpusRepresentation);
-
-    // Create the engine from the Algorithm parameter
-    engine = Engine.createEngine(trainingAlgorithm, getAlgorithmParameters(), corpusRepresentation);
     
-    System.err.println("DEBUG: created the engine: " + engine);
+    // Create the engine from the Algorithm parameter
+    FeatureInfo fi = featureSpec.getFeatureInfo();
+    fi.setGlobalScalingMethod(scaleFeatures);
+    engine = Engine.createEngine(trainingAlgorithm, getAlgorithmParameters(), fi, TargetType.NOMINAL, dataDir);    
+    corpusRepresentation = (CorpusRepresentationMallet)engine.getCorpusRepresentation();
+    System.err.println("DEBUG: created the engine: " + engine + " with CR="+corpusRepresentation);
 
     nrDocuments = 0;
     
