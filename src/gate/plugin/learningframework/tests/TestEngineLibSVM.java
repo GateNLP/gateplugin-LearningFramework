@@ -43,6 +43,7 @@ import static gate.plugin.learningframework.tests.Utils.loadDocument;
 import gate.util.GateException;
 import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import org.junit.Test;
 import org.junit.BeforeClass;
@@ -94,7 +95,7 @@ public class TestEngineLibSVM {
     engine.saveEngine(new File("."));
     
     // Now check if we can restore the engine and thus the corpus representation
-    Engine engine2 = Engine.loadEngine(new File("."), "");
+    Engine engine2 = Engine.loadEngine(new File(".").toURI().toURL(), "");
     System.err.println("RESTORED engine is "+engine2);
     
     // check if the corpusRepresentation has been restored correctly
@@ -194,7 +195,7 @@ public class TestEngineLibSVM {
     engine.saveEngine(new File("."));
     
     // Now check if we can restore the engine and thus the corpus representation
-    Engine engine2 = Engine.loadEngine(new File("."), "");
+    Engine engine2 = Engine.loadEngine(new File(".").toURI().toURL(), "");
     System.err.println("RESTORED engine is "+engine2);
     
     // check if the corpusRepresentation has been restored correctly

@@ -39,6 +39,7 @@ import cc.mallet.types.InstanceList;
 import gate.Annotation;
 import gate.AnnotationSet;
 import gate.plugin.learningframework.EvaluationMethod;
+import static gate.plugin.learningframework.LFUtils.dirAndFileURL;
 import gate.plugin.learningframework.ModelApplication;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletSeq;
 import static gate.plugin.learningframework.engines.Engine.FILENAME_MODEL;
@@ -47,10 +48,14 @@ import gate.util.GateRuntimeException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
 import org.apache.log4j.Logger;
 
 /**
@@ -322,15 +327,12 @@ public class EngineMBMalletSeq extends EngineMBMallet {
 
   
   @Override
-  protected void loadModel(File directory, String parms) {
-    File modelFile = new File(directory, FILENAME_MODEL);
-    if (!modelFile.exists()) {
-      throw new GateRuntimeException("Cannot load model file, does not exist: " + modelFile);
-    }
+  protected void loadModel(URL directory, String parms) {
+    URL modelFile = dirAndFileURL(directory, FILENAME_MODEL);
     Transducer classifier;
     ObjectInputStream ois = null;
-    try {
-      ois = new ObjectInputStream(new FileInputStream(modelFile));
+    try (InputStream is = directory.openStream()) {
+      ois = new ObjectInputStream(is);
       classifier = (CRF) ois.readObject();
       model=classifier;
     } catch (Exception ex) {

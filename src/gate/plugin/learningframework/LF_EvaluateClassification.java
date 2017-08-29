@@ -216,7 +216,7 @@ public class LF_EvaluateClassification extends LF_TrainBase {
   
   private int nrDocuments;
   
-  private File dataDir;
+  private URL dataDirURL;
 
   @Override
   public Document process(Document doc) {
@@ -239,8 +239,8 @@ public class LF_EvaluateClassification extends LF_TrainBase {
     }
     // We allo a class annotation type to be specified: in this case, we will run the 
     // evaluation for the classification problem generated from the chunking problem.
-    AnnotationSet classAS = null;
-    String tfName = null;
+    AnnotationSet classAS;
+    String tfName;
     if(getClassAnnotationType() == null || getClassAnnotationType().isEmpty()) {
       tfName = getTargetFeature();
       classAS = null;
@@ -311,7 +311,7 @@ public class LF_EvaluateClassification extends LF_TrainBase {
     // Create the engine from the Algorithm parameter
     FeatureInfo fi = featureSpec.getFeatureInfo();
     fi.setGlobalScalingMethod(scaleFeatures);
-    engine = Engine.createEngine(trainingAlgorithm, getAlgorithmParameters(), fi, TargetType.NOMINAL, dataDir);
+    engine = Engine.createEngine(trainingAlgorithm, getAlgorithmParameters(), fi, TargetType.NOMINAL, dataDirURL);
     
     System.err.println("DEBUG: created the engine: " + engine);
 

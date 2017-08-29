@@ -31,6 +31,7 @@ import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelAlphabet;
 import gate.plugin.learningframework.ScalingMethod;
 import gate.plugin.learningframework.LFUtils;
+import static gate.plugin.learningframework.LFUtils.dirAndFileURL;
 import gate.plugin.learningframework.features.FeatureSpecAttribute;
 import gate.plugin.learningframework.features.FeatureExtraction;
 import gate.plugin.learningframework.features.FeatureInfo;
@@ -41,11 +42,14 @@ import gate.plugin.learningframework.mallet.PipeScaleMeanVarAll;
 import gate.plugin.learningframework.mallet.PipeScaleMinMaxAll;
 import gate.plugin.learningframework.stats.FVStatsMeanVarAll;
 import gate.util.GateRuntimeException;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.logging.Level;
 import org.apache.log4j.Logger;
 
 /**
@@ -96,13 +100,13 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
    * @param directory
    * @return 
    */
-  public static CorpusRepresentationMalletTarget load(File directory) {
+  public static CorpusRepresentationMalletTarget load(URL directory) {
     // load the pipe
-    File inFile = new File(directory,"pipe.pipe");
+    URL inFile = dirAndFileURL(directory,"pipe.pipe");
     ObjectInputStream ois = null;
     LFPipe lfpipe = null;
-    try {
-      ois = new ObjectInputStream (new FileInputStream(inFile));
+    try (InputStream is = inFile.openStream()) {
+      ois = new ObjectInputStream (is);
       lfpipe = (LFPipe) ois.readObject();
     } catch (Exception ex) {
       throw new GateRuntimeException("Could not read pipe from "+inFile,ex);

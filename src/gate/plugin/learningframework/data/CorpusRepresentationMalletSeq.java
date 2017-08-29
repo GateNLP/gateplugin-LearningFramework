@@ -33,6 +33,7 @@ import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.Label;
 import cc.mallet.types.LabelAlphabet;
+import static gate.plugin.learningframework.LFUtils.dirAndFileURL;
 import gate.plugin.learningframework.ScalingMethod;
 import gate.plugin.learningframework.features.FeatureExtraction;
 import gate.plugin.learningframework.features.FeatureInfo;
@@ -43,9 +44,14 @@ import java.io.File;
 import org.apache.log4j.Logger;
 import static gate.plugin.learningframework.data.CorpusRepresentationMalletTarget.extractIndependentFeaturesHelper;
 import gate.plugin.learningframework.features.SeqEncoder;
+import gate.util.BomStrippingInputStreamReader;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.logging.Level;
 
 public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
 
@@ -81,24 +87,15 @@ public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
    * @param directory
    * @return
    */
-  public static CorpusRepresentationMalletSeq load(File directory) {
-    // load the pipe
-    File inFile = new File(directory, "pipe.pipe");
-    ObjectInputStream ois = null;
+  public static CorpusRepresentationMalletSeq load(URL directory) {
+    // load the pipe from a Java object serialization representation
+    URL inFile = dirAndFileURL(directory, "pipe.pipe");
     LFPipe lfpipe = null;
-    try {
-      ois = new ObjectInputStream(new FileInputStream(inFile));
-      lfpipe = (LFPipe) ois.readObject();
-    } catch (Exception ex) {
-      throw new GateRuntimeException("Could not read pipe from " + inFile, ex);
-    } finally {
-      try {
-        if (ois != null) {
-          ois.close();
-        }
-      } catch (IOException ex) {
-        logger.error("Error closing stream after loading pipe " + inFile, ex);
-      }
+    try (InputStream bom = inFile.openStream();
+         ObjectInputStream ois = new ObjectInputStream(bom)) {
+      lfpipe = (LFPipe) ois.readObject();      
+    } catch (Exception ex) { 
+      throw new GateRuntimeException("Could not read pipe from "+inFile,ex);
     }
     CorpusRepresentationMalletSeq crms = new CorpusRepresentationMalletSeq(lfpipe);
     return crms;

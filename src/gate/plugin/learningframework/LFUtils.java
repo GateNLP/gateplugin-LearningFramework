@@ -20,6 +20,12 @@
 
 package gate.plugin.learningframework;
 
+import gate.util.GateRuntimeException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author Johann Petrak
@@ -68,6 +74,32 @@ public class LFUtils {
       }
     } else {
       return orElse;
+    }
+  }
+  
+  /**
+   * Return URL for the file inside the dir URL.
+   * This makes sure that the dirURL ends with a slash before creating the final URL,
+   * since the constructor new URL(url1, "file") will remove the last part of the 
+   * path of url1 if it does not end in a slash.
+   * @param dirURL
+   * @param fileName
+   * @return 
+   */
+  public static URL dirAndFileURL(URL dirURL, String fileName) {
+    String s = dirURL.toExternalForm();
+    if(!s.endsWith("/")) {
+      try {
+        dirURL = new URL(s+"/");
+      } catch (MalformedURLException ex) {
+        throw new GateRuntimeException("Could not create URL for "+s+"/",ex);
+      }
+    }
+    try {
+      URL ret = new URL(dirURL,fileName);
+      return ret;
+    } catch (MalformedURLException ex) {
+      throw new GateRuntimeException("Could not create URL for "+dirURL+"fileName");
     }
   }
 

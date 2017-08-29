@@ -19,6 +19,7 @@ import gate.plugin.learningframework.features.TargetType;
 import gate.plugin.learningframework.mallet.LFPipe;
 import gate.util.GateRuntimeException;
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -69,14 +70,14 @@ public abstract class EngineMB extends Engine {
   }
   
   @Override
-  protected void loadAndSetCorpusRepresentation(File directory) {
+  protected void loadAndSetCorpusRepresentation(URL directory) {
     if(corpusRepresentation==null)
       corpusRepresentation = CorpusRepresentationMalletTarget.load(directory);
   }
   
   
   @Override
-  protected void initWhenCreating(File directory, Algorithm algorithm, String parameters, FeatureInfo fi, TargetType tt) {    
+  protected void initWhenCreating(URL directory, Algorithm algorithm, String parameters, FeatureInfo fi, TargetType tt) {    
     if(algorithm.getAlgorithmKind() == AlgorithmKind.SEQUENCE_TAGGER) {
       corpusRepresentation = new CorpusRepresentationMalletSeq(fi, fi.getGlobalScalingMethod());
     } else if(algorithm.getAlgorithmKind() == AlgorithmKind.REGRESSOR || 

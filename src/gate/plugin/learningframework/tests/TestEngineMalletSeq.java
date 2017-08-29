@@ -50,6 +50,7 @@ import org.junit.Test;
 import org.junit.BeforeClass;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -126,7 +127,7 @@ public class TestEngineMalletSeq {
     engine.saveEngine(new File("."));
     
     // Now check if we can restore the engine and thus the corpus representation
-    Engine engine2 = Engine.loadEngine(new File("."), "");
+    Engine engine2 = Engine.loadEngine(new File(".").toURI().toURL(), "");
     System.err.println("RESTORED engine is "+engine2);
     
     // check if the corpusRepresentation has been restored correctly

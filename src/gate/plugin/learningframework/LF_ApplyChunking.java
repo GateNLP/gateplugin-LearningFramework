@@ -19,7 +19,6 @@
  */
 package gate.plugin.learningframework;
 
-import java.io.File;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -51,7 +50,7 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
    */
   private static final long serialVersionUID = 1L;
 
-  static final Logger logger = Logger.getLogger(LF_ApplyClassification.class.getCanonicalName());
+  static final Logger LOGGER = Logger.getLogger(LF_ApplyClassification.class.getCanonicalName());
 
   protected URL dataDirectory;
 
@@ -123,7 +122,7 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
 
   private Engine engine;
 
-  private File dataDir;
+  private URL dataDir;
 
 
   @Override
@@ -171,6 +170,7 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
     // No need to do anything, empty implementation!
   }
 
+  @Override
   public void finishedNoDocument(Controller arg0, Throwable throwable) {
     // no need to do anything
   }
@@ -181,7 +181,7 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
     // JP: this was moved from the dataDirectory setter to avoid problems
     // but we should really make sure that the learning is reloaded only 
     // if the URL has changed since the last time (if ever) it was loaded.
-    dataDir = gate.util.Files.fileFromURL(dataDirectory);
+    dataDir = dataDirectory;
 
     // Restore the Engine
     engine = gate.plugin.learningframework.engines.Engine.loadEngine(dataDir, getAlgorithmParameters());

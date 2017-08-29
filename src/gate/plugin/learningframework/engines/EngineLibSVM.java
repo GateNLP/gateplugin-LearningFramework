@@ -29,8 +29,10 @@ import gate.plugin.learningframework.ModelApplication;
 import gate.plugin.learningframework.data.CorpusRepresentationLibSVM;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
 import gate.plugin.learningframework.mallet.LFPipe;
+import gate.util.Files;
 import gate.util.GateRuntimeException;
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -50,13 +52,16 @@ public class EngineLibSVM extends EngineMB {
 
 
   @Override
-  public void loadModel(File directory, String parms) {
-    try {
-      svm_model svmModel = svm.svm_load_model(new File(directory, FILENAME_MODEL).getAbsolutePath());
+  public void loadModel(URL directory, String parms) {
+    if(!"file".equals(directory.getProtocol())) 
+      throw new GateRuntimeException("The dataDirectory URL must be a file: URL for LibSVM");
+    try {      
+      File directoryFile = Files.fileFromURL(directory);
+      svm_model svmModel = svm.svm_load_model(new File(directoryFile, FILENAME_MODEL).getAbsolutePath());
       System.out.println("Loaded LIBSVM model, nrclasses=" + svmModel.nr_class);
       model = svmModel;
     } catch (Exception ex) {
-      throw new GateRuntimeException("Error loading the LIBSVM model", ex);
+      throw new GateRuntimeException("Error loading the LIBSVM model from directory "+directory, ex);
     }
   }
 
@@ -99,8 +104,8 @@ public class EngineLibSVM extends EngineMB {
     svmparms.probability = (int) ps.getValueOrElse("probability_estimates", 1); // THIS ONE DIFFERS FROM SVMLIB DEFAULT!
     // for the weights, we need a different strategy: our Parms class cannot parse arbitrary 
     // numbered options so we have to do it ourselves here
-    List<Double> weights = new ArrayList<Double>();
-    List<Integer> featureNumbers = new ArrayList<Integer>();
+    List<Double> weights = new ArrayList<>();
+    List<Integer> featureNumbers = new ArrayList<>();
     // make sure we have a parameter at all before trying to parse it
     if (parms != null && !parms.isEmpty()) {
       String[] tokens = parms.split("\\s+", -1);

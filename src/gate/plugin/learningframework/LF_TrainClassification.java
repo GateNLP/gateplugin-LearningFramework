@@ -28,14 +28,11 @@ import org.apache.log4j.Logger;
 import gate.Controller;
 import gate.Document;
 import gate.FeatureMap;
-import gate.Utils;
 import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
-import gate.plugin.learningframework.data.CorpusRepresentationMalletSeq;
-import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
 import gate.plugin.learningframework.engines.AlgorithmClassification;
 import gate.plugin.learningframework.engines.Engine;
 import gate.plugin.learningframework.features.FeatureInfo;
@@ -156,7 +153,7 @@ public class LF_TrainClassification extends LF_TrainBase {
   
   private int nrDocuments;
   
-  private File dataDir;
+  private File dataDirFile;
 
   @Override
   public Document process(Document doc) {
@@ -225,7 +222,7 @@ public class LF_TrainClassification extends LF_TrainBase {
             getInstanceType(),
             getAlgorithmParameters());
     logger.info("LearningFramework: Training complete!");
-    engine.saveEngine(dataDir);
+    engine.saveEngine(dataDirFile);
   }
 
   @Override
@@ -235,8 +232,11 @@ public class LF_TrainClassification extends LF_TrainBase {
 
   @Override
   protected void beforeFirstDocument(Controller controller) {
-    dataDir = gate.util.Files.fileFromURL(dataDirectory);
-    if(!dataDir.exists()) throw new GateRuntimeException("Data directory not found: "+dataDir.getAbsolutePath());
+    if("file".equals(dataDirectory.getProtocol()))
+      dataDirFile = gate.util.Files.fileFromURL(dataDirectory);
+    else
+      throw new GateRuntimeException("Training is only possible if the dataDirectory URL is a file: URL");
+    if(!dataDirFile.exists()) throw new GateRuntimeException("Data directory not found: "+dataDirFile.getAbsolutePath());
 
     if (getTrainingAlgorithm() == null) {
       throw new GateRuntimeException("LearningFramework: no training algorithm specified");
@@ -268,7 +268,7 @@ public class LF_TrainClassification extends LF_TrainBase {
     // Create the engine from the Algorithm parameter
     FeatureInfo fi = featureSpec.getFeatureInfo();
     fi.setGlobalScalingMethod(scaleFeatures);
-    engine = Engine.createEngine(trainingAlgorithm, getAlgorithmParameters(), fi, TargetType.NOMINAL, dataDir);    
+    engine = Engine.createEngine(trainingAlgorithm, getAlgorithmParameters(), fi, TargetType.NOMINAL, dataDirectory);    
     corpusRepresentation = (CorpusRepresentationMallet)engine.getCorpusRepresentation();
     System.err.println("DEBUG: created the engine: " + engine + " with CR="+corpusRepresentation);
 

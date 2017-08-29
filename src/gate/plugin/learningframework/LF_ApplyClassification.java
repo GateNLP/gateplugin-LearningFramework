@@ -19,7 +19,6 @@
  */
 package gate.plugin.learningframework;
 
-import java.io.File;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -51,7 +50,7 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
    */
   private static final long serialVersionUID = 1L;
 
-  static final Logger logger = Logger.getLogger(LF_ApplyClassification.class.getCanonicalName());
+  static final Logger LOGGER = Logger.getLogger(LF_ApplyClassification.class.getCanonicalName());
 
   protected URL dataDirectory;
   protected URL oldDataDirectory;
@@ -158,7 +157,7 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
 ////////////////////////////////////////////////////////////////////////////
   private Engine engine;
 
-  private File savedModelDirectoryFile;
+  private URL savedModelDirectoryURL;
 
   // this is either what the user specifies as the PR parameter, or what we have stored 
   // with the saved model.
@@ -214,6 +213,7 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
     // No need to do anything, empty implementation!
   }
 
+  @Override
   public void finishedNoDocument(Controller arg0, Throwable throwable) {
     // no need to do anything
   }
@@ -231,16 +231,16 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
       if (getSequenceSpan() != null && !getSequenceSpan().isEmpty()) {
         throw new GateRuntimeException("Sequence span not supported for server");
       }
-      engine = new EngineMBServer(gate.util.Files.fileFromURL(dataDirectory),serverUrl);      
+      engine = new EngineMBServer(dataDirectory,serverUrl);      
     } else {
 
       // if the engine is still null, or the dataDirectory has changed since 
       // we last loaded the engine, or the algorithmParameters were changed,
       // reload the engine.
       if (engine == null || !dataDirectory.equals(oldDataDirectory) || getAlgorithmParametersIsChanged()) {
-        savedModelDirectoryFile = gate.util.Files.fileFromURL(dataDirectory);
+        savedModelDirectoryURL = dataDirectory;
         oldDataDirectory = dataDirectory;
-        engine = Engine.loadEngine(savedModelDirectoryFile, getAlgorithmParameters());
+        engine = Engine.loadEngine(savedModelDirectoryURL, getAlgorithmParameters());
       }
       System.out.println("LF-Info: loaded model is " + engine);
 

@@ -35,6 +35,7 @@ import gate.plugin.learningframework.mallet.LFPipe;
 import gate.util.GateRuntimeException;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -78,14 +79,14 @@ public class EngineMBServer extends EngineMB {
 
   protected String serverUrl = "http://127.0.0.1:7000";
   
-  public EngineMBServer(File directory, String serverUrl) {
+  public EngineMBServer(URL directory, String serverUrl) {
     this.serverUrl = serverUrl;
     info = Info.load(directory);
     loadAndSetCorpusRepresentation(directory);
   }
   
   @Override
-  protected void loadModel(File directory, String parms) {
+  protected void loadModel(URL directory, String parms) {
     
   }
 

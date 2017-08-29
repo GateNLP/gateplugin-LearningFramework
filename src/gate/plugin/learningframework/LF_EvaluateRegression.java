@@ -39,7 +39,6 @@ import gate.plugin.learningframework.features.FeatureInfo;
 import gate.plugin.learningframework.features.FeatureSpecification;
 import gate.plugin.learningframework.features.TargetType;
 import gate.util.GateRuntimeException;
-import java.io.File;
 
 /**
  *
@@ -186,7 +185,7 @@ public class LF_EvaluateRegression extends LF_TrainBase {
   
   private int nrDocuments;
   
-  private File dataDir;
+  private URL dataDirURL;
 
   @Override
   public Document process(Document doc) {
@@ -253,9 +252,8 @@ public class LF_EvaluateRegression extends LF_TrainBase {
     FeatureInfo fi = featureSpec.getFeatureInfo();
     fi.setGlobalScalingMethod(scaleFeatures);
     
-
     // Create the engine from the Algorithm parameter
-    engine = Engine.createEngine(trainingAlgorithm, getAlgorithmParameters(), fi, TargetType.NUMERIC, dataDir);
+    engine = Engine.createEngine(trainingAlgorithm, getAlgorithmParameters(), fi, TargetType.NUMERIC, dataDirURL);
     
     System.err.println("DEBUG: created the engine: " + engine);
     corpusRepresentation = (CorpusRepresentationMalletTarget)engine.getCorpusRepresentation();

@@ -22,6 +22,8 @@ package gate.plugin.learningframework.tests;
 
 import gate.plugin.learningframework.engines.Info;
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -31,7 +33,7 @@ import static org.junit.Assert.*;
  */
 public class TestInfo {
   @Test
-  public void testInfo1() {
+  public void testInfo1() throws MalformedURLException {
     Info info = new Info();
     info.trainerClass = "theAlgorithmClass";
     info.engineClass = "theEngineClass";
@@ -39,7 +41,8 @@ public class TestInfo {
     File directory = new File("/tmp/testInfo");
     directory.mkdir();
     info.save(directory);
-    Info info2 = Info.load(directory);
+    URL dirURL = directory.toURI().toURL();
+    Info info2 = Info.load(dirURL);
     System.err.println("Info1="+info);
     System.err.println("Info2="+info2);
     assertEquals(info, info2);

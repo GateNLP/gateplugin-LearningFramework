@@ -20,13 +20,16 @@
 
 package gate.plugin.learningframework.engines;
 
+import static gate.plugin.learningframework.LFUtils.dirAndFileURL;
 import gate.util.GateRuntimeException;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.util.Objects;
 import org.yaml.snakeyaml.DumperOptions;
@@ -112,14 +115,14 @@ public class Info {
       }
     }
   }
-  public static Info load(File directory) {
+  public static Info load(URL directory) {
     CustomClassLoaderConstructor constr = 
             new CustomClassLoaderConstructor(Info.class.getClassLoader());
     Yaml yaml = new Yaml(constr);
     Object obj;
-    File infoFile = new File(directory,FILENAME_INFO);
-    try {
-      obj = yaml.loadAs(new InputStreamReader(new FileInputStream(infoFile),"UTF-8"),Info.class);
+    URL infoFile = dirAndFileURL(directory,FILENAME_INFO);
+    try (InputStream is = infoFile.openStream()) {
+      obj = yaml.loadAs(new InputStreamReader(is,"UTF-8"),Info.class);
     } catch (Exception ex) {
       throw new GateRuntimeException("Could not load info file "+infoFile,ex);
     }    

@@ -59,7 +59,7 @@ public class LF_TrainChunking extends LF_TrainBase {
    */
   private static final long serialVersionUID = 1L;
 
-  private Logger logger = Logger.getLogger(LF_TrainChunking.class.getCanonicalName());
+  private final Logger LOGGER = Logger.getLogger(LF_TrainChunking.class.getCanonicalName());
 
   protected URL dataDirectory;
 
@@ -168,7 +168,7 @@ public class LF_TrainChunking extends LF_TrainBase {
 
   private FeatureSpecification featureSpec = null;
 
-  private File dataDir;
+  private File dataDirFile;
 
   private Engine engine;
   
@@ -241,18 +241,22 @@ public class LF_TrainChunking extends LF_TrainBase {
     engine.trainModel(gate.util.Files.fileFromURL(dataDirectory),
             getInstanceType(),
             getAlgorithmParameters());
-    logger.info("LearningFramework: Training complete!");
-    engine.saveEngine(dataDir);
+    LOGGER.info("LearningFramework: Training complete!");
+    engine.saveEngine(dataDirFile);
   }
 
   @Override
   protected void finishedNoDocument(Controller c, Throwable t) {
-    logger.error("Processing finished, but got an error, no documents seen, or the PR was disabled in the pipeline - cannot train!");
+    LOGGER.error("Processing finished, but got an error, no documents seen, or the PR was disabled in the pipeline - cannot train!");
   }
 
   @Override
   protected void beforeFirstDocument(Controller controller) {
-    
+
+    if("file".equals(dataDirectory.getProtocol()))
+      dataDirFile = gate.util.Files.fileFromURL(dataDirectory);
+    else
+      throw new GateRuntimeException("Training is only possible if the dataDirectory URL is a file: URL");
     if(getSeqEncoder().getEncoderClass() == null) {
       throw new GateRuntimeException("SeqEncoder class not yet implemented, please choose another one: "+getSeqEncoder());
     }
@@ -270,11 +274,10 @@ public class LF_TrainChunking extends LF_TrainBase {
     if(getClassAnnotationTypes().isEmpty()) {
       throw new GateRuntimeException("Need at least one class annotation type!");
     }
-    classAnnotationTypesSet = new HashSet<String>();
+    classAnnotationTypesSet = new HashSet<>();
     classAnnotationTypesSet.addAll(classAnnotationTypes);
     featureSpec = new FeatureSpecification(featureSpecURL);
-    dataDir = gate.util.Files.fileFromURL(dataDirectory);
-    if(!dataDir.exists()) throw new GateRuntimeException("Data directory not found: "+dataDir.getAbsolutePath());
+    if(!dataDirFile.exists()) throw new GateRuntimeException("Data directory not found: "+dataDirFile.getAbsolutePath());
 
     if (getTrainingAlgorithm() == null) {
       throw new GateRuntimeException("LearningFramework: no training algorithm specified");
@@ -294,7 +297,7 @@ public class LF_TrainChunking extends LF_TrainBase {
     
     FeatureInfo fi = featureSpec.getFeatureInfo();
     fi.setGlobalScalingMethod(scaleFeatures);
-    engine = Engine.createEngine(trainingAlgorithm, getAlgorithmParameters(), fi, TargetType.NOMINAL, dataDir);
+    engine = Engine.createEngine(trainingAlgorithm, getAlgorithmParameters(), fi, TargetType.NOMINAL, dataDirectory);
     corpusRepresentation = (CorpusRepresentationMallet)engine.getCorpusRepresentation();
     System.err.println("DEBUG: created the engine: " + engine + " with CR="+engine.getCorpusRepresentation());  
     nrDocuments = 0;

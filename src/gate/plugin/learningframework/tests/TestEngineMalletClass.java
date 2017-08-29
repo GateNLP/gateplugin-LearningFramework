@@ -26,9 +26,7 @@ import gate.AnnotationSet;
 import gate.Document;
 import gate.creole.ResourceInstantiationException;
 import gate.plugin.learningframework.ModelApplication;
-import gate.plugin.learningframework.ScalingMethod;
 import gate.plugin.learningframework.data.CorpusRepresentation;
-import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
 import gate.plugin.learningframework.engines.AlgorithmClassification;
 import gate.plugin.learningframework.engines.Engine;
@@ -42,6 +40,7 @@ import org.junit.Test;
 import org.junit.BeforeClass;
 import static gate.plugin.learningframework.tests.Utils.*;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import static org.junit.Assert.*;
 
@@ -85,7 +84,7 @@ public class TestEngineMalletClass {
     engine.saveEngine(new File("."));
     
     // Now check if we can restore the engine and thus the corpus representation
-    Engine engine2 = Engine.loadEngine(new File("."), "");
+    Engine engine2 = Engine.loadEngine(new File(".").toURI().toURL(), "");
     System.err.println("RESTORED engine is "+engine2);
     
     // check if the corpusRepresentation has been restored correctly

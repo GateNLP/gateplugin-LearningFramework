@@ -31,13 +31,14 @@ import gate.plugin.learningframework.EvaluationMethod;
 import gate.plugin.learningframework.Exporter;
 import gate.plugin.learningframework.ModelApplication;
 import gate.plugin.learningframework.Globals;
-import gate.plugin.learningframework.data.CorpusRepresentation;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
 import gate.plugin.learningframework.mallet.LFPipe;
+import gate.util.Files;
 import gate.util.GateRuntimeException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -162,17 +163,29 @@ public class EngineMBWekaWrapper extends EngineMB {
   
   
   @Override
-  protected void loadModel(File directory, String parms) {
+  protected void loadModel(URL directoryURL, String parms) {
     ArrayList<String> finalCommand = new ArrayList<String>();
+    // TODO: for now, we only allow URLs which are file: URLs here.
+    // This is because the script wrapping Weka is currently not able to access 
+    // the model from any other location. Also, we need to export the 
+    // data and currently this is done into the directoryURL.
+    // At some later point, we may be able to e.g. copy the model into 
+    // a temporary directory and use the demporary directory also to store 
+    // the data! 
+    File directoryFile = null;
+    if("file".equals(directoryURL.getProtocol())) directoryFile = Files.fileFromURL(directoryURL);
+    else throw new GateRuntimeException("The dataDirectory for WekaWrapper must be a file: URL");
+    
     // Instead of loading a model, this establishes a connection with the 
     // external weka process. For this, we expect an additional file in the 
     // directory, weka.yaml, which describes how to run the weka wrapper
-    File commandFile = findWrapperCommand(directory, true);
-    String modelFileName = new File(directory,FILENAME_MODEL).getAbsolutePath();
+    File commandFile = findWrapperCommand(directoryFile, true);
+    // If the directoryURL 
+    String modelFileName = new File(directoryFile,FILENAME_MODEL).getAbsolutePath();
     if(!new File(modelFileName).exists()) {
       throw new GateRuntimeException("File not found: "+modelFileName);
     }
-    String header = new File(directory,"header.arff").getAbsolutePath();
+    String header = new File(directoryFile,"header.arff").getAbsolutePath();
     if(!new File(header).exists()) {
       throw new GateRuntimeException("File not found: "+header);
     }
@@ -194,7 +207,8 @@ public class EngineMBWekaWrapper extends EngineMB {
     model = "ExternalWekaWrapperModel";
     Map<String,String> env = new HashMap<>();
     env.put(ENV_WRAPPER_HOME,wrapperhome);
-    process = Process4ObjectStream.create(directory,env,finalCommand);
+    // NOTE: if the directoryFile is null, the current Java process' directory is used
+    process = Process4ObjectStream.create(directoryFile,env,finalCommand);
   }
 
   @Override

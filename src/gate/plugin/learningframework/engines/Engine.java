@@ -28,6 +28,7 @@ import gate.plugin.learningframework.features.FeatureInfo;
 import gate.plugin.learningframework.features.TargetType;
 import gate.util.GateRuntimeException;
 import java.io.File;
+import java.net.URL;
 import java.util.List;
 import org.apache.log4j.Logger;
 
@@ -125,7 +126,7 @@ public abstract class Engine {
    * @param directory
    * @return 
    */
-  public static Engine createEngine(Algorithm algorithm, String parms, FeatureInfo featureInfo, TargetType targetType, File directory) {
+  public static Engine createEngine(Algorithm algorithm, String parms, FeatureInfo featureInfo, TargetType targetType, URL directory) {
     Engine eng;
     try {
       System.err.println("CREATE ENGINE: trying to create for class "+algorithm.getEngineClass());
@@ -174,7 +175,7 @@ public abstract class Engine {
    * @param directory
    * @return 
    */
-  public static Engine loadEngine(File directory, String parms) {
+  public static Engine loadEngine(URL directory, String parms) {
     // 1) read the info file
     Info info = Info.load(directory);
     // extract the Engine class from the file and create an instance of the engine
@@ -238,7 +239,7 @@ public abstract class Engine {
   // =================================================================
   
   // DETAILS OF HOW TO CREATE 
-  protected abstract void initWhenCreating(File directory, Algorithm algorithm, String parms, FeatureInfo featureInfo, TargetType targetType);
+  protected abstract void initWhenCreating(URL directory, Algorithm algorithm, String parms, FeatureInfo featureInfo, TargetType targetType);
 
   // DETAILS OF HOW TO LOAD
   
@@ -251,7 +252,7 @@ public abstract class Engine {
    * loadModel method, 2) call the instance specific loadCorpusRepresentation method, 3) set the
    * Algorithm according to what is in the info.
    */
-  protected void initWhenLoading(File directory, String parms) {
+  protected void initWhenLoading(URL directory, String parms) {
     // now use the specific engine's loadModel method to complete the loading: each engine
     // knows best how to load its own kinds of models.
     // NOTE: loadModel also loads the Mallet corpus representation and initializes any non-Mallet
@@ -304,7 +305,7 @@ public abstract class Engine {
    * 
    * @param directory 
    */
-  protected abstract void loadAndSetCorpusRepresentation(File directory);
+  protected abstract void loadAndSetCorpusRepresentation(URL directory);
   
   
   
@@ -317,7 +318,7 @@ public abstract class Engine {
    * @param directory
    * @param info 
    */
-  protected abstract void loadModel(File directory, String parms);
+  protected abstract void loadModel(URL directory, String parms);
   
   
 

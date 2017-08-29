@@ -127,7 +127,7 @@ public class LF_ApplyRegression extends LearningFrameworkPRBase {
 
   private Engine engine;
 
-  private File savedModelDirectoryFile;
+  private URL savedModelDirectoryURL;
 
   // this is either what the user specifies as the PR parameter, or what we have stored 
   // with the saved model.
@@ -170,6 +170,7 @@ public class LF_ApplyRegression extends LearningFrameworkPRBase {
     // No need to do anything, empty implementation!
   }
 
+  @Override
   public void finishedNoDocument(Controller arg0, Throwable throwable) {
     // no need to do anything
   }
@@ -180,14 +181,14 @@ public class LF_ApplyRegression extends LearningFrameworkPRBase {
     // JP: this was moved from the dataDirectory setter to avoid problems
     // but we should really make sure that the learning is reloaded only 
     // if the URL has changed since the last time (if ever) it was loaded.
-    savedModelDirectoryFile = gate.util.Files.fileFromURL(dataDirectory);
+    savedModelDirectoryURL = dataDirectory;
 
     if (serverUrl != null && !serverUrl.isEmpty()) {
-      engine = new EngineMBServer(gate.util.Files.fileFromURL(dataDirectory),serverUrl);      
+      engine = new EngineMBServer(dataDirectory,serverUrl);      
     } else {
 
       // Restore the Engine
-      engine = Engine.loadEngine(savedModelDirectoryFile, getAlgorithmParameters());
+      engine = Engine.loadEngine(savedModelDirectoryURL, getAlgorithmParameters());
       System.out.println("LF-Info: model loaded is now " + engine);
 
       if (engine.getModel() == null) {

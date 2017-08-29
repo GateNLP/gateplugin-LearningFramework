@@ -34,10 +34,12 @@ import gate.plugin.learningframework.ModelApplication;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
 import gate.plugin.learningframework.mallet.LFPipe;
 import gate.plugin.learningframework.mallet.NominalTargetWithCosts;
+import gate.util.Files;
 import gate.util.GateRuntimeException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.AbstractMap;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
@@ -165,12 +167,15 @@ public abstract class EngineMBPythonNetworksBase extends EngineMB {
   
   
   @Override
-  protected void loadModel(File directory, String parms) {
+  protected void loadModel(URL directoryURL, String parms) {
+    File directory = null;
+    if("file".equals(directoryURL.getProtocol())) directory = Files.fileFromURL(directoryURL);
+    else throw new GateRuntimeException("The dataDirectory for WekaWrapper must be a file: URL not "+directoryURL);
     ArrayList<String> finalCommand = new ArrayList<String>();
     // we need the corpus representation here! Normally this is done from loadEngine and after
     // load model, but we do it here. The load crm method only loads anything if it is still
     // null, so we will do this only once anyway.
-    loadAndSetCorpusRepresentation(directory);
+    loadAndSetCorpusRepresentation(directoryURL);
     CorpusRepresentationMalletTarget data = (CorpusRepresentationMalletTarget)corpusRepresentation;
     SimpleEntry<String,Integer> modeAndNrC = findOutMode(data);
     String mode = modeAndNrC.getKey();

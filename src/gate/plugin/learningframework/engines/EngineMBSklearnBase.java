@@ -31,10 +31,12 @@ import gate.plugin.learningframework.Exporter;
 import gate.plugin.learningframework.ModelApplication;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
 import gate.plugin.learningframework.mallet.LFPipe;
+import gate.util.Files;
 import gate.util.GateRuntimeException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -165,11 +167,13 @@ public abstract class EngineMBSklearnBase extends EngineMB {
   
   
   @Override
-  protected void loadModel(File directory, String parms) {
+  protected void loadModel(URL directoryURL, String parms) {
     ArrayList<String> finalCommand = new ArrayList<String>();
     // Instead of loading a model, this establishes a connection with the 
     // external sklearn process. 
-    
+    if(!"file".equals(directoryURL.getProtocol())) 
+      throw new GateRuntimeException("The dataDirectory URL must be a file: URL for sklearn");
+    File directory = Files.fileFromURL(directoryURL);
     File commandFile = findWrapperCommand(directory, true);
     String modelFileName = new File(directory,MODEL_BASENAME).getAbsolutePath();
     finalCommand.add(commandFile.getAbsolutePath());
