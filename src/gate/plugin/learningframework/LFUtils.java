@@ -21,10 +21,12 @@
 package gate.plugin.learningframework;
 
 import gate.util.GateRuntimeException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -78,6 +80,148 @@ public class LFUtils {
   }
   
   /**
+   * Create a URL from the String.
+   * If the String does not have a protocol/scheme, file:// is assumed and prepended.
+   * @param str
+   * @return 
+   */
+  public static URL newURL(String str) {
+    try {
+      if(new URI(str).getScheme() == null) {
+        str = "file://"+str;
+      }
+      return new URL(str);
+    } catch (Exception ex) {
+      throw new GateRuntimeException("Cannot create URL from string "+str,ex);
+    }
+  }
+  
+  /**
+   * Equivalent of creating a new file from a directory file and name string.
+   * 
+   * This tries to roughly provide the equivalent of "new File(dirFile, nameString)"
+   * for a URL and a name String. The catch is that in order for this to work,
+   * the given dir URL must end in a slash. This method assumes that the first
+   * URL always refers to a directory and therefore appends a slash if necessary.
+   * <p>
+   * Note: if the dirURL contains a query and/or a fragment, those parts are 
+   * lost in the resulting URL.
+   * @param dir
+   * @param file 
+   */
+  public static URL newURL(URL dirURL, String fileName) {
+    URI dirURI;
+    try {
+      dirURI = dirURL.toURI();
+    } catch (URISyntaxException ex) {
+      throw new GateRuntimeException("Cannot convert URL to URI: "+dirURL);
+    }
+    String path = dirURI.getPath();
+    if(!path.endsWith("/")) path = path+"/";
+    try {
+      dirURI = new URI(
+              dirURI.getScheme(),
+              dirURI.getUserInfo(),
+              dirURI.getHost(),
+              dirURI.getPort(),
+              path,
+              dirURI.getQuery(),
+              dirURI.getFragment());
+    } catch (URISyntaxException ex) {
+      throw new GateRuntimeException("Cannot conver URL to URI: "+dirURL);
+    }
+    try {
+      URL ret = new URL(dirURI.toURL(),fileName);
+      return ret;
+    } catch (MalformedURLException ex) {
+      throw new GateRuntimeException("Could not create URL for "+dirURL+"fileName");
+    }    
+  }
+  
+  /**
+   * Return the last path component of a hierarchical path of URL.
+   * @param url
+   * @return 
+   */
+  public static String getName(URL url) {
+    URI uri;
+    try {
+      uri = url.toURI();
+    } catch (URISyntaxException ex) {
+      throw new GateRuntimeException("Cannot convert URL to URI: "+url);
+    }
+    URL parentURL;
+    try {
+      parentURL = new URL(url,".");
+    } catch (MalformedURLException ex) {
+      throw new GateRuntimeException("Cannot find parent URL for URL "+url);
+    }
+    URI parentURI = null;
+    try {
+      parentURI = parentURL.toURI();
+    } catch (URISyntaxException ex) {
+      throw new GateRuntimeException("Cannot convert URL to URI: "+parentURL);
+    }
+    URI relative = parentURI.relativize(uri);
+    return relative.toString();
+  }
+  
+  /**
+   * Return the parent path for a URL.
+   * This is the path, with the last component of the path removed, i.e.
+   * with that part removed that is returned by the getName() method.
+   * 
+   */
+  public static URL getParentURL(URL url) {
+    URL ret;
+    try {
+      ret = new URL(url,".");
+    } catch (MalformedURLException ex) {
+      throw new GateRuntimeException("Cannot convert URL to URI: "+url);
+    }
+    return ret;
+  }
+  
+  /**
+   * Return the parent path for a URL.
+   * This is the path, with the last component of the path removed, i.e.
+   * with that part removed that is returned by the getName() method.
+   * 
+   */
+  public static String getParent(URL url) {
+    return getParentURL(url).toString();
+  }
+  
+  /** 
+   * Returns true if the URL can be opened for reading.
+   * 
+   * @param url
+   * @return 
+   */
+  public static boolean exists(URL url) {
+    boolean ret = true;
+    try (InputStream is = url.openStream()) {
+      // do nothing, we only want to check the opening
+    } catch (IOException ex) {
+      ret = false;
+    }
+    return ret;
+  }
+  
+  /**
+   * Return truen if the URL is a file URL.
+   * @param url
+   * @return 
+   */
+  public static boolean isFile(URL url) {
+    return "file".equals(url.getProtocol());
+  }
+  
+  
+  
+  
+  
+  /**
    * Return URL for the file inside the dir URL.
    * This makes sure that the dirURL ends with a slash before creating the final URL,
    * since the constructor new URL(url1, "file") will remove the last part of the 
@@ -86,7 +230,7 @@ public class LFUtils {
    * @param fileName
    * @return 
    */
-  public static URL dirAndFileURL(URL dirURL, String fileName) {
+  public static URL newURLOld(URL dirURL, String fileName) {
     String s = dirURL.toExternalForm();
     if(!s.endsWith("/")) {
       try {

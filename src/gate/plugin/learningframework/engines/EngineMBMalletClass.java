@@ -38,7 +38,6 @@ import cc.mallet.types.Labeling;
 import gate.Annotation;
 import gate.AnnotationSet;
 import gate.plugin.learningframework.EvaluationMethod;
-import static gate.plugin.learningframework.LFUtils.dirAndFileURL;
 import gate.plugin.learningframework.ModelApplication;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
 import static gate.plugin.learningframework.engines.Engine.FILENAME_MODEL;
@@ -56,6 +55,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import org.apache.log4j.Logger;
+import static gate.plugin.learningframework.LFUtils.newURL;
 
 /**
  *
@@ -210,7 +210,7 @@ public class EngineMBMalletClass extends EngineMBMallet {
 
   @Override
   protected void loadModel(URL directory, String parms) {
-    URL modelFile = dirAndFileURL(directory, FILENAME_MODEL);
+    URL modelFile = newURL(directory, FILENAME_MODEL);
     Classifier classifier;
     ObjectInputStream ois = null;
     try (InputStream is = modelFile.openStream()) {

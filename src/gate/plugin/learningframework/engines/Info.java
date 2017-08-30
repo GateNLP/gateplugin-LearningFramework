@@ -20,7 +20,6 @@
 
 package gate.plugin.learningframework.engines;
 
-import static gate.plugin.learningframework.LFUtils.dirAndFileURL;
 import gate.util.GateRuntimeException;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -36,6 +35,7 @@ import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
 import org.yaml.snakeyaml.nodes.Tag;
+import static gate.plugin.learningframework.LFUtils.newURL;
 
 /**
  * A class that represents the information stored in the info file.
@@ -120,7 +120,7 @@ public class Info {
             new CustomClassLoaderConstructor(Info.class.getClassLoader());
     Yaml yaml = new Yaml(constr);
     Object obj;
-    URL infoFile = dirAndFileURL(directory,FILENAME_INFO);
+    URL infoFile = newURL(directory,FILENAME_INFO);
     try (InputStream is = infoFile.openStream()) {
       obj = yaml.loadAs(new InputStreamReader(is,"UTF-8"),Info.class);
     } catch (Exception ex) {

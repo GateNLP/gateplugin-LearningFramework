@@ -33,7 +33,6 @@ import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.Label;
 import cc.mallet.types.LabelAlphabet;
-import static gate.plugin.learningframework.LFUtils.dirAndFileURL;
 import gate.plugin.learningframework.ScalingMethod;
 import gate.plugin.learningframework.features.FeatureExtraction;
 import gate.plugin.learningframework.features.FeatureInfo;
@@ -52,6 +51,7 @@ import java.io.ObjectInputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
+import static gate.plugin.learningframework.LFUtils.newURL;
 
 public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
 
@@ -89,7 +89,7 @@ public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
    */
   public static CorpusRepresentationMalletSeq load(URL directory) {
     // load the pipe from a Java object serialization representation
-    URL inFile = dirAndFileURL(directory, "pipe.pipe");
+    URL inFile = newURL(directory, "pipe.pipe");
     LFPipe lfpipe = null;
     try (InputStream bom = inFile.openStream();
          ObjectInputStream ois = new ObjectInputStream(bom)) {

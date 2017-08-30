@@ -31,7 +31,6 @@ import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelAlphabet;
 import gate.plugin.learningframework.ScalingMethod;
 import gate.plugin.learningframework.LFUtils;
-import static gate.plugin.learningframework.LFUtils.dirAndFileURL;
 import gate.plugin.learningframework.features.FeatureSpecAttribute;
 import gate.plugin.learningframework.features.FeatureExtraction;
 import gate.plugin.learningframework.features.FeatureInfo;
@@ -51,6 +50,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import org.apache.log4j.Logger;
+import static gate.plugin.learningframework.LFUtils.newURL;
 
 /**
  * This represents a corpus in Mallet format where we have a single feature vector and single
@@ -102,7 +102,7 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
    */
   public static CorpusRepresentationMalletTarget load(URL directory) {
     // load the pipe
-    URL inFile = dirAndFileURL(directory,"pipe.pipe");
+    URL inFile = newURL(directory,"pipe.pipe");
     ObjectInputStream ois = null;
     LFPipe lfpipe = null;
     try (InputStream is = inFile.openStream()) {
