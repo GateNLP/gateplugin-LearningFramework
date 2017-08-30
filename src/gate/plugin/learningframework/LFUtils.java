@@ -116,6 +116,12 @@ public class LFUtils {
     } catch (URISyntaxException ex) {
       throw new GateRuntimeException("Cannot convert URL to URI: "+dirURL);
     }
+    // NOTE: adding the slash should not really be necessary if we really
+    // always get a URL with a trailing slash if the URL refers to something
+    // that should be a directory. However, this is not always the case, 
+    // e.g. a directory URL stored in a xgapp file can sometimes miss the
+    // trailing slash.
+    // /*
     String path = dirURI.getPath();
     if(!path.endsWith("/")) path = path+"/";
     try {
@@ -130,6 +136,7 @@ public class LFUtils {
     } catch (URISyntaxException ex) {
       throw new GateRuntimeException("Cannot conver URL to URI: "+dirURL);
     }
+    // */
     try {
       URL ret = new URL(dirURI.toURL(),fileName);
       return ret;

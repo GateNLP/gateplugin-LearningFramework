@@ -157,8 +157,6 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
 ////////////////////////////////////////////////////////////////////////////
   private Engine engine;
 
-  private URL savedModelDirectoryURL;
-
   // this is either what the user specifies as the PR parameter, or what we have stored 
   // with the saved model.
   private String targetFeatureToUse;
@@ -238,9 +236,8 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
       // we last loaded the engine, or the algorithmParameters were changed,
       // reload the engine.
       if (engine == null || !dataDirectory.equals(oldDataDirectory) || getAlgorithmParametersIsChanged()) {
-        savedModelDirectoryURL = dataDirectory;
         oldDataDirectory = dataDirectory;
-        engine = Engine.loadEngine(savedModelDirectoryURL, getAlgorithmParameters());
+        engine = Engine.loadEngine(dataDirectory, getAlgorithmParameters());
       }
       System.out.println("LF-Info: loaded model is " + engine);
 
