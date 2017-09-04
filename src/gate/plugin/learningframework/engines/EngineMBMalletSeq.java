@@ -45,16 +45,12 @@ import static gate.plugin.learningframework.engines.Engine.FILENAME_MODEL;
 import gate.plugin.learningframework.features.TargetType;
 import gate.util.GateRuntimeException;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Level;
 import org.apache.log4j.Logger;
 import static gate.plugin.learningframework.LFUtils.newURL;
 
@@ -237,6 +233,12 @@ public class EngineMBMalletSeq extends EngineMBMallet {
     return transtrainer;
   }
   
+  @Override
+  protected void loadAndSetCorpusRepresentation(URL directory) {
+    if(corpusRepresentation==null)
+      corpusRepresentation = CorpusRepresentationMalletSeq.load(directory);
+  }
+  
   
   public Transducer trainModel(InstanceList trainingData, String options) {
 
@@ -330,21 +332,12 @@ public class EngineMBMalletSeq extends EngineMBMallet {
   protected void loadModel(URL directory, String parms) {
     URL modelFile = newURL(directory, FILENAME_MODEL);
     Transducer classifier;
-    ObjectInputStream ois = null;
-    try (InputStream is = directory.openStream()) {
-      ois = new ObjectInputStream(is);
+    try (InputStream is = modelFile.openStream();
+         ObjectInputStream ois = new ObjectInputStream(is)) {
       classifier = (CRF) ois.readObject();
       model=classifier;
     } catch (Exception ex) {
       throw new GateRuntimeException("Could not load Mallet model", ex);
-    } finally {
-      if (ois != null) {
-        try {
-          ois.close();
-        } catch (IOException ex) {
-          logger.error("Could not close object input stream after loading model", ex);
-        }
-      }
     }
   }
 
