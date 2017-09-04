@@ -33,6 +33,7 @@ import cc.mallet.fst.Transducer;
 import cc.mallet.fst.TransducerTrainer;
 import cc.mallet.fst.ViterbiWriter;
 import cc.mallet.optimize.Optimizable;
+import cc.mallet.optimize.OptimizationException;
 import cc.mallet.types.FeatureVectorSequence;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
@@ -224,7 +225,15 @@ public class EngineMBMalletSeq extends EngineMBMallet {
     } else if(alg.equals("MALLET_SEQ_MEMM")) {
       // TODO: 
       MEMM memm = new MEMM(trainingData.getDataAlphabet(),trainingData.getTargetAlphabet());
-      transtrainer = new MEMMTrainer(memm);
+      // check what this would do:
+      //memm.addOrderNStates(trainingData, new int[]{1}, new boolean[]{false}, "START", null, null, false);
+      
+      memm.addFullyConnectedStatesForLabels();
+      // optional:
+      //memm.addStartState();
+      // second parameter: unsupported trick
+      memm.setWeightsDimensionAsIn(trainingData, false);
+      transtrainer = new MEMMTrainer(memm);      
     } else {
       // Nothing else supported!
       throw new GateRuntimeException("EngineMalletSeq: unknown/unsupported algorithm: "+alg);
@@ -247,7 +256,13 @@ public class EngineMBMalletSeq extends EngineMBMallet {
     boolean verbose = (boolean)parms.getValueOrElse("verbose", false);
     int iters = (int) parms.getValueOrElse("iterations", 0);
     if(iters==0) iters = Integer.MAX_VALUE;
-    trainer.train(trainingData, iters);
+    try {
+      trainer.train(trainingData, iters);
+    } catch(OptimizationException ex) {
+      System.err.println("Encountered an OptimizationException during training (CONTINUING!): "+ex.getMessage());
+      ex.printStackTrace(System.err);
+      System.err.println("We ignore this exception and try to use the model so far ...");
+    }
     if(verbose) 
       trainer.getTransducer().print();
     Transducer td = trainer.getTransducer();
