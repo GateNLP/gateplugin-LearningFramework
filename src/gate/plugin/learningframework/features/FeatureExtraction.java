@@ -430,8 +430,12 @@ public class FeatureExtraction {
                 setInFeatureVector(fv, internalFeatureNamePrefix + VALSEP + val, 1.0);
               } else {
                 // NOTE: sourceAnnotation should always ne non-null here since valObj is non-null
-                double score = gate.plugin.learningframework.LFUtils.anyToDoubleOrElse(sourceAnnotation.getFeatures().get(featureName4Value), 1.0);
-                setInFeatureVector(fv, internalFeatureNamePrefix + VALSEP + val, score);
+                // If the value we get for the score is not present or null, we suppress creating the attribute
+                Object value = sourceAnnotation.getFeatures().get(featureName4Value);
+                if(value != null) {
+                  double score = gate.plugin.learningframework.LFUtils.anyToDoubleOrElse(value, 1.0);
+                  setInFeatureVector(fv, internalFeatureNamePrefix + VALSEP + val, score);
+                }
               }
             }
           } else {
