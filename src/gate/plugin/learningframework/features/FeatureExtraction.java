@@ -300,14 +300,14 @@ public class FeatureExtraction {
     // vector, so we do not even check, we simply add the featureName.
     // How we add the featureName depends on the datatype, on the codeas setting if it is nominal,
     // and also on how we treat missing values.
-    extractFeatureWorker(att.name, "A", inst, sourceAnnotation, doc, annType, featureName, featureName4Value, alphabet, dt, mvt, codeas, listsep);
+    extractFeatureWorker(att.name, "A", inst, sourceAnnotation, doc, annType, featureName, featureName4Value, alphabet, dt, mvt, codeas, listsep,null);
     // now if the source annotation was not null (missing) and the source annotation started with
     // and/or ended with the within annotation, we also add special START/STOP features 
     if(sourceAnnotation != null && withinFrom == gate.Utils.start(sourceAnnotation)) {
-      extractFeatureWorker(att.name, "A"+START_SYMBOL, inst, sourceAnnotation, doc, annType, featureName, featureName4Value, alphabet, Datatype.nominal, MissingValueTreatment.zero_value, CodeAs.one_of_k, listsep);
+      extractFeatureWorker(att.name, "A", inst, sourceAnnotation, doc, annType, featureName, featureName4Value, alphabet, Datatype.nominal, MissingValueTreatment.zero_value, CodeAs.one_of_k, listsep,START_SYMBOL);
     }
     if(sourceAnnotation != null && withinTo == gate.Utils.end(sourceAnnotation)) {
-      extractFeatureWorker(att.name, "A"+START_SYMBOL, inst, sourceAnnotation, doc, annType, featureName, featureName4Value, alphabet, Datatype.nominal, MissingValueTreatment.zero_value, CodeAs.one_of_k, listsep);
+      extractFeatureWorker(att.name, "A", inst, sourceAnnotation, doc, annType, featureName, featureName4Value, alphabet, Datatype.nominal, MissingValueTreatment.zero_value, CodeAs.one_of_k, listsep,STOP_SYMBOL);
     }
   }
 
@@ -329,6 +329,10 @@ public class FeatureExtraction {
    * @param dt
    * @param mvt
    * @param codeas
+   * @param listsep
+   * @param specialsymbol: if this is non-null, then an attribute is generated
+   * for some special symbol (e.g. start/stop indicator). In this case, some other parameters 
+   * are usually ignored.
    */
   private static void extractFeatureWorker(
           String name,
@@ -343,7 +347,8 @@ public class FeatureExtraction {
           Datatype dt,
           MissingValueTreatment mvt,
           CodeAs codeas,
-          String listsep) {
+          String listsep,
+          String specialSymbol) {
 
     AugmentableFeatureVector fv = (AugmentableFeatureVector) inst.getData();
     // create the default feature name prefix: this is either "A"+NAMESEP+type+NAMESEP+featureName
@@ -354,12 +359,15 @@ public class FeatureExtraction {
     } else {
       internalFeatureNamePrefix = name + NAMESEP + internalFeatureIndicator;
     }
-    // if the featureName name is empty, then all we want is indicate the presence of the annotation
+    // If we have a special symbol, then the boolean special symbol indicator attribute is generated
+    if (specialSymbol != null && !specialSymbol.isEmpty()) {
+      String fname = internalFeatureNamePrefix;
+      setInFeatureVector(fv, internalFeatureNamePrefix + VALSEP + specialSymbol, 1.0);    
     // inputAS a boolean. No matter what the datatype is, this is always indicated by setting the
     // featureName to 1.0 (while for all instances, where the annotation is missing, the value will
     // implicitly be set to 0.0). 
     // System.err.println("DEBUG: for fname="+featureName+",dt="+dt);
-    if (featureName == null || featureName.isEmpty()) {
+    } else if (featureName == null || featureName.isEmpty()) {
       // construct the featureName name and set to 1.0
       // however, only add the featureName if the featureName alphabet is allowed to grow.
       String fname = internalFeatureNamePrefix;
@@ -930,13 +938,14 @@ public class FeatureExtraction {
       if (albsize + i >= 0) {
         Annotation ann = annlistbackward.get(albsize + i);
         extractFeatureWorker(al.name, "L" + i, inst, ann, doc, annType4Feature,
-                featureName, featureName4Value, alphabet, dt, mvt, codeas, listsep);
+                featureName, featureName4Value, alphabet, dt, mvt, codeas, listsep,null);
         // if we have the leftmost annotation and the offset of the annotation is equals to
         // the start of the within annotation or the document start, then also set the start
         // feature for this instance
         if(i==from && gate.Utils.start(ann)==withinFrom) {
-          extractFeatureWorker(al.name,"L"+i+START_SYMBOL,inst,ann,doc,annType4Feature,
-                  null, null, alphabet, Datatype.nominal, MissingValueTreatment.zero_value, CodeAs.one_of_k, "");
+          extractFeatureWorker(al.name,"L"+i,inst,ann,doc,annType4Feature,
+                  null, null, alphabet, Datatype.nominal,
+                  MissingValueTreatment.zero_value, CodeAs.one_of_k, "",START_SYMBOL);
         }
       } else {
         break;
@@ -945,14 +954,16 @@ public class FeatureExtraction {
     // if we have index 0 in the range, process for that one
     if (from <= 0 && to >= 0) {
       extractFeatureWorker(al.name, "L" + 0, inst, sourceAnnotation, doc, annType4Feature,
-              featureName, featureName4Value, alphabet, dt, mvt, codeas, listsep);
+              featureName, featureName4Value, alphabet, dt, mvt, codeas, listsep,null);
       if(gate.Utils.start(sourceAnnotation)==withinFrom) {
-          extractFeatureWorker(al.name,"L"+0+START_SYMBOL,inst,sourceAnnotation,doc,annType4Feature,
-                  null, null, alphabet, Datatype.nominal, MissingValueTreatment.zero_value, CodeAs.one_of_k, "");
+          extractFeatureWorker(al.name,"L0",inst,sourceAnnotation,doc,annType4Feature,
+                  null, null, alphabet, Datatype.nominal, 
+                  MissingValueTreatment.zero_value, CodeAs.one_of_k, "",START_SYMBOL);
         }
       if(gate.Utils.end(sourceAnnotation)==withinTo) {
-          extractFeatureWorker(al.name,"L"+0+STOP_SYMBOL,inst,sourceAnnotation,doc,annType4Feature,
-                  null, null, alphabet, Datatype.nominal, MissingValueTreatment.zero_value, CodeAs.one_of_k, "");
+          extractFeatureWorker(al.name,"L0",inst,sourceAnnotation,doc,annType4Feature,
+                  null, null, alphabet, Datatype.nominal, 
+                  MissingValueTreatment.zero_value, CodeAs.one_of_k, "",STOP_SYMBOL);
         }
     }
     // do the ones to the right
@@ -963,10 +974,11 @@ public class FeatureExtraction {
       if (i <= alfsize) {
         Annotation ann = annlistforward.get(i - 1);
         extractFeatureWorker(al.name, "L" + i, inst, ann, doc, annType4Feature,
-                featureName, featureName4Value, alphabet, dt, mvt, codeas, listsep);
+                featureName, featureName4Value, alphabet, dt, mvt, codeas, listsep,null);
         if(i==to && gate.Utils.end(ann)==withinTo) {
-          extractFeatureWorker(al.name,"L"+i+STOP_SYMBOL,inst,ann,doc,annType4Feature,
-                  null, null, alphabet, Datatype.nominal, MissingValueTreatment.zero_value, CodeAs.one_of_k, "");
+          extractFeatureWorker(al.name,"L"+i,inst,ann,doc,annType4Feature,
+                  null, null, alphabet, Datatype.nominal, 
+                  MissingValueTreatment.zero_value, CodeAs.one_of_k, "",STOP_SYMBOL);
         }
       } else {
         break;

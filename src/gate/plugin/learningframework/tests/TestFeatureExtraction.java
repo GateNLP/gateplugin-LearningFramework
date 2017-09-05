@@ -547,13 +547,13 @@ public class TestFeatureExtraction {
     assertTrue(inst.getAlphabet().contains("myAttList╬L-1═tok5"));
     assertTrue(inst.getAlphabet().contains("myAttList╬L0═tok6"));
     assertTrue(inst.getAlphabet().contains("myAttList╬L1═tok7"));
-    assertTrue(inst.getAlphabet().contains("myAttList╬L-1╔START╗"));
-    assertTrue(inst.getAlphabet().contains("myAttList╬L1╔STOP╗"));
+    assertTrue(inst.getAlphabet().contains("myAttList╬L-1═╔START╗"));
+    assertTrue(inst.getAlphabet().contains("myAttList╬L1═╔STOP╗"));
     assertEquals(5,((FeatureVector)inst.getData()).numLocations());
     assertEquals(1.0,((FeatureVector)inst.getData()).value("myAttList╬L-1═tok5"),EPS);
     assertEquals(1.0,((FeatureVector)inst.getData()).value("myAttList╬L0═tok6"),EPS);
     assertEquals(1.0,((FeatureVector)inst.getData()).value("myAttList╬L1═tok7"),EPS);
-    assertEquals(1.0,((FeatureVector)inst.getData()).value("myAttList╬L-1╔START╗"),EPS);
+    assertEquals(1.0,((FeatureVector)inst.getData()).value("myAttList╬L-1═╔START╗"),EPS);
   }
   
   // Test extracting a nominal attribute where the annotation feature is a collection
