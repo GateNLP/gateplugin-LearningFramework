@@ -39,18 +39,12 @@ import gate.plugin.learningframework.features.FeatureInfo;
 import gate.plugin.learningframework.features.TargetType;
 import gate.plugin.learningframework.mallet.LFPipe;
 import gate.util.GateRuntimeException;
-import java.io.File;
 import org.apache.log4j.Logger;
 import static gate.plugin.learningframework.data.CorpusRepresentationMalletTarget.extractIndependentFeaturesHelper;
 import gate.plugin.learningframework.features.SeqEncoder;
-import gate.util.BomStrippingInputStreamReader;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.logging.Level;
 import static gate.plugin.learningframework.LFUtils.newURL;
 
 public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {

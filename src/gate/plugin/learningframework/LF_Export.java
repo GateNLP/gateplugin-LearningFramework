@@ -40,6 +40,10 @@ import gate.plugin.learningframework.features.TargetType;
 import gate.util.Files;
 import gate.util.GateRuntimeException;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -121,27 +125,27 @@ public class LF_Export extends LF_ExportBase {
     return this.targetFeature;
   }
 
-  protected String classAnnotationType;
-  @Optional
+  protected List<String> classAnnotationTypes;
+  protected Set<String> classAnnotationTypesSet;
   @RunTime
-  @CreoleParameter(comment = "Annotation type indicating the class for sequence tagging problems.")
-  public void setClassAnnotationType(String classType) {
-    this.classAnnotationType = classType;
+  @CreoleParameter(comment = "Annotation types which indicate the class, at least one required.")
+  public void setClassAnnotationTypes(List<String> classTypes) {
+    this.classAnnotationTypes = classTypes;
   }
-
-  public String getClassAnnotationType() {
-    return this.classAnnotationType;
+  public List<String> getClassAnnotationTypes() {
+    return this.classAnnotationTypes;
   }
+  
 
   protected TargetType targetType;
   @RunTime
-  @CreoleParameter(comment = "Target type: classification or regression problem?")
+  @CreoleParameter(comment = "Target type: classification or regression problem?", defaultValue="NOMINAL")
   public void setTargetType(TargetType val) { targetType = val; }
   public TargetType getTargetType() { return targetType; }
   
   
   // Depending on what the user wants, we use one of the two, so we avoid constant casting.
-  private CorpusRepresentationMalletTarget corpusRepresentationClass = null;
+  private CorpusRepresentationMalletTarget corpusRepresentationTarget = null;
   private CorpusRepresentationMalletSeq corpusRepresentationSeq = null;
   
   private FeatureSpecification featureSpec = null;
@@ -211,15 +215,17 @@ public class LF_Export extends LF_ExportBase {
     String nameFeatureName = null;
     if(haveSequenceAlg) {
       if(haveSequenceProblem) {
-        corpusRepresentationSeq.add(instanceAS, inputAS.get(getSequenceSpan()), inputAS, inputAS.get(getClassAnnotationType()), null, targetType, instanceWeightFeature, nameFeatureName, seqEncoder);
+        AnnotationSet classAS = inputAS.get(classAnnotationTypesSet);
+        corpusRepresentationSeq.add(instanceAS, inputAS.get(getSequenceSpan()), inputAS, classAS, null, targetType, instanceWeightFeature, nameFeatureName, seqEncoder);
       } else {
         corpusRepresentationSeq.add(instanceAS, inputAS.get(getSequenceSpan()), inputAS, null, getTargetFeature(), targetType, instanceWeightFeature, nameFeatureName, seqEncoder);        
       }
     } else {
       if(haveSequenceProblem) {
-        corpusRepresentationClass.add(instanceAS, null, inputAS, inputAS.get(getClassAnnotationType()), null, targetType, instanceWeightFeature, nameFeatureName, seqEncoder);
+        AnnotationSet classAS = inputAS.get(classAnnotationTypesSet);
+        corpusRepresentationTarget.add(instanceAS, null, inputAS, classAS, null, targetType, instanceWeightFeature, nameFeatureName, seqEncoder);
       } else {
-        corpusRepresentationClass.add(instanceAS, null, inputAS, null, getTargetFeature(), targetType, instanceWeightFeature, nameFeatureName, seqEncoder);
+        corpusRepresentationTarget.add(instanceAS, null, inputAS, null, getTargetFeature(), targetType, instanceWeightFeature, nameFeatureName, seqEncoder);
       }
     }
     return doc;
@@ -230,8 +236,8 @@ public class LF_Export extends LF_ExportBase {
     File outDir = Files.fileFromURL(getDataDirectory());
     
     if(!haveSequenceAlg) { 
-      corpusRepresentationClass.finish();
-      Exporter.export(corpusRepresentationClass, exporter, outDir, getInstanceType(), getAlgorithmParameters());
+      corpusRepresentationTarget.finish();
+      Exporter.export(corpusRepresentationTarget, exporter, outDir, getInstanceType(), getAlgorithmParameters());
     } else {
       corpusRepresentationSeq.finish();
       Exporter.export(corpusRepresentationSeq, exporter, outDir, getInstanceType(), getAlgorithmParameters());
@@ -258,19 +264,23 @@ public class LF_Export extends LF_ExportBase {
       throw new GateRuntimeException("Could not create SeqEncoder instance",ex);
     }
     
+    if(getClassAnnotationTypes() == null) setClassAnnotationTypes(new ArrayList<>());
+    if(!getClassAnnotationTypes().isEmpty()) {
+      classAnnotationTypesSet = new HashSet<>();
+      classAnnotationTypesSet.addAll(classAnnotationTypes);
+    }
+
     
-    /*
-    if(getExporter() == Exporter.EXPORTER_MALLET_SEQ) {
+    if(getExporter() == Exporter.EXPORTER_PYTHON_SEQ) {
       if(getSequenceSpan() == null || getSequenceSpan().isEmpty()) {
-        throw new GateRuntimeException("SequenceSpan parameter is required for EXPORTER_MALLET_SEQ");
+        throw new GateRuntimeException("SequenceSpan parameter is required for EXPORTER_PYTHON_SEQ");
       } 
-    } else {
-    */
+    } else {    
       if(getSequenceSpan() != null && !getSequenceSpan().isEmpty()) {
         // NOTE: we do not have a sequence exporter yet!!
         throw new GateRuntimeException("SequenceSpan parameter must not be specified unless Sequence exporter is used");
       }
-    //}
+    }
     
     
     
@@ -281,38 +291,34 @@ public class LF_Export extends LF_ExportBase {
     if(getTargetFeature() != null && !getTargetFeature().isEmpty()) {
       // we want to export things as regression or classification problem, classAnnotationType must be empty
       haveSequenceProblem = false;
-      if(getClassAnnotationType() != null && !getClassAnnotationType().isEmpty()) {
+      if(getClassAnnotationTypes() != null && !getClassAnnotationTypes().isEmpty()) {
         throw new GateRuntimeException("Either targetFeature or classAnnotationType must be specified, not both");
       }
-      /*
-      if(getExporter() == Exporter.EXPORTER_MALLET_SEQ) {
-        // this would have to create a MalletSeq representation and then find a way to export that!
-        // corpusRepresentationSeq = new CorpusRepresentationMalletSeq(featureSpec.getFeatureInfo(), scaleFeatures);
-        // System.err.println("DEBUG: created the corpusRepresentationMalletSeq: "+corpusRepresentationSeq);
-      } else {
-      */
-        corpusRepresentationClass = new CorpusRepresentationMalletTarget(featureSpec.getFeatureInfo(), scaleFeatures, targetType);
-        System.err.println("DEBUG: created the corpusRepresentationMalletClass: "+corpusRepresentationClass);
-      //}
-    } else if(getClassAnnotationType() != null && !getClassAnnotationType().isEmpty()) {
+      // NOTE: if we do not have a sequence tagging problem, we do not allow to export sequences!
+      haveSequenceAlg = false; //(getExporter() == Exporter.EXPORTER_MALLET_SEQ);
+      corpusRepresentationTarget = new CorpusRepresentationMalletTarget(featureSpec.getFeatureInfo(), scaleFeatures, targetType);
+      haveSequenceAlg = false; //(getExporter() == Exporter.EXPORTER_MALLET_SEQ);
+      System.err.println("DEBUG: created the corpusRepresentationMalletClass: "+corpusRepresentationTarget);
+    } else if(getClassAnnotationTypes() != null && !getClassAnnotationTypes().isEmpty()) {
       haveSequenceProblem = true;
       if(getTargetFeature() != null && !getTargetFeature().isEmpty()) {
-        throw new GateRuntimeException("Either targetFeature or classAnnotationType must be specified, not both");
+        throw new GateRuntimeException("Either targetFeature or classAnnotationTypes must be specified, not both");
       }
-      /*
-      if(getExporter() == Exporter.EXPORTER_MALLET_SEQ) {
-        throw new GateRuntimeException("Exporting using MALLET_SEQ is not yet supported");
-        // this would have to create a MalletSeq representation and then find a way to export that!
-        // corpusRepresentationSeq = new CorpusRepresentationMalletSeq(featureSpec.getFeatureInfo(), scaleFeatures);
-        // System.err.println("DEBUG: created the corpusRepresentationMalletSeq: "+corpusRepresentationSeq);
+      // If we have a sequence tagging problem, we can still export in various ways. 
+      // TOOD: currently we always create a Mallet representation here, depending on the exporter, 
+      // one for sequence tagging or classification, but eventually, the exporter class should decide
+      // which representation is the best for it!     
+      if(getExporter() == Exporter.EXPORTER_PYTHON_SEQ) {
+        corpusRepresentationSeq = new CorpusRepresentationMalletSeq(featureSpec.getFeatureInfo(), scaleFeatures);
+        System.err.println("DEBUG: created the corpusRepresentationMalletSeq: "+corpusRepresentationSeq);
+        haveSequenceAlg = true;
       } else {
-      */
-        corpusRepresentationClass = new CorpusRepresentationMalletTarget(featureSpec.getFeatureInfo(), scaleFeatures,TargetType.NOMINAL);
-        System.err.println("DEBUG: created the corpusRepresentationMalletClass: "+corpusRepresentationClass);        
-      //}
+        corpusRepresentationTarget = new CorpusRepresentationMalletTarget(featureSpec.getFeatureInfo(), scaleFeatures,TargetType.NOMINAL);
+        System.err.println("DEBUG: created the corpusRepresentationMalletClass: "+corpusRepresentationTarget);        
+        haveSequenceAlg = false; 
+      }
   }
     
-    haveSequenceAlg = false; //(getExporter() == Exporter.EXPORTER_MALLET_SEQ);
     
     
     System.err.println("DEBUG: setup of the export PR complete");

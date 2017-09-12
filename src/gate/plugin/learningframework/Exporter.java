@@ -26,6 +26,7 @@ import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.engines.Info;
 import gate.plugin.learningframework.export.CorpusExporterCSV;
 import gate.plugin.learningframework.export.CorpusExporterMatrixMarket2;
+import gate.plugin.learningframework.export.CorpusExporterPythonSeq;
 import gate.plugin.learningframework.features.TargetType;
 import gate.plugin.learningframework.mallet.LFPipe;
 import java.io.File;
@@ -37,7 +38,7 @@ public enum Exporter {
   EXPORTER_CSV_CLASS(CorpusExporterCSV.class,TargetType.NOMINAL),  
   EXPORTER_CSV_REGRESSION(CorpusExporterCSV.class,TargetType.NUMERIC),  
   //EXPORTER_MALLET_CLASS(),
-  //EXPORTER_MALLET_SEQ(),
+  EXPORTER_PYTHON_SEQ(CorpusExporterPythonSeq.class,TargetType.NOMINAL),
   EXPORTER_LIBSVM_CLASS(CorpusExporterLibSVM.class,TargetType.NOMINAL),
   EXPORTER_LIBSVM_REGRESSION(CorpusExporterLibSVM.class,TargetType.NUMERIC),
   EXPORTER_MATRIXMARKET2_CLASS(CorpusExporterMatrixMarket2.class,TargetType.NOMINAL),
