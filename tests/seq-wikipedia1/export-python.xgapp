@@ -1150,7 +1150,7 @@
                 </entry>
                 <entry>
                   <string>algorithmParameters</string>
-                  <null/>
+                  <string>-s </string>
                 </entry>
                 <entry>
                   <string>inputASName</string>

@@ -34,6 +34,8 @@ import gate.plugin.learningframework.data.Attributes;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.engines.Info;
 import gate.plugin.learningframework.engines.Parms;
+import gate.plugin.learningframework.features.CodeAs;
+import gate.plugin.learningframework.features.Datatype;
 import gate.plugin.learningframework.features.FeatureExtraction;
 import gate.plugin.learningframework.mallet.NominalTargetWithCosts;
 import gate.util.GateRuntimeException;
@@ -86,10 +88,9 @@ public class CorpusExporterPythonSeq extends CorpusExporter {
 
     Parms ps = new Parms(parms, "s:string:b", "f:filtermv:b");
     boolean asString = (boolean) ps.getValueOrElse("string", false);
-    if (asString) {
-      throw new GateRuntimeException("parameter s/string to represent as string not supported yet");
-    }
     boolean filterMV = (boolean) ps.getValueOrElse("filtermv", false);
+    System.err.println("DEBUG: writing nominal values as string: "+asString);
+    System.err.println("DEBUGL filter instances with missing values: "+filterMV);
 
     PrintStream dataOut = null;
     File dataFile = null;
@@ -143,18 +144,44 @@ public class CorpusExporterPythonSeq extends CorpusExporter {
         // TODO: can we use some JSON library instead?
         dataOut.print("[");
         for (int j = 0; j < nrFeatures; j++) {
-          double value = fv.value(j);
+          double value = fv.value(j);          
+          Attribute attr = attrs.getAttribute(j);
           if (first) {
             first = false;
           } else {
             dataOut.print(", ");
           }
-          // TODO: depending on MV processing!!
-          if (Double.isNaN(value)) {
-            dataOut.print(0.0);
+          if(asString && (attr.datatype==Datatype.nominal && attr.codeAs==CodeAs.number)) {            
+            Alphabet attralph = attr.alphabet;
+            int attrvals = attralph.size();
+            String str = "";   // the default value is used if we have -1, which means the feature was missing
+            if((int)value >= attrvals) {
+              System.err.println("ERROR: value not in alphabet for attr "+attr+": "+value);
+            } else if(((int)value) == -1) {
+              // use empty string
+            } else {
+              try {
+                str=(String)attr.alphabet.lookupObject((int) value);
+              } catch(Exception ex) {
+                System.err.println("Could not get object for value: "+value);
+                System.err.println("Feature index is "+j);
+                System.err.println("Attribute is "+attr);
+                System.err.println("Alphabet is "+attralph);
+                System.err.println("Alphabet size is "+attrvals);
+                throw new GateRuntimeException("Could not get object for value: "+value,ex);                
+              }
+            }
+            dataOut.print("\"");
+            dataOut.print(escape4Json(str));
+            dataOut.print("\"");
           } else {
-            // if we 
-            dataOut.print(value);
+            // TODO: depending on MV processing!!
+            if (Double.isNaN(value)) {
+              dataOut.print(0.0);
+            } else {
+              // if we 
+              dataOut.print(value);
+            }
           }
         }
         dataOut.print("]");
@@ -180,7 +207,13 @@ public class CorpusExporterPythonSeq extends CorpusExporter {
             }
             Object entry = tl.getEntry();
             if (entry instanceof String) {
-              dataOut.print(targetAlphabet.lookupIndex(entry));
+              if(asString) {
+                dataOut.print("\"");
+                dataOut.print(escape4Json((String)entry));
+                dataOut.print("\"");
+              } else {
+                dataOut.print(targetAlphabet.lookupIndex(entry));
+              }
             } else if (entry instanceof NominalTargetWithCosts) {
               throw new GateRuntimeException("Cost vectors not yet implemented");
             }
@@ -207,4 +240,10 @@ public class CorpusExporterPythonSeq extends CorpusExporter {
     }
   } // export
 
+  public static String escape4Json(String str) {
+    return str.replaceAll("([\\\\\"])", "\\\\$1");
+  }
+  
+  
+  
 }
