@@ -60,7 +60,7 @@ import java.io.PrintStream;
  *
  * @author Johann Petrak
  */
-public class CorpusExporterPythonSeq extends CorpusExporter {
+public class CorpusExporterJsonSeq extends CorpusExporter {
 
   @Override
   public Info getInfo() {

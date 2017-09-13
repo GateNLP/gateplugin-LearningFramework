@@ -1183,7 +1183,7 @@
                 </entry>
                 <entry>
                   <string>exporter</string>
-                  <gate.plugin.learningframework.Exporter>EXPORTER_PYTHON_SEQ</gate.plugin.learningframework.Exporter>
+                  <gate.plugin.learningframework.Exporter>EXPORTER_JSON_SEQ</gate.plugin.learningframework.Exporter>
                 </entry>
                 <entry>
                   <string>featureSpecURL</string>

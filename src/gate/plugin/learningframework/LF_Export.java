@@ -271,7 +271,7 @@ public class LF_Export extends LF_ExportBase {
     }
 
     
-    if(getExporter() == Exporter.EXPORTER_PYTHON_SEQ) {
+    if(getExporter() == Exporter.EXPORTER_JSON_SEQ) {
       if(getSequenceSpan() == null || getSequenceSpan().isEmpty()) {
         throw new GateRuntimeException("SequenceSpan parameter is required for EXPORTER_PYTHON_SEQ");
       } 
@@ -308,7 +308,7 @@ public class LF_Export extends LF_ExportBase {
       // TOOD: currently we always create a Mallet representation here, depending on the exporter, 
       // one for sequence tagging or classification, but eventually, the exporter class should decide
       // which representation is the best for it!     
-      if(getExporter() == Exporter.EXPORTER_PYTHON_SEQ) {
+      if(getExporter() == Exporter.EXPORTER_JSON_SEQ) {
         corpusRepresentationSeq = new CorpusRepresentationMalletSeq(featureSpec.getFeatureInfo(), scaleFeatures);
         System.err.println("DEBUG: created the corpusRepresentationMalletSeq: "+corpusRepresentationSeq);
         haveSequenceAlg = true;
