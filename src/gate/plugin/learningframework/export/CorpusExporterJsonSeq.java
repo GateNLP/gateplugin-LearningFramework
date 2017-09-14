@@ -39,7 +39,6 @@ import gate.plugin.learningframework.features.Datatype;
 import gate.plugin.learningframework.features.FeatureExtraction;
 import gate.plugin.learningframework.mallet.NominalTargetWithCosts;
 import gate.util.GateRuntimeException;
-import gate.util.Strings;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;

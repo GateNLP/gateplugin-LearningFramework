@@ -40,10 +40,12 @@ import gate.plugin.learningframework.features.TargetType;
 import gate.util.Files;
 import gate.util.GateRuntimeException;
 import java.io.File;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 
 /**
  *
@@ -59,9 +61,17 @@ public class LF_Export extends LF_ExportBase {
   private final Logger logger = Logger.getLogger(LF_Export.class.getCanonicalName());
 
   protected URL dataDirectory;
+  { 
+    try {
+      dataDirectory = new File(".").getCanonicalFile().toURI().toURL();
+    } catch (Exception ex) {
+      throw new GateRuntimeException("Could not create URL for current directory to use as a default for dataDirectory",ex);
+    }
+  }
 
   @RunTime
-  @CreoleParameter(comment = "The directory where all data will be stored and read from")
+  @Optional
+  @CreoleParameter(comment = "The directory where all data will be stored and read from (default is current dir of Java process)")
   public void setDataDirectory(URL output) {
     dataDirectory = output;
   }
@@ -103,6 +113,7 @@ public class LF_Export extends LF_ExportBase {
   protected ScalingMethod scaleFeatures = ScalingMethod.NONE;
 
   @RunTime
+  @Optional
   @CreoleParameter(defaultValue = "NONE", comment = "If and how to scale features. ")
   public void setScaleFeatures(ScalingMethod sf) {
     scaleFeatures = sf;
@@ -116,7 +127,7 @@ public class LF_Export extends LF_ExportBase {
 
   @RunTime
   @Optional
-  @CreoleParameter(comment = "If specified, export as classification or regression problem (currently required).")
+  @CreoleParameter(comment = "If specified, export as classification or regression problem")
   public void setTargetFeature(String classFeature) {
     this.targetFeature = classFeature;
   }
@@ -128,7 +139,8 @@ public class LF_Export extends LF_ExportBase {
   protected List<String> classAnnotationTypes;
   protected Set<String> classAnnotationTypesSet;
   @RunTime
-  @CreoleParameter(comment = "Annotation types which indicate the class, at least one required.")
+  @Optional
+  @CreoleParameter(comment = "If specified, annotation types which indicate the class for sequence tagging")
   public void setClassAnnotationTypes(List<String> classTypes) {
     this.classAnnotationTypes = classTypes;
   }
@@ -137,8 +149,9 @@ public class LF_Export extends LF_ExportBase {
   }
   
 
-  protected TargetType targetType;
+  protected TargetType targetType = TargetType.NOMINAL;
   @RunTime
+  @Optional
   @CreoleParameter(comment = "Target type: classification or regression problem?", defaultValue="NOMINAL")
   public void setTargetType(TargetType val) { targetType = val; }
   public TargetType getTargetType() { return targetType; }
