@@ -85,7 +85,7 @@ public class CorpusExporterJsonSeq extends CorpusExporter {
     // included as a string, not as its encoding.
     // NOTE: for this exporting, sparse encodings of nominal values should be avoided!
 
-    Parms ps = new Parms(parms, "s:string:b", "f:filtermv:b");
+    Parms ps = new Parms(parms, "S:string:b", "f:filtermv:b");
     boolean asString = (boolean) ps.getValueOrElse("string", false);
     boolean filterMV = (boolean) ps.getValueOrElse("filtermv", false);
     System.err.println("DEBUG: writing nominal values as string: "+asString);

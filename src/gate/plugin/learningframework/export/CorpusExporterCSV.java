@@ -32,6 +32,8 @@ import gate.plugin.learningframework.data.Attributes;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.engines.Info;
 import gate.plugin.learningframework.engines.Parms;
+import gate.plugin.learningframework.features.CodeAs;
+import gate.plugin.learningframework.features.Datatype;
 import gate.plugin.learningframework.features.FeatureExtraction;
 import gate.plugin.learningframework.mallet.NominalTargetWithCosts;
 import gate.util.GateRuntimeException;
@@ -79,7 +81,7 @@ public class CorpusExporterCSV extends CorpusExporter {
     // TODO: add parameter that will output the target label and not the target 
     // index
     
-    Parms ps = new Parms(parms, "t:twofiles:b", "n:noheader:b","T:TSV:b","s:separator:s");
+    Parms ps = new Parms(parms, "t:twofiles:b", "n:noheader:b","T:TSV:b","s:separator:s","S:string:b");
     boolean twofiles = (boolean)ps.getValueOrElse("twofiles", false);
     boolean noheader = (boolean)ps.getValueOrElse("noheader", false);
     boolean tsv = (boolean)ps.getValueOrElse("TSV",false);
@@ -89,6 +91,11 @@ public class CorpusExporterCSV extends CorpusExporter {
     String separator = (String)ps.getValueOrElse("separator",defaultSep);
     separator = Strings.unescape(separator);
     String extension = tsv ? ".tsv" : ".csv";
+    boolean asString = (boolean) ps.getValueOrElse("string", false);
+    if(asString && !tsv) {
+      throw new GateRuntimeException("Option S/string only supported for TSV format (option T/TSV)");
+    }
+    System.err.println("DEBUG: writing nominal values as string: "+asString);
     
     PrintStream dataOut = null;
     File dataFile = null;
@@ -160,6 +167,7 @@ public class CorpusExporterCSV extends CorpusExporter {
         boolean first = true;
         for(int i=0; i<nrFeatures; i++) {
           double value = vector.value(i);
+          Attribute attr = attrs.getAttribute(i);
           if(first) 
             first = false;
           else 
@@ -168,7 +176,19 @@ public class CorpusExporterCSV extends CorpusExporter {
           if(Double.isNaN(value)) {
             dataOut.print(0.0);
           } else {
-            dataOut.print(value);
+            if(asString && (attr.datatype==Datatype.nominal && attr.codeAs==CodeAs.number)) {    
+              // TODO: missing value for now represented as an empty string
+              if(((int)value)==-1) {
+                // dataOut.print(""); // same as doing nothing
+              } else {
+                String str = (String)attr.alphabet.lookupObject((int) value);
+                // make sure there are not tabs in the string, replace with spaces
+                str=str.replaceAll("\\t", " ");
+                dataOut.print(str);
+              }
+            } else {       
+              dataOut.print(value);
+            }
           }
         }
       } // for 
@@ -189,7 +209,12 @@ public class CorpusExporterCSV extends CorpusExporter {
         } 
         Object entry = tl.getEntry();
         if(entry instanceof String) {
-          targetOut.print(targetAlphabet.lookupIndex(entry));          
+          if(asString) {          
+            entry = ((String)entry).replaceAll("\\t"," ");
+            dataOut.print(entry);            
+          } else {
+            targetOut.print(targetAlphabet.lookupIndex(entry));          
+          }
         } else if(entry instanceof NominalTargetWithCosts) {
           throw new GateRuntimeException("Cost vectors not yet implemented");
         }
