@@ -235,8 +235,13 @@ public class CorpusExporterARFF extends CorpusExporter {
             // TODO: check for missing value, also use the special alphabet we created?
             if(value<0.5) { sb.append("false"); } else { sb.append("true"); }
           } else if(attr.datatype==Datatype.nominal) {
-            // TODO: check for missing value!
-            sb.append(escape4Arff((String)attr.alphabet.lookupObject((int) value)));
+            // TODO: check for how to exactly handling missing values, for now we simply output
+            // an empty string here
+            if(((int)value)==-1) {
+              sb.append(escape4Arff(""));
+            } else {
+              sb.append(escape4Arff((String)attr.alphabet.lookupObject((int) value)));
+            }
           } else {
             // guard for forgetting about here when we add datatypes later
             sb.append("GOTCHA!!!!");
