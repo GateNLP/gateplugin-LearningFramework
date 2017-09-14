@@ -21,24 +21,16 @@ package gate.plugin.learningframework.export;
 
 import cc.mallet.pipe.Pipe;
 import cc.mallet.types.Alphabet;
-import cc.mallet.types.FeatureSequence;
 import cc.mallet.types.FeatureVector;
-import cc.mallet.types.FeatureVectorSequence;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
-import cc.mallet.types.Label;
 import cc.mallet.types.LabelAlphabet;
 import gate.plugin.learningframework.Globals;
-import gate.plugin.learningframework.data.Attribute;
 import gate.plugin.learningframework.data.Attributes;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.engines.Info;
 import gate.plugin.learningframework.engines.Parms;
-import gate.plugin.learningframework.features.CodeAs;
-import gate.plugin.learningframework.features.Datatype;
 import gate.plugin.learningframework.features.FeatureExtraction;
-import gate.plugin.learningframework.mallet.NominalTargetWithCosts;
-import gate.util.GateRuntimeException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
@@ -51,7 +43,8 @@ import java.io.PrintStream;
  * with either two or one element: if there are two, the second element is for
  * the targets, otherwise there are only inputs. The first element is a list that
  * represents the feature vector (independent variables).
- * The optional second element is a target.
+ * The optional second element is a target. If the Mallet instance does not 
+ * have a target (the target object is null), then the second element is missing
  * <p>
  * Example with targets: '[[0.1, 2.3], 1]'<br>
  * Example without targets: '[[0.1, 2.3]]'
@@ -64,7 +57,7 @@ public class CorpusExporterJsonTarget extends CorpusExporterJsonBase {
   public Info getInfo() {
     Info info = new Info();
 
-    info.algorithmClass = "gate.plugin.learningframework.engines.AlgorithmSequenceTagging";
+    info.algorithmClass = "gate.plugin.learningframework.engines.AlgorithmClassification";
     info.algorithmName = "DUMMY";
     info.engineClass = "DUMMY";
     info.modelClass = "DUMMY";
@@ -87,8 +80,8 @@ public class CorpusExporterJsonTarget extends CorpusExporterJsonBase {
     Parms ps = new Parms(parms, "S:string:b", "f:filtermv:b");
     boolean asString = (boolean) ps.getValueOrElse("string", false);
     boolean filterMV = (boolean) ps.getValueOrElse("filtermv", false);
-    System.err.println("DEBUG: writing nominal values as string: "+asString);
-    System.err.println("DEBUGL filter instances with missing values: "+filterMV);
+    System.err.println("DEBUG: writing nominal values as string: " + asString);
+    System.err.println("DEBUGL filter instances with missing values: " + filterMV);
 
     PrintStream dataOut = null;
     File dataFile = null;
@@ -105,131 +98,8 @@ public class CorpusExporterJsonTarget extends CorpusExporterJsonBase {
     LabelAlphabet targetAlphabet = (LabelAlphabet) malletInstances.getPipe().getTargetAlphabet();
     int nrFeatures = pipe.getDataAlphabet().size();
     for (Instance inst : malletInstances) {
-      // For sequences, each instance wraps a feature vector list and a feature vector
-      // was created as new Instance(fvseq, fseq, null, null);
-      // where FeatureVectorSequence fvseq = new FeatureVectorSequence(vectors);
-      // and FeatureSequence fseq = new FeatureSequence(pipe.getTargetAlphabet(), labelidxs);
-
-      // First unpack the feature vector sequence and fseq 
-      FeatureVectorSequence fvseq = (FeatureVectorSequence) inst.getData();
-      FeatureSequence fseq = (FeatureSequence) inst.getTarget();
-      boolean haveTargets = (fseq != null && fseq.size() > 0);
-      if (haveTargets && (fseq.size() != fvseq.size())) {
-        throw new GateRuntimeException("There are targets but not the same number, in fvseq=" + fvseq.size() + ", targets=" + fseq.size());
-      }
-      dataOut.print("[");  // outermost list which encloses the list of feature vectors and the list of targets      
-      boolean firstList = true;
-      dataOut.print("["); // for the feature vector list
-      for (int i = 0; i < fvseq.size(); i++) {
-        FeatureVector fv = fvseq.get(i);
-        Object targetObject = fseq.get(i);
-        if (filterMV) {
-          Object ignore = inst.getProperty(FeatureExtraction.PROP_IGNORE_HAS_MV);
-          if (ignore != null && ignore.equals(true)) {
-            continue;
-          }
-        }
-        if (firstList) {
-          firstList = false;
-        } else {
-          dataOut.print(", ");
-        }
-        // TODO: the python format does not allow the use of instance weights, instead the 
-        // weight must become an additional feature!
-        Double instanceWeight = (Double) inst.getProperty("instanceWeight");
-        boolean first = true;
-
-        // TODO: can we use some JSON library instead?
-        dataOut.print("[");
-        for (int j = 0; j < nrFeatures; j++) {
-          double value = fv.value(j);          
-          Attribute attr = attrs.getAttribute(j);
-          if (first) {
-            first = false;
-          } else {
-            dataOut.print(", ");
-          }
-          if(asString && (attr.datatype==Datatype.nominal && attr.codeAs==CodeAs.number)) {            
-            Alphabet attralph = attr.alphabet;
-            int attrvals = attralph.size();
-            String str = "";   // the default value is used if we have -1, which means the feature was missing
-            if((int)value >= attrvals) {
-              System.err.println("ERROR: value not in alphabet for attr "+attr+": "+value);
-            } else if(((int)value) == -1) {
-              // use empty string
-            } else {
-              try {
-                str=(String)attr.alphabet.lookupObject((int) value);
-              } catch(Exception ex) {
-                System.err.println("Could not get object for value: "+value);
-                System.err.println("Feature index is "+j);
-                System.err.println("Attribute is "+attr);
-                System.err.println("Alphabet is "+attralph);
-                System.err.println("Alphabet size is "+attrvals);
-                throw new GateRuntimeException("Could not get object for value: "+value,ex);                
-              }
-            }
-            dataOut.print("\"");
-            dataOut.print(escape4Json(str));
-            dataOut.print("\"");
-          } else {
-            // TODO: depending on MV processing!!
-            if (Double.isNaN(value)) {
-              dataOut.print(0.0);
-            } else {
-              // if we 
-              dataOut.print(value);
-            }
-          }
-        }
-        dataOut.print("]");
-      }
-      dataOut.print("]"); // close the feature vector list
-      // Only if there are targets, add another list with the targets
-      if (haveTargets) {
-        dataOut.print(", [");
-        boolean first = true;
-        for (int i = 0; i < fseq.size(); i++) {
-          Object target = fseq.get(i);
-
-          if(first) 
-            first = false;
-          else 
-            dataOut.print(", ");
-          if (targetAlphabet != null) {
-            Label tl = null;
-            if (target instanceof Label) {
-              tl = (Label) target;
-            } else {
-              tl = targetAlphabet.lookupLabel(target);
-            }
-            Object entry = tl.getEntry();
-            if (entry instanceof String) {
-              if(asString) {
-                dataOut.print("\"");
-                dataOut.print(escape4Json((String)entry));
-                dataOut.print("\"");
-              } else {
-                dataOut.print(targetAlphabet.lookupIndex(entry));
-              }
-            } else if (entry instanceof NominalTargetWithCosts) {
-              throw new GateRuntimeException("Cost vectors not yet implemented");
-            }
-          } else {
-            if (target instanceof Double) {
-              dataOut.print(target);
-            } else {
-              throw new GateRuntimeException("No target Alphabet and odd target class: " + target.getClass());
-            }
-          }
-
-        } // for each target
-
-        dataOut.print("]"); // close target list
-      } // if haveTargets
-      dataOut.print("]");  // close outer list
+      dataOut.print(instance2String(inst, targetAlphabet, attrs, nrFeatures, asString, filterMV));
       dataOut.println();
-
     }
     try {
       dataOut.close();
@@ -238,6 +108,34 @@ public class CorpusExporterJsonTarget extends CorpusExporterJsonBase {
     }
   } // export
 
+  
+  public String instance2String(
+          Instance inst,
+          LabelAlphabet targetAlphabet,
+          Attributes attrs,
+          int nrFeatures,
+          boolean asString,
+          boolean filterMV) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("[");  // outermost list 
+    FeatureVector fv = (FeatureVector)inst.getData();
+    Object targetObject = inst.getTarget();
+    if (filterMV) {
+      Object ignore = inst.getProperty(FeatureExtraction.PROP_IGNORE_HAS_MV);
+      if (ignore != null && ignore.equals(true)) {
+          return null;
+      }
+    }
+    sb.append(featureVector2String(fv, nrFeatures, attrs, asString));
+    // for now, we always try to output the target, even if it is null, this may change 
+    // in the future
+    if (targetObject!=null) {
+      sb.append(", ");
+      sb.append(target2String(targetObject, targetAlphabet, asString));
+    }
+    sb.append("]");  // close outer list
+    return sb.toString();
+  }// instance2String
   
   
 }
