@@ -34,6 +34,7 @@ import gate.plugin.learningframework.engines.Info;
 import gate.plugin.learningframework.features.CodeAs;
 import gate.plugin.learningframework.features.Datatype;
 import gate.plugin.learningframework.features.FeatureExtraction;
+import gate.plugin.learningframework.features.MissingValueTreatment;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -96,7 +97,7 @@ public class CorpusExporterARFF extends CorpusExporter {
         if(attr.alphabet == null) {
           throw new RuntimeException("Attribute is not numeric but no alphabet: "+attr);
         }
-        String vals = alphabet2Arff(attr.alphabet);
+        String vals = alphabet2Arff(attr.alphabet,attr.mvTreatment);
         headerOut.print(vals);
         dataOut.print(vals);
       } else {
@@ -124,7 +125,7 @@ public class CorpusExporterARFF extends CorpusExporter {
       if(target.alphabet == null) {
         throw new RuntimeException("target is not numeric but no alphabet: "+target);
       }
-      String vals = alphabet2Arff(target.alphabet);
+      String vals = alphabet2Arff(target.alphabet,null);
       headerOut.print(vals);
       dataOut.print(vals);
     }
@@ -174,7 +175,8 @@ public class CorpusExporterARFF extends CorpusExporter {
     return what;
   }
   
-  public String alphabet2Arff(Alphabet alph) {
+  public String alphabet2Arff(Alphabet alph, MissingValueTreatment mvt) {
+    // NOTE: mvt can be null, if this is used for a target!!
     StringBuilder sb = new StringBuilder();
     sb.append("{");
     for(int i=0; i<alph.size(); i++) {
@@ -182,6 +184,8 @@ public class CorpusExporterARFF extends CorpusExporter {
       String val = alph.lookupObject(i).toString();
       sb.append(escape4Arff(val));
     }
+    // TODO: we may need to add the definition for the missing value here,
+    // but by default, we do not do that.
     sb.append("}");
     return sb.toString();
   }
@@ -233,22 +237,21 @@ public class CorpusExporterARFF extends CorpusExporter {
           // where codeas is relevant, we ALWAYS have codeas set to the correct value!
           Attribute attr = attrs.getAttribute(idx);
           if(attr.datatype==Datatype.numeric || (attr.datatype==Datatype.nominal && attr.codeAs!=CodeAs.number)) {
-            // TODO: check for missing value!!!
             sb.append(value);
           } else if(attr.datatype==Datatype.bool) {
             // TODO: check for missing value, also use the special alphabet we created?
             if(value<0.5) { sb.append("false"); } else { sb.append("true"); }
           } else if(attr.datatype==Datatype.nominal) {
             // TODO: check for how to exactly handling missing values, for now we simply output
-            // an empty string here
+            // the Weka missing value placeholder
             if(((int)value)==-1) {
-              sb.append(escape4Arff(""));
+              sb.append("?");
             } else {
               sb.append(escape4Arff((String)attr.alphabet.lookupObject((int) value)));
             }
           } else {
             // guard for forgetting about here when we add datatypes later
-            sb.append("GOTCHA!!!!");
+            sb.append("GOTCHA!!!! DATATYPE NOT SUPPORTED IN THE EXPORT CODE");
           }                  
         }
       } // for 
