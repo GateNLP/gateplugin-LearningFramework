@@ -132,7 +132,7 @@ public class CorpusExporterCSV extends CorpusExporter {
           dataOut.print(separator);
         }
         // get the name, if necessary, escape it properly
-        String name = escape4CSV(attr.name);
+        String name = tsv ? prepare4TSV(attr.name) : escape4CSV(attr.name);
         dataOut.print(name);
       } // for attr : attrs
       // Now add the header for the target column if we just have one file,
@@ -179,12 +179,10 @@ public class CorpusExporterCSV extends CorpusExporter {
             if(asString && (attr.datatype==Datatype.nominal && attr.codeAs==CodeAs.number)) {    
               // TODO: missing value for now represented as an empty string
               if(((int)value)==-1) {
-                // dataOut.print(""); // same as doing nothing
+                dataOut.print(tsv ? "" : "''");
               } else {
                 String str = (String)attr.alphabet.lookupObject((int) value);
-                // make sure there are not tabs in the string, replace with spaces
-                str=str.replaceAll("\\t", " ");
-                dataOut.print(str);
+                dataOut.print(tsv ? prepare4TSV(str) : escape4CSV(str));
               }
             } else {       
               dataOut.print(value);
@@ -210,7 +208,7 @@ public class CorpusExporterCSV extends CorpusExporter {
         Object entry = tl.getEntry();
         if(entry instanceof String) {
           if(asString) {          
-            entry = ((String)entry).replaceAll("\\t"," ");
+            entry = tsv ? prepare4TSV((String)entry) : escape4CSV((String)entry);
             dataOut.print(entry);            
           } else {
             targetOut.print(targetAlphabet.lookupIndex(entry));          
@@ -259,6 +257,8 @@ public class CorpusExporterCSV extends CorpusExporter {
    * @return 
    */
   public String escape4CSV(String what) {
+    if(what==null) what = "";
+    if(what.trim().isEmpty()) return "'" + what + "'";
     int len = what.length();
     what = what.replaceAll("([\"'%\\n\\r \\t\\\\])", "\\\\$1");
     if(what.length()!=len || what.contains("{") || what.contains("}")) {
@@ -267,5 +267,11 @@ public class CorpusExporterCSV extends CorpusExporter {
     return what;
   }
   
+  // This just makes sure that a string does not contain either a tab or
+  // a newline. For now, we replace those with spaces
+  public String prepare4TSV(String what) {
+    what = what.replaceAll("[\\n\\t]"," ");
+    return what;
+  }
   
 }
