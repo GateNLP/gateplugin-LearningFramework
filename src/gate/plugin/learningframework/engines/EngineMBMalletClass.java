@@ -123,7 +123,7 @@ public class EngineMBMalletClass extends EngineMBMallet {
       try {
         trainer = (ClassifierTrainer) trainerClass.newInstance();
       } catch (Exception ex) {
-        throw new GateRuntimeException("Could not create trainer instance for " + trainerClass);
+        throw new GateRuntimeException("Could not create trainer instance for " + trainerClass, ex);
       }
     } else {      
       // there are parameters, so if it is one of the algorithms were we support setting
@@ -179,12 +179,6 @@ public class EngineMBMalletClass extends EngineMBMallet {
         int iters = (int)ps.getValueOrElse("int", BalancedWinnowTrainer.DEFAULT_MAX_ITERATIONS);
         double cr = (double)ps.getValueOrElse("coolingRate", BalancedWinnowTrainer.DEFAULT_COOLING_RATE);
         trainer = new BalancedWinnowTrainer(epsilon,delta,iters,cr);
-      } else if(algorithm.equals(AlgorithmClassification.MALLET_CL_NAIVE_BAYES)) {
-        // This one does not have any parameters!
-        trainer = new NaiveBayesTrainer();        
-      } else if(algorithm.equals(AlgorithmClassification.MALLET_CL_NAIVE_BAYES_EM)) {
-        // No parameters!
-        trainer = new NaiveBayesEMTrainer();
       } else if(algorithm.equals(AlgorithmClassification.MALLET_CL_WINNOW)) {
         Parms ps = new Parms(parms, "a:alpha:d",
                 "b:beta:d", "n:nfact:d");
@@ -201,7 +195,7 @@ public class EngineMBMalletClass extends EngineMBMallet {
         try {
           trainer = (ClassifierTrainer) trainerClass.newInstance();
         } catch (Exception ex) {
-          throw new GateRuntimeException("Could not create trainer instance for " + trainerClass);
+          throw new GateRuntimeException("Could not create trainer instance for " + trainerClass, ex);
         }
       }
     }
