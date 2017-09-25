@@ -35,7 +35,7 @@ public enum AlgorithmClassification implements Algorithm {
   MALLET_CL_DECISION_TREE(EngineMBMalletClass.class,cc.mallet.classify.DecisionTreeTrainer.class),
   MALLET_CL_MAX_ENT(EngineMBMalletClass.class,cc.mallet.classify.MaxEntTrainer.class),
   MALLET_CL_NAIVE_BAYES_EM(EngineMBMalletClass.class,cc.mallet.classify.NaiveBayesEMTrainer.class),
-  MALLET_CL_NAIVE_BAYES(EngineMBMalletClass.class,cc.mallet.classify.NaiveBayes.class),
+  MALLET_CL_NAIVE_BAYES(EngineMBMalletClass.class,cc.mallet.classify.NaiveBayesTrainer.class),
   MALLET_CL_WINNOW(EngineMBMalletClass.class,cc.mallet.classify.WinnowTrainer.class),
   MALLET_SEQ_CRF(EngineMBMalletSeq.class,null,AlgorithmKind.SEQUENCE_TAGGER), // ByLabelLikelihood or ByThreadedLabelLikelihood
   MALLET_SEQ_CRF_SG(EngineMBMalletSeq.class,null,AlgorithmKind.SEQUENCE_TAGGER), // Stochastic gradient
