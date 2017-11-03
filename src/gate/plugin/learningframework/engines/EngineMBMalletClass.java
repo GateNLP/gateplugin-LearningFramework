@@ -156,7 +156,7 @@ public class EngineMBMalletClass extends EngineMBMallet {
         MaxEntTrainer tr = new MaxEntTrainer();
         Parms ps = new Parms(parms, "v:gaussianPriorVariance:d",
                 "l:l1Weight:d", "i:numIterations:i");
-        // TODO: the default values cannot be take from MaxEntTrainer because
+        // TODO: the default values cannot be taken from MaxEntTrainer because
         // they are not public there
         double gaussianPriorVariance = (double)ps.getValueOrElse("gaussianPriorVariance", 1.0);
         tr.setGaussianPriorVariance(gaussianPriorVariance);
@@ -166,7 +166,7 @@ public class EngineMBMalletClass extends EngineMBMallet {
         tr.setNumIterations(iters);
         trainer = tr;
       // NOTE: for AdaBoost, use this method recursively to first initialize
-      // the trainer with the base traner. The parameters should contain
+      // the trainer with the base trainer. The parameters should contain
       // something like -A ALGNAME -N numRounds -a -b ... 
       // where ALGNAME is an AlgorithmClassification constant and N is the
       // numRounds parameter for AdaBoost[M2] and all the other parameters 
