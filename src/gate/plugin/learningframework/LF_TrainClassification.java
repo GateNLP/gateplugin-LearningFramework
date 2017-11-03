@@ -178,9 +178,15 @@ public class LF_TrainClassification extends LF_TrainBase {
     // This makes sure that for training, any attribute which makes use of the internal class feature
     // will get the correct value from the training set, even if the gate.LF.target feature has
     // been set differently before this PR is run.
+    // While we are at it, we also check that the target feature actually has a non-null
+    // value. We throw an exception if there is an instance without a target value!
     for(Annotation inst : instanceAS) {
       FeatureMap fm = inst.getFeatures();
-      fm.put("gate.LF.target",fm.get(getTargetFeature()));
+      Object targetVal = fm.get(getTargetFeature());
+      if(null==targetVal) {
+        throw new GateRuntimeException("Target value is null in document "+document.getName()+" for instance "+inst);
+      }
+      fm.put("gate.LF.target",targetVal);
     }
 
     

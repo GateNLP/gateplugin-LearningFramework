@@ -19,6 +19,7 @@
  */
 package gate.plugin.learningframework;
 
+import gate.Annotation;
 import gate.AnnotationSet;
 import java.net.URL;
 
@@ -26,6 +27,7 @@ import org.apache.log4j.Logger;
 
 import gate.Controller;
 import gate.Document;
+import gate.FeatureMap;
 import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.Optional;
@@ -154,6 +156,14 @@ public class LF_TrainRegression extends LF_TrainBase {
     // the sequenceAS is always null for the regression task!
     // the nameFeatureName is always null for now!
     String nameFeatureName = null;
+    for(Annotation inst : instanceAS) {
+      FeatureMap fm = inst.getFeatures();
+      Object targetVal = fm.get(getTargetFeature());
+      if(null==targetVal) {
+        throw new GateRuntimeException("Target value is null in document "+document.getName()+" for instance "+inst);
+      }
+    }
+    
     corpusRepresentation.add(instanceAS, null, inputAS, null, getTargetFeature(), TargetType.NUMERIC, instanceWeightFeature, nameFeatureName, null);
     return doc;
   }
