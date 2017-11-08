@@ -2,7 +2,7 @@
 title: Home
 ---
 
-Some test.
+Some test. 2
 
 Does this work?
 
