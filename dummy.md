@@ -46,14 +46,14 @@ $$
 * site.posts.size {{ site.posts.size }}
 * paginator.posts {{ paginator.posts }}
 * paginator.total_pages {{ paginator.total_pages  }}
-
+* sitebase {{ sitebase }}
 
 {% for post in site.posts %}
 * Title: {{ post.title }}
 * post.url: {{ post.url }}
 * post.description: {{ post.description }}
 * post.date: {{ post.date | date_to_string }}
-[{{ post.title }}]({{ sitebase }}/{{ post.url }})
+* URL: [{{ post.title }}]({{ site.sitebase }}/{{ post.url }})
 {% if post.description %}
 {{ post.description }}
 {% endif %}

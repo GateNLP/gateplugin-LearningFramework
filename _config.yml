@@ -1,5 +1,6 @@
 theme: jekyll-theme-cayman
-sitebase: gateplugin-LearningFramework
+
+sitebase: /gateplugin-LearningFramework
 
 # GitHub complains that maruku is not supported any more :(
 # markdown: maruku
@@ -7,7 +8,6 @@ sitebase: gateplugin-LearningFramework
 markdown: kramdown
 kramdown:
   math_engine: mathjax
-
 
 comments: true
 
