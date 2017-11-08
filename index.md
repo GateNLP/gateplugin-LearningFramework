@@ -1,6 +1,4 @@
----
-title: Home
----
+# Learning Framework Info Pages
 
 Some test. 3
 

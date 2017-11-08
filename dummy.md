@@ -1,7 +1,4 @@
----
-title: Dummy!
----
-
+# Dummy page for testing
 
 Some test. 3
 
