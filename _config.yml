@@ -12,7 +12,7 @@ kramdown:
 comments: true
 
 ## Not sure if these actually do something:
-paginate:           10
+paginate:           1
 paginate_path:      "/blog/page:num/"
 
 #plugins:
