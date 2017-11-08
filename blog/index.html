@@ -1,0 +1,28 @@
+
+{% if site.posts.size > 0 %}
+<h2>  Blog Posts ({{ site.posts.size }}) <h2>
+
+<ul>
+<li> Total posts: {{ site.posts.size }}
+<li> Total posts: {{ paginator.total_posts }}
+<li> paginator.posts {{ paginator.posts }}
+{% for post in paginator.posts %}
+<p>
+Title: {{ post.title }} URL: {{post.url}}
+{% if post.description %}
+{{ post.description }}
+{% endif %}
+{{ post.date | date_to_string }}
+{% endfor %} {% if paginator.total_pages > 1 %}
+<p>
+Navigation:
+{% if paginator.previous_page %}
+<p>  [<--]({{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }})
+{% endif %}
+{% if paginator.next_page %}
+<p>  [-->]({{ paginator.next_page_path | prepend: site.baseurl | replace: '//', '/' }})
+{% endif %}
+{% endif %}
+{% else %}
+No blog posts yet!
+{% endif %}
