@@ -1,2 +1,4 @@
 theme: jekyll-theme-cayman
-markdown: maruku
+
+# GitHub complains that maruku is not supported any more :(
+# markdown: maruku
