@@ -12,12 +12,13 @@ title: Blog
 {% for post in paginator.posts %}
 <p>
 Title: {{ post.title }} URL: {{post.url}}
+Link: <a href="{{ site.sitebase }}/{{ post.url }}">{{ post.title }}({{ post.date | date_to_string }})</a>
 {% if post.description %}
 {{ post.description }}
 {% endif %}
-{{ post.date | date_to_string }}
-{% endfor %} {% if paginator.total_pages > 1 %}
+{% endfor %} 
 <p>
+{% if paginator.total_pages > 1 %}
 Navigation:
 {% if paginator.previous_page %}
 <p>  [<--]({{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }})
