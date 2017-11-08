@@ -1,5 +1,6 @@
 <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
+    /*
     HTML-CSS: {
       linebreaks: {
         automatic: true,
@@ -19,6 +20,7 @@
       displayMath: [ ['$$','$$'] ],
       processEscapes: true,
     }
+    */
   });
 </script>
 <script type="text/javascript"
