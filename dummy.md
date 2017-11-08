@@ -35,8 +35,6 @@ and some stand-alone maths using backslash-backslash-bracket  \\[ \psi_y(k) \\]
 
 Stand-alone withing double-dollar and then inside an equation environment:
 
-$$
 \begin{equation}
   f = \sum_{i=0}^n e^{-\frac{1}{i}}
 \end{equation}
-$$
