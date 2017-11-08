@@ -1,6 +1,6 @@
 # Dummy page for testing
 
-Some test. 6
+Some test. 7
 
 Does this work?
 
@@ -22,7 +22,9 @@ a = b
 And here is some maths: first inline $x = \psi_y(k)$ and some 
 equation:
 
- $$A = \sum_{i=1}^n f_i$$
+$$
+A = \sum_{i=1}^n f_i
+$$
 
 Does it work?
 
