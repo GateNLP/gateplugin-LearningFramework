@@ -12,19 +12,20 @@ title: Blog
 {% for post in paginator.posts %}
 <p>
 Title: {{ post.title }} URL: {{post.url}}
-Link: <a href="{{ site.sitebase }}/{{ post.url }}">{{ post.title }}({{ post.date | date_to_string }})</a>
+Link: <a href="{{ site.baseurl }}/{{ post.url }}">{{ post.title }}({{ post.date | date_to_string }})</a>
 {% if post.description %}
 {{ post.description }}
 {% endif %}
 {% endfor %} 
 <p>
 {% if paginator.total_pages > 1 %}
+<p>
 Navigation:
 {% if paginator.previous_page %}
-<p>  [<--]({{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }})
+<a href="{{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }}">[&lt;-- prev]</a>
 {% endif %}
 {% if paginator.next_page %}
-<p>  [-->]({{ paginator.next_page_path | prepend: site.baseurl | replace: '//', '/' }})
+<a href="{{ paginator.next_page_path | prepend: site.baseurl | replace: '//', '/' }}">[next --&gt;]</a>
 {% endif %}
 {% endif %}
 {% else %}
