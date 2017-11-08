@@ -15,12 +15,13 @@
         autoNumber: "AMS"
       }
     },
-    */
+    
     tex2jax: {
       inlineMath: [ ['$','$'], ['\\(', '\\)'] ],
       displayMath: [ ['$$','$$'], ['\\[', '\\]'] ],
       processEscapes: true,
     }
+    */
   });
 </script>
 <script type="text/javascript"
