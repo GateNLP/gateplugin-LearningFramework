@@ -1,6 +1,7 @@
 ---
-title: Home
+title: Dummy!
 ---
+
 
 Some test.
 
