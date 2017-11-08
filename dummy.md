@@ -1,3 +1,7 @@
+---
+use_math: true
+---
+
 # Dummy page for testing
 
 Some test. 3
