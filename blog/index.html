@@ -1,5 +1,4 @@
 ---
-layout: default
 title: Blog
 ---
 
@@ -9,7 +8,6 @@ title: Blog
 <ul>
 <li> Total posts: {{ site.posts.size }}
 <li> Total posts: {{ paginator.total_posts }}
-<li> paginator.posts {{ paginator.posts }}
 {% for post in paginator.posts %}
 <p>
 Title: {{ post.title }} URL: {{post.url}}
