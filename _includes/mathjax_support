@@ -9,11 +9,9 @@
     },
     */
     TeX: {
-      /*
       Macros: {
         bold: ['{\\bf #1}', 1]
       },
-      */
       equationNumbers: {
         autoNumber: "AMS"
       }
