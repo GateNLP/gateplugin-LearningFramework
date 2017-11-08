@@ -47,5 +47,15 @@ $$
 * paginator.posts {{ paginator.posts }}
 * paginator.total_pages {{ paginator.total_pages  }}
 
+
+{% for post in site.posts %}
+[{{ post.title }}]({{post.url}})
+{% if post.description %}
+{{ post.description }}
+{% endif %}
+{{ post.date | date_to_string }}
+{% endfor %} 
+
+
 The End.
 
