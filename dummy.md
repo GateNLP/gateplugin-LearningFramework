@@ -49,7 +49,11 @@ $$
 
 
 {% for post in site.posts %}
-[{{ post.title }}]({{post.url}})
+* Title: {{ post.title }}
+* post.url: {{ post.url }}
+* post.description: {{ post.description }}
+* post.date: {{ post.date | date_to_string }}
+[{{ post.title }}]({{ sitebase }}/{{ post.url }})
 {% if post.description %}
 {{ post.description }}
 {% endif %}
