@@ -4,28 +4,22 @@ title: Blog
 ---
 
 {% if site.posts.size > 0 %}
-<h2>  New Blog Posts ({{ site.posts.size }}) <h2>
+<h2>Blog Posts ({{ site.posts.size }} total) <h2>
 
-<ul>
-<li> Total posts: {{ site.posts.size }}
-<li> Total posts: {{ paginator.total_posts }}
 {% for post in paginator.posts %}
-<p>
-Title: {{ post.title }} URL: {{post.url}}
-Link: <a href="{{ site.baseurl }}/{{ post.url }}">{{ post.title }}({{ post.date | date_to_string }})</a>
+<p><a href="{{ site.baseurl }}/{{ post.url }}">{{ post.title }}  ({{ post.date | date_to_string }})</a>
 {% if post.description %}
 {{ post.description }}
 {% endif %}
 {% endfor %} 
-<p>
 {% if paginator.total_pages > 1 %}
 <p>
 Navigation:
 {% if paginator.previous_page %}
-<a href="{{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }}">[&lt;-- prev]</a>
+<a href="{{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }}">[&lt;-- Older Posts]</a>
 {% endif %}
 {% if paginator.next_page %}
-<a href="{{ paginator.next_page_path | prepend: site.baseurl | replace: '//', '/' }}">[next --&gt;]</a>
+<a href="{{ paginator.next_page_path | prepend: site.baseurl | replace: '//', '/' }}">[Newer Posts --&gt;]</a>
 {% endif %}
 {% endif %}
 {% else %}
