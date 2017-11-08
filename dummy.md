@@ -1,3 +1,6 @@
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
 # Dummy page for testing
 
 Some test. 10
@@ -29,6 +32,8 @@ A = \sum_{i=1}^n f_i
 $$
 
 Does it work?
+
+Some inline maths with double dollar sign: $$ x = \ps $$ -- does this work?
 
 Also a proper equation like this maybe:
 
