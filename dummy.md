@@ -1,37 +1,29 @@
 # Dummy page for testing
 
-Some test. 17
+Variables:
+* page.url: {{ page.url }}
+* site.url: {{ site.url }}
 
-Some (text) here
 
-Does this work?
+```java
+String a = "this is a string";
+List<Integer> x = new ArrayList<Integer>();
 
-OK this is page.url: {{ page.url }} and this is site.url {{ site.url }}
-and this is page.canonical_url {{ page.canonical_url }} 
-
-# Header
-
-More text
-
-## Subheader
-
-And even more text.
-
-```
-a = b
+if (a != null) {
+  // do something
+}
 ```
 
-And here is some maths: first inline  \\( \psi_y(k) \\) and some $ \psi,1 $ and some $$ \psi,2 $$ and some 
-\\( \psi,3 \\) and some 
-equation:
+And here is some maths: first inline using backslash-backslash-parenthesis \\( \psi_y(k) \\) and using single dollar  $ \psi,1 $ and using double dollar $$ \psi,2 $$ 
+
+
+Stand-alone equation:
 
 $$
 A = \sum_{i=1}^n f_i
 $$
 
-Does it work?
 
-Some inline maths with double dollar sign: $$ x = \psi $$ -- does this work?
 
 Also a proper equation like this maybe:
 
@@ -39,4 +31,11 @@ Also a proper equation like this maybe:
    |\psi_1\rangle = a|0\rangle + b|1\rangle
 \end{equation}
 
-and some maths using  \\[ \psi_y(k) \\]
+and some stand-alone maths using backslash-backslash-bracket  \\[ \psi_y(k) \\]
+
+Stand-alone withing double-dollar and then inside an equation environment:
+
+$$
+\begin{equation}
+  f = \sum_{i=0}^n e^{-\frac{1}{i}}
+\end{equation}
