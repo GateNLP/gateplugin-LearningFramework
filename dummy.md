@@ -1,10 +1,6 @@
----
-use_math: true
----
-
 # Dummy page for testing
 
-Some test. 3
+Some test. 4
 
 Does this work?
 
