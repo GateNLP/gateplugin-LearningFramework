@@ -1,6 +1,6 @@
 # Dummy page for testing
 
-Some test. 9
+Some test. 10
 
 Some (text) here
 
@@ -21,7 +21,7 @@ And even more text.
 a = b
 ```
 
-And here is some maths: first inline $x = \psi_y(k)$ and some 
+And here is some maths: first inline $x = \psi_y(k)$ and some other inline \\( \psi_y(k) \\) and some 
 equation:
 
 $$
@@ -36,3 +36,4 @@ Also a proper equation like this maybe:
    |\psi_1\rangle = a|0\rangle + b|1\rangle
 \end{equation}
 
+and some inline maths using a single backslash \( \psi_y(k) \) 
