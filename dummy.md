@@ -1,16 +1,16 @@
 <!--
 <script type="text/javascript"
-        src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML">
 </script>
 -->
 <script type="text/javascript"
-        src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML">
 </script>
 
 
 # Dummy page for testing
 
-Some test. 10
+Some test. 11
 
 Some (text) here
 
@@ -31,7 +31,8 @@ And even more text.
 a = b
 ```
 
-And here is some maths: first inline  \\( \psi_y(k) \\) and some 
+And here is some maths: first inline  \\( \psi_y(k) \\) and some $ \psi,1 $ and some $$ \psi,2 $$ and some 
+\( \psi \) and some 
 equation:
 
 $$
