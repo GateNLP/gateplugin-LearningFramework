@@ -1,8 +1,7 @@
 <!-- Add Disqus comments. -->
 <div id="disqus_thread"></div>
 <script type="text/javascript">
-  /* * * ADD YOUR DISQUS SHORTNAME HERE * * */
-  var disqus_shortname = '<your_disqus_shortname>';
+  var disqus_shortname = 'my-disqus-shortname';
 
   (function() {
     var dsq = document.createElement('script');

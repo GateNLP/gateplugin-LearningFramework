@@ -3,6 +3,7 @@ theme: jekyll-theme-cayman
 # GitHub complains that maruku is not supported any more :(
 # markdown: maruku
 
+comments: true
 
 ## Not sure if these actually do something:
 paginate:           5
