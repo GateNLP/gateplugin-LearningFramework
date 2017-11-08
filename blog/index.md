@@ -1,8 +1,6 @@
 # Testing
 
-{% if site.posts.size == 0 %}
-  No blog posts yet
-{% else %}
+{% if site.posts.size > 0 %}
 ##  Blog Posts
 {% for post in paginator.posts %}
 [{{ post.title }}]({{post.url}})
@@ -18,4 +16,6 @@
   [-->]({{ paginator.next_page_path | prepend: site.baseurl | replace: '//', '/' }})
 {% endif %}
 {% endif %}
+{% else %}
+No blog posts yet!
 {% endif %}
