@@ -1,6 +1,13 @@
 <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
     TeX: {
+      Macros: {
+        bold: ['{\\bf #1}', 1]
+      }
+      linebreaks: {
+        automatic: true,
+        width: "90% container"
+      }
       equationNumbers: {
         autoNumber: "AMS"
       }
