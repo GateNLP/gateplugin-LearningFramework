@@ -5,6 +5,7 @@ Some test. 6
 Does this work?
 
 OK this is page.url: {{ page.url }} and this is site.url {{ site.url }}
+and this is page.canonical_url {{ page.canonical_url }} 
 
 # Header
 
