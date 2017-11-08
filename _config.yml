@@ -13,7 +13,7 @@ comments: true
 
 ## Not sure if these actually do something:
 paginate:           10
-paginate_path:      "/blog:num/"
+paginate_path:      "/blog/page:num/"
 
 gems:
  - jekyll-paginate

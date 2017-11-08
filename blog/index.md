@@ -1,7 +1,11 @@
 # Testing
 
 {% if site.posts.size > 0 %}
-##  Blog Posts
+##  Blog Posts ({{ site.posts.size }})
+
+* Total posts: {{ site.posts.size }}
+* Total posts: {{ paginator.total_posts }}
+* paginator.posts {{ paginator.posts }}
 {% for post in paginator.posts %}
 [{{ post.title }}]({{post.url}})
 {% if post.description %}
