@@ -39,3 +39,4 @@ $$
 \begin{equation}
   f = \sum_{i=0}^n e^{-\frac{1}{i}}
 \end{equation}
+$$
