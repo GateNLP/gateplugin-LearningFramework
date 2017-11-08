@@ -4,6 +4,8 @@ Some test. 6
 
 Does this work?
 
+OK this is page.url: {{ page.url }} and this is site.url {{ site.url }}
+
 # Header
 
 More text
