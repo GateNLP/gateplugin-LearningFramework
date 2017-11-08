@@ -43,9 +43,7 @@ $$
 
 ## More variables, for blogs?
 
-{% if site.posts.size > 0 %}
-##  Blog Posts
-
+* site.posts.size {{ site.posts.size }}
 * paginator.posts {{ paginator.posts }}
 * paginator.total_pages {{ paginator.total_pages  }}
 
