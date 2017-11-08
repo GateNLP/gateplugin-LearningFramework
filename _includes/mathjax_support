@@ -1,15 +1,19 @@
 <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
+    /*
     HTML-CSS: {
       linebreaks: {
         automatic: true,
         width: "90% container"
       }
     },
+    */
     TeX: {
+      /*
       Macros: {
         bold: ['{\\bf #1}', 1]
       },
+      */
       equationNumbers: {
         autoNumber: "AMS"
       }
