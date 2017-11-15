@@ -15,5 +15,6 @@ comments: true
 paginate:           2
 paginate_path:      "/blog/page:num/"
 
-#plugins:
+plugins:
+- jemoji      
 # - jekyll-paginate
