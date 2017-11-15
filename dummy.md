@@ -26,8 +26,6 @@ $$
 A = \sum_{i=1}^n f_i
 $$
 
-
-
 Also a proper equation like this maybe:
 
 \begin{equation}
