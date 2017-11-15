@@ -14,6 +14,9 @@ if (a != null) {
 }
 ```
 
+Some pretty picture:
+![Gate Logo](https://gate.ac.uk/plugins/gau-0.1/images/logo-gate.png)
+
 And here is some maths: first inline using backslash-backslash-parenthesis \\( \psi_y(k) \\) and using single dollar  $ \psi,1 $ and using double dollar $$ \psi,2 $$ 
 
 
