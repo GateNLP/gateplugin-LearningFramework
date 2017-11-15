@@ -19,7 +19,6 @@ Some pretty picture:
 
 And here is some maths: first inline using backslash-backslash-parenthesis \\( \psi_y(k) \\) and using single dollar  $ \psi,1 $ and using double dollar $$ \psi,2 $$ 
 
-
 Stand-alone equation:
 
 $$
