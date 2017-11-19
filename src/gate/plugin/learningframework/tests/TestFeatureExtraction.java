@@ -30,7 +30,7 @@ import gate.Factory;
 import gate.Gate;
 import gate.creole.ResourceInstantiationException;
 import gate.plugin.learningframework.features.FeatureSpecAttribute;
-import gate.plugin.learningframework.features.FeatureExtraction;
+import gate.plugin.learningframework.features.FeatureExtractionMalletSparse;
 import gate.plugin.learningframework.features.FeatureInfo;
 import gate.plugin.learningframework.features.FeatureSpecification;
 import gate.plugin.learningframework.features.FeatureSpecSimpleAttribute;
@@ -117,49 +117,49 @@ public class TestFeatureExtraction {
     // 1) the following all specify the same instance annotation type as is specified in the 
     // attribute so the instance annotation should directly get used.
     
-    FeatureExtraction.extractFeature(inst, as.get(0), doc.getAnnotations(), instAnn);
+    FeatureExtractionMalletSparse.extractFeature(inst, as.get(0), doc.getAnnotations(), instAnn);
     System.err.println("Alphabet1="+inst.getAlphabet());
     assertEquals(1,inst.getAlphabet().size());
     assertTrue(inst.getAlphabet().contains("┆theFeature╬A═value1"));
     assertEquals(1,((FeatureVector)inst.getData()).numLocations());
     assertEquals(1.0,((FeatureVector)inst.getData()).value("┆theFeature╬A═value1"),EPS);
 
-    FeatureExtraction.extractFeature(inst, as.get(1), doc.getAnnotations(), instAnn);
+    FeatureExtractionMalletSparse.extractFeature(inst, as.get(1), doc.getAnnotations(), instAnn);
     System.err.println("Alphabet2="+inst.getAlphabet());
     assertEquals(2,inst.getAlphabet().size());
     assertTrue(inst.getAlphabet().contains("┆feature2╬A═valOfFeature2"));
     assertEquals(2,((FeatureVector)inst.getData()).numLocations());
     assertEquals(1.0,((FeatureVector)inst.getData()).value("┆feature2╬A═valOfFeature2"),EPS);
 
-    FeatureExtraction.extractFeature(inst, as.get(2), doc.getAnnotations(), instAnn);
+    FeatureExtractionMalletSparse.extractFeature(inst, as.get(2), doc.getAnnotations(), instAnn);
     System.err.println("Alphabet3="+inst.getAlphabet());
     assertEquals(3,inst.getAlphabet().size());
     assertTrue(inst.getAlphabet().contains("┆numfeature1╬A"));
     assertEquals(3,((FeatureVector)inst.getData()).numLocations());
     assertEquals(1.1,((FeatureVector)inst.getData()).value("┆numfeature1╬A"),EPS);
 
-    FeatureExtraction.extractFeature(inst, as.get(3), doc.getAnnotations(), instAnn);
+    FeatureExtractionMalletSparse.extractFeature(inst, as.get(3), doc.getAnnotations(), instAnn);
     System.err.println("Alphabet4="+inst.getAlphabet());
     assertEquals(4,inst.getAlphabet().size());
     assertTrue(inst.getAlphabet().contains("┆numfeature2╬A"));
     assertEquals(4,((FeatureVector)inst.getData()).numLocations());
     assertEquals(2.2,((FeatureVector)inst.getData()).value("┆numfeature2╬A"),EPS);
     
-    FeatureExtraction.extractFeature(inst, as.get(4), doc.getAnnotations(), instAnn);
+    FeatureExtractionMalletSparse.extractFeature(inst, as.get(4), doc.getAnnotations(), instAnn);
     System.err.println("Alphabet5="+inst.getAlphabet());
     assertEquals(5,inst.getAlphabet().size());
     assertTrue(inst.getAlphabet().contains("┆boolfeature1╬A"));
     assertEquals(5,((FeatureVector)inst.getData()).numLocations());
     assertEquals(1.0,((FeatureVector)inst.getData()).value("┆boolfeature1╬A"),EPS);
     
-    FeatureExtraction.extractFeature(inst, as.get(5), doc.getAnnotations(), instAnn);
+    FeatureExtractionMalletSparse.extractFeature(inst, as.get(5), doc.getAnnotations(), instAnn);
     System.err.println("Alphabet6="+inst.getAlphabet());
     assertEquals(6,inst.getAlphabet().size());
     assertTrue(inst.getAlphabet().contains("┆boolfeature2╬A"));
     assertEquals(6,((FeatureVector)inst.getData()).numLocations());
     assertEquals(1.0,((FeatureVector)inst.getData()).value("┆boolfeature2╬A"),EPS);
     
-    FeatureExtraction.extractFeature(inst, as.get(6), doc.getAnnotations(), instAnn);
+    FeatureExtractionMalletSparse.extractFeature(inst, as.get(6), doc.getAnnotations(), instAnn);
     System.err.println("Alphabet7="+inst.getAlphabet());
     assertEquals(7,inst.getAlphabet().size());
     assertTrue(inst.getAlphabet().contains("┆╬A"));
@@ -170,7 +170,7 @@ public class TestFeatureExtraction {
     
     // for a nominal, with the default one_of_k coding, and mvt "special value" 
     // a new special value is added
-    FeatureExtraction.extractFeature(inst, as.get(7), doc.getAnnotations(), instAnn);
+    FeatureExtractionMalletSparse.extractFeature(inst, as.get(7), doc.getAnnotations(), instAnn);
     System.err.println("Alphabet8="+inst.getAlphabet());
     System.err.println("After "+as.get(7)+" FV="+inst.getData());
     assertEquals(8,inst.getAlphabet().size());
@@ -179,7 +179,7 @@ public class TestFeatureExtraction {
     assertEquals(1.0,((FeatureVector)inst.getData()).value("┆missing2nominal╬A═╔MV╗"),EPS);
     
     // for a nominal coded as number, we should the special value -1
-    FeatureExtraction.extractFeature(inst, as.get(8), doc.getAnnotations(), instAnn);
+    FeatureExtractionMalletSparse.extractFeature(inst, as.get(8), doc.getAnnotations(), instAnn);
     System.err.println("Alphabet9="+inst.getAlphabet());
     System.err.println("After "+as.get(8)+" FV="+inst.getData());
     assertEquals(9,inst.getAlphabet().size());
@@ -188,7 +188,7 @@ public class TestFeatureExtraction {
     assertEquals(-1.0,((FeatureVector)inst.getData()).value("┆missing3nominal╬A"),EPS);
     
     // for a boolean we should get 0.5
-    FeatureExtraction.extractFeature(inst, as.get(9), doc.getAnnotations(), instAnn);
+    FeatureExtractionMalletSparse.extractFeature(inst, as.get(9), doc.getAnnotations(), instAnn);
     System.err.println("Alphabet10="+inst.getAlphabet());
     System.err.println("After "+as.get(9)+" FV="+inst.getData());
     assertEquals(10,inst.getAlphabet().size());
@@ -196,7 +196,7 @@ public class TestFeatureExtraction {
     assertEquals(10,((FeatureVector)inst.getData()).numLocations());
     assertEquals(0.5,((FeatureVector)inst.getData()).value("┆missing1bool╬A"),EPS);
 
-    FeatureExtraction.extractFeature(inst, as.get(10), doc.getAnnotations(), instAnn);
+    FeatureExtractionMalletSparse.extractFeature(inst, as.get(10), doc.getAnnotations(), instAnn);
     System.err.println("Alphabet11="+inst.getAlphabet());
     System.err.println("After "+as.get(10)+" FV="+inst.getData());
     assertEquals(11,inst.getAlphabet().size());
@@ -220,7 +220,7 @@ public class TestFeatureExtraction {
     
     List<FeatureSpecAttribute> as2 = new FeatureSpecification(spec).getFeatureInfo().getAttributes();
 
-    FeatureExtraction.extractFeature(inst, as2.get(0), doc.getAnnotations(), instAnn);
+    FeatureExtractionMalletSparse.extractFeature(inst, as2.get(0), doc.getAnnotations(), instAnn);
     System.err.println("After "+as2.get(0)+" FV="+inst.getData());
     assertEquals(12,inst.getAlphabet().size());
     assertTrue(inst.getAlphabet().contains("┆nomFeat1╬A═7.7"));
@@ -229,7 +229,7 @@ public class TestFeatureExtraction {
     
     inst.getAlphabet().stopGrowth();
     as2.get(1).stopGrowth();
-    FeatureExtraction.extractFeature(inst, as2.get(1), doc.getAnnotations(), instAnn);
+    FeatureExtractionMalletSparse.extractFeature(inst, as2.get(1), doc.getAnnotations(), instAnn);
     System.err.println("After "+as2.get(1)+" FV="+inst.getData());
     assertEquals(12,inst.getAlphabet().size());
     //assertTrue(inst.getAlphabet().contains("theType:nomFeat1=7.7"));
@@ -239,7 +239,7 @@ public class TestFeatureExtraction {
     // unlock and try again
     inst.getAlphabet().startGrowth();
     as2.get(1).startGrowth();
-    FeatureExtraction.extractFeature(inst, as2.get(1), doc.getAnnotations(), instAnn);
+    FeatureExtractionMalletSparse.extractFeature(inst, as2.get(1), doc.getAnnotations(), instAnn);
     System.err.println("After "+as2.get(1)+" unlocked FV="+inst.getData());
     assertEquals(13,inst.getAlphabet().size());
     assertTrue(inst.getAlphabet().contains("┆nomFeat2╬A═xxxx"));
@@ -247,7 +247,7 @@ public class TestFeatureExtraction {
     assertEquals(1.0,((FeatureVector)inst.getData()).value("┆nomFeat2╬A═xxxx"),EPS);
 
     //nominal feature coded as number
-    FeatureExtraction.extractFeature(inst, as2.get(2), doc.getAnnotations(), instAnn);
+    FeatureExtractionMalletSparse.extractFeature(inst, as2.get(2), doc.getAnnotations(), instAnn);
     System.err.println("After "+as2.get(2)+" unlocked FV="+inst.getData());
     assertEquals(14,inst.getAlphabet().size());
     assertTrue(inst.getAlphabet().contains("┆nomFeat3╬A"));
@@ -257,7 +257,7 @@ public class TestFeatureExtraction {
     // add another annotation, so we get another value for nomFeat3. The number of 
     // entries in the feature name alphabet and the feature vector has to remain the same!
     instAnn = addAnn(doc, "", 2, 2, "theType", gate.Utils.featureMap("nomFeat3","yyyy"));
-    FeatureExtraction.extractFeature(inst, as2.get(2), doc.getAnnotations(), instAnn);
+    FeatureExtractionMalletSparse.extractFeature(inst, as2.get(2), doc.getAnnotations(), instAnn);
     System.err.println("After "+as2.get(2)+" unlocked FV="+inst.getData());
     assertEquals(14,inst.getAlphabet().size());
     assertTrue(inst.getAlphabet().contains("┆nomFeat3╬A"));
@@ -294,7 +294,7 @@ public class TestFeatureExtraction {
     tok2.getFeatures().put("feature2", "valOfFeature2B");
     
     // We do not allow more than one overlapping annotation of the given type for ATTRIBUTE
-    FeatureExtraction.extractFeature(inst, as.get(0), doc.getAnnotations(), instAnn);
+    FeatureExtractionMalletSparse.extractFeature(inst, as.get(0), doc.getAnnotations(), instAnn);
   }  
 
   @Test
@@ -311,7 +311,7 @@ public class TestFeatureExtraction {
     tok1.getFeatures().put("feature2", "valOfFeature2");
     
     // We do not allow more than one overlapping annotation of the given type for ATTRIBUTE
-    FeatureExtraction.extractFeature(inst, as.get(0), doc.getAnnotations(), instAnn);
+    FeatureExtractionMalletSparse.extractFeature(inst, as.get(0), doc.getAnnotations(), instAnn);
     System.err.println("After "+as.get(0)+" (overlapping) FV="+inst.getData());
   }  
 
@@ -339,7 +339,7 @@ public class TestFeatureExtraction {
     addAnn(doc,"",6,8,"theType",gate.Utils.featureMap("theFeature","tok4"));
     addAnn(doc,"",8,10,"theType",gate.Utils.featureMap("theFeature","tok5"));
     
-    FeatureExtraction.extractFeature(inst, as.get(0), doc.getAnnotations(), instAnn);
+    FeatureExtractionMalletSparse.extractFeature(inst, as.get(0), doc.getAnnotations(), instAnn);
     System.err.println("After "+as.get(0)+" (one-grams) FV="+inst.getData());
     assertEquals(5,inst.getAlphabet().size());
     System.err.println("Alphabet N1="+inst.getAlphabet());
@@ -357,7 +357,7 @@ public class TestFeatureExtraction {
     
     // now the bigrams
     inst = newInstance();
-    FeatureExtraction.extractFeature(inst, as.get(1), doc.getAnnotations(), instAnn);
+    FeatureExtractionMalletSparse.extractFeature(inst, as.get(1), doc.getAnnotations(), instAnn);
     System.err.println("After "+as.get(1)+" (bi-grams) FV="+inst.getData());
     System.err.println("Alphabet N2="+inst.getAlphabet());
     assertEquals(4,inst.getAlphabet().size());
@@ -373,7 +373,7 @@ public class TestFeatureExtraction {
 
     // and the 3-grams
     inst = newInstance();
-    FeatureExtraction.extractFeature(inst, as.get(2), doc.getAnnotations(), instAnn);
+    FeatureExtractionMalletSparse.extractFeature(inst, as.get(2), doc.getAnnotations(), instAnn);
     System.err.println("After "+as.get(2)+" (tri-grams) FV="+inst.getData());
     System.err.println("Alphabet N3="+inst.getAlphabet());
     assertEquals(3,inst.getAlphabet().size());
@@ -410,7 +410,7 @@ public class TestFeatureExtraction {
     addAnn(doc,"",6,8,"theType",gate.Utils.featureMap("theFeature","tok4"));
     addAnn(doc,"",8,10,"theType",gate.Utils.featureMap("theFeature","tok5"));
     
-    FeatureExtraction.extractFeature(inst, as.get(0), doc.getAnnotations(), instAnn);
+    FeatureExtractionMalletSparse.extractFeature(inst, as.get(0), doc.getAnnotations(), instAnn);
     System.err.println("After "+as.get(0)+" (one-grams) FV="+inst.getData());
     assertEquals(5,inst.getAlphabet().size());
     System.err.println("Alphabet N3="+inst.getAlphabet());
@@ -428,7 +428,7 @@ public class TestFeatureExtraction {
     
     // now the bigrams
     inst = newInstance();
-    FeatureExtraction.extractFeature(inst, as.get(1), doc.getAnnotations(), instAnn);
+    FeatureExtractionMalletSparse.extractFeature(inst, as.get(1), doc.getAnnotations(), instAnn);
     System.err.println("After "+as.get(1)+" (bi-grams) FV="+inst.getData());
     System.err.println("Alphabet N4="+inst.getAlphabet());
     assertEquals(4,inst.getAlphabet().size());
@@ -444,7 +444,7 @@ public class TestFeatureExtraction {
 
     // and the 3-grams
     inst = newInstance();
-    FeatureExtraction.extractFeature(inst, as.get(2), doc.getAnnotations(), instAnn);
+    FeatureExtractionMalletSparse.extractFeature(inst, as.get(2), doc.getAnnotations(), instAnn);
     System.err.println("After "+as.get(2)+" (bi-grams) FV="+inst.getData());
     System.err.println("Alphabet N4="+inst.getAlphabet());
     assertEquals(3,inst.getAlphabet().size());
@@ -479,7 +479,7 @@ public class TestFeatureExtraction {
     addAnn(doc,"",16,18,"theType",gate.Utils.featureMap("theFeature","tok9"));
     addAnn(doc,"",18,20,"theType",gate.Utils.featureMap("theFeature","tok10"));
     
-    FeatureExtraction.extractFeature(inst, as.get(0), doc.getAnnotations(), instAnn);
+    FeatureExtractionMalletSparse.extractFeature(inst, as.get(0), doc.getAnnotations(), instAnn);
     System.err.println("After "+as.get(0)+" (list -1to1) FV="+inst.getData());
     System.err.println("Alphabet L1="+inst.getAlphabet());
     assertEquals(3,inst.getAlphabet().size());
@@ -515,7 +515,7 @@ public class TestFeatureExtraction {
     addAnn(doc,"",18,20,"theType",gate.Utils.featureMap("theFeature","tok10"));
     Annotation withinAnn = addAnn(doc,"",8,14,"within",gate.Utils.featureMap());
     
-    FeatureExtraction.extractFeature(inst, as.get(0), doc.getAnnotations(), instAnn);
+    FeatureExtractionMalletSparse.extractFeature(inst, as.get(0), doc.getAnnotations(), instAnn);
     System.err.println("After "+as.get(0)+" (list -1to1) FV="+inst.getData());
     System.err.println("Alphabet L2="+inst.getAlphabet());
     assertEquals(5,inst.getAlphabet().size());
@@ -540,7 +540,7 @@ public class TestFeatureExtraction {
             "</ROOT>";
     as = new FeatureSpecification(spec).getFeatureInfo().getAttributes();
     inst = newInstance();
-    FeatureExtraction.extractFeature(inst, as.get(0), doc.getAnnotations(), instAnn);
+    FeatureExtractionMalletSparse.extractFeature(inst, as.get(0), doc.getAnnotations(), instAnn);
     fv = (FeatureVector)inst.getData();
     System.err.println("extractList2-within: "+fv.toString(true));
     assertEquals(5,inst.getAlphabet().size());
@@ -581,7 +581,7 @@ public class TestFeatureExtraction {
     v2.add("setval5");
     Annotation tok2 = addAnn(doc, "", 12, 15, "theType", gate.Utils.featureMap("feature1",v2));
     
-    FeatureExtraction.extractFeature(inst, as.get(0), doc.getAnnotations(), instAnn);
+    FeatureExtractionMalletSparse.extractFeature(inst, as.get(0), doc.getAnnotations(), instAnn);
     FeatureVector fv = (FeatureVector)inst.getData();
     System.err.println("FeatureExtraction SimpleList1a: "+fv.toString(true));
     assertTrue(inst.getAlphabet().contains("theType┆feature1╬A═setval1"));
@@ -593,7 +593,7 @@ public class TestFeatureExtraction {
     assertEquals(1.0,((FeatureVector)inst.getData()).value("theType┆feature1╬A═setval3"),EPS);
     
     inst = newInstance(inst.getAlphabet());
-    FeatureExtraction.extractFeature(inst, as.get(0), doc.getAnnotations(), instAnn2);
+    FeatureExtractionMalletSparse.extractFeature(inst, as.get(0), doc.getAnnotations(), instAnn2);
     fv = (FeatureVector)inst.getData();
     System.err.println("FeatureExtraction SimpleList1b: "+fv.toString(true));
     assertTrue(inst.getAlphabet().contains("theType┆feature1╬A═setval1"));
@@ -623,7 +623,7 @@ public class TestFeatureExtraction {
     Annotation instAnn2 = addAnn(doc, "", 11, 20, "instanceType", gate.Utils.featureMap());
     Annotation tok2 = addAnn(doc, "", 12, 15, "theType", gate.Utils.featureMap("feature1","lval1:lval4:lval5"));
     
-    FeatureExtraction.extractFeature(inst, as.get(0), doc.getAnnotations(), instAnn);
+    FeatureExtractionMalletSparse.extractFeature(inst, as.get(0), doc.getAnnotations(), instAnn);
     FeatureVector fv = (FeatureVector)inst.getData();
     System.err.println("FeatureExtraction SimpleList2a: "+fv.toString(true));
     assertTrue(inst.getAlphabet().contains("theType┆feature1╬A═lval1"));
@@ -635,7 +635,7 @@ public class TestFeatureExtraction {
     assertEquals(1.0,((FeatureVector)inst.getData()).value("theType┆feature1╬A═lval3"),EPS);
     
     inst = newInstance(inst.getAlphabet());
-    FeatureExtraction.extractFeature(inst, as.get(0), doc.getAnnotations(), instAnn2);
+    FeatureExtractionMalletSparse.extractFeature(inst, as.get(0), doc.getAnnotations(), instAnn2);
     fv = (FeatureVector)inst.getData();
     System.err.println("FeatureExtraction SimpleList2b: "+fv.toString(true));
     assertTrue(inst.getAlphabet().contains("theType┆feature1╬A═lval1"));

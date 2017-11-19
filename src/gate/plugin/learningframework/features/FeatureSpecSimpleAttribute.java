@@ -21,6 +21,7 @@
 package gate.plugin.learningframework.features;
 
 import cc.mallet.types.Alphabet;
+import gate.util.GateRuntimeException;
 import java.io.Serializable;
 
 /**
@@ -56,12 +57,11 @@ public class FeatureSpecSimpleAttribute extends FeatureSpecAttribute implements 
     this.withinType = withinType;
     this.listsep = listsep;
     this.featureName4Value = featureName4Value;
+    this.missingValueValue = missingValueValue;
   }
   public CodeAs codeas = CodeAs.one_of_k;
-  public Datatype datatype;
   public MissingValueTreatment missingValueTreatment = MissingValueTreatment.zero_value;
   public Alphabet alphabet;
-  public String listsep;
   public String withinType;
   public String featureName4Value;
 
@@ -70,6 +70,7 @@ public class FeatureSpecSimpleAttribute extends FeatureSpecAttribute implements 
     if(alphabet!=null) { alphabet.stopGrowth(); }
   }
 
+  
   @Override
   public void startGrowth() {
     if(alphabet!=null) { alphabet.startGrowth(); }

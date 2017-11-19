@@ -30,7 +30,7 @@ import gate.plugin.learningframework.data.Attributes;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.engines.Info;
 import gate.plugin.learningframework.engines.Parms;
-import gate.plugin.learningframework.features.FeatureExtraction;
+import gate.plugin.learningframework.features.FeatureExtractionMalletSparse;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
@@ -121,7 +121,7 @@ public class CorpusExporterJsonTarget extends CorpusExporterJsonBase {
     FeatureVector fv = (FeatureVector)inst.getData();
     Object targetObject = inst.getTarget();
     if (filterMV) {
-      Object ignore = inst.getProperty(FeatureExtraction.PROP_IGNORE_HAS_MV);
+      Object ignore = inst.getProperty(FeatureExtractionMalletSparse.PROP_IGNORE_HAS_MV);
       if (ignore != null && ignore.equals(true)) {
           return null;
       }

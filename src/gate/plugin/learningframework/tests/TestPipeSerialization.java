@@ -29,7 +29,7 @@ import gate.Annotation;
 import gate.Document;
 import gate.creole.ResourceInstantiationException;
 import gate.plugin.learningframework.features.FeatureSpecAttribute;
-import gate.plugin.learningframework.features.FeatureExtraction;
+import gate.plugin.learningframework.features.FeatureExtractionMalletSparse;
 import gate.plugin.learningframework.features.FeatureInfo;
 import gate.plugin.learningframework.features.FeatureSpecification;
 import gate.plugin.learningframework.features.FeatureSpecSimpleAttribute;
@@ -77,7 +77,7 @@ public class TestPipeSerialization {
     // make sure the attribute is a SimpleAttribute as expected
     assertEquals(FeatureSpecSimpleAttribute.class, attr.getClass());
     FeatureSpecSimpleAttribute sa = (FeatureSpecSimpleAttribute)attr;
-    FeatureExtraction.extractFeature(inst, sa, doc.getAnnotations(), instAnn);
+    FeatureExtractionMalletSparse.extractFeature(inst, sa, doc.getAnnotations(), instAnn);
     // verify that we do have an alphabet in the attribute info
     assertNotNull(sa.alphabet);    
     System.err.println("DEBUG: the alphabet we have is "+sa.alphabet);

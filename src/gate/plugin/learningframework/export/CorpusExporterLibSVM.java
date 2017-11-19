@@ -26,7 +26,7 @@ import cc.mallet.types.InstanceList;
 import cc.mallet.types.Label;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.engines.Info;
-import gate.plugin.learningframework.features.FeatureExtraction;
+import gate.plugin.learningframework.features.FeatureExtractionMalletSparse;
 import gate.util.GateRuntimeException;
 import java.io.File;
 import java.io.PrintStream;
@@ -73,9 +73,9 @@ public class CorpusExporterLibSVM extends CorpusExporter {
     InstanceList instances = crm.getRepresentationMallet();
     DecimalFormat DFf = new DecimalFormat("#.##########");
     for(Instance instance : instances) {
-      Boolean ignoreInstance = (Boolean)instance.getProperty(FeatureExtraction.PROP_IGNORE_HAS_MV);
+      Boolean ignoreInstance = (Boolean)instance.getProperty(FeatureExtractionMalletSparse.PROP_IGNORE_HAS_MV);
       if(ignoreInstance) continue;
-      Boolean haveMV = (Boolean)instance.getProperty(FeatureExtraction.PROP_HAVE_MV);      
+      Boolean haveMV = (Boolean)instance.getProperty(FeatureExtractionMalletSparse.PROP_HAVE_MV);      
       Object targetObj = instance.getTarget();
       double target = 0.0;
       if(targetObj == null) {

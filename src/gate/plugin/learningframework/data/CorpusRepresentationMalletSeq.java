@@ -34,7 +34,7 @@ import cc.mallet.types.InstanceList;
 import cc.mallet.types.Label;
 import cc.mallet.types.LabelAlphabet;
 import gate.plugin.learningframework.ScalingMethod;
-import gate.plugin.learningframework.features.FeatureExtraction;
+import gate.plugin.learningframework.features.FeatureExtractionMalletSparse;
 import gate.plugin.learningframework.features.FeatureInfo;
 import gate.plugin.learningframework.features.TargetType;
 import gate.plugin.learningframework.mallet.LFPipe;
@@ -128,13 +128,13 @@ public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
         Instance inst = extractIndependentFeaturesHelper(instanceAnnotation, inputAS, featureInfo, pipe);
         if (classAS != null) {
           // extract the target as required for sequence tagging
-          FeatureExtraction.extractClassForSeqTagging(inst, pipe.getTargetAlphabet(), classAS, instanceAnnotation, seqEncoder);
+          FeatureExtractionMalletSparse.extractClassForSeqTagging(inst, pipe.getTargetAlphabet(), classAS, instanceAnnotation, seqEncoder);
         } else if (targetType == TargetType.NOMINAL) {
-          FeatureExtraction.extractClassTarget(inst, pipe.getTargetAlphabet(), targetFeatureName, instanceAnnotation, inputAS);
+          FeatureExtractionMalletSparse.extractClassTarget(inst, pipe.getTargetAlphabet(), targetFeatureName, instanceAnnotation, inputAS);
         } else if (targetType == TargetType.NUMERIC) {
-          FeatureExtraction.extractNumericTarget(inst, targetFeatureName, instanceAnnotation, inputAS);
+          FeatureExtractionMalletSparse.extractNumericTarget(inst, targetFeatureName, instanceAnnotation, inputAS);
         }
-        if (!FeatureExtraction.ignoreInstanceWithMV(inst)) {
+        if (!FeatureExtractionMalletSparse.ignoreInstanceWithMV(inst)) {
           instanceList.add(inst);
         }
       }
@@ -155,7 +155,7 @@ public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
         // create the final instance, if a name feature is given also add the name
         Instance finalInst = new Instance(fvseq, fseq, null, null);
         if (nameFeatureName != null) {
-          FeatureExtraction.extractName(finalInst, sequenceAnnotation, inputAS.getDocument());
+          FeatureExtractionMalletSparse.extractName(finalInst, sequenceAnnotation, inputAS.getDocument());
         }
         // add the instance to the instances 
 
@@ -228,14 +228,14 @@ public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
       if (targetType != TargetType.NONE) {
         if (classAS != null) {
           // extract the target as required for sequence tagging
-          FeatureExtraction.extractClassForSeqTagging(inst, pipe.getTargetAlphabet(), classAS, instanceAnnotation, seqEncoder);
+          FeatureExtractionMalletSparse.extractClassForSeqTagging(inst, pipe.getTargetAlphabet(), classAS, instanceAnnotation, seqEncoder);
         } else if (targetType == TargetType.NOMINAL) {
-          FeatureExtraction.extractClassTarget(inst, pipe.getTargetAlphabet(), targetFeatureName, instanceAnnotation, inputAS);
+          FeatureExtractionMalletSparse.extractClassTarget(inst, pipe.getTargetAlphabet(), targetFeatureName, instanceAnnotation, inputAS);
         } else if (targetType == TargetType.NUMERIC) {
-          FeatureExtraction.extractNumericTarget(inst, targetFeatureName, instanceAnnotation, inputAS);
+          FeatureExtractionMalletSparse.extractNumericTarget(inst, targetFeatureName, instanceAnnotation, inputAS);
         }
       }
-      if (!FeatureExtraction.ignoreInstanceWithMV(inst)) {
+      if (!FeatureExtractionMalletSparse.ignoreInstanceWithMV(inst)) {
         instanceList.add(inst);
       }
     }
@@ -255,7 +255,7 @@ public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
     // create the final instance, if a name feature is given also add the name
     Instance finalInst = new Instance(fvseq, fseq, null, null);
     if (nameFeatureName != null) {
-      FeatureExtraction.extractName(finalInst, sequenceAnnotation, inputAS.getDocument());
+      FeatureExtractionMalletSparse.extractName(finalInst, sequenceAnnotation, inputAS.getDocument());
     }
     return finalInst;
 

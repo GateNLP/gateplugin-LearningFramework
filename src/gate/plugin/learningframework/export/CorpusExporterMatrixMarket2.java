@@ -26,7 +26,7 @@ import cc.mallet.types.Label;
 import gate.plugin.learningframework.LFUtils;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.engines.Info;
-import gate.plugin.learningframework.features.FeatureExtraction;
+import gate.plugin.learningframework.features.FeatureExtractionMalletSparse;
 import gate.plugin.learningframework.mallet.NominalTargetWithCosts;
 import gate.util.GateRuntimeException;
 import java.io.File;
@@ -118,7 +118,7 @@ public class CorpusExporterMatrixMarket2 extends CorpusExporter {
     int rowNr = 0;
     for(Instance instance : instances) {
       rowNr++;
-      Boolean ignoreInstance = (Boolean)instance.getProperty(FeatureExtraction.PROP_IGNORE_HAS_MV);
+      Boolean ignoreInstance = (Boolean)instance.getProperty(FeatureExtractionMalletSparse.PROP_IGNORE_HAS_MV);
       if(ignoreInstance != null && ignoreInstance) continue;
       // to export instance weights, we check the first instance if a weight is set: 
       // if yes, then a third file is created which will contain the weights for each instance
@@ -148,7 +148,7 @@ public class CorpusExporterMatrixMarket2 extends CorpusExporter {
         outInstWeights.print("1 ");
         outInstWeights.println(DFf.format(weight));
       }
-      Boolean haveMV = (Boolean)instance.getProperty(FeatureExtraction.PROP_HAVE_MV);      
+      Boolean haveMV = (Boolean)instance.getProperty(FeatureExtractionMalletSparse.PROP_HAVE_MV);      
       Object targetObj = instance.getTarget();
       double target = 0.0;
       if(targetObj == null) {

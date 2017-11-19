@@ -98,25 +98,21 @@ public class FeatureSpecification {
     Element rootElement = jdomDocConf.getRootElement();
 
     List<Element> elements = rootElement.getChildren();
-
-    // In this method, we directly modify the attributes list from the featureinfo we have 
-    // stored. 
-    List<FeatureSpecAttribute> attributes = featureInfo.getAttributes();
     
     int n = 0;
     for (Element element : elements) {
       n++;
       String elementName = element.getName().toLowerCase();
       if (elementName.equals("attribute")) {
-        attributes.add(parseSimpleAttribute(element, n));
+        featureInfo.add(parseSimpleAttribute(element, n));
       } else if (elementName.equals("attributelist")) {
         FeatureSpecSimpleAttribute att = parseSimpleAttribute(element, n);
         int from = Integer.parseInt(element.getChildText("FROM"));
         int to = Integer.parseInt(element.getChildText("TO"));
         String withinType = getChildTextOrElse(element, "WITHIN", null); 
-        attributes.add(new FeatureSpecAttributeList(att, withinType, from, to));
+        featureInfo.add(new FeatureSpecAttributeList(att, withinType, from, to));
       } else if (elementName.equals("ngram")) {
-        attributes.add(parseNgramAttribute(element, n));
+        featureInfo.add(parseNgramAttribute(element, n));
       } else {
         throw new GateRuntimeException("Not a recognized element name for the LearningFramework config file: " + elementName);
       }
@@ -187,10 +183,14 @@ public class FeatureSpecification {
       }      
     }
     String withinType = getChildTextOrElse(attributeElement, "WITHIN", null); 
+    String defaultMissingValue = "";
+    if(dt == Datatype.bool) defaultMissingValue = "false";
+    else if(dt == Datatype.numeric) defaultMissingValue = "0.0";
+    String missingValueValue = getChildTextOrElse(attributeElement, "MISSINGVALUE", defaultMissingValue);
+    
     // TODO: not implemented yet, but we should add this!!
     String scalingMethod = "";
     String transformMethod = "";
-    String missingValueValue = ""; // if MVs should get replaced with a constant value, that value as a String
     FeatureSpecSimpleAttribute att = new FeatureSpecSimpleAttribute(
             aname,
             atype,

@@ -34,7 +34,7 @@ import gate.plugin.learningframework.engines.Info;
 import gate.plugin.learningframework.engines.Parms;
 import gate.plugin.learningframework.features.CodeAs;
 import gate.plugin.learningframework.features.Datatype;
-import gate.plugin.learningframework.features.FeatureExtraction;
+import gate.plugin.learningframework.features.FeatureExtractionMalletSparse;
 import gate.plugin.learningframework.mallet.NominalTargetWithCosts;
 import gate.util.GateRuntimeException;
 import gate.util.Strings;
@@ -151,7 +151,7 @@ public class CorpusExporterCSV extends CorpusExporter {
     for(Instance inst : malletInstances) {
       // TODO
       if(filterMV) {
-        Object ignore = inst.getProperty(FeatureExtraction.PROP_IGNORE_HAS_MV);    
+        Object ignore = inst.getProperty(FeatureExtractionMalletSparse.PROP_IGNORE_HAS_MV);    
         // If the flag says the instance should get ignored, return null
         // to indicate to the caller that this is an ignored instance.
         if(ignore != null && ignore.equals(true)) 

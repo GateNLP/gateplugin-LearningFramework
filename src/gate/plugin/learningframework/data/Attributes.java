@@ -23,7 +23,7 @@ import cc.mallet.pipe.Pipe;
 import cc.mallet.types.Alphabet;
 import gate.plugin.learningframework.features.CodeAs;
 import gate.plugin.learningframework.features.Datatype;
-import gate.plugin.learningframework.features.FeatureExtraction;
+import gate.plugin.learningframework.features.FeatureExtractionMalletSparse;
 import gate.plugin.learningframework.features.FeatureInfo;
 import gate.plugin.learningframework.features.FeatureSpecAttribute;
 import gate.plugin.learningframework.features.FeatureSpecAttributeList;
@@ -80,7 +80,7 @@ public class Attributes implements Iterable<Attribute> {
       // type, we will change the default values.
       if(featureInfo != null) {
         FeatureSpecAttribute fsAttr = 
-                FeatureExtraction.lookupAttributeForFeatureName(
+                FeatureExtractionMalletSparse.lookupAttributeForFeatureName(
                   featureInfo.getAttributes(),
                   malletFeatureName,
                   instanceType);
@@ -112,8 +112,8 @@ public class Attributes implements Iterable<Attribute> {
           // This can also happen if we try to look up a START/STOP feature which 
           // is created by us and for which not specification exists. In this case,
           // we simply do nothing and use the default attr we have created above
-          if(malletFeatureName.endsWith(FeatureExtraction.START_SYMBOL) || 
-             malletFeatureName.endsWith(FeatureExtraction.STOP_SYMBOL)) {
+          if(malletFeatureName.endsWith(FeatureExtractionMalletSparse.START_SYMBOL) || 
+             malletFeatureName.endsWith(FeatureExtractionMalletSparse.STOP_SYMBOL)) {
             // do nothing
           } else {
             throw new RuntimeException("FeatureSpecification is null for feature "+

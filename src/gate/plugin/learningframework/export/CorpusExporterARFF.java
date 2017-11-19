@@ -33,7 +33,7 @@ import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.engines.Info;
 import gate.plugin.learningframework.features.CodeAs;
 import gate.plugin.learningframework.features.Datatype;
-import gate.plugin.learningframework.features.FeatureExtraction;
+import gate.plugin.learningframework.features.FeatureExtractionMalletSparse;
 import gate.plugin.learningframework.features.MissingValueTreatment;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -206,7 +206,7 @@ public class CorpusExporterARFF extends CorpusExporter {
     StringBuilder sb = new StringBuilder();
     
     if(filterMVs) {
-      Object ignore = inst.getProperty(FeatureExtraction.PROP_IGNORE_HAS_MV);    
+      Object ignore = inst.getProperty(FeatureExtractionMalletSparse.PROP_IGNORE_HAS_MV);    
       // If the flag says the instance should get ignored, return null
       // to indicate to the caller that this is an ignored instance.
       if(ignore != null && ignore.equals(true)) 

@@ -49,8 +49,24 @@ import org.apache.log4j.Logger;
  * 
  * @author Johann Petrak
  */
-public class FeatureExtraction {
+public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
 
+  // Naming scheme for follows the following pattern:
+  // start with either: ${annotationType}${TYPESEP}${featureName}
+  // or:                                 ${TYPESEP}${featureName}
+  // or:                ${specifiedAttributeName}
+  // followed by:       ${NAMESEP}A or ${NAMESEP}L${number} or ${NAMESEP}N${N}
+  // optionally followed, for sparse feature vectors only, and only
+  // if one-of-k representation, by: ${VALSEP}${actualValue}
+  // (for dense, the value is not part of the feature name but the value)
+  // or optionally followed, for sparse feature vectors only, if a feature
+  // has a list value, by: ${ELEMSEP${elemNumber}
+  // (for dense, the list will be the actual value of this single feature)
+  // Ngram values are represented as gram${NGRAMSEP}gram..  
+  // 
+  
+  
+  
   // We have to make sure that no two feature names that come from different attribute specifications
   // can be identical, and also that the different feature names that can come from the same attribute
   // specification for NGRAM and ATTRIBUTELIST are different from each other and those from other specs.
@@ -90,74 +106,15 @@ public class FeatureExtraction {
   // - if the type is NGRAM, then the "N" is followed by the number (e.g. 2 for 2-grams). This is then
   //   followed by VALSEP and the ngram itself, with each gram separated by the others using NGRAMSEP
   // 
-  // 
-  // This is the old convention: 
-  // Here is what we use for now:
-  // If a NAME is specified in the attribute definition, then that name is used as the 
-  // first part of the feature name prefix, optionally followed by #[i] where [i] is then
-  // number of the attribute list element, e.g. "#-1". This means that an attribute name should
-  // not contain numbers. 
-  // If a NAME is not specified, then the feature name prefix is constructed in the following way
-  // instead:
-  // it starts with a "feature indicator" which is "A" for attribute, N[k] for
-  // an ngram, A[i] for the ith entry in an attributelist and M[i]N[k] for an attribute list
-  // for ngrams with n>1 (future!)
-  // The feature indicator is followed by the NAMESEP character, then followed by the annotation
-  // type, followed by NAMESEP and followed by the feature name. For a boolean feature
-  // which indicates the presence of an annotation, the featuer name is empty.
-  // This is either the whole feature name or it is followed by VALSEP and followed by the 
-  // actual nominal value, if the feature is for a nominal value coded as one-of-k.
-  // The value for an ngram is all the individual grams, concatenated witth NGRAMSEP.
   // NOTE: the various separater characters are all unicode characters taken
   // from the "Box Drawing" Unicode block as these are extremely unlikely
   // to be used either as part of annotation type or feature names or to 
   // occur inside ngrams of the text. No attempt is made to escape or otherwise
   // handle these characters IF they indeed occur in these places.
-  /**
-   * Separates the grams in an n-gram with n>1.
-   */
-  private static final String NGRAMSEP = "┋";
-
-  /**
-   * Separates the name from any additional information. Additional information is kind of attribute
-   * (Ngram, attributelist etc), things like the element number if it is an attributelist, or the
-   * value for nominal one-of-k coded features.
-   */
-  private static final String NAMESEP = "╬";
-
-  /**
-   * Separates the type name inside the name from the feature name. The scheme is
-   * typename¦featurename where typename can be empty.
-   */
-  private static final String TYPESEP = "┆";
-
-  /**
-   * Separates the remainder of the feature name from the part that indicates the value for nominal
-   * one-of-k coded features.
-   */
-  private static final String VALSEP = "═";
-
-  /**
-   * Separates the name of the feature from the element number, if we get the value for a numeric
-   * attribute which is a list or array of numeric values.
-   */
-  private static final String ELEMSEP = "┄";
-
-  private static final String MVVALUE = "╔MV╗";
-
-  public static final String SEQ_INSIDE = "I";
-  public static final String SEQ_BEGINNING = "B";
-  public static final String SEQ_OUTSIDE = "O";
-
-  public static final String PROP_HAVE_MV = "haveMV";
-  public static final String PROP_IGNORE_HAS_MV = "ignore-MV";
   
-  public static final String START_SYMBOL = "╔START╗";
-  public static final String STOP_SYMBOL = "╔STOP╗";
 
-  private static Logger logger = Logger.getLogger(FeatureExtraction.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(FeatureExtractionMalletSparse.class.getName());
 
-  private static final boolean debugSequenceClass = true;
   
   public static void extractFeature(
           Instance inst,
@@ -165,11 +122,11 @@ public class FeatureExtraction {
           AnnotationSet inputAS,
           Annotation instanceAnnotation) {
     if (att instanceof FeatureSpecAttributeList) {
-      extractFeature(inst, (FeatureSpecAttributeList) att, inputAS, instanceAnnotation);
+      extractFeatureHelper(inst, (FeatureSpecAttributeList) att, inputAS, instanceAnnotation);
     } else if (att instanceof FeatureSpecSimpleAttribute) {
-      extractFeature(inst, (FeatureSpecSimpleAttribute) att, inputAS, instanceAnnotation);
+      extractFeatureHelper(inst, (FeatureSpecSimpleAttribute) att, inputAS, instanceAnnotation);
     } else if (att instanceof FeatureSpecNgram) {
-      extractFeature(inst, (FeatureSpecNgram) att, inputAS, instanceAnnotation);
+      extractFeatureHelper(inst, (FeatureSpecNgram) att, inputAS, instanceAnnotation);
     } else {
       throw new GateRuntimeException("Attempt to call extractFeature with type " + att.getClass());
     }
@@ -201,7 +158,7 @@ public class FeatureExtraction {
    * @param instanceAnnotation
    * @param doc
    */
-  private static void extractFeature(
+  private static void extractFeatureHelper(
           Instance inst,
           FeatureSpecSimpleAttribute att,
           AnnotationSet inputAS,
@@ -248,10 +205,10 @@ public class FeatureExtraction {
     if (withinType != null) {
       AnnotationSet withins = gate.Utils.getCoveringAnnotations(inputAS, instanceAnnotation, withinType);
       if (withins.size() != 1) {
-        logger.warn("More than one covering WITHIN annotation for " + instanceAnnotation + " in document " + doc.getName());
+        LOGGER.warn("More than one covering WITHIN annotation for " + instanceAnnotation + " in document " + doc.getName());
       }
       if (withins.size() == 0) {
-        logger.warn("No covering WITHIN annotation for " + instanceAnnotation + " in document " + doc.getName());
+        LOGGER.warn("No covering WITHIN annotation for " + instanceAnnotation + " in document " + doc.getName());
         return; // Skip this instance!
       }
       Annotation within = withins.iterator().next(); // get an arbitrary one
@@ -274,7 +231,7 @@ public class FeatureExtraction {
     } else {
       AnnotationSet overlappings = gate.Utils.getOverlappingAnnotations(withinSet, instanceAnnotation, annType);
       if (overlappings.size() > 1) {
-        logger.warn("More than one overlapping annotation of type " + annType + " for instance annotation at offset "
+        LOGGER.warn("More than one overlapping annotation of type " + annType + " for instance annotation at offset "
                 + gate.Utils.start(instanceAnnotation) + " in document " + doc.getName());
         // find the last longest (try to make this deterministic, there is 
         // still a small chance of non-determinism if there are more than one
@@ -311,6 +268,355 @@ public class FeatureExtraction {
     }
   }
 
+  /**
+   * Extract a attribute list feature for an instance.
+   * 
+   * This extracts all the features that correspond to a single attribute list feature 
+   * specification for a single instance. 
+   * 
+   * Note that the annotation type used to identify instances specified as a PR parameter
+   * can refer to the annotations described by the feature spec file (either because the type
+   * is identical or because the feature spec file does not specify a type) or it is just used
+   * to tell us where to take the actual annotations for this spec from. 
+   * 
+   * @param inst The instance representation to which the features should get added
+   * @param al the feature specification
+   * @param inputAS the annotation set that contains all relevant annotations
+   * @param instanceAnnotation the actual instance annotation
+   */
+  private static void extractFeatureHelper(
+          Instance inst,
+          FeatureSpecAttributeList al,
+          AnnotationSet inputAS,
+          Annotation instanceAnnotation
+  ) {
+
+
+    Document doc = inputAS.getDocument();
+    AugmentableFeatureVector fv = (AugmentableFeatureVector) inst.getData();
+
+    Datatype dt = al.datatype;        // feature data type
+    String featureName = al.feature;  // feature name, if empty use the document text
+    // type of a containing annotation, if specified, restrict everything to within the longest
+    // annotation covering the instance annotation
+    String withinType = al.withinType; 
+    int from = al.from;  // list element from
+    int to = al.to;      // list element to
+    Alphabet alphabet = al.alphabet;
+    MissingValueTreatment mvt = al.missingValueTreatment;
+    CodeAs codeas = al.codeas;
+    String listsep = al.listsep; 
+    String featureName4Value = al.featureName4Value;
+
+    // If the type from the attribute specification is the same as the 
+    // instance annotation type or if it is empty, we create the elements
+    // from the instance annotations. Otherwise we use the specified type. 
+    String annType = al.annType;
+    String annType4Feature = annType;  // the name to use in the data and model, possibly empty
+    String annType4Getting = annType;  // the name to access the annotations in the document, never empty
+    if (annType4Getting == null || annType4Getting.isEmpty()) {
+      annType4Getting = instanceAnnotation.getType();  // make sure it is identical to the type of the inst ann
+    }
+    
+    
+    // 
+    // The annotation -1 is one that ends before the beginning of annotation 0
+    // Annotation -2 is one that ends before the beginning of annottion -1
+    // Annotation +1 is one that starts after the end of annotation 0
+    // Annotation +2 is one that starts after the end of annotation 1
+    // Annotation 0 is the one which is either current instance (if we use 
+    // instance annotations) or the longest one that overlaps with the current 
+    // instance (similar to a Simple Attr).
+
+    // First of all, get the annotation 0 and also get the set of the 
+    // annotation types we are interested in.
+    // If we have a "WITHIN" declaration, we immediately limit the 
+    // set of interesting annotations to those within the containing annotation.
+    
+    // The sourceAnnotation is the annotation from which to actually take the the feature values
+    // and its type is annType4Getting. This may be different from the instance annotation and 
+    // instance annotation type if the instance annotation is just used to identify the span
+    // where to take the sourceAnnotation from. 
+    Annotation sourceAnnotation = null;
+    // By default, the annotations for this list can come from within this range
+    long rangeFrom = 0L;
+    long rangeTo = doc.getContent().size();
+    
+    // the following are only set if we actually do have a within annotaiton and will remain at -1
+    // otherwise. This is needed so we can quickly check if we need to set the START/STOP features
+    // which are only set if there is a within annotation at all (to enable this for document start/end
+    // a document annotation needs to be used as within annotation type).
+    long withinFrom = -1L;
+    long withinTo = -1L;
+    AnnotationSet withinSet = inputAS;
+    if (withinType != null) {
+      // find out which within annotation covers our instance annotation
+      // If there is none, the instance is not within a within annotation and we ignore it.
+      // If there is more than one, we currently take an arbitrary one.
+      AnnotationSet withins = gate.Utils.getCoveringAnnotations(inputAS, instanceAnnotation, withinType);
+      if (withins.size() != 1) {
+        LOGGER.warn("More than one covering WITHIN annotation for " + instanceAnnotation + " in document " + doc.getName());
+      }
+      if (withins.size() == 0) {
+        LOGGER.warn("No covering WITHIN annotation for " + instanceAnnotation + " in document " + doc.getName());
+        return; // Skip this instance!
+      }
+      Annotation within = withins.iterator().next(); // get an arbitrary one
+      rangeFrom = within.getStartNode().getOffset();
+      rangeTo = within.getEndNode().getOffset();
+      withinFrom = rangeFrom;
+      withinTo = rangeTo;
+      withinSet = gate.Utils.getContainedAnnotations(inputAS, within, annType4Getting);
+    }
+    if (annType.isEmpty() || instanceAnnotation.getType().equals(annType)) {
+      // if the type specified for this attribute list is empty or equal to the type of the 
+      // instance annotation, we directly use the instance annotation. In that case we also
+      // use an empty feature name for the outputfile/model so that at application time we 
+      // can match it with instance annotations which have a different type
+      sourceAnnotation = instanceAnnotation;
+      annType4Feature = "";
+    } else {
+      // the instance annotation is not the one we want to use, we need to find the actual source
+      // annotation. 
+      // If there is more than one overlapping source annotation, pick the last longest one when 
+      // going through them in document order. 
+      AnnotationSet overlappings = gate.Utils.getOverlappingAnnotations(inputAS, instanceAnnotation, annType4Getting);
+      if (overlappings.size() > 1) {
+        LOGGER.warn("More than one overlapping source annotation of type " + annType4Getting + " for instance annotation at offset "
+                + gate.Utils.start(instanceAnnotation) + " in document " + doc.getName());
+        // find the last longest (try to make this deterministic, there is 
+        // still a small chance of non-determinism if there are more than one
+        // overlapping annotations of the same length in the last position 
+        // where a longest annotation occurs.
+        int maxSize = 0;
+        for (Annotation ann : overlappings.inDocumentOrder()) {
+          if (gate.Utils.length(ann) > maxSize) {
+            maxSize = gate.Utils.length(ann);
+            sourceAnnotation = ann;
+          }
+        }
+      } else if (overlappings.size() == 0) {
+        // there is no overlappign annotation 
+        // For lists we do not treat this as a missing value and instead 
+        // just do not create anything for this instance annotation
+        LOGGER.warn("No overlapping source annotation of type " + annType4Getting + " for instance annotation at offset "
+                + gate.Utils.start(instanceAnnotation) + " in document " + doc.getName() + " instance ignored");
+        return;
+      } else {
+        // we have exactly one annotation, use that one
+        sourceAnnotation = gate.Utils.getOnlyAnn(overlappings);
+      }
+    }
+    
+    // Now we have annotation [0]
+    long start = sourceAnnotation.getStartNode().getOffset();
+    long end = sourceAnnotation.getEndNode().getOffset();
+    
+    
+    List<Annotation> annlistforward = withinSet.getContained(end, rangeTo).get(annType4Getting).inDocumentOrder();
+    List<Annotation> annlistbackward = withinSet.getContained(rangeFrom, start).get(annType4Getting).inDocumentOrder();
+    //System.err.println("rangeFrom=" + rangeFrom + ", rangeTo=" + rangeTo + ",START=" + start + ", END=" + end + ", forwardsize=" + annlistforward.size() + ", backwardsize=" + annlistbackward.size());
+    // go through each of the members in the attribute list and get the annotation
+    // then process each annotation just like a simple annotation, only that the name of 
+    // featureName gets derived from this list attribute plus the location in the list.
+    // TODO: this does not work if the annotations are overlapping!!!
+
+    // TODO: this could also create n-grams of consecutive elements, based on an AttributeList
+    // parameter N. Instead of creating the feature from a single source annotation, the 
+    // features of N successive elements would get combined to form an ngram feature.
+    // The identifier for such a feature would have to include the starting list element and N
+    // e.g. "L"+i+"N"+n
+    
+    // First loop: go from index -1 to the smallest from index to the left
+    int albsize = annlistbackward.size();
+    for (int i = -1; i >= from; i--) {
+      // -1 corresponds to element (size-1) in the list, 
+      // -2 corresponds to element (size-2) in the list etc. 
+      // in general we want element (size+i) if that is > 0
+      if (albsize + i >= 0) {
+        Annotation ann = annlistbackward.get(albsize + i);
+        extractFeatureWorker(al.name, "L" + i, inst, ann, doc, annType4Feature,
+                featureName, featureName4Value, alphabet, dt, mvt, codeas, listsep,null);
+        // if we have the leftmost annotation and the offset of the annotation is equals to
+        // the start of the within annotation or the document start, then also set the start
+        // feature for this instance
+        if(i==from && gate.Utils.start(ann)==withinFrom) {
+          extractFeatureWorker(al.name,"L"+i,inst,ann,doc,annType4Feature,
+                  null, null, alphabet, Datatype.nominal,
+                  MissingValueTreatment.zero_value, CodeAs.one_of_k, "",START_SYMBOL);
+        }
+      } else {
+        break;
+      }
+    }
+    // if we have index 0 in the range, process for that one
+    if (from <= 0 && to >= 0) {
+      extractFeatureWorker(al.name, "L" + 0, inst, sourceAnnotation, doc, annType4Feature,
+              featureName, featureName4Value, alphabet, dt, mvt, codeas, listsep,null);
+      if(gate.Utils.start(sourceAnnotation)==withinFrom) {
+          extractFeatureWorker(al.name,"L0",inst,sourceAnnotation,doc,annType4Feature,
+                  null, null, alphabet, Datatype.nominal, 
+                  MissingValueTreatment.zero_value, CodeAs.one_of_k, "",START_SYMBOL);
+        }
+      if(gate.Utils.end(sourceAnnotation)==withinTo) {
+          extractFeatureWorker(al.name,"L0",inst,sourceAnnotation,doc,annType4Feature,
+                  null, null, alphabet, Datatype.nominal, 
+                  MissingValueTreatment.zero_value, CodeAs.one_of_k, "",STOP_SYMBOL);
+        }
+    }
+    // do the ones to the right
+    int alfsize = annlistforward.size();
+    for (int i = 1; i <= to; i++) {
+      // for i=1 we get element 0, in general we get element i-1
+      // if i <= size
+      if (i <= alfsize) {
+        Annotation ann = annlistforward.get(i - 1);
+        extractFeatureWorker(al.name, "L" + i, inst, ann, doc, annType4Feature,
+                featureName, featureName4Value, alphabet, dt, mvt, codeas, listsep,null);
+        if(i==to && gate.Utils.end(ann)==withinTo) {
+          extractFeatureWorker(al.name,"L"+i,inst,ann,doc,annType4Feature,
+                  null, null, alphabet, Datatype.nominal, 
+                  MissingValueTreatment.zero_value, CodeAs.one_of_k, "",STOP_SYMBOL);
+        }
+      } else {
+        break;
+      }
+    }
+  } // extractFeature (AttributeList)
+  
+
+  /*
+   *
+   */
+  // TODO: NOTE: this currently returns a single string which represents all N-grams 
+  // If there are at least n annotations inputAS speficied by the Ngam TYPE contained in the span of 
+  // the instance annotation, then those annotations are arranged in document order and
+  // - starting with the second index, up to the last
+  // - 
+  // CHECK: if we get the same ngram multiple times, we should have a count!!! e.g. unigram "fred" three
+  // times we should have 3.0
+  // TODO: check what to do if the contained annotations are not in non-overlapping order: should we
+  // create an ngram if the second annotations starts before the end of the first or even at the same 
+  // offset inputAS the first? If that is the case, what should the order of the annotations then be?
+  // NOTE: if the featureName is missing, i.e. it is null or the empty string, then the whole annotation gets ignored
+  private static void extractFeatureHelper(
+          Instance inst,
+          FeatureSpecNgram ng,
+          AnnotationSet inputAS,
+          Annotation instanceAnnotation
+  ) {
+    Document doc = inputAS.getDocument();
+    AugmentableFeatureVector fv = (AugmentableFeatureVector) inst.getData();
+    int number = ng.number;
+    String annType = ng.annType;
+    String featureName = ng.feature;
+    String featureName4Value = ng.featureName4Value;
+    // TODO: this we rely on the ngram only having allowed field values, e.g. annType
+    // has to be non-null and non-empty and number has to be > 0.
+    // If featureName is null, then for ngrams, the string comes from the covered document
+    String[] gram = new String[number];
+    List<Annotation> al = Utils.getContainedAnnotations(inputAS, instanceAnnotation, annType).inDocumentOrder();
+    // If we have less annotations than our n for n-gram, there is certainly nothing to do, 
+    // leave the featureName vector untouched.
+    if (al.size() < number) {
+      return;
+    }
+    // this will hold the actual token strings to use for creating the n-grams
+    List<String> strings = new ArrayList<String>();
+    // this will hold the score to use for each string we extract, but only of the
+    // featureName4Value was specified and exists.
+    List<Double> scores = new ArrayList<Double>();
+
+    for (Annotation ann : al) {
+      // for ngrams we either have a featureName name 
+      if (featureName != null) {
+        // NOTE: if the featureName is not a string, we convert it to string
+        Object obj = ann.getFeatures().get(featureName);
+        // if there is no value at all, then the annotation is ignored
+        if (obj != null) {
+          String tmp = obj.toString().trim();
+          // if the resulting string is empty, it is also ignored 
+          if (!tmp.isEmpty()) {
+            strings.add(tmp);
+            double score = 1.0;
+            if (!featureName4Value.isEmpty()) {
+              score = gate.plugin.learningframework.LFUtils.anyToDoubleOrElse(ann.getFeatures().get(featureName4Value), 1.0);
+            }
+            scores.add(score);
+          }
+        }
+      } else {
+        // if the featureName is null, we get the string from the cleaned document text
+        String tmp = gate.Utils.cleanStringFor(doc, ann).trim();
+        if (!tmp.isEmpty()) {
+          strings.add(tmp);
+          double score = 1.0;
+          if (!featureName4Value.isEmpty()) {
+            score = gate.plugin.learningframework.LFUtils.anyToDoubleOrElse(ann.getFeatures().get(featureName4Value), 1.0);
+          }
+          scores.add(score);
+        }
+      }
+    } // for Annotation ann : al
+    // Now construct the actual ngrams and add them to the augmentable featureName vector. 
+    // In the process, check first if such a featureName is already there, and if yes, just 
+    // increment the value.
+    // To avoid overhead, we only create the ngrams on the fly// Now construct the actual ngrams and add them to the augmentable feature vector. 
+    // In the process, check first if such a feature is already there, and if yes, just 
+    // increment the value.
+    // To avoid overhead, we only create the ngrams on the fly
+
+    // first check if our strings array is actually big enough so we can create at least one n-gram
+    if (strings.size() < number) {
+      return;
+    }
+
+    // now create the ngrams inputAS follows: starting with the first element in strings, go
+    // through all the elements up to the (size-n)ths and concatenate with the subsequent 
+    // n stings using the pre-defined separator character.
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < (strings.size() - number + 1); i++) {
+      sb.setLength(0);
+      // NOTE: the score for an ngram is calculated by multiplying the scores
+      // for each part of the ngram. If there is no featureName4Value, then all those
+      // scores are 1.0 at this point as well, so the final score is also 1.0.
+      // If we have a featureName4Value and it is a 1-gram, then we get the value of that
+      // feature. If it is an n-gram with n>1, then we get the product of all the scores
+      // of each gram. 
+      double score = 1.0;
+      for (int j = 0; j < number; j++) {
+        if (j != 0) {
+          sb.append(NGRAMSEP);
+        }
+        sb.append(strings.get(i + j));
+        score = score * scores.get(i + j);
+      }
+      String ngram = sb.toString();
+      // we have got our ngram now, count it, but only add if we are allowed to!
+      String prefix;
+      if (ng.name.isEmpty()) {
+        prefix = annType + TYPESEP + featureName;
+      } else {
+        prefix = ng.name;
+      }
+      prefix = prefix + NAMESEP + "N" + number;
+      // NOTE: for now, we always add to any existing value of the feature vector we 
+      // may already have. That way, if some ngram occurs multiple times, we use the 
+      // sum its scores (and the score either is just 1.0 or whatever we got from using
+      // the featureName4Value value).
+      accumulateInFeatureVector(fv, prefix + VALSEP + ngram, score);
+      // NOTE: previously, we only accumulated if there was no weight feature, otherwise
+      // the weight was directly used without accumulation
+      //if (featureName4Value.isEmpty()) {
+      //  accumulateInFeatureVector(fv, prefix + VALSEP + ngram, score);
+      //} else {
+      //  setInFeatureVector(fv, prefix + VALSEP + ngram, score);
+      //}
+    }
+    //System.err.println("DEBUG: Vector after adding feature "+ng+" is now "+fv);
+  } // extractFeature(NGram)
+
+  
   /**
    * Do the actual hard work of extracting a feature and adding it to the Mallet feature vector.
    * This is used to do the actual extraction for simple attributes and attribute lists.
@@ -553,7 +859,7 @@ public class FeatureExtraction {
               val = Double.parseDouble(valObj.toString());
             } catch (Exception ex) {
               val = 0.0;
-              logger.warn("Cannot parse String " + valObj + " as a number, using 0.0 for annotation of type "
+              LOGGER.warn("Cannot parse String " + valObj + " as a number, using 0.0 for annotation of type "
                       + sourceAnnotation.getType()
                       + // take it from the annotation, annType can be empty!
                       " at offset " + gate.Utils.start(sourceAnnotation) + " in document " + doc.getName());
@@ -602,7 +908,7 @@ public class FeatureExtraction {
               }
             } catch (Exception ex) {
               // value is already 0.0
-              logger.warn("Cannot parse String " + valObj + " as a boolean, using 0.0 for annotation of type "
+              LOGGER.warn("Cannot parse String " + valObj + " as a boolean, using 0.0 for annotation of type "
                       + sourceAnnotation.getType()
                       + // take it from the annotation, annType can be empty!
                       " at offset " + gate.Utils.start(sourceAnnotation) + " in document " + doc.getName());
@@ -638,353 +944,6 @@ public class FeatureExtraction {
     }
     //System.out.println("DEBUG: worker, fv is now"+fv.numLocations());
   } // extractFeature (SimpleAttribute)
-
-  /*
-   *
-   */
-  // TODO: NOTE: this currently returns a single string which represents all N-grams 
-  // If there are at least n annotations inputAS speficied by the Ngam TYPE contained in the span of 
-  // the instance annotation, then those annotations are arranged in document order and
-  // - starting with the second index, up to the last
-  // - 
-  // CHECK: if we get the same ngram multiple times, we should have a count!!! e.g. unigram "fred" three
-  // times we should have 3.0
-  // TODO: check what to do if the contained annotations are not in non-overlapping order: should we
-  // create an ngram if the second annotations starts before the end of the first or even at the same 
-  // offset inputAS the first? If that is the case, what should the order of the annotations then be?
-  // NOTE: if the featureName is missing, i.e. it is null or the empty string, then the whole annotation gets ignored
-  private static void extractFeature(
-          Instance inst,
-          FeatureSpecNgram ng,
-          AnnotationSet inputAS,
-          Annotation instanceAnnotation
-  ) {
-    Document doc = inputAS.getDocument();
-    AugmentableFeatureVector fv = (AugmentableFeatureVector) inst.getData();
-    int number = ng.number;
-    String annType = ng.annType;
-    String featureName = ng.feature;
-    String featureName4Value = ng.featureName4Value;
-    // TODO: this we rely on the ngram only having allowed field values, e.g. annType
-    // has to be non-null and non-empty and number has to be > 0.
-    // If featureName is null, then for ngrams, the string comes from the covered document
-    String[] gram = new String[number];
-    List<Annotation> al = Utils.getContainedAnnotations(inputAS, instanceAnnotation, annType).inDocumentOrder();
-    // If we have less annotations than our n for n-gram, there is certainly nothing to do, 
-    // leave the featureName vector untouched.
-    if (al.size() < number) {
-      return;
-    }
-    // this will hold the actual token strings to use for creating the n-grams
-    List<String> strings = new ArrayList<String>();
-    // this will hold the score to use for each string we extract, but only of the
-    // featureName4Value was specified and exists.
-    List<Double> scores = new ArrayList<Double>();
-
-    for (Annotation ann : al) {
-      // for ngrams we either have a featureName name 
-      if (featureName != null) {
-        // NOTE: if the featureName is not a string, we convert it to string
-        Object obj = ann.getFeatures().get(featureName);
-        // if there is no value at all, then the annotation is ignored
-        if (obj != null) {
-          String tmp = obj.toString().trim();
-          // if the resulting string is empty, it is also ignored 
-          if (!tmp.isEmpty()) {
-            strings.add(tmp);
-            double score = 1.0;
-            if (!featureName4Value.isEmpty()) {
-              score = gate.plugin.learningframework.LFUtils.anyToDoubleOrElse(ann.getFeatures().get(featureName4Value), 1.0);
-            }
-            scores.add(score);
-          }
-        }
-      } else {
-        // if the featureName is null, we get the string from the cleaned document text
-        String tmp = gate.Utils.cleanStringFor(doc, ann).trim();
-        if (!tmp.isEmpty()) {
-          strings.add(tmp);
-          double score = 1.0;
-          if (!featureName4Value.isEmpty()) {
-            score = gate.plugin.learningframework.LFUtils.anyToDoubleOrElse(ann.getFeatures().get(featureName4Value), 1.0);
-          }
-          scores.add(score);
-        }
-      }
-    } // for Annotation ann : al
-    // Now construct the actual ngrams and add them to the augmentable featureName vector. 
-    // In the process, check first if such a featureName is already there, and if yes, just 
-    // increment the value.
-    // To avoid overhead, we only create the ngrams on the fly// Now construct the actual ngrams and add them to the augmentable feature vector. 
-    // In the process, check first if such a feature is already there, and if yes, just 
-    // increment the value.
-    // To avoid overhead, we only create the ngrams on the fly
-
-    // first check if our strings array is actually big enough so we can create at least one n-gram
-    if (strings.size() < number) {
-      return;
-    }
-
-    // now create the ngrams inputAS follows: starting with the first element in strings, go
-    // through all the elements up to the (size-n)ths and concatenate with the subsequent 
-    // n stings using the pre-defined separator character.
-    StringBuilder sb = new StringBuilder();
-    for (int i = 0; i < (strings.size() - number + 1); i++) {
-      sb.setLength(0);
-      // NOTE: the score for an ngram is calculated by multiplying the scores
-      // for each part of the ngram. If there is no featureName4Value, then all those
-      // scores are 1.0 at this point as well, so the final score is also 1.0.
-      // If we have a featureName4Value and it is a 1-gram, then we get the value of that
-      // feature. If it is an n-gram with n>1, then we get the product of all the scores
-      // of each gram. 
-      double score = 1.0;
-      for (int j = 0; j < number; j++) {
-        if (j != 0) {
-          sb.append(NGRAMSEP);
-        }
-        sb.append(strings.get(i + j));
-        score = score * scores.get(i + j);
-      }
-      String ngram = sb.toString();
-      // we have got our ngram now, count it, but only add if we are allowed to!
-      String prefix;
-      if (ng.name.isEmpty()) {
-        prefix = annType + TYPESEP + featureName;
-      } else {
-        prefix = ng.name;
-      }
-      prefix = prefix + NAMESEP + "N" + number;
-      // NOTE: for now, we always add to any existing value of the feature vector we 
-      // may already have. That way, if some ngram occurs multiple times, we use the 
-      // sum its scores (and the score either is just 1.0 or whatever we got from using
-      // the featureName4Value value).
-      accumulateInFeatureVector(fv, prefix + VALSEP + ngram, score);
-      // NOTE: previously, we only accumulated if there was no weight feature, otherwise
-      // the weight was directly used without accumulation
-      //if (featureName4Value.isEmpty()) {
-      //  accumulateInFeatureVector(fv, prefix + VALSEP + ngram, score);
-      //} else {
-      //  setInFeatureVector(fv, prefix + VALSEP + ngram, score);
-      //}
-    }
-    //System.err.println("DEBUG: Vector after adding feature "+ng+" is now "+fv);
-  } // extractFeature(NGram)
-
-  /**
-   * Extract a attribute list feature for an instance.
-   * 
-   * This extracts all the features that correspond to a single attribute list feature 
-   * specification for a single instance. 
-   * 
-   * Note that the annotation type used to identify instances specified as a PR parameter
-   * can refer to the annotations described by the feature spec file (either because the type
-   * is identical or because the feature spec file does not specify a type) or it is just used
-   * to tell us where to take the actual annotations for this spec from. 
-   * 
-   * @param inst The instance representation to which the features should get added
-   * @param al the feature specification
-   * @param inputAS the annotation set that contains all relevant annotations
-   * @param instanceAnnotation the actual instance annotation
-   */
-  private static void extractFeature(
-          Instance inst,
-          FeatureSpecAttributeList al,
-          AnnotationSet inputAS,
-          Annotation instanceAnnotation
-  ) {
-
-
-    Document doc = inputAS.getDocument();
-    AugmentableFeatureVector fv = (AugmentableFeatureVector) inst.getData();
-
-    Datatype dt = al.datatype;        // feature data type
-    String featureName = al.feature;  // feature name, if empty use the document text
-    // type of a containing annotation, if specified, restrict everything to within the longest
-    // annotation covering the instance annotation
-    String withinType = al.withinType; 
-    int from = al.from;  // list element from
-    int to = al.to;      // list element to
-    Alphabet alphabet = al.alphabet;
-    MissingValueTreatment mvt = al.missingValueTreatment;
-    CodeAs codeas = al.codeas;
-    String listsep = al.listsep; 
-    String featureName4Value = al.featureName4Value;
-
-    // If the type from the attribute specification is the same as the 
-    // instance annotation type or if it is empty, we create the elements
-    // from the instance annotations. Otherwise we use the specified type. 
-    String annType = al.annType;
-    String annType4Feature = annType;  // the name to use in the data and model, possibly empty
-    String annType4Getting = annType;  // the name to access the annotations in the document, never empty
-    if (annType4Getting == null || annType4Getting.isEmpty()) {
-      annType4Getting = instanceAnnotation.getType();  // make sure it is identical to the type of the inst ann
-    }
-    
-    
-    // 
-    // The annotation -1 is one that ends before the beginning of annotation 0
-    // Annotation -2 is one that ends before the beginning of annottion -1
-    // Annotation +1 is one that starts after the end of annotation 0
-    // Annotation +2 is one that starts after the end of annotation 1
-    // Annotation 0 is the one which is either current instance (if we use 
-    // instance annotations) or the longest one that overlaps with the current 
-    // instance (similar to a Simple Attr).
-
-    // First of all, get the annotation 0 and also get the set of the 
-    // annotation types we are interested in.
-    // If we have a "WITHIN" declaration, we immediately limit the 
-    // set of interesting annotations to those within the containing annotation.
-    
-    // The sourceAnnotation is the annotation from which to actually take the the feature values
-    // and its type is annType4Getting. This may be different from the instance annotation and 
-    // instance annotation type if the instance annotation is just used to identify the span
-    // where to take the sourceAnnotation from. 
-    Annotation sourceAnnotation = null;
-    // By default, the annotations for this list can come from within this range
-    long rangeFrom = 0L;
-    long rangeTo = doc.getContent().size();
-    
-    // the following are only set if we actually do have a within annotaiton and will remain at -1
-    // otherwise. This is needed so we can quickly check if we need to set the START/STOP features
-    // which are only set if there is a within annotation at all (to enable this for document start/end
-    // a document annotation needs to be used as within annotation type).
-    long withinFrom = -1L;
-    long withinTo = -1L;
-    AnnotationSet withinSet = inputAS;
-    if (withinType != null) {
-      // find out which within annotation covers our instance annotation
-      // If there is none, the instance is not within a within annotation and we ignore it.
-      // If there is more than one, we currently take an arbitrary one.
-      AnnotationSet withins = gate.Utils.getCoveringAnnotations(inputAS, instanceAnnotation, withinType);
-      if (withins.size() != 1) {
-        logger.warn("More than one covering WITHIN annotation for " + instanceAnnotation + " in document " + doc.getName());
-      }
-      if (withins.size() == 0) {
-        logger.warn("No covering WITHIN annotation for " + instanceAnnotation + " in document " + doc.getName());
-        return; // Skip this instance!
-      }
-      Annotation within = withins.iterator().next(); // get an arbitrary one
-      rangeFrom = within.getStartNode().getOffset();
-      rangeTo = within.getEndNode().getOffset();
-      withinFrom = rangeFrom;
-      withinTo = rangeTo;
-      withinSet = gate.Utils.getContainedAnnotations(inputAS, within, annType4Getting);
-    }
-    if (annType.isEmpty() || instanceAnnotation.getType().equals(annType)) {
-      // if the type specified for this attribute list is empty or equal to the type of the 
-      // instance annotation, we directly use the instance annotation. In that case we also
-      // use an empty feature name for the outputfile/model so that at application time we 
-      // can match it with instance annotations which have a different type
-      sourceAnnotation = instanceAnnotation;
-      annType4Feature = "";
-    } else {
-      // the instance annotation is not the one we want to use, we need to find the actual source
-      // annotation. 
-      // If there is more than one overlapping source annotation, pick the last longest one when 
-      // going through them in document order. 
-      AnnotationSet overlappings = gate.Utils.getOverlappingAnnotations(inputAS, instanceAnnotation, annType4Getting);
-      if (overlappings.size() > 1) {
-        logger.warn("More than one overlapping source annotation of type " + annType4Getting + " for instance annotation at offset "
-                + gate.Utils.start(instanceAnnotation) + " in document " + doc.getName());
-        // find the last longest (try to make this deterministic, there is 
-        // still a small chance of non-determinism if there are more than one
-        // overlapping annotations of the same length in the last position 
-        // where a longest annotation occurs.
-        int maxSize = 0;
-        for (Annotation ann : overlappings.inDocumentOrder()) {
-          if (gate.Utils.length(ann) > maxSize) {
-            maxSize = gate.Utils.length(ann);
-            sourceAnnotation = ann;
-          }
-        }
-      } else if (overlappings.size() == 0) {
-        // there is no overlappign annotation 
-        // For lists we do not treat this as a missing value and instead 
-        // just do not create anything for this instance annotation
-        logger.warn("No overlapping source annotation of type " + annType4Getting + " for instance annotation at offset "
-                + gate.Utils.start(instanceAnnotation) + " in document " + doc.getName() + " instance ignored");
-        return;
-      } else {
-        // we have exactly one annotation, use that one
-        sourceAnnotation = gate.Utils.getOnlyAnn(overlappings);
-      }
-    }
-    
-    // Now we have annotation [0]
-    long start = sourceAnnotation.getStartNode().getOffset();
-    long end = sourceAnnotation.getEndNode().getOffset();
-    
-    
-    List<Annotation> annlistforward = withinSet.getContained(end, rangeTo).get(annType4Getting).inDocumentOrder();
-    List<Annotation> annlistbackward = withinSet.getContained(rangeFrom, start).get(annType4Getting).inDocumentOrder();
-    //System.err.println("rangeFrom=" + rangeFrom + ", rangeTo=" + rangeTo + ",START=" + start + ", END=" + end + ", forwardsize=" + annlistforward.size() + ", backwardsize=" + annlistbackward.size());
-    // go through each of the members in the attribute list and get the annotation
-    // then process each annotation just like a simple annotation, only that the name of 
-    // featureName gets derived from this list attribute plus the location in the list.
-    // TODO: this does not work if the annotations are overlapping!!!
-
-    // TODO: this could also create n-grams of consecutive elements, based on an AttributeList
-    // parameter N. Instead of creating the feature from a single source annotation, the 
-    // features of N successive elements would get combined to form an ngram feature.
-    // The identifier for such a feature would have to include the starting list element and N
-    // e.g. "L"+i+"N"+n
-    
-    // First loop: go from index -1 to the smallest from index to the left
-    int albsize = annlistbackward.size();
-    for (int i = -1; i >= from; i--) {
-      // -1 corresponds to element (size-1) in the list, 
-      // -2 corresponds to element (size-2) in the list etc. 
-      // in general we want element (size+i) if that is > 0
-      if (albsize + i >= 0) {
-        Annotation ann = annlistbackward.get(albsize + i);
-        extractFeatureWorker(al.name, "L" + i, inst, ann, doc, annType4Feature,
-                featureName, featureName4Value, alphabet, dt, mvt, codeas, listsep,null);
-        // if we have the leftmost annotation and the offset of the annotation is equals to
-        // the start of the within annotation or the document start, then also set the start
-        // feature for this instance
-        if(i==from && gate.Utils.start(ann)==withinFrom) {
-          extractFeatureWorker(al.name,"L"+i,inst,ann,doc,annType4Feature,
-                  null, null, alphabet, Datatype.nominal,
-                  MissingValueTreatment.zero_value, CodeAs.one_of_k, "",START_SYMBOL);
-        }
-      } else {
-        break;
-      }
-    }
-    // if we have index 0 in the range, process for that one
-    if (from <= 0 && to >= 0) {
-      extractFeatureWorker(al.name, "L" + 0, inst, sourceAnnotation, doc, annType4Feature,
-              featureName, featureName4Value, alphabet, dt, mvt, codeas, listsep,null);
-      if(gate.Utils.start(sourceAnnotation)==withinFrom) {
-          extractFeatureWorker(al.name,"L0",inst,sourceAnnotation,doc,annType4Feature,
-                  null, null, alphabet, Datatype.nominal, 
-                  MissingValueTreatment.zero_value, CodeAs.one_of_k, "",START_SYMBOL);
-        }
-      if(gate.Utils.end(sourceAnnotation)==withinTo) {
-          extractFeatureWorker(al.name,"L0",inst,sourceAnnotation,doc,annType4Feature,
-                  null, null, alphabet, Datatype.nominal, 
-                  MissingValueTreatment.zero_value, CodeAs.one_of_k, "",STOP_SYMBOL);
-        }
-    }
-    // do the ones to the right
-    int alfsize = annlistforward.size();
-    for (int i = 1; i <= to; i++) {
-      // for i=1 we get element 0, in general we get element i-1
-      // if i <= size
-      if (i <= alfsize) {
-        Annotation ann = annlistforward.get(i - 1);
-        extractFeatureWorker(al.name, "L" + i, inst, ann, doc, annType4Feature,
-                featureName, featureName4Value, alphabet, dt, mvt, codeas, listsep,null);
-        if(i==to && gate.Utils.end(ann)==withinTo) {
-          extractFeatureWorker(al.name,"L"+i,inst,ann,doc,annType4Feature,
-                  null, null, alphabet, Datatype.nominal, 
-                  MissingValueTreatment.zero_value, CodeAs.one_of_k, "",STOP_SYMBOL);
-        }
-      } else {
-        break;
-      }
-    }
-  } // extractFeature (AttributeList)
 
   // *****************************************************************************
   // Extract the target stuff
@@ -1103,7 +1062,7 @@ public class FeatureExtraction {
     }
     // if debugging is enabled, we put the 
     // the target class on the instance annotation
-    if (debugSequenceClass) {
+    if (DEBUG_SEQUENCE_CLASS) {
       instanceAnnotation.getFeatures().put("LF_sequenceClass", target);
     }
     // we now have the target label as a string, now set the target of the instance to 

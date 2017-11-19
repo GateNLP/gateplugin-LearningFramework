@@ -32,7 +32,7 @@ import cc.mallet.types.LabelAlphabet;
 import gate.plugin.learningframework.ScalingMethod;
 import gate.plugin.learningframework.LFUtils;
 import gate.plugin.learningframework.features.FeatureSpecAttribute;
-import gate.plugin.learningframework.features.FeatureExtraction;
+import gate.plugin.learningframework.features.FeatureExtractionMalletSparse;
 import gate.plugin.learningframework.features.FeatureInfo;
 import gate.plugin.learningframework.features.SeqEncoder;
 import gate.plugin.learningframework.features.TargetType;
@@ -168,7 +168,7 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
     // Constructor parms: data, target, name, source
     Instance inst = new Instance(afv, null, null, null);
     for(FeatureSpecAttribute attr : featureInfo.getAttributes()) {
-      FeatureExtraction.extractFeature(inst, attr, inputAS, instanceAnnotation);
+      FeatureExtractionMalletSparse.extractFeature(inst, attr, inputAS, instanceAnnotation);
     }
     // TODO: we destructively replace the AugmentableFeatureVector by a FeatureVector here,
     // but it is not clear if this is beneficial - our assumption is that yes.
@@ -201,17 +201,17 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
       Instance inst = extractIndependentFeaturesHelper(instanceAnnotation, inputAS, featureInfo, pipe);
       if (classAS != null) {
         // extract the target as required for sequence tagging
-        FeatureExtraction.extractClassForSeqTagging(inst, pipe.getTargetAlphabet(), classAS, instanceAnnotation, seqEncoder);
+        FeatureExtractionMalletSparse.extractClassForSeqTagging(inst, pipe.getTargetAlphabet(), classAS, instanceAnnotation, seqEncoder);
       } else {
         if(targetType == TargetType.NOMINAL) {
-          FeatureExtraction.extractClassTarget(inst, pipe.getTargetAlphabet(), targetFeatureName, instanceAnnotation, inputAS);
+          FeatureExtractionMalletSparse.extractClassTarget(inst, pipe.getTargetAlphabet(), targetFeatureName, instanceAnnotation, inputAS);
         } else if(targetType == TargetType.NUMERIC) {
-          FeatureExtraction.extractNumericTarget(inst, targetFeatureName, instanceAnnotation, inputAS);
+          FeatureExtractionMalletSparse.extractNumericTarget(inst, targetFeatureName, instanceAnnotation, inputAS);
         }
       }
       // if a nameFeature is specified, add the name informatin to the instance
       if(nameFeatureName != null) {
-        FeatureExtraction.extractName(inst, instanceAnnotation, inputAS.getDocument());
+        FeatureExtractionMalletSparse.extractName(inst, instanceAnnotation, inputAS.getDocument());
       }
       if(instanceWeightFeature != null && !instanceWeightFeature.isEmpty()) {
         // If the instanceWeightFeature is not specified we do not set any weight, but if it is 
@@ -219,7 +219,7 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
         double score = LFUtils.anyToDoubleOrElse(instanceAnnotation.getFeatures().get(instanceWeightFeature), 1.0);
         inst.setProperty("instanceWeight", score);
       }
-      if(!FeatureExtraction.ignoreInstanceWithMV(inst)) {
+      if(!FeatureExtractionMalletSparse.ignoreInstanceWithMV(inst)) {
         instances.add(inst);
       }
     }

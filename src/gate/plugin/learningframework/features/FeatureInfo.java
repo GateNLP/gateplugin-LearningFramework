@@ -58,6 +58,14 @@ public class FeatureInfo implements Serializable {
     }
   }
   
+  /**
+   * Add a new FeatureSpecAttribut and assign its id.
+   */
+  public void add(FeatureSpecAttribute attr) {    
+    featureSpecs.add(attr);
+    attr.featureId = featureSpecs.size()-1;
+  }
+  
   public void stopGrowth() {
     // make sure that all alphabets we have stored with some of the featureSpecs are
     // locked too!
