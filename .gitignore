@@ -43,3 +43,4 @@ hs_err_*.log
 /tests/cl-ionosphere/model-keras-m1/kerasmodel.h5
 
 
+/nbproject/private/

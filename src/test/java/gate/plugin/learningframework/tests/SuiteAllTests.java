@@ -22,7 +22,6 @@ package gate.plugin.learningframework.tests;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import test.java.gate.plugin.learningframework.tests.TestFeatureExtractionDense;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({

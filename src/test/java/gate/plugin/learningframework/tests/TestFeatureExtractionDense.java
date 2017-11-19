@@ -18,7 +18,7 @@
  * along with this software. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package test.java.gate.plugin.learningframework.tests;
+package gate.plugin.learningframework.tests;
 
 import cc.mallet.types.Alphabet;
 import cc.mallet.types.AugmentableFeatureVector;
@@ -47,7 +47,7 @@ import org.junit.BeforeClass;
 
 
 /**
- * Tests for the FeatureSpecification parsing and creation of FeatureInfo.
+ * Tests extracting features to a dense Instance representation
  * 
  * @author Johann Petrak
  */
