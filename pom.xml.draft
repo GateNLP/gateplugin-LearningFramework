@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <name>Learning Framework</name>
+  <description>
+  </description>
+  <url>https://github.com/GateNLP/gateplugin-LearningFramework</url>
+  <!--
+  <parent>
+    <groupId>uk.ac.gate</groupId>
+    <artifactId>gate-plugin-base</artifactId>
+    <!-- this should be the version of GATE you wish to build against -->
+    <version>8.5-SNAPSHOT</version>
+    <!-- this forces the parent to always be resolved from the repo -->
+    <relativePath/>
+  </parent>
+  -->
+  <!-- this is the description of this plugin -->
+  <groupId>uk.ac.gate.plugins</groupId>
+  <artifactId>learningframework</artifactId>
+  <version>4.0-SNAPSHOT</version>
+  <licenses>
+    <license>
+      <name>GNU Lesser General Public License (LGPL), Version 3</name>
+      <url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <dependencies>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.9</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.2</version>
+    </dependency>
+  </dependencies>
+</project>
