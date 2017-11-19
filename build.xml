@@ -43,8 +43,10 @@ along with this software. If not, see <http://www.gnu.org/licenses/>.
 
   <property name="gate.lib" location="${gate.home}/lib" />
   <property name="gate.jar" location="${gate.home}/bin/gate.jar" />
-  <property name="src.dir" location="src" />
-  <property name="classes.dir" location="classes" />
+  <property name="src.dir" location="src/main/java" />
+  <property name="src-test.dir" location="src/test/java" />
+  <property name="classes.dir" location="classes/main" />
+  <property name="classes-test.dir" location="classes/test" />
   <property name="doc.dir" location="doc" />
   <property name="javadoc.dir" location="${doc.dir}/javadoc" />
   <property name="jar.location" location="gateplugin-${plugin.name}.jar" />
@@ -65,17 +67,26 @@ along with this software. If not, see <http://www.gnu.org/licenses/>.
       <include name="*.jar"/>
     </fileset>
   </path>
- 
-  <path id="run.classpath">
+
+  <path id="compile-test.classpath">
     <path refid="compile.classpath" />
     <pathelement location="${jar.location}" />
+  </path>
+ 
+  <path id="test.classpath">
+    <path refid="compile.classpath" />
+    <pathelement location="${jar.location}" />
+    <dirset dir="${classes-test.dir}">
+    </dirset>
   </path>
 
   <target name="prepare">
     <mkdir dir="classes"/>
+    <mkdir dir="classes/main"/>
+    <mkdir dir="classes/test"/>
   </target>
 
-  <!-- compile the source -->
+  <!-- compile the main source -->
   <target name="compile" depends="prepare">
     <javac classpathref="compile.classpath"
            srcdir="${src.dir}"
@@ -89,13 +100,26 @@ along with this software. If not, see <http://www.gnu.org/licenses/>.
      </javac>
   </target>
 
-  <!-- TODO: separate compile, classpath etc. for the whole testing stuff,
-       but at the moment, it is just part of everything else -->
+
+
+  <!-- compile the tests source -->
+  <target name="compile-test" depends="jar">
+    <javac classpathref="compile-test.classpath"
+           srcdir="${src-test.dir}"
+           destdir="${classes-test.dir}"
+           deprecation="true"
+           debug="true"
+           debuglevel="lines,source"
+           source="1.8" 
+           target="1.8">
+       <compilerarg value="-Xlint:unchecked"/>
+     </javac>
+  </target>
+
   
-  <!-- TODO: make testing use the separate testing jar etc. -->
-  <target name="test" depends="jar">
+  <target name="test" depends="compile-test">
     <junit fork="true">
-      <classpath refid="run.classpath" />
+      <classpath refid="test.classpath" />
       <formatter type="brief" usefile="false" />
       <formatter type="brief" usefile="true" />
       <formatter type="xml" />
