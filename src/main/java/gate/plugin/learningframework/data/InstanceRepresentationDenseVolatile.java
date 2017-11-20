@@ -54,6 +54,11 @@ public class InstanceRepresentationDenseVolatile implements InstanceRepresentati
     map.put(TARGET_VALUE, value);
     return this;
   }
+  
+  @Override 
+  public Object getTargetValue() {
+    return map.get(TARGET_VALUE);
+  }
 
   @Override
   public InstanceRepresentation setTargetCosts(Object value) {
@@ -65,6 +70,11 @@ public class InstanceRepresentationDenseVolatile implements InstanceRepresentati
   public InstanceRepresentation setInstanceWeight(double weight) {
     map.put(INSTANCE_WEIGHT,weight);
     return this;
+  }
+
+  @Override
+  public double getInstanceWeight() {
+    return (double)map.get(INSTANCE_WEIGHT);
   }
 
   @Override
@@ -87,4 +97,10 @@ public class InstanceRepresentationDenseVolatile implements InstanceRepresentati
   public boolean hasMissing() {
     return map.containsKey(HASMISSINGVALUE_FLAG);
   }
+  
+  @Override
+  public String toString() {
+    return "{InstanceRepresentationDenseVolatile: "+map.toString()+"}";
+  }
+
 }

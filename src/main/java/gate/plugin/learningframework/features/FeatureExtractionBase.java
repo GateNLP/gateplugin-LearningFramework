@@ -19,23 +19,6 @@
  */
 package gate.plugin.learningframework.features;
 
-import cc.mallet.types.Alphabet;
-import cc.mallet.types.AugmentableFeatureVector;
-import cc.mallet.types.Instance;
-import cc.mallet.types.LabelAlphabet;
-import gate.Annotation;
-import gate.AnnotationSet;
-import gate.Document;
-import gate.Utils;
-import gate.plugin.learningframework.LFUtils;
-import gate.plugin.learningframework.mallet.NominalTargetWithCosts;
-import gate.util.GateRuntimeException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import org.apache.commons.lang.NotImplementedException;
-import org.apache.log4j.Logger;
-
 /**
  * Base class for the FeatureExtraction classes.
  * 
@@ -60,6 +43,27 @@ public class FeatureExtractionBase {
   // Ngram values are represented as gram${NGRAMSEP}gram..  
   // 
 
+  public static String featureName4Attribute(String type, String feature) {
+    return type + TYPESEP + feature + NAMESEP + "A";
+  }
+  
+  public static String featureName4Attribute(String name) {
+    return name + NAMESEP + "A";
+  }
+  
+  public static String featureName4AttributeList(String type, String feature, int elementnumber) {
+    return type + TYPESEP + feature + NAMESEP + "L" + elementnumber;
+  }
+  public static String featureName4AttributeList(String name, int elementnumber) {
+    return name + NAMESEP + "L" + elementnumber;
+  }
+  
+  public static String featureName4Ngram(String type, String feature, int n) {
+    return type + TYPESEP + feature + NAMESEP + "N" + n;
+  }
+  public static String featureName4Ngram(String name, int n) {
+    return name + NAMESEP + "N" + n;
+  }
   /**
    * Separates the type name inside the name from the feature name. The scheme is
    * typename¦featurename where typename can be empty.

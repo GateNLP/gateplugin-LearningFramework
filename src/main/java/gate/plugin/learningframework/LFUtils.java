@@ -60,7 +60,9 @@ public class LFUtils {
     if (any == null) {
       return orElse;
     }
-    if (any instanceof Number) {
+    if (any instanceof Double) {
+      return (Double)any;
+    } else if (any instanceof Number) {
       return ((Number) any).doubleValue();
     } else if (any instanceof String) {
       Double tmp = null;
@@ -76,6 +78,38 @@ public class LFUtils {
       }
     } else {
       return orElse;
+    }
+  }
+
+  public static String anyToStringOrElse(Object any, String orElse) {
+    if (any == null) {
+      return orElse;
+    }
+    return any.toString();
+  }
+
+  /** 
+   * If it is not a boolean, then if it is a string, anything that is not
+   * "true" or "True" is false, if it is a number, then anything that
+   * is not 0.0 is true.
+   * 
+   * @param any
+   * @param orElse
+   * @return 
+   */
+  public static Boolean anyToBooleanOrElse(Object any, Boolean orElse) {
+    if (any == null) {
+      return orElse;
+    }
+    if (any instanceof Boolean) {
+      return (Boolean)any;
+    } else if (any instanceof String) {
+      return Boolean.parseBoolean((String)any);
+    } else if (any instanceof Number) {
+      Double val = LFUtils.anyToDoubleOrElse(any, 0.0);
+      return !(val == 0.0);
+    } else {
+      return Boolean.parseBoolean(any.toString());      
     }
   }
   

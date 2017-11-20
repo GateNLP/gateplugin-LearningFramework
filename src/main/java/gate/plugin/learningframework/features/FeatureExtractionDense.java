@@ -66,8 +66,9 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
    * @param att
    * @param inputAS
    * @param instanceAnnotation 
+   * @return  
    */
-  public InstanceRepresentation extractFeature(
+  public static InstanceRepresentation extractFeature(
           InstanceRepresentation inst,
           FeatureSpecAttribute att,
           AnnotationSet inputAS,
@@ -447,11 +448,15 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
         // we almost always just set this to the original value 
         // so far the only exception is if we have a listsep, in which case we 
         // convert the string to a list of strings.
-        if(attr.listsep != null) {
+        // Otherwise, convert the value to either string, Double or Boolean,
+        // depending on the type of the Attribute.
+        if(attr.listsep != null && !attr.listsep.isEmpty()) {
           String[] els = valObj.toString().split(attr.listsep);
           inst = inst.setFeature(fname, Arrays.asList(els));
-        } else {
-          inst = inst.setFeature(fname, valObj);
+        } else {    
+          Object finalValue = attr.toValue(valObj);
+          System.err.println("DEBUG: final value for "+valObj+" of type "+valObj.getClass()+" is "+finalValue);
+          inst = inst.setFeature(fname, finalValue);
         }
       } // no missing value
     } // non-empty feature name

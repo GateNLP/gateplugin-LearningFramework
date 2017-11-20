@@ -55,7 +55,9 @@ public interface InstanceRepresentation {
   public InstanceRepresentation setTargetValue(Object value);
   public boolean hasTarget();
   public InstanceRepresentation setTargetCosts(Object value);
+  public Object getTargetValue();
   public InstanceRepresentation setInstanceWeight(double weight);
-  public InstanceRepresentation setHasMissing(boolean flag);
+  public double getInstanceWeight();
+  public InstanceRepresentation setHasMissing(boolean flag);  
   public boolean hasMissing();
 }

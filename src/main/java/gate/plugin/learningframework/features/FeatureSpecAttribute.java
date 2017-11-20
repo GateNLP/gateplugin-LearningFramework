@@ -21,6 +21,7 @@
 
 package gate.plugin.learningframework.features;
 
+import gate.plugin.learningframework.LFUtils;
 import gate.util.GateRuntimeException;
 import java.io.Serializable;
 
@@ -75,5 +76,28 @@ public abstract class FeatureSpecAttribute implements Serializable, Cloneable {
     return ret;
   }
   
+  /**
+   * Returns either a String, Double or Boolean for the given Object.
+   * 
+   */
+  public Object toValue(Object val) {
+    Object ret = null;
+    if(val == null) return missingValue();
+    switch (datatype) {
+      case nominal:
+        ret = LFUtils.anyToStringOrElse(val, "");
+        break;
+      case bool:
+        ret = LFUtils.anyToBooleanOrElse(val, false);
+        break;
+      case numeric:
+        ret = LFUtils.anyToDoubleOrElse(val, 0.0);
+        break;
+      default:
+        throw new GateRuntimeException("Unknown datatype: "+datatype);
+    }      
+    return ret;
+    
+  }
 
 }
