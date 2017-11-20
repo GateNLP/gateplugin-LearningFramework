@@ -29,6 +29,7 @@ import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelAlphabet;
 import gate.plugin.learningframework.Globals;
 import gate.plugin.learningframework.data.Attributes;
+import gate.plugin.learningframework.data.CorpusRepresentation;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.engines.Info;
 import gate.plugin.learningframework.engines.Parms;
@@ -37,6 +38,7 @@ import gate.util.GateRuntimeException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+
 
 /**
  * Exporter (experimental so far!) for exporting sequences in python-readable
@@ -68,8 +70,9 @@ public class CorpusExporterJsonSeq extends CorpusExporterJsonBase {
   }
 
   @Override
-  public void export(File directory, CorpusRepresentationMallet cr, String instanceType, String parms) {
-    InstanceList malletInstances = cr.getRepresentationMallet();
+  public void export(File directory, CorpusRepresentation cr, String instanceType, String parms) {
+    CorpusRepresentationMallet crm = (CorpusRepresentationMallet)cr;
+    InstanceList malletInstances = crm.getRepresentationMallet();
     Pipe pipe = malletInstances.getPipe();
     Attributes attrs = new Attributes(pipe, instanceType);
     // We create one file that contains something that should be readable as JSON:

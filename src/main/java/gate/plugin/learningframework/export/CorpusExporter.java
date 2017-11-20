@@ -20,6 +20,7 @@
 
 package gate.plugin.learningframework.export;
 
+import gate.plugin.learningframework.data.CorpusRepresentation;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.engines.Info;
 import gate.plugin.learningframework.features.TargetType;
@@ -44,7 +45,7 @@ public abstract class CorpusExporter {
    * @param directory
    * @param cr 
    */
-  public abstract void export(File directory, CorpusRepresentationMallet cr, String instanceType, String parms);
+  public abstract void export(File directory, CorpusRepresentation cr, String instanceType, String parms);
   
   /**
    * Set the target type to use with this exporter.

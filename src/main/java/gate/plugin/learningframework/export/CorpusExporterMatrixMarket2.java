@@ -24,6 +24,7 @@ import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.Label;
 import gate.plugin.learningframework.LFUtils;
+import gate.plugin.learningframework.data.CorpusRepresentation;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.engines.Info;
 import gate.plugin.learningframework.features.FeatureExtractionMalletSparse;
@@ -39,7 +40,7 @@ import java.text.DecimalFormat;
  * 
  * @author Johann Petrak
  */
-public class CorpusExporterMatrixMarket2 extends CorpusExporter {
+public class CorpusExporterMatrixMarket2 extends CorpusExporterMalletRelated {
 
   @Override
   public Info getInfo() {
@@ -53,7 +54,8 @@ public class CorpusExporterMatrixMarket2 extends CorpusExporter {
   }
 
   @Override
-  public void export(File directory, CorpusRepresentationMallet crm, String instanceType, String parms) {
+  public void export(File directory, CorpusRepresentation cr, String instanceType, String parms) {
+    CorpusRepresentationMallet crm = (CorpusRepresentationMallet)cr;
     PrintStream outDep = null;
     PrintStream outIndep = null;
     PrintStream outInstWeights = null;

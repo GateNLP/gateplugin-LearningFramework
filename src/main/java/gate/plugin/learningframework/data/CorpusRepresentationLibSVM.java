@@ -31,7 +31,7 @@ import libsvm.svm_problem;
  *
  * @author Johann Petrak
  */
-public class CorpusRepresentationLibSVM extends CorpusRepresentation {
+public class CorpusRepresentationLibSVM extends CorpusRepresentationMalletRelated {
 
   protected svm_problem data;
   protected CorpusRepresentationMallet crm;

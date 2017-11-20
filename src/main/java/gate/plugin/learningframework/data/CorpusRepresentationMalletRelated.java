@@ -18,28 +18,26 @@
  * along with this software. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package gate.plugin.learningframework.tests;
+package gate.plugin.learningframework.data;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import cc.mallet.types.InstanceList;
+import gate.plugin.learningframework.ScalingMethod;
+import gate.plugin.learningframework.features.FeatureInfo;
+import gate.plugin.learningframework.mallet.LFPipe;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-  TestFeatureSpecification.class,
-  TestFeatureExtraction.class,
-  TestFeatureExtractionDense.class,
-  TestPipeSerialization.class,
-  TestInfo.class,
-  TestParms.class,
-  TestEngineMalletClass.class,
-  TestEngineLibSVM.class,
-  TestEngineMalletSeq.class,
-  TestFeatureScaling.class
-})
-public class SuiteAllTests {
-  // so we can run this test from the command line 
-  public static void main(String args[]) {
-    org.junit.runner.JUnitCore.main(SuiteAllTests.class.getCanonicalName());
-  }  
+/**
+ * The base class of all classes that are somehow related or dependent on the 
+ * Mallet instance list and Mallet pipes. 
+ * 
+ * @author Johann Petrak
+ */
+public abstract class CorpusRepresentationMalletRelated extends CorpusRepresentation {
+  protected FeatureInfo featureInfo;
+  protected ScalingMethod scalingMethod;
+  protected LFPipe pipe;
+  
+  
+  public abstract InstanceList getRepresentationMallet();
+  
   
 }

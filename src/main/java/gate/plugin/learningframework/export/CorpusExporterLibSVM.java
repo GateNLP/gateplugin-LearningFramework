@@ -24,6 +24,7 @@ import cc.mallet.types.FeatureVector;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.Label;
+import gate.plugin.learningframework.data.CorpusRepresentation;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.engines.Info;
 import gate.plugin.learningframework.features.FeatureExtractionMalletSparse;
@@ -36,7 +37,7 @@ import java.text.DecimalFormat;
  *
  * @author johann
  */
-public class CorpusExporterLibSVM extends CorpusExporter {
+public class CorpusExporterLibSVM extends CorpusExporterMalletRelated {
 
   @Override
   public Info getInfo() {
@@ -50,7 +51,8 @@ public class CorpusExporterLibSVM extends CorpusExporter {
   }
 
   @Override
-  public void export(File directory, CorpusRepresentationMallet crm, String instanceType, String parms) {
+  public void export(File directory, CorpusRepresentation cr, String instanceType, String parms) {
+    CorpusRepresentationMallet crm = (CorpusRepresentationMallet)cr;
     PrintStream out = null;
     File outFile = new File(directory, "data.libsvm");
     try {

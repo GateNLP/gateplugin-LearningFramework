@@ -37,7 +37,7 @@ import org.apache.log4j.Logger;
  * Common base class for Mallet for classification and  Mallet for sequence tagging.
  * @author Johann Petrak
  */
-public abstract class CorpusRepresentationMallet extends CorpusRepresentation {
+public abstract class CorpusRepresentationMallet extends CorpusRepresentationMalletRelated {
 
   Logger logger = org.apache.log4j.Logger.getLogger(CorpusRepresentationMallet.class);
 

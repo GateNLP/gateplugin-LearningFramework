@@ -22,17 +22,14 @@ import java.net.URL;
 import java.util.ArrayList;
 
 /**
- * Common base class for all Engines which use the Mallet Corpus Representation.
+ * Common base class for all Engines which use the Dense Volatile representation
  * 
- * This is used to gather the code for all engines which use a CorpusRepresentationMallet
- * internally even if the algorithm wrapped by the engine is not a Mallet algorithm.
- * This is the case for other Java algorithms like LibSVM where the Mallet 
- * corpus representation is used to create a temporary representation which is 
- * then converted to the algorithm specific representation before training.
  * 
  * @author Johann Petrak
  */
-public abstract class EngineMB extends Engine {
+public abstract class EngineDV extends Engine {
+  
+  // TODO FROM HERE!!!
   
   protected CorpusRepresentationMallet corpusRepresentation; 
 

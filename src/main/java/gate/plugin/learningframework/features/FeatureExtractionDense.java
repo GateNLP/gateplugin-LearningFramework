@@ -483,6 +483,7 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
     return internalFeatureNamePrefix;
   }
   
+  // TODO: replace by the method in FeatureSpecAttribute if possible!!!
   public static Object valueAsDatatype(Object val, Datatype datatype) {
     Object ret = null;
     switch (datatype) {
@@ -674,7 +675,7 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
    * @param instanceAnnotation
    * @param doc
    */
-  public static void extractClassTarget(InstanceRepresentation inst, String targetFeature, Annotation instanceAnnotation, AnnotationSet inputAS) {
+  public static InstanceRepresentation extractClassTarget(InstanceRepresentation inst, String targetFeature, Annotation instanceAnnotation, AnnotationSet inputAS) {
     Document doc = inputAS.getDocument();
     Object obj = instanceAnnotation.getFeatures().get(targetFeature);
     // Brilliant, we have a missing target, WTF? Throw an exception
@@ -690,6 +691,7 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
       String value = obj.toString();
       inst = inst.setTargetValue(value);
     }
+    return inst;
   }
 
   /**
@@ -703,7 +705,7 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
    * @param alph the label alphabet to use, must be an instance of LabelAlphabet
    * @param instanceAnnotation, the instance annotation, e.g. "Token".
    */
-  public static void extractClassForSeqTagging(InstanceRepresentation inst, AnnotationSet classAS, Annotation instanceAnnotation, SeqEncoder seqEncoder) {
+  public static InstanceRepresentation extractClassForSeqTagging(InstanceRepresentation inst, AnnotationSet classAS, Annotation instanceAnnotation, SeqEncoder seqEncoder) {
     String target = "";
     Document doc = classAS.getDocument();
     AnnotationSet overlappingClassAnns = Utils.getOverlappingAnnotations(classAS, instanceAnnotation);
@@ -743,6 +745,7 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
       instanceAnnotation.getFeatures().put("LF_sequenceClass", target);
     }
     inst = inst.setTargetValue(target);
+    return inst;
   }
 
 

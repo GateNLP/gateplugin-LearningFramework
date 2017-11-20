@@ -29,6 +29,7 @@ import cc.mallet.types.LabelAlphabet;
 import gate.plugin.learningframework.Globals;
 import gate.plugin.learningframework.data.Attribute;
 import gate.plugin.learningframework.data.Attributes;
+import gate.plugin.learningframework.data.CorpusRepresentation;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.engines.Info;
 import gate.plugin.learningframework.engines.Parms;
@@ -47,7 +48,7 @@ import java.io.PrintStream;
  * 
  * @author johann
  */
-public class CorpusExporterCSV extends CorpusExporter {
+public class CorpusExporterCSV extends CorpusExporterMalletRelated {
 
   @Override
   public Info getInfo() {
@@ -61,8 +62,9 @@ public class CorpusExporterCSV extends CorpusExporter {
   }
 
   @Override
-  public void export(File directory, CorpusRepresentationMallet cr, String instanceType, String parms) {    
-    InstanceList malletInstances = cr.getRepresentationMallet();
+  public void export(File directory, CorpusRepresentation cr, String instanceType, String parms) {   
+    CorpusRepresentationMallet crm = (CorpusRepresentationMallet)cr;
+    InstanceList malletInstances = crm.getRepresentationMallet();
     Pipe pipe = malletInstances.getPipe();
     Attributes attrs = new Attributes(pipe,instanceType);
     // We create either one or two files: if the parameter -twofiles or -t

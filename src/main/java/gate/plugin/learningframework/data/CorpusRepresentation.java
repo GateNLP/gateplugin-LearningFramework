@@ -33,9 +33,9 @@ import gate.plugin.learningframework.mallet.LFPipe;
  * @author Johann Petrak
  */
 public abstract class CorpusRepresentation {
-  protected FeatureInfo featureInfo;
-  protected ScalingMethod scalingMethod;
-  protected LFPipe pipe;
+  //protected FeatureInfo featureInfo;
+  //protected ScalingMethod scalingMethod;
+  //protected LFPipe pipe;
   
   /**
    * Returns whatever object the concrete representation uses to represent the instances.
@@ -45,7 +45,7 @@ public abstract class CorpusRepresentation {
    */
   public abstract Object getRepresentation();
   
-  public abstract InstanceList getRepresentationMallet();
+  //public abstract InstanceList getRepresentationMallet();
   
   
 }

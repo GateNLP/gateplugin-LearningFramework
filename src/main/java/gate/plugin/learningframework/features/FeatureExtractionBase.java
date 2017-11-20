@@ -19,6 +19,10 @@
  */
 package gate.plugin.learningframework.features;
 
+import java.util.ArrayList;
+import java.util.List;
+
+
 /**
  * Base class for the FeatureExtraction classes.
  * 
@@ -43,6 +47,42 @@ public class FeatureExtractionBase {
   // Ngram values are represented as gram${NGRAMSEP}gram..  
   // 
 
+  // This method converts a list of FeatureSpecAttribute instances into
+  // a list of feature names. Note that for the AttributeList instances
+  // more than one feature name may get created.
+  public static List<String> featureSpecAttributes2FeatureNames(List<FeatureSpecAttribute> attrs) {
+    List<String> fnames = new ArrayList<>();    
+    String fname = null;
+    for(FeatureSpecAttribute attr : attrs) {
+      String name = attr.name;
+      String type = attr.annType;
+      String feature = attr.feature;
+      boolean haveName = (name!=null && !name.isEmpty());
+      if(attr instanceof FeatureSpecNgram) {
+        fname = haveName ? 
+                featureName4Ngram(name, ((FeatureSpecNgram)attr).number) :
+                featureName4Ngram(type, feature, ((FeatureSpecNgram)attr).number);
+        fnames.add(fname);
+      } else if(attr instanceof FeatureSpecAttributeList) {
+        int from = ((FeatureSpecAttributeList)attr).from;
+        int to = ((FeatureSpecAttributeList)attr).from;
+        for(int i=from;i<=to;i++) {
+          fname = haveName ? 
+                  featureName4AttributeList(name, i) :
+                  featureName4AttributeList(type, feature, i);
+          fnames.add(fname);          
+        }
+      } else {
+        fname = haveName ? 
+                featureName4Attribute(name) :
+                featureName4Attribute(type, feature);
+        fnames.add(fname);        
+      }
+    }
+    return fnames;
+  }
+
+  
   public static String featureName4Attribute(String type, String feature) {
     return type + TYPESEP + feature + NAMESEP + "A";
   }
