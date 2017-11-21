@@ -428,6 +428,8 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
     // If we have less annotations than our n for n-gram, there is certainly nothing to do, 
     // leave the featureName vector untouched.
     if (al.size() < number) {
+      // return an empty list, we alway need the feature to be there!
+      inst = inst.setFeature(featureName(ng,0), new ArrayList<String>());
       return inst;
     }
     // this will hold the actual token strings to use for creating the n-grams
@@ -475,16 +477,18 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
     // increment the value.
     // To avoid overhead, we only create the ngrams on the fly
 
-    // first check if our strings array is actually big enough so we can create at least one n-gram
-    if (strings.size() < number) {
-      return inst;
-    }
 
     // now create the ngrams inputAS follows: starting with the first element in strings, go
     // through all the elements up to the (size-n)ths and concatenate with the subsequent 
     // n stings using the pre-defined separator character.
     // Add all the ngrams into a list
     List<String> ngramlist = new ArrayList<>();
+    // first check if our strings array is actually big enough so we can create at least one n-gram
+    if (strings.size() < number) {
+      // ok, no, for dense representations we return an empty list here
+      inst = inst.setFeature(featureName(ng,0), ngramlist);
+      return inst;
+    }
     StringBuilder sb = new StringBuilder();
     for (int i = 0; i < (strings.size() - number + 1); i++) {
       sb.setLength(0);

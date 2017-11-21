@@ -26,7 +26,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
   //TestFeatureSpecification.class,
-  TestFeatureExtraction.class,
+  //TestFeatureExtraction.class,
   TestFeatureExtractionDense.class
   //TestPipeSerialization.class,
   //TestInfo.class,
