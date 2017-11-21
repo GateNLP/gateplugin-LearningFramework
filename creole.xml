@@ -42,7 +42,6 @@ along with this software. If not, see <http://www.gnu.org/licenses/>.
   <JAR>lib/libsvm.jar</JAR>
   <JAR>lib/mallet.jar</JAR>
   <JAR>lib/mallet-deps.jar</JAR>
-  <JAR>lib/mtj-0.9.14.jar</JAR>
   <JAR>lib/netlib-java-0.9.3.jar</JAR>
   <JAR>lib/snakeyaml-1.16.jar</JAR>
   <JAR>lib/trove4j-2.0.2.jar</JAR>
