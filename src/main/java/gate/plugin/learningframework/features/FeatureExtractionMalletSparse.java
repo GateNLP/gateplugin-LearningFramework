@@ -221,13 +221,16 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
     
     // The source annotation is the actual annotation to use: it may be the instance annotation
     // if the type stored with the feature specification is empty or identical to the instance
-    // annotation type, otherwise it is the annotation of the specified type covered by the 
+    // annotation type, otherwise it is the annotation of the specified type overlapping with the 
     // instance annotation.
     Annotation sourceAnnotation = null;
     if (annType.isEmpty() || instanceAnnotation.getType().equals(annType)) {
       sourceAnnotation = instanceAnnotation;
       // annType = sourceAnnotation.getType();
-      annType = "";
+      
+      // TODO: this was originally included here, but not sure why?
+      // removing for now ...
+      //annType = "";
     } else {
       AnnotationSet overlappings = gate.Utils.getOverlappingAnnotations(withinSet, instanceAnnotation, annType);
       if (overlappings.size() > 1) {
@@ -370,11 +373,9 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
     }
     if (annType.isEmpty() || instanceAnnotation.getType().equals(annType)) {
       // if the type specified for this attribute list is empty or equal to the type of the 
-      // instance annotation, we directly use the instance annotation. In that case we also
-      // use an empty feature name for the outputfile/model so that at application time we 
-      // can match it with instance annotations which have a different type
+      // instance annotation, we directly use the instance annotation. 
       sourceAnnotation = instanceAnnotation;
-      annType4Feature = "";
+      // annType4Feature = "";
     } else {
       // the instance annotation is not the one we want to use, we need to find the actual source
       // annotation. 
