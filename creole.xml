@@ -25,10 +25,7 @@ along with this software. If not, see <http://www.gnu.org/licenses/>.
   HELPURL="https://github.com/GateNLP/gateplugin-LearningFramework/wiki"
 >
   <JAR scan="true">gateplugin-LearningFramework.jar</JAR>
-  <JAR>lib/arpack_combined_all-0.1.jar</JAR>
-  <JAR>lib/bsh-2.0b4.jar</JAR>
   <JAR>lib/commons-cli-patched-1.4-SNAPSHOT.jar</JAR>
-  <JAR>lib/commons-codec-1.9.jar</JAR>
   <JAR>lib/commons-logging-1.2.jar</JAR>
   <JAR>lib/Evaluation.jar</JAR>
   <JAR>lib/hamcrest-core-1.1.jar</JAR>
@@ -42,7 +39,6 @@ along with this software. If not, see <http://www.gnu.org/licenses/>.
   <JAR>lib/jgrapht-0.6.0.jar</JAR>
   <JAR>lib/json-20160212.jar</JAR>
   <JAR>lib/junit-4.10.jar</JAR>
-  <JAR>lib/jwnl-1.4_rc3.jar</JAR>
   <JAR>lib/libsvm.jar</JAR>
   <JAR>lib/mallet.jar</JAR>
   <JAR>lib/mallet-deps.jar</JAR>
