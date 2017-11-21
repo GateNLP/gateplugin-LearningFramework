@@ -58,13 +58,14 @@ import static gate.plugin.learningframework.features.FeatureExtractionBase.*;
  * 
  * @author Johann Petrak
  */
-public abstract class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresentationVolatileBase {
+public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresentationVolatileBase {
 
   Logger logger = org.apache.log4j.Logger.getLogger(CorpusRepresentationVolatileDense2JsonStream.class);
 
   private FileOutputStream outStream; 
   private File outFile;
   private FeatureInfo featureInfo; // the feature info from the feauture specification
+  List<String> fnames;
   
   /**
    * The constructor needs to specify the file where to save the instances to.
@@ -76,6 +77,7 @@ public abstract class CorpusRepresentationVolatileDense2JsonStream extends Corpu
   public CorpusRepresentationVolatileDense2JsonStream(File outFile, FeatureInfo featureInfo) {
     this.outFile = outFile;
     this.featureInfo = featureInfo;
+    this.fnames = featureSpecAttributes2FeatureNames(featureInfo.getAttributes());
     try {
       outStream = new FileOutputStream(outFile);
     } catch (FileNotFoundException ex) {
@@ -124,7 +126,16 @@ public abstract class CorpusRepresentationVolatileDense2JsonStream extends Corpu
    * @param seqEncoder 
    */
   @Override
-  public void add(AnnotationSet instancesAS, AnnotationSet sequenceAS, AnnotationSet inputAS, AnnotationSet classAS, String targetFeatureName, TargetType targetType, String instanceWeightFeature, String nameFeatureName, SeqEncoder seqEncoder) {
+  public void add(
+          AnnotationSet instancesAS, 
+          AnnotationSet sequenceAS, 
+          AnnotationSet inputAS, 
+          AnnotationSet classAS, 
+          String targetFeatureName, 
+          TargetType targetType, 
+          String instanceWeightFeature, 
+          String nameFeatureName, 
+          SeqEncoder seqEncoder) {
     // first of all, distinguish between processing for sequences and for non-sequences
     // if the sequenceAS parameter is non-null we process sequences of instances, otherwise we process plain instances
     if(sequenceAS == null) {
@@ -133,39 +144,10 @@ public abstract class CorpusRepresentationVolatileDense2JsonStream extends Corpu
       List<Annotation> instanceAnnotations = instancesAS.inDocumentOrder();
       
       for (Annotation instanceAnnotation : instanceAnnotations) {
-        
-        //*****************************************************************
-        // TODO: we could factor out the following block into a method for converting 
-        // a single instance to to our own dense instance representation!!
-        
-        // create a new dense instance representation
-        InstanceRepresentation inst = new InstanceRepresentationDenseVolatile();
-        // first extract the independent features and add them to the instance representation
-        for(FeatureSpecAttribute attr : featureInfo.getAttributes()) {
-          inst = FeatureExtractionDense.extractFeature(inst, attr, inputAS, instanceAnnotation);
-        }
-        // now add the apropriate target information to the instance, depending on if we
-        // do sequence tagging, classification, or regression
-        if (classAS != null) {
-          // extract the target as required for sequence tagging
-          inst = FeatureExtractionDense.extractClassForSeqTagging(inst, classAS, instanceAnnotation, seqEncoder);
-        } else {
-          if(targetType == TargetType.NOMINAL) {
-            inst = FeatureExtractionDense.extractClassTarget(inst, targetFeatureName, instanceAnnotation, inputAS);
-          } else if(targetType == TargetType.NUMERIC) {
-            inst = FeatureExtractionDense.extractNumericTarget(inst, targetFeatureName, instanceAnnotation, inputAS);
-          }
-        }
-        // Set the instance weight, if there is one
-        if(instanceWeightFeature != null && !instanceWeightFeature.isEmpty()) {
-          // If the instanceWeightFeature is not specified we do not set any weight, but if it is 
-          // specified then we either try to convert the value to double or use 1.0.
-          double score = LFUtils.anyToDoubleOrElse(instanceAnnotation.getFeatures().get(instanceWeightFeature), 1.0);
-          inst.setInstanceWeight(score);
-        }
-        // end of code to refactor into method
-        // **************************************************************
-        
+
+        InstanceRepresentation inst =
+                annotation2instance(instanceAnnotation,inputAS,classAS,
+                        targetFeatureName,targetType,instanceWeightFeature,seqEncoder);
         // now that we have the internal instance representation, send it off
         // by first converting to a json string and then sending the string to the output
         // file
@@ -176,6 +158,41 @@ public abstract class CorpusRepresentationVolatileDense2JsonStream extends Corpu
       // processing sequences
     }
   }
+  
+  public InstanceRepresentation annotation2instance(Annotation instanceAnnotation,
+          AnnotationSet inputAS, AnnotationSet classAS,
+          String targetFeatureName, TargetType targetType,
+          String instanceWeightFeature, SeqEncoder seqEncoder) {
+    // create a new dense instance representation
+    InstanceRepresentation inst = new InstanceRepresentationDenseVolatile();
+    // first extract the independent features and add them to the instance representation
+    for (FeatureSpecAttribute attr : featureInfo.getAttributes()) {
+      inst = FeatureExtractionDense.extractFeature(inst, attr, inputAS, instanceAnnotation);
+    }
+    // now add the apropriate target information to the instance, depending on if we
+    // do sequence tagging, classification, or regression
+    if (classAS != null) {
+      // extract the target as required for sequence tagging
+      inst = FeatureExtractionDense.extractClassForSeqTagging(inst, classAS, instanceAnnotation, seqEncoder);
+    } else {
+      if (targetType == TargetType.NOMINAL) {
+        inst = FeatureExtractionDense.extractClassTarget(inst, targetFeatureName, instanceAnnotation, inputAS);
+      } else if (targetType == TargetType.NUMERIC) {
+        inst = FeatureExtractionDense.extractNumericTarget(inst, targetFeatureName, instanceAnnotation, inputAS);
+      }
+    }
+    // Set the instance weight, if there is one
+    if (instanceWeightFeature != null && !instanceWeightFeature.isEmpty()) {
+      // If the instanceWeightFeature is not specified we do not set any weight, but if it is 
+      // specified then we either try to convert the value to double or use 1.0.
+      double score = LFUtils.anyToDoubleOrElse(instanceAnnotation.getFeatures().get(instanceWeightFeature), 1.0);
+      inst.setInstanceWeight(score);
+    }
+    // end of code to refactor into method
+    // **************************************************************
+    return inst;
+  }
+  
   
   /**
    * Convert the instance to json. 
@@ -202,8 +219,7 @@ public abstract class CorpusRepresentationVolatileDense2JsonStream extends Corpu
     return json;
   }
   
-  private List<Object> internal2array(InstanceRepresentation inst) {
-    List<String> fnames = featureSpecAttributes2FeatureNames(featureInfo.getAttributes());
+  private List<Object> internal2array(InstanceRepresentation inst) {    
     ArrayList<Object> values = new ArrayList<>();    
     for(String fname : fnames) {
       values.add(inst.getFeature(fname));
@@ -229,6 +245,11 @@ public abstract class CorpusRepresentationVolatileDense2JsonStream extends Corpu
     } catch (IOException ex) {
       throw new GateRuntimeException("Error closing output stream for corpus representation", ex);
     }
+  }
+
+  @Override
+  public Object getRepresentation() {
+    throw new UnsupportedOperationException("Not supported by this corpus representation"); 
   }
   
   

@@ -31,17 +31,25 @@ import java.util.Map;
  * <p>
  * This representation just wraps a HashMap for storing all features and target
  * properties.
- * 
+ * <p>
+ * NOTE: this does not support removing features for now!
  * 
  * @author Johann Petrak <johann.petrak@gmail.com>
  */
 public class InstanceRepresentationDenseVolatile implements InstanceRepresentation {
   protected Map<String,Object> map = new HashMap<>();
+  protected int numFeatures = 0;
 
   @Override
   public InstanceRepresentation setFeature(String name, Object value) {
+    if(!map.containsKey(name)) numFeatures += 1;
     map.put(name, value);
     return this;
+  }
+  
+  @Override
+  public int numFeatures() {
+    return numFeatures;
   }
 
   @Override

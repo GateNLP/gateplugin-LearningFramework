@@ -52,6 +52,7 @@ public interface InstanceRepresentation {
   public InstanceRepresentation setFeature(String name, Object value);
   public Object getFeature(String name);
   public boolean hasFeature(String name);
+  public int numFeatures();
   public InstanceRepresentation setTargetValue(Object value);
   public boolean hasTarget();
   public InstanceRepresentation setTargetCosts(Object value);

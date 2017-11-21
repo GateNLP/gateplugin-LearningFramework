@@ -54,9 +54,24 @@ public class FeatureSpecAttributeList extends FeatureSpecSimpleAttribute impleme
    * Create an AttributeList instance from a SimpleAttribute plus the from and to values
    */
   public FeatureSpecAttributeList(FeatureSpecSimpleAttribute att, String withinType, int from, int to) {
-    super(att.name, att.annType, att.feature, att.datatype, att.codeas, 
+    /*
+          String aname, 
+          String type, 
+          String feature, 
+          Datatype datatype, 
+          CodeAs codeas, 
+          MissingValueTreatment missingValueTreatment, 
+          String missingValueValue, 
+          String scalingMethod, 
+          String transformMethod,
+          String withinType,
+          String listsep,
+          String featureName4Value
+    */
+    super(att.name, att.annType, att.feature, 
+            att.datatype, att.codeas, 
             att.missingValueTreatment, 
-            "dummy", "dummy", "dummy", withinType, "", att.featureName4Value);
+            att.missingValueValue, "", "", withinType, att.listsep, att.featureName4Value);
     this.from = from;
     this.to = to;
   }

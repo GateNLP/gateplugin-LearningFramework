@@ -280,7 +280,7 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
       if (withins.size() == 0) {
         LOGGER.warn("No covering WITHIN annotation for " + instanceAnnotation + " in document " + doc.getName());
         for (int i=from; i <= to; i++) {
-          inst.setFeature(featureNamePrefix(al.name,annType4Feature,"L"+i,featureName), al.missingValue());
+          inst = inst.setFeature(featureNamePrefix(al.name,annType4Feature,featureName,"L"+i), al.missingValue());
         }
         return inst;
       }
@@ -325,7 +325,7 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
         LOGGER.warn("No overlapping source annotation of type " + annType4Getting + " for instance annotation at offset "
                 + gate.Utils.start(instanceAnnotation) + " in document " + doc.getName() + " instance ignored");
         for (int i=from; i <= to; i++) {
-          inst.setFeature(featureNamePrefix(al.name,annType4Feature,"L"+i,featureName), al.missingValue());
+          inst = inst.setFeature(featureNamePrefix(al.name,annType4Feature,featureName,"L"+i), al.missingValue());
         }
         return inst;
       } else {
@@ -365,7 +365,8 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
         inst = extractFeatureWorker(al, "L" + i, inst, ann, doc, annType4Feature,
                 featureName, dt, listsep);
       } else {
-        break;
+        // generate a missing value feature here
+        inst = inst.setFeature(featureNamePrefix(al.name,annType4Feature,featureName,"L"+i), al.missingValue());
       }
     }
     // if we have index 0 in the range, process for that one
@@ -383,7 +384,8 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
         inst = extractFeatureWorker(al, "L" + i, inst, ann, doc, annType4Feature,
                 featureName, dt, listsep);
       } else {
-        break;
+        // generate a missing value feature here
+        inst = inst.setFeature(featureNamePrefix(al.name,annType4Feature,featureName,"L"+i), al.missingValue());
       }
     }
     return inst;
@@ -455,7 +457,7 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
           inst = inst.setFeature(fname, Arrays.asList(els));
         } else {    
           Object finalValue = attr.toValue(valObj);
-          System.err.println("DEBUG: final value for "+valObj+" of type "+valObj.getClass()+" is "+finalValue);
+          //System.err.println("DEBUG: final value for "+valObj+" of type "+valObj.getClass()+" is "+finalValue);
           inst = inst.setFeature(fname, finalValue);
         }
       } // no missing value
@@ -463,25 +465,6 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
     return inst;
   } // extractFeatureWorker
 
-  /**
-   * Generate the prefix of a feature name from its components.
-   * 
-   * 
-   * @param attributeName the name from the attribute declaration in the feature specification file, can be null or empty
-   * @param annType the name of the annotation type of the instance annotations, can be empty
-   * @param featureName the name of the feature
-   * @param attrKind the kind of the attribute, e.g. "A" or "N3" or "L-2"
-   * @return 
-   */
-  public static String featureNamePrefix(String attributeName, String annType, String featureName, String attrKind) {
-    String internalFeatureNamePrefix;
-    if (attributeName == null || attributeName.isEmpty()) {
-      internalFeatureNamePrefix = annType + TYPESEP + featureName + NAMESEP + attrKind;
-    } else {
-      internalFeatureNamePrefix = attributeName + NAMESEP + attrKind;
-    }
-    return internalFeatureNamePrefix;
-  }
   
   // TODO: replace by the method in FeatureSpecAttribute if possible!!!
   public static Object valueAsDatatype(Object val, Datatype datatype) {
