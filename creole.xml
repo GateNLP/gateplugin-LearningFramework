@@ -26,7 +26,6 @@ along with this software. If not, see <http://www.gnu.org/licenses/>.
 >
   <JAR scan="true">gateplugin-LearningFramework.jar</JAR>
   <JAR>lib/commons-cli-patched-1.4-SNAPSHOT.jar</JAR>
-  <JAR>lib/commons-logging-1.2.jar</JAR>
   <JAR>lib/Evaluation.jar</JAR>
   <JAR>lib/hamcrest-core-1.1.jar</JAR>
   <JAR>lib/httpasyncclient-4.1.1.jar</JAR>
