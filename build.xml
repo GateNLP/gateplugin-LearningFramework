@@ -160,6 +160,7 @@ along with this software. If not, see <http://www.gnu.org/licenses/>.
   <!-- remove the generated .class files -->
   <target name="clean.classes" >
     <delete dir="${classes.dir}" />
+    <delete dir="${classes-test.dir}" />
   </target>
 
   <!-- Clean up - remove .class and .jar files -->
