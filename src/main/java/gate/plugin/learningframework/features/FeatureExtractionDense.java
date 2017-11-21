@@ -190,7 +190,7 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
         sourceAnnotation = gate.Utils.getOnlyAnn(overlappings);
       }
     }
-    inst = extractFeatureWorker(att, "A", inst, sourceAnnotation, doc, annType, featureName, dt, listsep);
+    inst = extractFeatureWorker(att, featureName(att,0), inst, sourceAnnotation, doc, annType, featureName, dt, listsep);
     return inst;
   }
   
@@ -232,6 +232,10 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
     // instance annotation type or if it is empty, we create the elements
     // from the instance annotations. Otherwise we use the specified type. 
     String annType = al.annType;
+    // NOTE: annType4Getting is either:
+    // * the one from the feature specification, if non-empty
+    // * the one specified in the PR, if the feature specification type is empty
+    // The anntype4Feature is always the one specified for the feature specification
     String annType4Feature = annType;  // the name to use in the data and model, possibly empty
     String annType4Getting = annType;  // the name to access the annotations in the document, never empty
     if (annType4Getting == null || annType4Getting.isEmpty()) {
@@ -280,7 +284,7 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
       if (withins.size() == 0) {
         LOGGER.warn("No covering WITHIN annotation for " + instanceAnnotation + " in document " + doc.getName());
         for (int i=from; i <= to; i++) {
-          inst = inst.setFeature(featureNamePrefix(al.name,annType4Feature,featureName,"L"+i), al.missingValue());
+          inst = inst.setFeature(featureName(al,i), al.missingValue());
         }
         return inst;
       }
@@ -325,7 +329,7 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
         LOGGER.warn("No overlapping source annotation of type " + annType4Getting + " for instance annotation at offset "
                 + gate.Utils.start(instanceAnnotation) + " in document " + doc.getName() + " instance ignored");
         for (int i=from; i <= to; i++) {
-          inst = inst.setFeature(featureNamePrefix(al.name,annType4Feature,featureName,"L"+i), al.missingValue());
+          inst = inst.setFeature(featureName(al,i), al.missingValue());
         }
         return inst;
       } else {
@@ -362,16 +366,16 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
       // in general we want element (size+i) if that is > 0
       if (albsize + i >= 0) {
         Annotation ann = annlistbackward.get(albsize + i);
-        inst = extractFeatureWorker(al, "L" + i, inst, ann, doc, annType4Feature,
+        inst = extractFeatureWorker(al, featureName(al,i), inst, ann, doc, annType4Feature,
                 featureName, dt, listsep);
       } else {
         // generate a missing value feature here
-        inst = inst.setFeature(featureNamePrefix(al.name,annType4Feature,featureName,"L"+i), al.missingValue());
+        inst = inst.setFeature(featureName(al,i), al.missingValue());
       }
     }
     // if we have index 0 in the range, process for that one
     if (from <= 0 && to >= 0) {
-      inst = extractFeatureWorker(al, "L" + 0, inst, sourceAnnotation, doc, annType4Feature,
+      inst = extractFeatureWorker(al, featureName(al,0), inst, sourceAnnotation, doc, annType4Feature,
               featureName, dt, listsep);
     }
     // do the ones to the right
@@ -381,111 +385,15 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
       // if i <= size
       if (i <= alfsize) {
         Annotation ann = annlistforward.get(i - 1);
-        inst = extractFeatureWorker(al, "L" + i, inst, ann, doc, annType4Feature,
+        inst = extractFeatureWorker(al, featureName(al,i), inst, ann, doc, annType4Feature,
                 featureName, dt, listsep);
       } else {
         // generate a missing value feature here
-        inst = inst.setFeature(featureNamePrefix(al.name,annType4Feature,featureName,"L"+i), al.missingValue());
+        inst = inst.setFeature(featureName(al,i), al.missingValue());
       }
     }
     return inst;
   } // extractFeature (AttributeList)
-  
-
-  /**
-   * Do the actual hard work of extracting a feature and adding it to the Mallet feature vector.
-   * This is used to do the actual extraction for simple attributes and attribute lists.
-   *
-   * @param name the name of the feature as defined in the attribute specification or an empty
-   * string
-   * @param internalFeatureIndicator the part of the feature name that indicates the type of
-   * attribute specification, e.g. "A" for attribute or something like "L-3" for attribute list
-   * @param inst the mallet instance
-   * @param sourceAnnotation the annotation from which to extract the feature value
-   * @param doc
-   * @param annType the annotation type as defined in the attribute specification. This can be empty
-   * if the original instance annotation is used.
-   * @param featureName the feature name as defined in the attribute specification.
-   * @param alphabet
-   * @param dt
-   * @param mvt
-   * @param codeas
-   * @param listsep
-   * @param specialsymbol: if this is non-null, then an attribute is generated
-   * for some special symbol (e.g. start/stop indicator). In this case, some other parameters 
-   * are usually ignored.
-   */
-  private static InstanceRepresentation extractFeatureWorker(
-          FeatureSpecAttribute attr,
-          String internalFeatureIndicator,
-          InstanceRepresentation inst,
-          Annotation sourceAnnotation,
-          Document doc,
-          String annType,
-          String featureName,
-          Datatype dt,
-          String listsep) {
-
-    String name = attr.name;
-    String fname = featureNamePrefix(name, annType, featureName, internalFeatureIndicator);
-    if (featureName.isEmpty()) {
-      // construct the featureName name and set to 1.0
-      // however, only add the featureName if the featureName alphabet is allowed to grow.
-      inst = inst.setFeature(fname, true);
-    } else {
-      // First get the value inputAS an Object, if there is no value, we have an Object that is null
-      // If the sourceAnnotation is null, we already did not find the source at all,
-      // so the value is always missing.
-      Object valObj = null;
-      if (sourceAnnotation != null) {
-        valObj = sourceAnnotation.getFeatures().get(featureName);
-      }
-      // no matter what the datatype is, a null is always a missing value, so we set the 
-      // property that indicates the existence of a missing valuein the instance right here
-      if (valObj == null) {
-        inst = inst.setHasMissing(true);
-        inst = inst.setFeature(fname, attr.missingValue());
-      } else {
-        inst = inst.setHasMissing(false);
-        // we almost always just set this to the original value 
-        // so far the only exception is if we have a listsep, in which case we 
-        // convert the string to a list of strings.
-        // Otherwise, convert the value to either string, Double or Boolean,
-        // depending on the type of the Attribute.
-        if(attr.listsep != null && !attr.listsep.isEmpty()) {
-          String[] els = valObj.toString().split(attr.listsep);
-          inst = inst.setFeature(fname, Arrays.asList(els));
-        } else {    
-          Object finalValue = attr.toValue(valObj);
-          //System.err.println("DEBUG: final value for "+valObj+" of type "+valObj.getClass()+" is "+finalValue);
-          inst = inst.setFeature(fname, finalValue);
-        }
-      } // no missing value
-    } // non-empty feature name
-    return inst;
-  } // extractFeatureWorker
-
-  
-  // TODO: replace by the method in FeatureSpecAttribute if possible!!!
-  public static Object valueAsDatatype(Object val, Datatype datatype) {
-    Object ret = null;
-    switch (datatype) {
-      case nominal:
-        ret = val.toString();
-        break;
-      case numeric:
-        ret = LFUtils.anyToDoubleOrElse(val, 0.0);
-        break;
-      case bool:
-        if(val instanceof Boolean) {
-          ret = val;
-        } else {
-          ret = Boolean.parseBoolean(val.toString());
-        }
-        break;
-    }
-    return ret;
-  }
   
   /*
    *
@@ -575,6 +483,8 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
     // now create the ngrams inputAS follows: starting with the first element in strings, go
     // through all the elements up to the (size-n)ths and concatenate with the subsequent 
     // n stings using the pre-defined separator character.
+    // Add all the ngrams into a list
+    List<String> ngramlist = new ArrayList<>();
     StringBuilder sb = new StringBuilder();
     for (int i = 0; i < (strings.size() - number + 1); i++) {
       sb.setLength(0);
@@ -593,31 +503,88 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
         score = score * scores.get(i + j);
       }
       String ngram = sb.toString();
-      // we have got our ngram now, count it, but only add if we are allowed to!
-      String prefix;
-      if (ng.name.isEmpty()) {
-        prefix = annType + TYPESEP + featureName;
-      } else {
-        prefix = ng.name;
-      }
-      prefix = prefix + NAMESEP + "N" + number;
-      // NOTE: for now, we always add to any existing value of the feature vector we 
-      // may already have. That way, if some ngram occurs multiple times, we use the 
-      // sum its scores (and the score either is just 1.0 or whatever we got from using
-      // the featureName4Value value).
-      inst = inst.setFeature(prefix, ngram);
-      // NOTE: previously, we only accumulated if there was no weight feature, otherwise
-      // the weight was directly used without accumulation
-      //if (featureName4Value.isEmpty()) {
-      //  accumulateInFeatureVector(fv, prefix + VALSEP + ngram, score);
-      //} else {
-      //  setInFeatureVector(fv, prefix + VALSEP + ngram, score);
-      //}
+            ngramlist.add(ngram);
     }
+    inst = inst.setFeature(featureName(ng,0), ngramlist);
     //System.err.println("DEBUG: Vector after adding feature "+ng+" is now "+fv);
     return inst;
   } // extractFeature(NGram)
 
+
+  /**
+   * Do the actual hard work of extracting a feature and adding it to the Mallet feature vector.
+   * This is used to do the actual extraction for simple attributes and attribute lists.
+   *
+   * @param name the name of the feature as defined in the attribute specification or an empty
+   * string
+   * @param internalFeatureIndicator the part of the feature name that indicates the type of
+   * attribute specification, e.g. "A" for attribute or something like "L-3" for attribute list
+   * @param inst the mallet instance
+   * @param sourceAnnotation the annotation from which to extract the feature value
+   * @param doc
+   * @param annType the annotation type as defined in the attribute specification. This can be empty
+   * if the original instance annotation is used.
+   * @param featureName the feature name as defined in the attribute specification.
+   * @param alphabet
+   * @param dt
+   * @param mvt
+   * @param codeas
+   * @param listsep
+   * @param specialsymbol: if this is non-null, then an attribute is generated
+   * for some special symbol (e.g. start/stop indicator). In this case, some other parameters 
+   * are usually ignored.
+   */
+  private static InstanceRepresentation extractFeatureWorker(
+          FeatureSpecAttribute attr,
+          String fname,
+          InstanceRepresentation inst,
+          Annotation sourceAnnotation,
+          Document doc,
+          String annType,
+          String featureName,
+          Datatype dt,
+          String listsep) {
+
+    String name = attr.name;
+    //String fname = featureNamePrefix(attr) + internalFeatureIndicator;
+    if (featureName.isEmpty()) {
+      // construct the featureName name and set to 1.0
+      // however, only add the featureName if the featureName alphabet is allowed to grow.
+      inst = inst.setFeature(fname, true);
+    } else {
+      // First get the value inputAS an Object, if there is no value, we have an Object that is null
+      // If the sourceAnnotation is null, we already did not find the source at all,
+      // so the value is always missing.
+      Object valObj = null;
+      if (sourceAnnotation != null) {
+        valObj = sourceAnnotation.getFeatures().get(featureName);
+      }
+      // no matter what the datatype is, a null is always a missing value, so we set the 
+      // property that indicates the existence of a missing valuein the instance right here
+      if (valObj == null) {
+        inst = inst.setHasMissing(true);
+        inst = inst.setFeature(fname, attr.missingValue());
+      } else {
+        inst = inst.setHasMissing(false);
+        // we almost always just set this to the original value 
+        // so far the only exception is if we have a listsep, in which case we 
+        // convert the string to a list of strings.
+        // Otherwise, convert the value to either string, Double or Boolean,
+        // depending on the type of the Attribute.
+        if(attr.listsep != null && !attr.listsep.isEmpty()) {
+          String[] els = valObj.toString().split(attr.listsep);
+          inst = inst.setFeature(fname, Arrays.asList(els));
+        } else {    
+          Object finalValue = attr.toValue(valObj);
+          //System.err.println("DEBUG: final value for "+valObj+" of type "+valObj.getClass()+" is "+finalValue);
+          inst = inst.setFeature(fname, finalValue);
+        }
+      } // no missing value
+    } // non-empty feature name
+    return inst;
+  } // extractFeatureWorker
+
+  
 
   // *****************************************************************************
   // Extract the target stuff

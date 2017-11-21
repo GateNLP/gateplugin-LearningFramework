@@ -40,6 +40,7 @@ public abstract class FeatureSpecAttribute implements Serializable, Cloneable {
   public String missingValueValue = null;
   public Datatype datatype;
   public String listsep = null;
+  public String featureCode = "INVALID";
   
   public abstract void stopGrowth();
   public abstract void startGrowth();
@@ -52,6 +53,14 @@ public abstract class FeatureSpecAttribute implements Serializable, Cloneable {
       throw new RuntimeException("Could not clone Attribute",ex);
     }
   }
+  
+  /**
+   * Return the code used to identify the attribute type in a feature name.
+   */
+  public String getCode() {
+    return featureCode;
+  }
+  
   
   /**
    * Returns the missing value as the proper data type for this attribute.

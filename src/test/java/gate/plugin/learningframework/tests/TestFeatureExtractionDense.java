@@ -106,8 +106,8 @@ public class TestFeatureExtractionDense {
     String spec = "<ROOT>"+
             "<ATTRIBUTE><TYPE>theType</TYPE><FEATURE>theFeature</FEATURE><DATATYPE>nominal</DATATYPE></ATTRIBUTE>"+
             "<ATTRIBUTELIST><FROM>-3</FROM><TO>2</TO><TYPE>theType</TYPE><FEATURE>feature2</FEATURE><DATATYPE>nominal</DATATYPE></ATTRIBUTELIST>"+
-            "<NGRAM><NUMBER>2</NUMBER><TYPE>theType</TYPE><FEATURE>numfeature1</FEATURE></NGRAM>"+
-            "<ATTRIBUTELIST><FROM>-1</FROM><TO>1</TO><TYPE>theType</TYPE><FEATURE>feature3</FEATURE><DATATYPE>numeric</DATATYPE></ATTRIBUTELIST>"+
+            "<NGRAM><NUMBER>2</NUMBER><TYPE>theType</TYPE><FEATURE>ngramfeature1</FEATURE></NGRAM>"+
+            "<ATTRIBUTELIST><FROM>-1</FROM><TO>1</TO><FEATURE>feature3</FEATURE><DATATYPE>numeric</DATATYPE></ATTRIBUTELIST>"+
             "<ATTRIBUTE><TYPE>someOtherType</TYPE></ATTRIBUTE>"+
             "</ROOT>";
     FeatureInfo fi = new FeatureSpecification(spec).getFeatureInfo();
@@ -120,7 +120,9 @@ public class TestFeatureExtractionDense {
     //System.err.println("TestFeatureExtractionDense/extractSimple1 Debug: fnames="+fnames);
     assertEquals(12, fnames.size());
     assertEquals("theType┆theFeature╬A",fnames.get(0));
-    assertEquals("theType┆feature2╬L-1",fnames.get(3));
+    assertEquals("theType┆feature2╬L-1",fnames.get(3));    
+    assertEquals("theType┆ngramfeature1╬N2",fnames.get(7));
+    assertEquals("┆feature3╬L-1",fnames.get(8));
   }
   
   @Test
@@ -153,54 +155,70 @@ public class TestFeatureExtractionDense {
     // 1) the following all specify the same instance annotation type as is specified in the 
     // attribute so the instance annotation should directly get used.
     
-    inst = FeatureExtractionDense.extractFeature(inst, as.get(0), doc.getAnnotations(), instAnn);
+    FeatureSpecAttribute attr;
+    String fname;
+    attr = as.get(0);
+    fname = featureName(attr,0);
+    inst = FeatureExtractionDense.extractFeature(inst, attr, doc.getAnnotations(), instAnn);
     //System.err.println("TestFeatureExtractionDense Debug/extractSimple1: adding attr="+as.get(0)+" listsep="+as.get(0).listsep);
     //System.err.println("TestFeatureExtractionDense DEBUG/extractSimple1: extracted 0="+inst);
-    assertNotNull(inst.getFeature(featureName4Attribute("","theFeature")));
-    assertThat(inst.getFeature(featureName4Attribute("","theFeature")), instanceOf(String.class));
-    assertEquals("value1",inst.getFeature(featureName4Attribute("","theFeature")));
+    assertNotNull(inst.getFeature(fname));
+    assertThat(inst.getFeature(fname), instanceOf(String.class));
+    assertEquals("value1",inst.getFeature(fname));
 
-    inst = FeatureExtractionDense.extractFeature(inst, as.get(1), doc.getAnnotations(), instAnn);
+    attr = as.get(1);
+    fname = featureName(attr,0);
+    inst = FeatureExtractionDense.extractFeature(inst, attr, doc.getAnnotations(), instAnn);
     //System.err.println("TestFeatyreExtractionDense Debug/extractSimple1: adding attr="+as.get(1)+" listsep="+as.get(1).listsep);
     //System.err.println("TestFeatureExtractionDense DEBUG/extractSimple1: extracted 1="+inst);
-    assertNotNull(inst.getFeature(featureName4Attribute("","feature2")));
-    assertThat(inst.getFeature(featureName4Attribute("","feature2")), instanceOf(String.class));
-    assertEquals("valOfFeature2",inst.getFeature(featureName4Attribute("","feature2")));
+    assertNotNull(inst.getFeature(fname));
+    assertThat(inst.getFeature(fname), instanceOf(String.class));
+    assertEquals("valOfFeature2",inst.getFeature(fname));
 
-    inst = FeatureExtractionDense.extractFeature(inst, as.get(2), doc.getAnnotations(), instAnn);
+    attr = as.get(2);
+    fname = featureName(attr,0);
+    inst = FeatureExtractionDense.extractFeature(inst, attr, doc.getAnnotations(), instAnn);
     //System.err.println("TestFeatyreExtractionDense Debug/extractSimple1: adding attr="+as.get(2)+" listsep="+as.get(2).listsep);
     //System.err.println("TestFeatureExtractionDense DEBUG/extractSimple1: extracted 2="+inst);
-    assertNotNull(inst.getFeature(featureName4Attribute("","numfeature1")));
-    assertThat(inst.getFeature(featureName4Attribute("","numfeature1")), instanceOf(Double.class));
-    assertEquals(1.1,inst.getFeature(featureName4Attribute("","numfeature1")));
+    assertNotNull(inst.getFeature(fname));
+    assertThat(inst.getFeature(fname), instanceOf(Double.class));
+    assertEquals(1.1,inst.getFeature(fname));
 
-    inst = FeatureExtractionDense.extractFeature(inst, as.get(3), doc.getAnnotations(), instAnn);
+    attr = as.get(3);
+    fname = featureName(attr,0);
+    inst = FeatureExtractionDense.extractFeature(inst, attr, doc.getAnnotations(), instAnn);
     //System.err.println("TestFeatyreExtractionDense Debug/extractSimple1: adding attr="+as.get(3)+" listsep="+as.get(3).listsep);
     //System.err.println("TestFeatureExtractionDense DEBUG/extractSimple1: extracted 3="+inst);
-    assertNotNull(inst.getFeature(featureName4Attribute("","numfeature2")));
-    assertThat(inst.getFeature(featureName4Attribute("","numfeature2")), instanceOf(Double.class));
-    assertEquals(2.2,inst.getFeature(featureName4Attribute("","numfeature2")));
+    assertNotNull(inst.getFeature(fname));
+    assertThat(inst.getFeature(fname), instanceOf(Double.class));
+    assertEquals(2.2,inst.getFeature(fname));
 
-    inst = FeatureExtractionDense.extractFeature(inst, as.get(4), doc.getAnnotations(), instAnn);
+    attr = as.get(4);
+    fname = featureName(attr,0);
+    inst = FeatureExtractionDense.extractFeature(inst, attr, doc.getAnnotations(), instAnn);
     //System.err.println("TestFeatyreExtractionDense Debug/extractSimple1: adding attr="+as.get(4)+" listsep="+as.get(4).listsep);
     //System.err.println("TestFeatureExtractionDense DEBUG/extractSimple1: extracted 4="+inst);
-    assertNotNull(inst.getFeature(featureName4Attribute("","boolfeature1")));
-    assertThat(inst.getFeature(featureName4Attribute("","boolfeature1")), instanceOf(Boolean.class));
-    assertEquals(true,inst.getFeature(featureName4Attribute("","boolfeature1")));
+    assertNotNull(inst.getFeature(fname));
+    assertThat(inst.getFeature(fname), instanceOf(Boolean.class));
+    assertEquals(true,inst.getFeature(fname));
 
-    inst = FeatureExtractionDense.extractFeature(inst, as.get(5), doc.getAnnotations(), instAnn);
+    attr = as.get(5);
+    fname = featureName(attr,0);
+    inst = FeatureExtractionDense.extractFeature(inst, attr, doc.getAnnotations(), instAnn);
     //System.err.println("TestFeatyreExtractionDense Debug/extractSimple1: adding attr="+as.get(5)+" listsep="+as.get(5).listsep);
     //System.err.println("TestFeatureExtractionDense DEBUG/extractSimple1: extracted 5="+inst);
-    assertNotNull(inst.getFeature(featureName4Attribute("","boolfeature2")));
-    assertThat(inst.getFeature(featureName4Attribute("","boolfeature2")), instanceOf(Boolean.class));
-    assertEquals(true,inst.getFeature(featureName4Attribute("","boolfeature2")));
+    assertNotNull(inst.getFeature(fname));
+    assertThat(inst.getFeature(fname), instanceOf(Boolean.class));
+    assertEquals(true,inst.getFeature(fname));
 
-    inst = FeatureExtractionDense.extractFeature(inst, as.get(6), doc.getAnnotations(), instAnn);
+    attr = as.get(6);
+    fname = featureName(attr,0);
+    inst = FeatureExtractionDense.extractFeature(inst, attr, doc.getAnnotations(), instAnn);
     //System.err.println("TestFeatyreExtractionDense Debug/extractSimple1: adding attr="+as.get(6)+" listsep="+as.get(6).listsep);
     //System.err.println("TestFeatureExtractionDense DEBUG/extractSimple1: extracted 6="+inst);
-    assertNotNull(inst.getFeature(featureName4Attribute("","")));
-    assertThat(inst.getFeature(featureName4Attribute("","")), instanceOf(Boolean.class));
-    assertEquals(true,inst.getFeature(featureName4Attribute("","")));
+    assertNotNull(inst.getFeature(fname));
+    assertThat(inst.getFeature(fname), instanceOf(Boolean.class));
+    assertEquals(true,inst.getFeature(fname));
 
   }  
   
@@ -221,6 +239,8 @@ public class TestFeatureExtractionDense {
     List<String> fnames = featureSpecAttributes2FeatureNames(fi.getAttributes());
     assertNotNull(fnames);
     assertEquals(12, fnames.size());
+    //System.err.println("TestFeatureExtractionDense/extract2Json1 Debug: fnames size="+fnames.size());    
+    //System.err.println("TestFeatureExtractionDense/extract2Json1 Debug: fnames="+fnames);    
     
     // prepare the document and 3 successive annotations 
     Annotation instAnn1 = addAnn(doc, "", 0, 5, "theType", gate.Utils.featureMap());
@@ -263,18 +283,19 @@ public class TestFeatureExtractionDense {
     InstanceRepresentation inst1 = cr.annotation2instance(instAnn1,inputAS, classAS,
           targetFeatureName, TargetType.NOMINAL,
           weightFeature, null /* seqEncoder */);
-    System.err.println("TestFeatureExtractionDense/extract2Json1 Debug: inst1 size="+inst1.numFeatures());    
-    System.err.println("TestFeatureExtractionDense/extract2Json1 Debug: inst1="+inst1);    
+    //System.err.println("TestFeatureExtractionDense/extract2Json1 Debug: inst1 size="+inst1.numFeatures());    
+    //System.err.println("TestFeatureExtractionDense/extract2Json1 Debug: inst1="+inst1);    
+    assertEquals(11, inst1.numFeatures());
     InstanceRepresentation inst2 = cr.annotation2instance(instAnn2,inputAS, classAS,
           targetFeatureName, TargetType.NOMINAL,
           weightFeature, null /* seqEncoder */);
-    System.err.println("TestFeatureExtractionDense/extract2Json1 Debug: inst2 size="+inst2.numFeatures());    
-    System.err.println("TestFeatureExtractionDense/extract2Json1 Debug: inst2="+inst2);    
+    //System.err.println("TestFeatureExtractionDense/extract2Json1 Debug: inst2 size="+inst2.numFeatures());    
+    //System.err.println("TestFeatureExtractionDense/extract2Json1 Debug: inst2="+inst2);    
     InstanceRepresentation inst3 = cr.annotation2instance(instAnn3,inputAS, classAS,
           targetFeatureName, TargetType.NOMINAL,
           weightFeature, null /* seqEncoder */);
-    System.err.println("TestFeatureExtractionDense/extract2Json1 Debug: inst3 size="+inst3.numFeatures());    
-    System.err.println("TestFeatureExtractionDense/extract2Json1 Debug: inst3="+inst3);    
+    //System.err.println("TestFeatureExtractionDense/extract2Json1 Debug: inst3 size="+inst3.numFeatures());    
+    //System.err.println("TestFeatureExtractionDense/extract2Json1 Debug: inst3="+inst3);    
     
   }
 

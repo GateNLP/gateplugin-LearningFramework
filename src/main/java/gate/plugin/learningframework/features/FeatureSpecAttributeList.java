@@ -74,6 +74,7 @@ public class FeatureSpecAttributeList extends FeatureSpecSimpleAttribute impleme
             att.missingValueValue, "", "", withinType, att.listsep, att.featureName4Value);
     this.from = from;
     this.to = to;
+    featureCode = "L";
   }
   
   public int from;

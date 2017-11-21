@@ -58,6 +58,7 @@ public class FeatureSpecSimpleAttribute extends FeatureSpecAttribute implements 
     this.listsep = listsep;
     this.featureName4Value = featureName4Value;
     this.missingValueValue = missingValueValue;
+    featureCode = "A";
   }
   public CodeAs codeas = CodeAs.one_of_k;
   public MissingValueTreatment missingValueTreatment = MissingValueTreatment.zero_value;

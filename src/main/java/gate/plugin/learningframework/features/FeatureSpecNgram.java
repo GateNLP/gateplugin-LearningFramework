@@ -39,6 +39,7 @@ public class FeatureSpecNgram extends FeatureSpecAttribute implements Serializab
     this.featureName4Value = featureName4Value;
     this.datatype = Datatype.nominal;
     this.missingValueValue = "";
+    featureCode = "N";
   }
   public int number = -1;
   public String featureName4Value = "";

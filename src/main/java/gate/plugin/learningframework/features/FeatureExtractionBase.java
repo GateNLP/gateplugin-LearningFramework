@@ -43,9 +43,10 @@ public class FeatureExtractionBase {
   // (for dense, the value is not part of the feature name but the value)
   // or optionally followed, for sparse feature vectors only, if a feature
   // has a list value, by: ${ELEMSEP${elemNumber}
-  // (for dense, the list will be the actual value of this single feature)
+  // (for dense, the list will be the actual value of this single feature).
   // Ngram values are represented as gram${NGRAMSEP}gram..  
-  // 
+  // NOTE: the annotationType can be empty in which case the type specified
+  // as instance annotation type in the PR will be implied.
 
   
   /**
@@ -92,6 +93,7 @@ public class FeatureExtractionBase {
 
   protected static final boolean DEBUG_SEQUENCE_CLASS = true;
 
+  /*
   public static String featureName4Attribute(String type, String feature) {
     return type + TYPESEP + feature + NAMESEP + "A";
   }
@@ -113,7 +115,7 @@ public class FeatureExtractionBase {
   public static String featureName4Ngram(String name, int n) {
     return name + NAMESEP + "N" + n;
   }
-  
+  */
   
   /**
    * Generate the feature name from its components.
@@ -127,46 +129,88 @@ public class FeatureExtractionBase {
    * @param attrKind the kind of the attribute, e.g. "A" or "N3" or "L-2"
    * @return 
    */
-  public static String featureNamePrefix(String attributeName, String annType, String featureName, String attrKind) {
+  /*
+  public static String featureName(String attributeName, String annType, String featureName, String attrKind) {
     String internalFeatureName;
-    if (attributeName == null || attributeName.isEmpty()) {
+    if (attributeName == null || attributeName.isEmpty()) {      
       internalFeatureName = annType + TYPESEP + featureName + NAMESEP + attrKind;
     } else {
       internalFeatureName = attributeName + NAMESEP + attrKind;
     }
     return internalFeatureName;
   }
+  */
+
+  /**
+   * Convert a FeatureSpecAttribute instance to its internal feature name.
+   * 
+   * 
+   * @param attr
+   * @param annType
+   * @param listEl: for a list attribute, the element number, otherwise ignored
+   * @return 
+   */
+  public static String featureName(FeatureSpecAttribute attr, int listEl) {
+    String internalFeatureName;
+    String attrKind = attr.getCode();
+    if(attrKind.equals("L")) {
+      attrKind = attrKind + listEl;
+    }
+    if(attrKind.equals("N")) {
+      attrKind = attrKind + ((FeatureSpecNgram)attr).number;
+    }
+    if (attr.name == null || attr.name.isEmpty()) {
+      internalFeatureName = attr.annType + TYPESEP + attr.feature + NAMESEP + attrKind;
+    } else {
+      internalFeatureName = attr.name + NAMESEP + attrKind;
+    }
+    return internalFeatureName;
+  }
+
+  /**
+   * Convert a FeatureSpecAttribute to the feature name prefix.
+   * 
+   * This generates the prefix up to and including the NAMESEP, but 
+   * not including the actual indicator for the attribute type (A/N/L).
+   * 
+   * @param attr
+   * @return 
+   */
+  public static String featureNamePrefix(FeatureSpecAttribute attr) {
+    String internalFeatureName;
+    if (attr.name == null || attr.name.isEmpty()) {
+      internalFeatureName = attr.annType + TYPESEP + attr.feature + NAMESEP;
+    } else {
+      internalFeatureName = attr.name + NAMESEP;
+    }
+    return internalFeatureName;
+  }
+
   
   // This method converts a list of FeatureSpecAttribute instances into
   // a list of feature names. Note that for the AttributeList instances
   // more than one feature name may get created.
+  /**
+   * Convert a list of feature specifications to a list of internal feature names.
+   * This converts each of the FeatureSpecAttribute instances to its internal
+   * feature name. Since the annotation type part of the name should be blank
+   * if the name in the feature specification matches the name specified in the PR,
+   * this method also needs the annotation type. 
+   * @param attrs
+   * @param annType
+   * @return 
+   */
   public static List<String> featureSpecAttributes2FeatureNames(List<FeatureSpecAttribute> attrs) {
     List<String> fnames = new ArrayList<>();    
-    String fname = null;
     for(FeatureSpecAttribute attr : attrs) {
-      String name = attr.name;
-      String type = attr.annType;
-      String feature = attr.feature;
-      boolean haveName = (name!=null && !name.isEmpty());
-      if(attr instanceof FeatureSpecNgram) {
-        fname = haveName ? 
-                featureName4Ngram(name, ((FeatureSpecNgram)attr).number) :
-                featureName4Ngram(type, feature, ((FeatureSpecNgram)attr).number);
-        fnames.add(fname);
-      } else if(attr instanceof FeatureSpecAttributeList) {
+      if(attr instanceof FeatureSpecAttributeList) {
         int from = ((FeatureSpecAttributeList)attr).from;
         int to = ((FeatureSpecAttributeList)attr).to;
         for(int i=from;i<=to;i++) {
-          fname = haveName ? 
-                  featureName4AttributeList(name, i) :
-                  featureName4AttributeList(type, feature, i);
-          fnames.add(fname);          
+          fnames.add(featureName(attr,i));
         }
       } else {
-        fname = haveName ? 
-                featureName4Attribute(name) :
-                featureName4Attribute(type, feature);
-        fnames.add(fname);        
+        fnames.add(featureName(attr,0));
       }
     }
     return fnames;
