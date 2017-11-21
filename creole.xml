@@ -35,7 +35,6 @@ along with this software. If not, see <http://www.gnu.org/licenses/>.
   <JAR>lib/httpmime-4.5.2.jar</JAR>
   <JAR>lib/interaction-3.8.jar</JAR>
   <JAR>lib/jdom-1.1.jar</JAR>
-  <JAR>lib/jgrapht-0.6.0.jar</JAR>
   <JAR>lib/json-20160212.jar</JAR>
   <JAR>lib/junit-4.10.jar</JAR>
   <JAR>lib/libsvm.jar</JAR>
