@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import static gate.plugin.learningframework.features.FeatureExtractionBase.*;
+import java.io.UnsupportedEncodingException;
 
 /**
  * Common base class for non Mallet volatile representations.
@@ -83,6 +84,8 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
     } catch (FileNotFoundException ex) {
       throw new GateRuntimeException("Cannot open output stream to "+outFile,ex);
     }
+    // TODO: write the initial metadata file!!!
+    // Format should be JSON!
   }
   
   /**
@@ -138,6 +141,7 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
           SeqEncoder seqEncoder) {
     // first of all, distinguish between processing for sequences and for non-sequences
     // if the sequenceAS parameter is non-null we process sequences of instances, otherwise we process plain instances
+    String json = "";
     if(sequenceAS == null) {
       // processing plain instances
       // For each instance, do this:
@@ -151,11 +155,15 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
         // now that we have the internal instance representation, send it off
         // by first converting to a json string and then sending the string to the output
         // file
-        
-        
+        json = internal2Json(inst);
       }
     } else {
       // processing sequences
+    }
+    try {
+      outStream.write(json.getBytes("UTF-8"));
+    } catch (Exception ex) {
+      throw new GateRuntimeException("Could not write generated JSON",ex);
     }
   }
   
@@ -228,7 +236,7 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
   }
   
   
-  public String internal2json(List<InstanceRepresentation> instseq) {
+  public String internal2Json(List<InstanceRepresentation> instseq) {
     // TODO!!!!
     return "";
   }
@@ -240,6 +248,7 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
    * @param scaleFeatures 
    */
   public void finish() {
+    // TODO: write the metadata file (again)!!!
     try {
       outStream.close();
     } catch (IOException ex) {

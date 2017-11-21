@@ -329,6 +329,15 @@ public class TestFeatureExtractionDense {
     assertEquals(2,lfeature.size());
     lfeature = (List<String>) instLong1.getFeature(featureName(attrs.get(5),0)); // second ngram
     assertEquals(3,lfeature.size());
+
+    // For actually looking at the file written, uncomment this
+    /*
+    cr.add(
+            instancesAS, sequenceAS, inputAS, classAS, 
+            targetFeatureName, TargetType.NOMINAL, 
+            instanceNameFeature, weightFeature, null);
+    cr.finish();
+    */
   }
 
   /*
