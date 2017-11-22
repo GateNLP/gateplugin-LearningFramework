@@ -40,9 +40,9 @@
       <version>8.4.1</version>
     </dependency>
     <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-      <version>1.2</version>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-math3</artifactId>
+      <version>3.6.1</version>
     </dependency>
     <!-- https://github.com/datumbox/libsvm -->
     <dependency>
