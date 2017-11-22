@@ -39,7 +39,7 @@ import gate.plugin.learningframework.features.TargetType;
 import gate.plugin.learningframework.mallet.LFPipe;
 import gate.plugin.learningframework.mallet.PipeScaleMeanVarAll;
 import gate.plugin.learningframework.mallet.PipeScaleMinMaxAll;
-import gate.plugin.learningframework.stats.FVStatsMeanVarAll;
+import gate.plugin.learningframework.mbstats.FVStatsMeanVarAll;
 import gate.util.GateRuntimeException;
 import java.io.FileInputStream;
 import java.io.IOException;

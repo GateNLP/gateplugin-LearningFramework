@@ -19,14 +19,10 @@
  */
 package gate.plugin.learningframework.data;
 
-import cc.mallet.types.Instance;
 import gate.Annotation;
 import gate.AnnotationSet;
 import gate.plugin.learningframework.LFUtils;
-import gate.plugin.learningframework.engines.Algorithm;
-import gate.plugin.learningframework.engines.AlgorithmKind;
 import gate.plugin.learningframework.features.FeatureExtractionDense;
-import gate.plugin.learningframework.features.FeatureExtractionMalletSparse;
 import gate.plugin.learningframework.features.FeatureInfo;
 import gate.plugin.learningframework.features.FeatureSpecAttribute;
 import gate.plugin.learningframework.features.SeqEncoder;
@@ -36,17 +32,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URL;
 import java.util.List;
-import java.util.logging.Level;
 import org.apache.log4j.Logger;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import static gate.plugin.learningframework.features.FeatureExtractionBase.*;
-import java.io.UnsupportedEncodingException;
+import gate.plugin.learningframework.stats.StatsForFeatures;
 
 /**
  * Common base class for non Mallet volatile representations.
@@ -61,12 +53,16 @@ import java.io.UnsupportedEncodingException;
  */
 public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresentationVolatileBase {
 
+  public static final String DATA_FILE_NAME = "crvd.data.json";
+  public static final String META_FILE_NAME = "crvd.meta.json";
+  
   Logger logger = org.apache.log4j.Logger.getLogger(CorpusRepresentationVolatileDense2JsonStream.class);
 
   private FileOutputStream outStream; 
-  private File outFile;
+  private File outDir;
   private FeatureInfo featureInfo; // the feature info from the feauture specification
   List<String> fnames;
+  StatsForFeatures stats = new StatsForFeatures();
   
   /**
    * The constructor needs to specify the file where to save the instances to.
@@ -75,15 +71,21 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
    * get synchronized.
    * @param outFile
    */
-  public CorpusRepresentationVolatileDense2JsonStream(File outFile, FeatureInfo featureInfo) {
-    this.outFile = outFile;
+  public CorpusRepresentationVolatileDense2JsonStream(File outDir, FeatureInfo featureInfo) {
+    this.outDir = outDir;
     this.featureInfo = featureInfo;
     this.fnames = featureSpecAttributes2FeatureNames(featureInfo.getAttributes());
+    File outFile = new File(outDir,DATA_FILE_NAME);
     try {
       outStream = new FileOutputStream(outFile);
     } catch (FileNotFoundException ex) {
       throw new GateRuntimeException("Cannot open output stream to "+outFile,ex);
     }
+    // At this point, since this is a dense representation, we already know
+    // all the features and can set up to gather on-the-fly statistics about
+    // them as we collect instances, if we wanted. 
+    
+    
     // TODO: write the initial metadata file!!!
     // Format should be JSON!
   }

@@ -18,7 +18,7 @@
  * along with this software. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package gate.plugin.learningframework.stats;
+package gate.plugin.learningframework.mbstats;
 
 /**
  *
