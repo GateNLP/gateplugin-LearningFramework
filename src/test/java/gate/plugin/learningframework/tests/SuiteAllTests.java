@@ -28,6 +28,7 @@ import org.junit.runners.Suite;
   //TestFeatureSpecification.class,
   //TestFeatureExtraction.class,
   TestFeatureExtractionDense.class,
+  TestCorpusRepresentationVD2JS.class,
   //TestPipeSerialization.class,
   //TestInfo.class,
   //TestParms.class,

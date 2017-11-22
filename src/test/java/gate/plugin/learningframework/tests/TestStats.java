@@ -58,11 +58,11 @@ public class TestStats {
     assertEquals(3,st_feature2.getN());
     assertEquals(0.0,st_feature2.getMin(),0.00001);
     assertEquals(1.0,st_feature2.getMax(),0.00001);
-    assertEquals(0.33333333333333333,st_feature1.getVariance(),0.0001);
+    assertEquals(0.33333333333333333,st_feature2.getVariance(),0.0001);
 
-    assertEquals(3,st_feature1.getN());
-    assertEquals(1.0,st_feature1.getMin(),0.00001);
-    assertEquals(4.0,st_feature1.getMax(),0.00001);
-    assertEquals(2.33333333333333333,st_feature1.getStandardDeviation(),0.0001);
+    assertEquals(3,st_feature3.getN());
+    assertEquals(1.0,st_feature3.getMin(),0.00001);
+    assertEquals(4.0,st_feature3.getMax(),0.00001);
+    assertEquals(2.33333333333333333,st_feature3.getVariance(),0.0001);
   }
 }

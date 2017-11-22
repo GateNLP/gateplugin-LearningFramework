@@ -19,6 +19,11 @@
  */
 package gate.plugin.learningframework.data;
 
+import cc.mallet.types.FeatureSequence;
+import cc.mallet.types.FeatureVector;
+import cc.mallet.types.FeatureVectorSequence;
+import cc.mallet.types.Instance;
+import cc.mallet.types.Label;
 import gate.Annotation;
 import gate.AnnotationSet;
 import gate.plugin.learningframework.LFUtils;
@@ -36,9 +41,16 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import static gate.plugin.learningframework.data.CorpusRepresentationMalletTarget.extractIndependentFeaturesHelper;
 import java.util.ArrayList;
 import static gate.plugin.learningframework.features.FeatureExtractionBase.*;
+import gate.plugin.learningframework.features.FeatureExtractionMalletSparse;
 import gate.plugin.learningframework.stats.StatsForFeatures;
+import java.io.PrintStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Common base class for non Mallet volatile representations.
@@ -64,6 +76,13 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
   List<String> fnames;
   StatsForFeatures stats = new StatsForFeatures();
   
+  private final Object LOCKING_OBJECT = new Object();
+  
+  // some statistics we update while writing the corpus to the file and those
+  // get included in the metadata written as well
+  private int linesWritten = 0;
+  
+  
   /**
    * The constructor needs to specify the file where to save the instances to.
    * Note: if several threads use this instance, they should all share the 
@@ -85,7 +104,7 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
     // all the features and can set up to gather on-the-fly statistics about
     // them as we collect instances, if we wanted. 
     
-    
+    saveMetadata();
     // TODO: write the initial metadata file!!!
     // Format should be JSON!
   }
@@ -158,16 +177,53 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
         // by first converting to a json string and then sending the string to the output
         // file
         json = internal2Json(inst);
+        writeData(json);
       }
     } else {
       // processing sequences
-    }
-    try {
-      outStream.write(json.getBytes("UTF-8"));
-    } catch (Exception ex) {
-      throw new GateRuntimeException("Could not write generated JSON",ex);
+      for (Annotation sequenceAnnotation : sequenceAS.inDocumentOrder()) {
+        List<InstanceRepresentation>  insts4seq =
+        instancesForSequence(instancesAS, sequenceAnnotation, inputAS, classAS, targetFeatureName, targetType, seqEncoder);
+        json = internal2Json(insts4seq);
+        writeData(json);
+      }
+        
+      
     }
   }
+
+  public void writeData(String json) {
+    try {
+      synchronized(LOCKING_OBJECT) {
+        outStream.write(json.getBytes("UTF-8"));
+        linesWritten += 1;
+      }
+    } catch (Exception ex) {
+      throw new GateRuntimeException("Could not write generated JSON",ex);
+    }    
+  }
+
+  
+  public List<InstanceRepresentation> instancesForSequence(
+          AnnotationSet instancesAS, Annotation sequenceAnnotation,
+          AnnotationSet inputAS, AnnotationSet classAS, 
+          String targetFeatureName, TargetType targetType, SeqEncoder seqEncoder
+          ) {
+
+    // get all the instances from within the sequence in order
+    List<Annotation> instanceAnnotations = gate.Utils.getContainedAnnotations(instancesAS, sequenceAnnotation).inDocumentOrder();
+    List<InstanceRepresentation>  insts4seq = new ArrayList<>(instanceAnnotations.size());
+    // for each instance annotation, get the instance representation and add it to the list
+    for (Annotation instanceAnnotation : instanceAnnotations) {
+      InstanceRepresentation inst =
+                annotation2instance(instanceAnnotation,inputAS,classAS,
+                        targetFeatureName,targetType,null,seqEncoder);
+      insts4seq.add(inst);
+    }
+    
+    return insts4seq;
+  }
+  
   
   public InstanceRepresentation annotation2instance(Annotation instanceAnnotation,
           AnnotationSet inputAS, AnnotationSet classAS,
@@ -228,6 +284,33 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
     }
     return json;
   }
+
+  public String internal2Json(List<InstanceRepresentation> instseq) {
+    // can this be shared between multiple threads?
+    ObjectMapper mapper = new ObjectMapper();
+    // the format is a two-element list, where the first element is 
+    // the list of all lists of independent features and the second element
+    // is a list of all targets    
+    List<Object> indepList = new ArrayList<>();
+    List<Object> targetList = new ArrayList<>();
+    for(InstanceRepresentation inst : instseq) {
+      List<Object> values = internal2array(inst);
+      indepList.add(values);
+      targetList.add(inst.getTargetValue());
+    }
+    List<Object> finalList = new ArrayList<>();
+    finalList.add(indepList);
+    finalList.add(targetList);
+    // now convert this to a JSON String
+    String json = "";
+    try {
+      json = mapper.writeValueAsString(finalList);
+    } catch (JsonProcessingException ex) {
+      throw new GateRuntimeException("Could not convert instance sequence to json",ex);
+    }
+    return json;
+  }
+
   
   private List<Object> internal2array(InstanceRepresentation inst) {    
     ArrayList<Object> values = new ArrayList<>();    
@@ -238,10 +321,6 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
   }
   
   
-  public String internal2Json(List<InstanceRepresentation> instseq) {
-    // TODO!!!!
-    return "";
-  }
   
   /**
    * Finish adding data to the CR. This may close or finish any channel for
@@ -252,6 +331,7 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
   public void finish() {
     // TODO: write the metadata file (again)!!!
     try {
+      saveMetadata();
       outStream.close();
     } catch (IOException ex) {
       throw new GateRuntimeException("Error closing output stream for corpus representation", ex);
@@ -263,5 +343,38 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
     throw new UnsupportedOperationException("Not supported by this corpus representation"); 
   }
   
+  public String json4metadata() {
+    try  {
+      ObjectMapper mapper = new ObjectMapper();
+      Map<String,Object> metadata = new HashMap<>();
+      metadata.put("featureInfo", featureInfo);   
+      metadata.put("featureNames",fnames);
+      metadata.put("linesWritten",linesWritten);
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd,HH:mm:ss");      
+      metadata.put("savedOn",sdf.format(new Date()));
+      String json = mapper.writeValueAsString(metadata);
+      return json;
+    } catch (Exception ex) {
+      throw new GateRuntimeException("Could not serialize metadata",ex);
+    }
+    
+  } 
+  
+  
+  /**
+   * Save the current metadata.
+   */
+  public void saveMetadata() {    
+    try (
+            FileOutputStream fos = new FileOutputStream(new File(outDir, META_FILE_NAME));) {
+      String json = json4metadata();
+      synchronized (LOCKING_OBJECT) {
+        fos.write(json.getBytes("UTF-8"));
+      }
+    } catch (Exception ex) {
+      throw new GateRuntimeException("Could not write metadata to file", ex);
+    }
+  }
+
   
 }
