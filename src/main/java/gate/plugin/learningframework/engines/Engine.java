@@ -58,6 +58,8 @@ public abstract class Engine {
   //CorpusRepresentation corpusRepresentation;
   
   protected Info info;
+  
+  protected FeatureInfo featureInfo;
 
   /**
    * Return the info instance for this Engine. 
@@ -65,6 +67,7 @@ public abstract class Engine {
    */
   public Info getInfo() { return info; }
   
+  public FeatureInfo getFeatureInfo() { return featureInfo; }
   
   /**
    * Get the corpus representation for the engine. This will return the specific subclass of 
@@ -178,6 +181,7 @@ public abstract class Engine {
   public static Engine loadEngine(URL directory, String parms) {
     // 1) read the info file
     Info info = Info.load(directory);
+    FeatureInfo fi = FeatureInfo.load(directory);
     // extract the Engine class from the file and create an instance of the engine
     Engine eng;
     try { 
@@ -226,7 +230,8 @@ public abstract class Engine {
     } else {
       info.modelClass = model.getClass().getName();
       info.save(directory);
-    }
+    }    
+    featureInfo.save(directory);
     // Then delegate to the engine to save the model
     saveModel(directory);
     // finally save the corpus representation

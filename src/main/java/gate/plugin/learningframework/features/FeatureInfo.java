@@ -21,7 +21,10 @@
 package gate.plugin.learningframework.features;
 
 import gate.plugin.learningframework.ScalingMethod;
+import gate.util.GateRuntimeException;
+import java.io.File;
 import java.io.Serializable;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,6 +100,14 @@ public class FeatureInfo implements Serializable {
   }
   
   public List<FeatureSpecAttribute> getAttributes() { return featureSpecs; }
+  
+  public void save(File dirFile) {
+    throw new GateRuntimeException("NEEDS IMPLEMENTING!");
+  }
+  
+  public static FeatureInfo load(URL dirURL) {
+    throw new GateRuntimeException("NEEDS IMPLEMENTING!");
+  }
   
   public String toString() {
     StringBuilder sb = new StringBuilder();
