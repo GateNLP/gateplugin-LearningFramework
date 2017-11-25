@@ -77,7 +77,7 @@ public class EngineMBMalletSeq extends EngineMBMallet {
     updateInfo();
   }
   
-  public static TransducerTrainer createTrainer(InstanceList trainingData, Info info, String options) {
+  private static TransducerTrainer createTrainer(InstanceList trainingData, Info info, String options) {
     TransducerTrainer transtrainer = null;
 
     // NOTE: Training of the CRF is very flexible in Mallet and not everything is clear to me
@@ -249,7 +249,7 @@ public class EngineMBMalletSeq extends EngineMBMallet {
   }
   
   
-  public Transducer trainModel(InstanceList trainingData, String options) {
+  private Transducer trainModel(InstanceList trainingData, String options) {
 
     TransducerTrainer trainer = createTrainer(trainingData, info, options);
     Parms parms = new Parms(options,"i:iterations:i","V:verbose:b");
