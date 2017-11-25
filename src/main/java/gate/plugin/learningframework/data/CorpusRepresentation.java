@@ -21,8 +21,11 @@
 package gate.plugin.learningframework.data;
 
 import cc.mallet.types.InstanceList;
+import gate.AnnotationSet;
 import gate.plugin.learningframework.ScalingMethod;
 import gate.plugin.learningframework.features.FeatureInfo;
+import gate.plugin.learningframework.features.SeqEncoder;
+import gate.plugin.learningframework.features.TargetType;
 import gate.plugin.learningframework.mallet.LFPipe;
 
 /**
@@ -47,5 +50,9 @@ public abstract class CorpusRepresentation {
   
   //public abstract InstanceList getRepresentationMallet();
   
+  public abstract void add(AnnotationSet instancesAS, AnnotationSet sequenceAS, AnnotationSet inputAS, AnnotationSet classAS, String targetFeatureName, TargetType targetType, String instanceWeightFeature, String nameFeatureName, SeqEncoder seqEncoder);
+  
+  public abstract void finish();
+
   
 }

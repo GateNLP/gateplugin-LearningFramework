@@ -207,16 +207,6 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
   }
 
   @Override
-  public void afterLastDocument(Controller arg0, Throwable throwable) {
-    // No need to do anything, empty implementation!
-  }
-
-  @Override
-  public void finishedNoDocument(Controller arg0, Throwable throwable) {
-    // no need to do anything
-  }
-
-  @Override
   protected void beforeFirstDocument(Controller controller) {
 
     // If a server URL is specified, use the server engine. In that case the 
@@ -268,5 +258,17 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
       System.err.println("Using target feature name from PR parameter: " + targetFeatureToUse);
     }
   }
+  
+  @Override
+  public void afterLastDocument(Controller arg0, Throwable throwable) {
+    // No need to do anything, empty implementation!
+  }
+
+  @Override
+  public void finishedNoDocument(Controller arg0, Throwable throwable) {
+    // no need to do anything
+  }
+
+  
 
 }

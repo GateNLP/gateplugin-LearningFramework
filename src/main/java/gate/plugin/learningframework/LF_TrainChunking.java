@@ -31,6 +31,7 @@ import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
+import gate.plugin.learningframework.data.CorpusRepresentation;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.engines.AlgorithmClassification;
 import gate.plugin.learningframework.engines.Engine;
@@ -174,7 +175,7 @@ public class LF_TrainChunking extends LF_TrainBase {
   
   private int nrDocuments;
   
-  private CorpusRepresentationMallet corpusRepresentation;
+  private CorpusRepresentation corpusRepresentation;
   
   @Override
   public Document process(Document doc) {
@@ -204,51 +205,6 @@ public class LF_TrainChunking extends LF_TrainBase {
     return doc;
   }
 
-  @Override
-  public void afterLastDocument(Controller arg0, Throwable t) {
-    if(t!=null) {
-      System.err.println("An exception occurred during processing of documents, no training will be done");
-      System.err.println("Exception was "+t.getClass()+": "+t.getMessage());
-      return;
-    }
-    System.out.println("LearningFramework: Starting training engine " + engine);
-    System.out.println("Training set classes: "
-            + corpusRepresentation.getRepresentationMallet().getPipe().getTargetAlphabet().toString().replaceAll("\\n", " "));
-    System.out.println("Training set size: " + corpusRepresentation.getRepresentationMallet().size());
-    if (corpusRepresentation.getRepresentationMallet().getDataAlphabet().size() > 20) {
-      System.out.println("LearningFramework: Attributes " + corpusRepresentation.getRepresentationMallet().getDataAlphabet().size());
-    } else {
-      System.out.println("LearningFramework: Attributes " + corpusRepresentation.getRepresentationMallet().getDataAlphabet().toString().replaceAll("\\n", " "));
-    }
-      //System.out.println("DEBUG: instances are "+corpusRepresentation.getRepresentationMallet());
-
-    corpusRepresentation.finish();
-
-    // Store some additional information in the info datastructure which will be saved with the model
-    engine.getInfo().nrTrainingDocuments = nrDocuments;
-    engine.getInfo().nrTrainingInstances = corpusRepresentation.getRepresentationMallet().size();
-    
-    // TODO: what if we do sequence tagging by classification???
-    engine.getInfo().targetFeature = "LF_class";
-    engine.getInfo().trainingCorpusName = corpus.getName();
-    engine.getInfo().classAnnotationTypes = getClassAnnotationTypes();
-    
-    if(seqEncoder!=null) { 
-      engine.getInfo().seqEncoderClass = seqEncoder.getClass().getName();
-      engine.getInfo().seqEncoderOptions = seqEncoder.getOptions().toString();
-    }   
-    
-    engine.trainModel(gate.util.Files.fileFromURL(dataDirectory),
-            getInstanceType(),
-            getAlgorithmParameters());
-    LOGGER.info("LearningFramework: Training complete!");
-    engine.saveEngine(dataDirFile);
-  }
-
-  @Override
-  protected void finishedNoDocument(Controller c, Throwable t) {
-    LOGGER.error("Processing finished, but got an error, no documents seen, or the PR was disabled in the pipeline - cannot train!");
-  }
 
   @Override
   protected void beforeFirstDocument(Controller controller) {
@@ -301,6 +257,58 @@ public class LF_TrainChunking extends LF_TrainBase {
     corpusRepresentation = (CorpusRepresentationMallet)engine.getCorpusRepresentation();
     System.err.println("DEBUG: created the engine: " + engine + " with CR="+engine.getCorpusRepresentation());  
     nrDocuments = 0;
+  }
+  
+  
+  @Override
+  public void afterLastDocument(Controller arg0, Throwable t) {
+    if(t!=null) {
+      System.err.println("An exception occurred during processing of documents, no training will be done");
+      System.err.println("Exception was "+t.getClass()+": "+t.getMessage());
+      return;
+    }
+    System.out.println("LearningFramework: Starting training engine " + engine);
+    if(corpusRepresentation instanceof CorpusRepresentationMallet) {
+      CorpusRepresentationMallet crm = (CorpusRepresentationMallet)corpusRepresentation;
+      System.out.println("Training set classes: "
+              + crm.getRepresentationMallet().getPipe().getTargetAlphabet().toString().replaceAll("\\n", " "));
+      System.out.println("Training set size: " + crm.getRepresentationMallet().size());
+      if (crm.getRepresentationMallet().getDataAlphabet().size() > 20) {
+        System.out.println("LearningFramework: Attributes " + crm.getRepresentationMallet().getDataAlphabet().size());
+      } else {
+        System.out.println("LearningFramework: Attributes " + crm.getRepresentationMallet().getDataAlphabet().toString().replaceAll("\\n", " "));
+      }
+      //System.out.println("DEBUG: instances are "+corpusRepresentation.getRepresentationMallet());
+      engine.getInfo().nrTrainingInstances = crm.getRepresentationMallet().size();
+    }
+
+    corpusRepresentation.finish();
+
+    // Store some additional information in the info datastructure which will be saved with the model
+    engine.getInfo().nrTrainingDocuments = nrDocuments;
+    // TODO: add size() for all CRs!
+    //engine.getInfo().nrTrainingInstances = corpusRepresentation.getRepresentationMallet().size();
+    
+    // TODO: what if we do sequence tagging by classification???
+    engine.getInfo().targetFeature = "LF_class";
+    engine.getInfo().trainingCorpusName = corpus.getName();
+    engine.getInfo().classAnnotationTypes = getClassAnnotationTypes();
+    
+    if(seqEncoder!=null) { 
+      engine.getInfo().seqEncoderClass = seqEncoder.getClass().getName();
+      engine.getInfo().seqEncoderOptions = seqEncoder.getOptions().toString();
+    }   
+    
+    engine.trainModel(gate.util.Files.fileFromURL(dataDirectory),
+            getInstanceType(),
+            getAlgorithmParameters());
+    LOGGER.info("LearningFramework: Training complete!");
+    engine.saveEngine(dataDirFile);
+  }
+
+  @Override
+  protected void finishedNoDocument(Controller c, Throwable t) {
+    LOGGER.error("Processing finished, but got an error, no documents seen, or the PR was disabled in the pipeline - cannot train!");
   }
 
 }

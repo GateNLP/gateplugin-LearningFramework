@@ -25,17 +25,17 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-  //TestFeatureSpecification.class,
-  //TestFeatureExtraction.class,
+  TestFeatureSpecification.class,
+  TestFeatureExtraction.class,
   TestFeatureExtractionDense.class,
   TestCorpusRepresentationVD2JS.class,
-  //TestPipeSerialization.class,
-  //TestInfo.class,
-  //TestParms.class,
-  //TestEngineMalletClass.class,
-  //TestEngineLibSVM.class,
-  //TestEngineMalletSeq.class,
-  //TestFeatureScaling.class
+  TestPipeSerialization.class,
+  TestInfo.class,
+  TestParms.class,
+  TestEngineMalletClass.class,
+  TestEngineLibSVM.class,
+  TestEngineMalletSeq.class,
+  TestFeatureScaling.class,
   TestStats.class
 })
 public class SuiteAllTests {

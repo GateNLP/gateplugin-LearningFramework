@@ -23,6 +23,9 @@ import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.Label;
 import cc.mallet.types.SparseVector;
+import gate.AnnotationSet;
+import gate.plugin.learningframework.features.SeqEncoder;
+import gate.plugin.learningframework.features.TargetType;
 import gate.util.GateRuntimeException;
 import libsvm.svm_node;
 import libsvm.svm_problem;
@@ -117,6 +120,16 @@ public class CorpusRepresentationLibSVM extends CorpusRepresentationMalletRelate
   @Override
   public InstanceList getRepresentationMallet() {
    return crm.instances;
+  }
+
+  @Override
+  public void add(AnnotationSet instancesAS, AnnotationSet sequenceAS, AnnotationSet inputAS, AnnotationSet classAS, String targetFeatureName, TargetType targetType, String instanceWeightFeature, String nameFeatureName, SeqEncoder seqEncoder) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public void finish() {
+    // Do nothing
   }
 
 }

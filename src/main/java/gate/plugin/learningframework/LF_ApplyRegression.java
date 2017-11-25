@@ -166,16 +166,6 @@ public class LF_ApplyRegression extends LearningFrameworkPRBase {
 
 
   @Override
-  public void afterLastDocument(Controller arg0, Throwable throwable) {
-    // No need to do anything, empty implementation!
-  }
-
-  @Override
-  public void finishedNoDocument(Controller arg0, Throwable throwable) {
-    // no need to do anything
-  }
-
-  @Override
   protected void beforeFirstDocument(Controller controller) {
 
     // JP: this was moved from the dataDirectory setter to avoid problems
@@ -212,6 +202,16 @@ public class LF_ApplyRegression extends LearningFrameworkPRBase {
       targetFeatureToUse = getTargetFeature();
       System.err.println("Using target feature name from PR parameter: "+targetFeatureToUse);
     }
+  }
+
+  @Override
+  public void afterLastDocument(Controller arg0, Throwable throwable) {
+    // No need to do anything, empty implementation!
+  }
+
+  @Override
+  public void finishedNoDocument(Controller arg0, Throwable throwable) {
+    // no need to do anything
   }
 
 }

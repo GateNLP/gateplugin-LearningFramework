@@ -164,17 +164,7 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
     return doc;
   }
 
-
-  @Override
-  public void afterLastDocument(Controller arg0, Throwable throwable) {
-    // No need to do anything, empty implementation!
-  }
-
-  @Override
-  public void finishedNoDocument(Controller arg0, Throwable throwable) {
-    // no need to do anything
-  }
-
+  
   @Override
   protected void beforeFirstDocument(Controller controller) {
 
@@ -210,5 +200,17 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
       }
     }
   }
+  
+
+  @Override
+  public void afterLastDocument(Controller arg0, Throwable throwable) {
+    // No need to do anything, empty implementation!
+  }
+
+  @Override
+  public void finishedNoDocument(Controller arg0, Throwable throwable) {
+    // no need to do anything
+  }
+
 
 }

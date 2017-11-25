@@ -30,6 +30,10 @@ public enum AlgorithmClassification implements Algorithm {
   // if we want to use parameters for those.
   // Also consider supporting in addition this port: https://github.com/davidsoergel/jlibsvm/
   LIBSVM_CL(EngineLibSVM.class,libsvm.svm.class), 
+  PYTORCH_CL_WRAPPER_DENSE(EngineDVFileJsonPyTorch.class,null),
+  PYTORCH_SEQ_WRAPPER_DENSE(EngineDVFileJsonPyTorch.class,null),
+  KERAS_CL_WRAPPER_DENSE(EngineDVFileJsonKeras.class,null),
+  KERAS_SEQ_WRAPPER_DENSE(EngineDVFileJsonKeras.class,null),
   MALLET_CL_BALANCED_WINNOW(EngineMBMalletClass.class,cc.mallet.classify.BalancedWinnowTrainer.class),
   MALLET_CL_C45(EngineMBMalletClass.class,cc.mallet.classify.C45Trainer.class),
   MALLET_CL_DECISION_TREE(EngineMBMalletClass.class,cc.mallet.classify.DecisionTreeTrainer.class),
@@ -50,7 +54,8 @@ public enum AlgorithmClassification implements Algorithm {
   SKLEARN_CL_WRAPPER(EngineMBSklearnWrapper.class,null),
   //TENSORFLOW_CL_WRAPPER(EngineTensorFlowWrapper.class,null),
   KERAS_CL_WRAPPER(EngineKerasWrapper.class,null),
-  COSTCLA_CL_WRAPPER(EngineMBCostclaWrapper.class,null);
+  COSTCLA_CL_WRAPPER(EngineMBCostclaWrapper.class,null),
+  ;
   private AlgorithmClassification() {
     
   }

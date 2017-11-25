@@ -30,6 +30,8 @@ import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
+import gate.plugin.learningframework.data.CorpusRepresentation;
+import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
 import gate.plugin.learningframework.engines.AlgorithmClassification;
 import gate.plugin.learningframework.engines.Engine;
@@ -108,7 +110,7 @@ public class LF_EvaluateClassification extends LF_TrainBase {
     return this.targetFeature;
   }
 
-  private CorpusRepresentationMalletTarget corpusRepresentation = null;
+  private CorpusRepresentation corpusRepresentation = null;
   private FeatureSpecification featureSpec = null;
 
   private Engine engine = null;
@@ -256,34 +258,6 @@ public class LF_EvaluateClassification extends LF_TrainBase {
   }
 
   @Override
-  public void afterLastDocument(Controller arg0, Throwable t) {
-    System.out.println("LearningFramework: Starting evaluating engine " + engine);
-    System.out.println("Training set classes: "
-            + corpusRepresentation.getRepresentationMallet().getPipe().getTargetAlphabet().toString().replaceAll("\\n", " "));
-    System.out.println("Training set size: " + corpusRepresentation.getRepresentationMallet().size());
-    if (corpusRepresentation.getRepresentationMallet().getDataAlphabet().size() > 20) {
-      System.out.println("LearningFramework: Attributes " + corpusRepresentation.getRepresentationMallet().getDataAlphabet().size());
-    } else {
-      System.out.println("LearningFramework: Attributes " + corpusRepresentation.getRepresentationMallet().getDataAlphabet().toString().replaceAll("\\n", " "));
-    }
-      //System.out.println("DEBUG: instances are "+corpusRepresentation.getRepresentationMallet());
-
-    corpusRepresentation.finish();
-    
-    EvaluationResult er = engine.evaluate(getAlgorithmParameters(),evaluationMethod,numberOfFolds,trainingFraction,numberOfRepeats);
-    logger.info("LearningFramework: Evaluation complete!");
-    logger.info(er);
-    if(getCorpus() != null && er instanceof EvaluationResultClassification) {
-      getCorpus().getFeatures().put("LearningFramework.accuracyEstimate", ((EvaluationResultClassification)er).accuracyEstimate);
-    }
-  }
-
-  @Override
-  protected void finishedNoDocument(Controller c, Throwable t) {
-    logger.error("Processing finished, but no documents seen, cannot train!");
-  }
-
-  @Override
   protected void beforeFirstDocument(Controller controller) {
     if (getTrainingAlgorithm() == null) {
       throw new GateRuntimeException("LearningFramework: no training algorithm specified");
@@ -323,5 +297,38 @@ public class LF_EvaluateClassification extends LF_TrainBase {
     
     System.err.println("DEBUG: setup of the training PR complete");    
   }
+  
+  
+  @Override
+  public void afterLastDocument(Controller arg0, Throwable t) {
+    System.out.println("LearningFramework: Starting evaluating engine " + engine);
+    if(corpusRepresentation instanceof CorpusRepresentationMallet) {
+      CorpusRepresentationMallet crm = (CorpusRepresentationMallet)corpusRepresentation;
+      System.out.println("Training set classes: "
+              + crm.getRepresentationMallet().getPipe().getTargetAlphabet().toString().replaceAll("\\n", " "));
+      System.out.println("Training set size: " + crm.getRepresentationMallet().size());
+      if (crm.getRepresentationMallet().getDataAlphabet().size() > 20) {
+        System.out.println("LearningFramework: Attributes " + crm.getRepresentationMallet().getDataAlphabet().size());
+      } else {
+        System.out.println("LearningFramework: Attributes " + crm.getRepresentationMallet().getDataAlphabet().toString().replaceAll("\\n", " "));
+      }
+      //System.out.println("DEBUG: instances are "+corpusRepresentation.getRepresentationMallet());
+    }
+
+    corpusRepresentation.finish();
+    
+    EvaluationResult er = engine.evaluate(getAlgorithmParameters(),evaluationMethod,numberOfFolds,trainingFraction,numberOfRepeats);
+    logger.info("LearningFramework: Evaluation complete!");
+    logger.info(er);
+    if(getCorpus() != null && er instanceof EvaluationResultClassification) {
+      getCorpus().getFeatures().put("LearningFramework.accuracyEstimate", ((EvaluationResultClassification)er).accuracyEstimate);
+    }
+  }
+
+  @Override
+  protected void finishedNoDocument(Controller c, Throwable t) {
+    logger.error("Processing finished, but no documents seen, cannot train!");
+  }
+
 
 }

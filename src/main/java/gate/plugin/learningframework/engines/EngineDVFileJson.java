@@ -45,8 +45,12 @@ public abstract class EngineDVFileJson extends EngineDV {
   @Override
   protected void loadAndSetCorpusRepresentation(URL directory) {
     File outDir = Files.fileFromURL(directory);
+    // TODO: !!!!!!
     // We need to load the feature info from the directory as well, this should be 
     // in its own serialized file for this kind of engine.
+    
+    // TODO!!!!!!!!!!!!!!!!!!!!!!!!
+    FeatureInfo featureInfo = null;
     corpusRepresentation = new CorpusRepresentationVolatileDense2JsonStream(outDir, featureInfo);
   }
 
