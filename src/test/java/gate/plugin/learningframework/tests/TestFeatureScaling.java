@@ -74,7 +74,7 @@ public class TestFeatureScaling {
     outDir2.mkdir();
     //System.err.println("Exporting unscaled");
     //Exporter.export(crm, Exporter.EXPORTER_ARFF_CLASS, outDir1, "Mention", "");
-    crm.finish();
+    crm.finishAdding();
     //System.err.println("Exporting scaled");
     //Exporter.export(crm, Exporter.EXPORTER_ARFF_CLASS, outDir2, "Mention", "");
 

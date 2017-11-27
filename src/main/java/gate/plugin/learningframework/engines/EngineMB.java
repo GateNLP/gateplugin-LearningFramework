@@ -65,6 +65,7 @@ public abstract class EngineMB extends Engine {
   
   @Override
   protected void saveCorpusRepresentation(File directory) {
+    corpusRepresentation.finishAdding();
     corpusRepresentation.savePipe(directory);
   }
   
@@ -85,6 +86,7 @@ public abstract class EngineMB extends Engine {
     } else {
       throw new GateRuntimeException("Not a usable algorithm kind for now with Mallet based engines: "+algorithm);
     }
+    corpusRepresentation.startAdding();
   }
   
 }

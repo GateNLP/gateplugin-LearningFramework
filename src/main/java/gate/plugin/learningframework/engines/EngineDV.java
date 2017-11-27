@@ -8,16 +8,6 @@
  */
 package gate.plugin.learningframework.engines;
 
-import gate.AnnotationSet;
-import gate.plugin.learningframework.EvaluationMethod;
-import gate.plugin.learningframework.ModelApplication;
-import gate.plugin.learningframework.data.CorpusRepresentation;
-import gate.plugin.learningframework.features.FeatureInfo;
-import gate.plugin.learningframework.features.TargetType;
-import java.io.File;
-import java.net.URL;
-import java.util.List;
-
 /**
  * Common base class for all Engines which use the Dense Volatile representation
  * 

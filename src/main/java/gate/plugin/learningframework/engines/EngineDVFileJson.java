@@ -9,6 +9,7 @@
 package gate.plugin.learningframework.engines;
 
 import gate.AnnotationSet;
+import gate.lib.interaction.process.ProcessBase;
 import gate.plugin.learningframework.EvaluationMethod;
 import gate.plugin.learningframework.ModelApplication;
 import gate.plugin.learningframework.data.CorpusRepresentation;
@@ -28,53 +29,64 @@ import java.util.List;
  */
 public abstract class EngineDVFileJson extends EngineDV {
   
+  // Wrapper name: this is set by the actual implementing engine class and 
+  // will influence the file name of scripts, config files etc specific to that
+  // wrapper.
+  protected String WRAPPER_NAME;
+  
+  protected ProcessBase process;
+  
+  
   // For this engine, this will always be a CorpusRepresentationVolatileDense2JsonStream
   protected CorpusRepresentationVolatileDense2JsonStream corpusRepresentation;
   
-  // just as a reminder, we need to implement the following methods:
   @Override
-  public CorpusRepresentation getCorpusRepresentation() { return corpusRepresentation; }
+  public CorpusRepresentation getCorpusRepresentation() { 
+    return corpusRepresentation; 
+  }
   
     
   @Override
   protected void initWhenCreating(URL directory, Algorithm algorithm, String parms, FeatureInfo featureInfo, TargetType targetType) {
     File outDir = Files.fileFromURL(directory);
     corpusRepresentation = new CorpusRepresentationVolatileDense2JsonStream(outDir, featureInfo);
+    corpusRepresentation.startAdding();
+    Utils4Engines.copyWrapper(WRAPPER_NAME,directory);
   }
 
   @Override
   protected void loadAndSetCorpusRepresentation(URL directory) {
+    // this does not actually need to load anything but the featureInfo ... 
+    // this is needed to convert our instance data to JSON, which is then sent
+    // off to the script or server which is responsible to use any other saved
+    // model info (the model itself, scaling info, vocab info, embeddings etc)
     File outDir = Files.fileFromURL(directory);
-    // TODO: !!!!!!
-    // We need to load the feature info from the directory as well, this should be 
-    // in its own serialized file for this kind of engine.
-    
-    // TODO!!!!!!!!!!!!!!!!!!!!!!!!
-    FeatureInfo featureInfo = null;
+    featureInfo = FeatureInfo.load(directory);
     corpusRepresentation = new CorpusRepresentationVolatileDense2JsonStream(outDir, featureInfo);
   }
 
   @Override
   protected void loadModel(URL directory, String parms) {
-    // TODO
-    
-    // TODO: how is this different from loadAndSetCorpusRepresentation, with regard to 
-    // timing and preconditions?
+    // This should all get handled by the script, so nothing really needed here so far
   }
 
   @Override
   protected void saveCorpusRepresentation(File directory) {
-    // TODO
+    // all we need to do is close the corpus (which will also make it save the metadata)
+    corpusRepresentation.finishAdding();
   }
 
   @Override
   protected void saveModel(File directory) {
-    // TODO
+    // this is all handled by the script we are running for training, nothing 
+    // needed in here.
   }
 
   @Override
-  public void trainModel(File dataDirectory, String instanceType, String parms) {
-    // TODO:
+  public void trainModel(File dataDirectory, String instanceType, String parms) {    
+    // we also need to save the updated info file
+    info.engineClass = this.getClass().getName();
+    info.save(dataDirectory);    
   }
 
   @Override

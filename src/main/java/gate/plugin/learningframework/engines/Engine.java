@@ -139,7 +139,7 @@ public abstract class Engine {
     }
     eng.algorithm = algorithm;
     eng.initializeAlgorithm(algorithm,parms);
-    eng.initWhenCreating(directory, algorithm, parms, featureInfo, targetType);
+    eng.initWhenCreating(directory, algorithm, parms, featureInfo, targetType);    
     eng.info = new Info();
     // we have to prevent a NPE for those algorithms where the trainer class is not stored
     // in the Algorithm instance
@@ -181,6 +181,8 @@ public abstract class Engine {
   public static Engine loadEngine(URL directory, String parms) {
     // 1) read the info file
     Info info = Info.load(directory);
+    // read the feature info file: not all engines do this (YET!) so if there is 
+    // no such saved file, we will simply get null here
     FeatureInfo fi = FeatureInfo.load(directory);
     // extract the Engine class from the file and create an instance of the engine
     Engine eng;
@@ -230,8 +232,9 @@ public abstract class Engine {
     } else {
       info.modelClass = model.getClass().getName();
       info.save(directory);
-    }    
-    featureInfo.save(directory);
+    }   
+    // not all models use this (YET!) so need a NPE guard
+    if (featureInfo!=null) featureInfo.save(directory);
     // Then delegate to the engine to save the model
     saveModel(directory);
     // finally save the corpus representation

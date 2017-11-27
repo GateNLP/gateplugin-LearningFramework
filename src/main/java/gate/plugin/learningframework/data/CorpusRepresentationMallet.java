@@ -104,7 +104,7 @@ public abstract class CorpusRepresentationMallet extends CorpusRepresentationMal
    * on the whole corpus. 
    * @param scaleFeatures 
    */
-  public abstract void finish();
+  public abstract void finishAdding();
   
   // TODO: need to do this better: make sure if there are thousands of 
   // features that we only show a subset and the number?

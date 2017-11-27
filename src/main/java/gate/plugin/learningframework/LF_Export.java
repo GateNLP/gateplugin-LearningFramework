@@ -250,10 +250,12 @@ public class LF_Export extends LF_ExportBase {
     File outDir = Files.fileFromURL(getDataDirectory());
     
     if(!haveSequenceAlg) { 
-      corpusRepresentationTarget.finish();
+      // TODO: eventually the finish adding should maybe get into some Exporter method,
+      // similar how this is now done by the Engine?
+      corpusRepresentationTarget.finishAdding();
       Exporter.export(corpusRepresentationTarget, exporter, outDir, getInstanceType(), getAlgorithmParameters());
     } else {
-      corpusRepresentationSeq.finish();
+      corpusRepresentationSeq.finishAdding();
       Exporter.export(corpusRepresentationSeq, exporter, outDir, getInstanceType(), getAlgorithmParameters());
     }
   }

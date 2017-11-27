@@ -231,7 +231,7 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
    * @param scaleFeatures 
    */
   @Override
-  public void finish() {    
+  public void finishAdding() {    
     if(scalingMethod == ScalingMethod.NONE) return;
     Pipe normalizer = null;
     if(scalingMethod == ScalingMethod.MEANVARIANCE_ALL_FEATURES) {

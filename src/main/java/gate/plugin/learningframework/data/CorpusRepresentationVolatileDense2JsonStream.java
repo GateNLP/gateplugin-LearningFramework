@@ -19,11 +19,6 @@
  */
 package gate.plugin.learningframework.data;
 
-import cc.mallet.types.FeatureSequence;
-import cc.mallet.types.FeatureVector;
-import cc.mallet.types.FeatureVectorSequence;
-import cc.mallet.types.Instance;
-import cc.mallet.types.Label;
 import gate.Annotation;
 import gate.AnnotationSet;
 import gate.plugin.learningframework.LFUtils;
@@ -41,12 +36,9 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import static gate.plugin.learningframework.data.CorpusRepresentationMalletTarget.extractIndependentFeaturesHelper;
 import java.util.ArrayList;
 import static gate.plugin.learningframework.features.FeatureExtractionBase.*;
-import gate.plugin.learningframework.features.FeatureExtractionMalletSparse;
 import gate.plugin.learningframework.stats.StatsForFeatures;
-import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -94,19 +86,8 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
     this.outDir = outDir;
     this.featureInfo = featureInfo;
     this.fnames = featureSpecAttributes2FeatureNames(featureInfo.getAttributes());
-    File outFile = new File(outDir,DATA_FILE_NAME);
-    try {
-      outStream = new FileOutputStream(outFile);
-    } catch (FileNotFoundException ex) {
-      throw new GateRuntimeException("Cannot open output stream to "+outFile,ex);
-    }
-    // At this point, since this is a dense representation, we already know
-    // all the features and can set up to gather on-the-fly statistics about
-    // them as we collect instances, if we wanted. 
-    
-    saveMetadata();
-    // TODO: write the initial metadata file!!!
-    // Format should be JSON!
+    // NOTE: the actual opening of the output file only happens when we initialise 
+    // 
   }
   
   /**
@@ -321,6 +302,19 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
   }
   
   
+  public void startAdding() {
+    File outFile = new File(outDir,DATA_FILE_NAME);
+    try {
+      outStream = new FileOutputStream(outFile);
+    } catch (FileNotFoundException ex) {
+      throw new GateRuntimeException("Cannot open output stream to "+outFile,ex);
+    }
+    // Save the initial metadata, this will get overridden with the final metadata
+    // when finishAdding() is called. The idea is to allow a client to 
+    // check for incomplete writing of the training set.
+    saveMetadata();
+  }
+  
   
   /**
    * Finish adding data to the CR. This may close or finish any channel for
@@ -328,7 +322,7 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
    * 
    * @param scaleFeatures 
    */
-  public void finish() {
+  public void finishAdding() {
     // TODO: write the metadata file (again)!!!
     try {
       saveMetadata();

@@ -62,7 +62,7 @@ public abstract class CorpusRepresentationVolatileBase extends CorpusRepresentat
    * 
    * @param scaleFeatures 
    */
-  public abstract void finish();
+  public abstract void finishAdding();
   
   
 }

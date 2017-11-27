@@ -20,9 +20,15 @@
 
 package gate.plugin.learningframework.features;
 
+import static gate.plugin.learningframework.LFUtils.newURL;
 import gate.plugin.learningframework.ScalingMethod;
 import gate.util.GateRuntimeException;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
@@ -43,6 +49,8 @@ public class FeatureInfo implements Serializable {
   private static final long serialVersionUID = 1;
   protected boolean growthStopped = false;
 
+  private static final String FILENAME_FEATUREINFO = "featureinfo.ser";
+  
   /**
    * Create an instance with an empty list of featureSpecs.
    */
@@ -102,11 +110,27 @@ public class FeatureInfo implements Serializable {
   public List<FeatureSpecAttribute> getAttributes() { return featureSpecs; }
   
   public void save(File dirFile) {
-    throw new GateRuntimeException("NEEDS IMPLEMENTING!");
+    try (OutputStream os = new FileOutputStream(new File(dirFile,FILENAME_FEATUREINFO));
+            ObjectOutputStream oos = new ObjectOutputStream(os)
+            ) {
+      oos.writeObject(oos);
+    } catch (Exception ex) {
+      throw new GateRuntimeException("Could not write feature info file ",ex);
+    }
   }
   
-  public static FeatureInfo load(URL dirURL) {
-    throw new GateRuntimeException("NEEDS IMPLEMENTING!");
+  public static FeatureInfo load(URL dirURL) {    
+    URL infoFile = newURL(dirURL,FILENAME_FEATUREINFO);
+    try (InputStream is = infoFile.openStream();
+            ObjectInputStream ois = new ObjectInputStream(is);
+            ) {
+      FeatureInfo fi = (FeatureInfo)ois.readObject();
+      return fi;
+    } catch (Exception ex) {
+      // we silently ignore this for now since not all engines even create this file (YET!)
+      // throw new GateRuntimeException("Could not load feature info file "+infoFile,ex);
+      return null;
+    }    
   }
   
   public String toString() {

@@ -52,7 +52,8 @@ public abstract class CorpusRepresentation {
   
   public abstract void add(AnnotationSet instancesAS, AnnotationSet sequenceAS, AnnotationSet inputAS, AnnotationSet classAS, String targetFeatureName, TargetType targetType, String instanceWeightFeature, String nameFeatureName, SeqEncoder seqEncoder);
   
-  public abstract void finish();
+  public abstract void finishAdding();
 
+  public abstract void startAdding();
   
 }

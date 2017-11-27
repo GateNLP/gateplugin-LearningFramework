@@ -128,7 +128,7 @@ public class CorpusRepresentationLibSVM extends CorpusRepresentationMalletRelate
   }
 
   @Override
-  public void finish() {
+  public void finishAdding() {
     // Do nothing
   }
 

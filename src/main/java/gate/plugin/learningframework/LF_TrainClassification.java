@@ -271,8 +271,6 @@ public class LF_TrainClassification extends LF_TrainBase {
       engine.getInfo().nrTrainingInstances = crm.getRepresentationMallet().size();    
     }
 
-    corpusRepresentation.finish();
-
     // Store some additional information in the info datastructure which will be saved with the model
     engine.getInfo().nrTrainingDocuments = nrDocuments;
     // TODO: should add something like a size() method to all corpus representation implementations, 

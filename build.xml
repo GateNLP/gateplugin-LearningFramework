@@ -152,9 +152,11 @@ along with this software. If not, see <http://www.gnu.org/licenses/>.
 
   <!-- create the JAR file -->
   <target name="jar" depends="compile" >
-    <jar destfile="${jar.location}"
-         update="false"
-         basedir="${classes.dir}" />
+    <jar destfile="${jar.location}" update="false" >
+      <fileset dir="${classes.dir}" />
+      <fileset dir="src/main/resources" />
+      <fileset dir="."><include name="creole.xml" /></fileset>
+    </jar>
   </target>
 
   <!-- remove the generated .class files -->

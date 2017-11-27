@@ -18,28 +18,20 @@
  * along with this software. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package gate.plugin.learningframework.data;
+package gate.plugin.learningframework.tests;
 
-import cc.mallet.types.InstanceList;
-import gate.plugin.learningframework.ScalingMethod;
-import gate.plugin.learningframework.features.FeatureInfo;
-import gate.plugin.learningframework.mallet.LFPipe;
+import gate.plugin.learningframework.engines.Utils4Engines;
+import java.io.File;
+import java.net.MalformedURLException;
+import org.junit.Test;
 
 /**
- * The base class of all classes that are somehow related or dependent on the 
- * Mallet instance list and Mallet pipes. 
- * 
+ *
  * @author Johann Petrak
  */
-public abstract class CorpusRepresentationMalletRelated extends CorpusRepresentation {
-  protected FeatureInfo featureInfo;
-  protected ScalingMethod scalingMethod;
-  protected LFPipe pipe;
-  
-  
-  public abstract InstanceList getRepresentationMallet();
-  
-  @Override
-  public void startAdding() {};
-  
+public class TestUtils4Engines {
+  @Test
+  public void test1() throws MalformedURLException {
+    Utils4Engines.copyWrapper("FileJsonPyTorch", new File(".").toURI().toURL());
+  }
 }

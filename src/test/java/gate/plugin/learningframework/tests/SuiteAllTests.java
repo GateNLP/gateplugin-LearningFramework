@@ -25,6 +25,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+  /*
   TestFeatureSpecification.class,
   TestFeatureExtraction.class,
   TestFeatureExtractionDense.class,
@@ -32,11 +33,13 @@ import org.junit.runners.Suite;
   TestPipeSerialization.class,
   TestInfo.class,
   TestParms.class,
-  TestEngineMalletClass.class,
-  TestEngineLibSVM.class,
-  TestEngineMalletSeq.class,
-  TestFeatureScaling.class,
-  TestStats.class
+  */
+  TestUtils4Engines.class,
+  //TestEngineMalletClass.class,
+  //TestEngineLibSVM.class,
+  //TestEngineMalletSeq.class,
+  //TestFeatureScaling.class,
+  //TestStats.class
 })
 public class SuiteAllTests {
   // so we can run this test from the command line 
