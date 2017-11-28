@@ -73,6 +73,11 @@ public class Utils4Engines {
           // And extract the file
           System.err.println("DEBUG: WARNING copy from " + filePath + " to " + targetPath);
           Files.copy(filePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+          // if the file ends in .sh or .cmd make it executable
+          String tp = targetPath.toString();
+          if(tp.endsWith(".sh") || tp.endsWith(".cmd")) {
+            targetPath.toFile().setExecutable(true);
+          }
 
           return FileVisitResult.CONTINUE;
         }
