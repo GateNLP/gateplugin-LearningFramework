@@ -16,5 +16,7 @@ package gate.plugin.learningframework.engines;
  */
 public class EngineDVFileJsonPyTorch extends EngineDVFileJson {
   
-  
+  public EngineDVFileJsonPyTorch() {
+    WRAPPER_NAME = "FileJsonPyTorch";
+  }
 }

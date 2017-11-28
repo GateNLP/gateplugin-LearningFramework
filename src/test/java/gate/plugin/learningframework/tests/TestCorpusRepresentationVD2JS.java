@@ -85,7 +85,7 @@ public class TestCorpusRepresentationVD2JS {
             "</ROOT>";    
     FeatureInfo fi = new FeatureSpecification(spec).getFeatureInfo();
     // NOTE: just creating the instance will overwrite any other meta and data files created in the same directory
-    CorpusRepresentationVolatileDense2JsonStream cr = new CorpusRepresentationVolatileDense2JsonStream(new File("."), fi);
+    CorpusRepresentationVolatileDense2JsonStream cr = new CorpusRepresentationVolatileDense2JsonStream(TESTS_DIR, fi);
     String json = cr.json4metadata();
     //System.err.println("TestCorpusRepresentation/json4metadata1 Debug: json="+json);
     assertTrue(json.contains("someOtherType┆╬A"));
@@ -136,7 +136,7 @@ public class TestCorpusRepresentationVD2JS {
     instAnn3.getFeatures().put("target", "ann3target");
 
     // NOTE: just creating the instance will overwrite any other meta and data files created in the same directory
-    CorpusRepresentationVolatileDense2JsonStream cr = new CorpusRepresentationVolatileDense2JsonStream(new File("."), fi);
+    CorpusRepresentationVolatileDense2JsonStream cr = new CorpusRepresentationVolatileDense2JsonStream(TESTS_DIR, fi);
     AnnotationSet inputAS = doc.getAnnotations();
     AnnotationSet instancesAS = inputAS.get("theType");
     AnnotationSet sequenceAS = null;

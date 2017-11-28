@@ -21,7 +21,6 @@
 package gate.plugin.learningframework.tests;
 
 import gate.plugin.learningframework.engines.Utils4Engines;
-import java.io.File;
 import java.net.MalformedURLException;
 import org.junit.Test;
 
@@ -32,6 +31,6 @@ import org.junit.Test;
 public class TestUtils4Engines {
   @Test
   public void test1() throws MalformedURLException {
-    Utils4Engines.copyWrapper("FileJsonPyTorch", new File(".").toURI().toURL());
+    Utils4Engines.copyWrapper("FileJsonPyTorch", Utils.TESTS_DIR);
   }
 }

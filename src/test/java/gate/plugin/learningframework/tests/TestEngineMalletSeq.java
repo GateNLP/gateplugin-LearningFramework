@@ -57,6 +57,7 @@ import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import org.apache.commons.io.FileUtils;
 import static org.junit.Assert.*;
+import static gate.plugin.learningframework.tests.Utils.TESTS_DIR;
 
 /**
  *
@@ -148,9 +149,9 @@ public class TestEngineMalletSeq {
       doc.getAnnotations().removeAll(doc.getAnnotations().get("Link"));
     }
     
-    File outDir = new File("test-tmp-EngineMalletSeqOut");
+    File outDir = new File(TESTS_DIR,"EngineMalletSeqOut");
     FileUtils.deleteDirectory(outDir);
-    outDir.mkdir();
+    outDir.mkdirs();
     
     // Setup the evaluation
     List<String> evalTypes = new ArrayList<String>();

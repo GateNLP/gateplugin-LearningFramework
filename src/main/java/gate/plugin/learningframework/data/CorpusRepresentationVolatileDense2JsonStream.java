@@ -43,6 +43,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 /**
  * Common base class for non Mallet volatile representations.
@@ -64,9 +65,24 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
 
   private FileOutputStream outStream; 
   private File outDir;
+  private File outDataFile;
+  private File outMetaFile;
   private FeatureInfo featureInfo; // the feature info from the feauture specification
   List<String> fnames;
   StatsForFeatures stats = new StatsForFeatures();
+  SummaryStatistics seqLenStats = new SummaryStatistics(); // if we have sequences, stats about the lengths
+  
+  // The following flag is either unset (null) or indicates that the corpus representation
+  // has received sequence representations. Once a sequence or non-sequence has been added,
+  // any attempt to add the other type will lead to an exception.
+  Boolean isSequence = null;
+  
+  public File getDataFile() {
+    return outDataFile;
+  }
+  public File getMetaFile() {
+    return outMetaFile;
+  }
   
   private final Object LOCKING_OBJECT = new Object();
   
@@ -145,6 +161,10 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
     // if the sequenceAS parameter is non-null we process sequences of instances, otherwise we process plain instances
     String json = "";
     if(sequenceAS == null) {
+      if(isSequence==null) isSequence = false;
+      else if(isSequence) {
+        throw new GateRuntimeException("Trying to add non-sequence after sequence has already been added");
+      }
       // processing plain instances
       // For each instance, do this:
       List<Annotation> instanceAnnotations = instancesAS.inDocumentOrder();
@@ -161,10 +181,15 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
         writeData(json);
       }
     } else {
+      if(isSequence==null) isSequence = true;
+      else if(!isSequence) {
+        throw new GateRuntimeException("Trying to add sequence after non-sequence has already been added");
+      }
       // processing sequences
       for (Annotation sequenceAnnotation : sequenceAS.inDocumentOrder()) {
         List<InstanceRepresentation>  insts4seq =
         instancesForSequence(instancesAS, sequenceAnnotation, inputAS, classAS, targetFeatureName, targetType, seqEncoder);
+        seqLenStats.addValue(insts4seq.size());
         json = internal2Json(insts4seq);
         writeData(json);
       }
@@ -177,6 +202,7 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
     try {
       synchronized(LOCKING_OBJECT) {
         outStream.write(json.getBytes("UTF-8"));
+        outStream.write("\n".getBytes("UTF-8"));
         linesWritten += 1;
       }
     } catch (Exception ex) {
@@ -216,6 +242,12 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
     for (FeatureSpecAttribute attr : featureInfo.getAttributes()) {
       inst = FeatureExtractionDense.extractFeature(inst, attr, inputAS, instanceAnnotation);
     }
+    // add the stats for all the features
+    // TODO: maybe this is too slow and eventually we need to just limit this to 
+    // adding stats for any list-like features (so the consumer of the data can
+    // decide beforehand how to represent those lists).
+    addToStatsForFeatures(inst);
+    
     // now add the apropriate target information to the instance, depending on if we
     // do sequence tagging, classification, or regression
     if (classAS != null) {
@@ -240,6 +272,11 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
     return inst;
   }
   
+  public void addToStatsForFeatures(InstanceRepresentation inst) {
+    for(String fname : fnames) {
+      stats.addValue(fname,inst.getFeature(fname));
+    }    
+  }
   
   /**
    * Convert the instance to json. 
@@ -304,6 +341,7 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
   
   public void startAdding() {
     File outFile = new File(outDir,DATA_FILE_NAME);
+    this.outDataFile = outFile;
     try {
       outStream = new FileOutputStream(outFile);
     } catch (FileNotFoundException ex) {
@@ -338,12 +376,37 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
   }
   
   public String json4metadata() {
+    System.err.println("DEBUG: writing the metadata file!!");
     try  {
       ObjectMapper mapper = new ObjectMapper();
       Map<String,Object> metadata = new HashMap<>();
       metadata.put("featureInfo", featureInfo);   
       metadata.put("featureNames",fnames);
       metadata.put("linesWritten",linesWritten);
+      metadata.put("dataFile", outDataFile.getAbsolutePath());
+      metadata.put("isSequence", isSequence);
+      if(isSequence!=null && isSequence) {
+        metadata.put("sequLengths.mean",seqLenStats.getMean());
+        metadata.put("sequLengths.min",seqLenStats.getMin());
+        metadata.put("sequLengths.max",seqLenStats.getMax());
+        metadata.put("sequLengths.variance",seqLenStats.getVariance());
+      }
+      
+      Map<String,Map<String,Double>> featureStats = new HashMap<>();
+      for(String fname : fnames) {
+        SummaryStatistics s = stats.getStatistics(fname);
+        if(s!=null) { // when we store the initial metadata, none of these will exist yet
+          Map<String,Double> m = new HashMap<>();
+          m.put("mean", s.getMean());
+          m.put("min", s.getMin());
+          m.put("max", s.getMax());
+          m.put("variance", s.getVariance());
+          m.put("n", Long.valueOf(s.getN()).doubleValue());
+          featureStats.put(fname, m);
+        }
+      }      
+      metadata.put("featureStats", featureStats);
+      
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd,HH:mm:ss");      
       metadata.put("savedOn",sdf.format(new Date()));
       String json = mapper.writeValueAsString(metadata);
@@ -359,11 +422,13 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
    * Save the current metadata.
    */
   public void saveMetadata() {    
+    outMetaFile = new File(outDir, META_FILE_NAME);
     try (
-            FileOutputStream fos = new FileOutputStream(new File(outDir, META_FILE_NAME));) {
+            FileOutputStream fos = new FileOutputStream(outMetaFile);) {
       String json = json4metadata();
       synchronized (LOCKING_OBJECT) {
         fos.write(json.getBytes("UTF-8"));
+        fos.write("\n".getBytes("UTF-8"));
       }
     } catch (Exception ex) {
       throw new GateRuntimeException("Could not write metadata to file", ex);

@@ -15,8 +15,6 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Class for factoring out static methods that do not fit into the Engine
@@ -26,21 +24,14 @@ import java.util.logging.Logger;
  */
 public class Utils4Engines {
 
-  public static void copyWrapper(String wrapperName, URL directoryURL) {
-    // in general the dataDirectory can be any URL, but for this we need a file!
-    File directory = null;
-    if ("file".equals(directoryURL.getProtocol())) {
-      directory = gate.util.Files.fileFromURL(directoryURL);
-    } else {
-      throw new GateRuntimeException("The dataDirectory for " + wrapperName + " must be a file: URL not " + directoryURL);
-    }
+  public static void copyWrapper(String wrapperName, File targetDirectory) {
     // First of all, check if the target directory already has the directory expected.
     // If ths is the case just silently quit.
-    if (new File(directory, wrapperName).exists()) {
+    if (new File(targetDirectory, wrapperName).exists()) {
       return;
     }
     // Otherwise go on and actually try to copy everything ...
-    copyResources(directory, "/resources/wrappers/"+wrapperName);
+    copyResources(targetDirectory, "/resources/wrappers/"+wrapperName);
   }
 
   public static void copyResources(File targetDir, String root) {

@@ -37,6 +37,9 @@ import java.net.MalformedURLException;
  * @author Johann Petrak
  */
 public class Utils {
+  
+  public static final String TESTS_DIR_NAME = "tmp-tests";
+  public static final File TESTS_DIR = new File(TESTS_DIR_NAME);
   // For the comparison of doubles, we use an epsilon of approximately
   // 1.7E-15 which is 1.0 (the maximum expected number) divided through the value of the maximum 
   // mantissa of double (64 bit), but with 3 bits taken away, i.e. 52-3 bits for the mantissa,
