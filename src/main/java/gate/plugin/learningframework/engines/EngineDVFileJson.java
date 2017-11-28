@@ -8,13 +8,16 @@
  */
 package gate.plugin.learningframework.engines;
 
+import gate.Annotation;
 import gate.AnnotationSet;
+import gate.lib.interaction.process.Process4StringStream;
 import gate.lib.interaction.process.ProcessBase;
 import gate.lib.interaction.process.ProcessSimple;
 import gate.plugin.learningframework.EvaluationMethod;
 import gate.plugin.learningframework.ModelApplication;
 import gate.plugin.learningframework.data.CorpusRepresentation;
 import gate.plugin.learningframework.data.CorpusRepresentationVolatileDense2JsonStream;
+import gate.plugin.learningframework.data.InstanceRepresentation;
 import gate.plugin.learningframework.features.FeatureInfo;
 import gate.plugin.learningframework.features.TargetType;
 import gate.util.Files;
@@ -158,7 +161,39 @@ public abstract class EngineDVFileJson extends EngineDV {
 
   @Override
   protected void loadModel(URL directory, String parms) {
-    // This should all get handled by the script, so nothing really needed here so far
+    // the loadModel method should get called before all the applyModel
+    // calls, so here we can start the external process with which we communicate
+    // in applyModel
+    
+    // Start the process
+    ArrayList<String> finalCommand = new ArrayList<String>();
+    String modelBaseName = new File(dataDir, WRAPPER_NAME+".model").getAbsolutePath();
+    finalCommand.add(getCommandPathApply());
+    finalCommand.add(modelBaseName);
+    finalCommand.add(corpusRepresentation.getMetaFile().getAbsolutePath());
+    if(!parms.trim().isEmpty()) {
+      String[] tmp = parms.split("\\s+",-1);
+      finalCommand.addAll(Arrays.asList(tmp));
+    }
+    // if we have a shell command prepend that, and if we have shell parms too, include them
+    Map<String,String> config = getWrapperConfig();
+    String shellcmd = config.get("shellcmd");
+    String shellparms = config.get("shellparms");
+    if(shellcmd != null) {
+      finalCommand.add(0,shellcmd);
+      if(shellparms != null) {
+        String[] sps = shellparms.trim().split("\\s+");
+        int i=0; for(String sp : sps) { finalCommand.add(++i,sp); }
+      }
+    }
+    System.err.println("Running: ");
+    for(int i=0; i<finalCommand.size();i++) {
+      System.err.println(i+": >"+finalCommand.get(i)+"<");
+    }
+    Map<String,String> env = new HashMap<String,String>();
+    env.put("WRAPPER_HOME",getWrapperHome());
+    process = Process4StringStream.create(dataDir,env,finalCommand);
+    
   }
 
   @Override
@@ -223,14 +258,42 @@ public abstract class EngineDVFileJson extends EngineDV {
   }
 
   @Override
-  public List<ModelApplication> applyModel(AnnotationSet instanceAS, AnnotationSet inputAS, AnnotationSet sequenceAS, String parms) {
-    // TODO:
-    // * expect the process for applying the model already be established
-    // * convert my instances to json
-    // * send over the json and get back the predictions
+  public List<ModelApplication> applyModel(AnnotationSet instancesAS, AnnotationSet inputAS, AnnotationSet sequenceAS, String parms) {
+    List<ModelApplication> modelapps = new ArrayList<ModelApplication>();
+    if(sequenceAS==null) {
+      // non-sequences
+      List<Annotation> instanceAnnotations = instancesAS.inDocumentOrder();
+      
+      for (Annotation instanceAnnotation : instanceAnnotations) {
+
+        InstanceRepresentation inst = 
+                corpusRepresentation.unlabeledAnnotation2instance(instanceAnnotation, inputAS, null);
+        String json = corpusRepresentation.internal2Json(inst);
+        process.writeObject(json);
+        // TODO: need to decide on the format of the response. Probably best to
+        // expect a map with both data and metadata
+        String returnJson = (String)process.readObject();
+
+        // depending on what kind of learning problem we have, use the appropriate 
+        // constructor (regression, classification, .. 
+        // For now we assume: if what we get is a number it was regression, otherwise 
+        // it was classification. OR: the metadata in the response tells us
+        
+        
+        // for regression
+        // ModelApplication ma = new ModelApplication(instanceAnnotation,2.0); 
+        // for classification, class, confidence of class, full list of classes, full list of confidences
+        ModelApplication ma = new ModelApplication(instanceAnnotation,"class", 0.99, null, null);
+        modelapps.add(ma);
+      }      
+    } else {
+      // sequences
+      throw new GateRuntimeException("Sequence application NOT YET IMPLEMENTED!");
+    }
+    
     // * use the predictions to create the return list
     // * TODO: how do we terminate the process again?
-    return null;
+    return modelapps;
   }
 
   @Override

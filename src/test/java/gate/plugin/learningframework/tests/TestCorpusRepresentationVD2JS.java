@@ -152,18 +152,18 @@ public class TestCorpusRepresentationVD2JS {
             targetFeatureName, TargetType.NOMINAL, 
             weightFeature, nameFeature, null);
     */
-    InstanceRepresentation inst1 = cr.annotation2instance(instAnn1,inputAS, classAS,
+    InstanceRepresentation inst1 = cr.labeledAnnotation2Instance(instAnn1,inputAS, classAS,
           targetFeatureName, TargetType.NOMINAL,
           weightFeature, null /* seqEncoder */);
     //System.err.println("TestCorpusRepresentationVD2JS/json4stuff Debug: inst1 size="+inst1.numFeatures());    
     //System.err.println("TestCorpusRepresentationVD2JS/json4stuff Debug: inst1="+inst1);    
     assertEquals(fnames.size(), inst1.numFeatures());
-    InstanceRepresentation inst2 = cr.annotation2instance(instAnn2,inputAS, classAS,
+    InstanceRepresentation inst2 = cr.labeledAnnotation2Instance(instAnn2,inputAS, classAS,
           targetFeatureName, TargetType.NOMINAL,
           weightFeature, null /* seqEncoder */);
     //System.err.println("TestCorpusRepresentationVD2JS/json4stuff Debug: inst2 size="+inst2.numFeatures());    
     //System.err.println("TestCorpusRepresentationVD2JS/json4stuff Debug: inst2="+inst2);    
-    InstanceRepresentation inst3 = cr.annotation2instance(instAnn3,inputAS, classAS,
+    InstanceRepresentation inst3 = cr.labeledAnnotation2Instance(instAnn3,inputAS, classAS,
           targetFeatureName, TargetType.NOMINAL,
           weightFeature, null /* seqEncoder */);
     //System.err.println("TestCorpusRepresentationVD2JS/json4stuff Debug: inst3 size="+inst3.numFeatures());    
@@ -182,7 +182,7 @@ public class TestCorpusRepresentationVD2JS {
     longAnn.getFeatures().put("ngramstring", "ann1feature3");
     longAnn.getFeatures().put("feature3", "1.3");  // 1.3 == ann1feature3
     
-    InstanceRepresentation instLong1 = cr.annotation2instance(longAnn,inputAS, classAS,
+    InstanceRepresentation instLong1 = cr.labeledAnnotation2Instance(longAnn,inputAS, classAS,
           targetFeatureName, TargetType.NOMINAL,
           weightFeature, null /* seqEncoder */);
     //System.err.println("TestCorpusRepresentationVD2JS/json4stuff Debug: instLong1="+instLong1);   

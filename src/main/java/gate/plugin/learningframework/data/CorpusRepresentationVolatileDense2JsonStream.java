@@ -172,7 +172,7 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
       for (Annotation instanceAnnotation : instanceAnnotations) {
 
         InstanceRepresentation inst =
-                annotation2instance(instanceAnnotation,inputAS,classAS,
+                labeledAnnotation2Instance(instanceAnnotation,inputAS,classAS,
                         targetFeatureName,targetType,instanceWeightFeature,seqEncoder);
         // now that we have the internal instance representation, send it off
         // by first converting to a json string and then sending the string to the output
@@ -223,7 +223,7 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
     // for each instance annotation, get the instance representation and add it to the list
     for (Annotation instanceAnnotation : instanceAnnotations) {
       InstanceRepresentation inst =
-                annotation2instance(instanceAnnotation,inputAS,classAS,
+                labeledAnnotation2Instance(instanceAnnotation,inputAS,classAS,
                         targetFeatureName,targetType,null,seqEncoder);
       insts4seq.add(inst);
     }
@@ -232,16 +232,14 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
   }
   
   
-  public InstanceRepresentation annotation2instance(Annotation instanceAnnotation,
+  
+  public InstanceRepresentation labeledAnnotation2Instance(Annotation instanceAnnotation,
           AnnotationSet inputAS, AnnotationSet classAS,
           String targetFeatureName, TargetType targetType,
           String instanceWeightFeature, SeqEncoder seqEncoder) {
     // create a new dense instance representation
-    InstanceRepresentation inst = new InstanceRepresentationDenseVolatile();
-    // first extract the independent features and add them to the instance representation
-    for (FeatureSpecAttribute attr : featureInfo.getAttributes()) {
-      inst = FeatureExtractionDense.extractFeature(inst, attr, inputAS, instanceAnnotation);
-    }
+    InstanceRepresentation inst = unlabeledAnnotation2instance(
+            instanceAnnotation, inputAS, instanceWeightFeature);
     // add the stats for all the features
     // TODO: maybe this is too slow and eventually we need to just limit this to 
     // adding stats for any list-like features (so the consumer of the data can
@@ -260,17 +258,28 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
         inst = FeatureExtractionDense.extractNumericTarget(inst, targetFeatureName, instanceAnnotation, inputAS);
       }
     }
-    // Set the instance weight, if there is one
+    return inst;
+  }
+  
+
+  
+  public InstanceRepresentation unlabeledAnnotation2instance(Annotation instanceAnnotation,
+          AnnotationSet inputAS,           
+          String instanceWeightFeature) {
+    // create a new dense instance representation
+    InstanceRepresentation inst = new InstanceRepresentationDenseVolatile();
+    // first extract the independent features and add them to the instance representation
+    for (FeatureSpecAttribute attr : featureInfo.getAttributes()) {
+      inst = FeatureExtractionDense.extractFeature(inst, attr, inputAS, instanceAnnotation);
+    }
     if (instanceWeightFeature != null && !instanceWeightFeature.isEmpty()) {
       // If the instanceWeightFeature is not specified we do not set any weight, but if it is 
       // specified then we either try to convert the value to double or use 1.0.
       double score = LFUtils.anyToDoubleOrElse(instanceAnnotation.getFeatures().get(instanceWeightFeature), 1.0);
       inst.setInstanceWeight(score);
     }
-    // end of code to refactor into method
-    // **************************************************************
     return inst;
-  }
+  }  
   
   public void addToStatsForFeatures(InstanceRepresentation inst) {
     for(String fname : fnames) {
