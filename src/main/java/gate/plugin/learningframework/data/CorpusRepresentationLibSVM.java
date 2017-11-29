@@ -132,4 +132,9 @@ public class CorpusRepresentationLibSVM extends CorpusRepresentationMalletRelate
     // Do nothing
   }
 
+  @Override
+  public int nrInstances() {
+    return crm.nrInstances();
+  }
+  
 }

@@ -41,14 +41,11 @@ import gate.plugin.learningframework.mallet.PipeScaleMeanVarAll;
 import gate.plugin.learningframework.mallet.PipeScaleMinMaxAll;
 import gate.plugin.learningframework.mbstats.FVStatsMeanVarAll;
 import gate.util.GateRuntimeException;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.logging.Level;
 import org.apache.log4j.Logger;
 import static gate.plugin.learningframework.LFUtils.newURL;
 
@@ -253,6 +250,12 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
     pipeList.add(normalizer);
     //System.out.println("DEBUG normalize: added normalizer pipe " + normalizer);
     //System.out.println("DEBUG pipes after normalization: " + pipe);
+  }
+  
+  @Override
+  public int nrInstances() {
+    if(instances == null) return 0;
+    else return instances.size();
   }
 
 }

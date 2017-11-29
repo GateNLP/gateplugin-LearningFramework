@@ -163,6 +163,7 @@ public class LF_TrainClassification extends LF_TrainBase {
       interrupted = false;
       throw new GateRuntimeException("Execution was requested to be interrupted");
     }
+    nrDocuments += 1;
     // extract the required annotation sets,
     AnnotationSet inputAS = doc.getAnnotations(getInputASName());
     AnnotationSet instanceAS = inputAS.get(getInstanceType());
@@ -263,17 +264,11 @@ public class LF_TrainClassification extends LF_TrainBase {
       } else {
         System.out.println("LearningFramework: Attributes " + crm.getRepresentationMallet().getDataAlphabet().toString().replaceAll("\\n", " "));
       }
-      //System.out.println("DEBUG: instances are "+corpusRepresentation.getRepresentationMallet());
-      // TODO: as long as we do not have a common size()-like method for all corpus representaitons,
-      // do it just for mallet representations here..., not as we should below..
-      engine.getInfo().nrTrainingInstances = crm.getRepresentationMallet().size();    
     }
-
+    engine.getInfo().nrTrainingInstances = corpusRepresentation.nrInstances();
+    
     // Store some additional information in the info datastructure which will be saved with the model
     engine.getInfo().nrTrainingDocuments = nrDocuments;
-    // TODO: should add something like a size() method to all corpus representation implementations, 
-    // so define it in the roo abstract class and use here!!
-    //engine.getInfo().nrTrainingInstances = corpusRepresentation.getRepresentationMallet().size();
     engine.getInfo().targetFeature = getTargetFeature();
     engine.getInfo().trainingCorpusName = corpus.getName();
     

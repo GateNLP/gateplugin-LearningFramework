@@ -261,4 +261,11 @@ public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
 
   }
 
+  @Override
+  public int nrInstances() {
+    if(instances == null) return 0;
+    else return instances.size();
+  }
+  
+  
 }

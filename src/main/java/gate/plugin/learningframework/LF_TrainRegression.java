@@ -151,6 +151,7 @@ public class LF_TrainRegression extends LF_TrainBase {
       interrupted = false;
       throw new GateRuntimeException("Execution was requested to be interrupted");
     }
+    nrDocuments += 1;
     // extract the required annotation sets,
     AnnotationSet inputAS = doc.getAnnotations(getInputASName());
     AnnotationSet instanceAS = inputAS.get(getInstanceType());
@@ -220,14 +221,11 @@ public class LF_TrainRegression extends LF_TrainBase {
       } else {
         System.out.println("LearningFramework: Attributes " + crm.getRepresentationMallet().getDataAlphabet().toString().replaceAll("\\n", " "));
       }
-      //System.out.println("DEBUG: instances are "+corpusRepresentation.getRepresentationMallet());
-      engine.getInfo().nrTrainingInstances = crm.getRepresentationMallet().size();
     }
+    engine.getInfo().nrTrainingInstances = corpusRepresentation.nrInstances();
 
     // Store some additional information in the info datastructure which will be saved with the model
     engine.getInfo().nrTrainingDocuments = nrDocuments;
-    // TODO: implement common size()-like method for all representations
-    //engine.getInfo().nrTrainingInstances = corpusRepresentation.getRepresentationMallet().size();
     engine.getInfo().targetFeature = getTargetFeature();
     engine.getInfo().trainingCorpusName = corpus.getName();
     

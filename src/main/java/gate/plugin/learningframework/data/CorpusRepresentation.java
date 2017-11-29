@@ -20,13 +20,9 @@
 
 package gate.plugin.learningframework.data;
 
-import cc.mallet.types.InstanceList;
 import gate.AnnotationSet;
-import gate.plugin.learningframework.ScalingMethod;
-import gate.plugin.learningframework.features.FeatureInfo;
 import gate.plugin.learningframework.features.SeqEncoder;
 import gate.plugin.learningframework.features.TargetType;
-import gate.plugin.learningframework.mallet.LFPipe;
 
 /**
  * The base class of all classes that handle the representation of instances.
@@ -55,5 +51,13 @@ public abstract class CorpusRepresentation {
   public abstract void finishAdding();
 
   public abstract void startAdding();
+  
+  /**
+   * Returns the number of training instances added to this CR so far.
+   * 
+   * 
+   * @return 
+   */
+  public abstract int nrInstances();
   
 }

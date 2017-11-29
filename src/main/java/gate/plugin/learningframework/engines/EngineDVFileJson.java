@@ -251,7 +251,7 @@ public abstract class EngineDVFileJson extends EngineDV {
     process.waitFor();
     
     // we also need to save the updated info file
-    info.nrTrainingInstances = corpusRepresentation.getNumberInstances();
+    info.nrTrainingInstances = corpusRepresentation.nrInstances();
     info.engineClass = this.getClass().getName();
     info.save(dataDir);    
     featureInfo.save(dataDir);

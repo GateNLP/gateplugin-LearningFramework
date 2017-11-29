@@ -278,14 +278,11 @@ public class LF_TrainChunking extends LF_TrainBase {
       } else {
         System.out.println("LearningFramework: Attributes " + crm.getRepresentationMallet().getDataAlphabet().toString().replaceAll("\\n", " "));
       }
-      //System.out.println("DEBUG: instances are "+corpusRepresentation.getRepresentationMallet());
-      engine.getInfo().nrTrainingInstances = crm.getRepresentationMallet().size();
     }
+    engine.getInfo().nrTrainingInstances = corpusRepresentation.nrInstances();
 
     // Store some additional information in the info datastructure which will be saved with the model
     engine.getInfo().nrTrainingDocuments = nrDocuments;
-    // TODO: add size() for all CRs!
-    //engine.getInfo().nrTrainingInstances = corpusRepresentation.getRepresentationMallet().size();
     
     // TODO: what if we do sequence tagging by classification???
     engine.getInfo().targetFeature = "LF_class";

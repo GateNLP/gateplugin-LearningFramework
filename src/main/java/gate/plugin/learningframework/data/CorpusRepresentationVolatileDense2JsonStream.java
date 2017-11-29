@@ -93,7 +93,8 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
   // get included in the metadata written as well
   private int linesWritten = 0;
   
-  public int getNumberInstances() {
+  @Override
+  public int nrInstances() {
     return linesWritten;
   }
   
