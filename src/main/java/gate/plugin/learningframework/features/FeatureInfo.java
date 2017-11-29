@@ -113,7 +113,7 @@ public class FeatureInfo implements Serializable {
     try (OutputStream os = new FileOutputStream(new File(dirFile,FILENAME_FEATUREINFO));
             ObjectOutputStream oos = new ObjectOutputStream(os)
             ) {
-      oos.writeObject(oos);
+      oos.writeObject(this);
     } catch (Exception ex) {
       throw new GateRuntimeException("Could not write feature info file ",ex);
     }
@@ -127,6 +127,7 @@ public class FeatureInfo implements Serializable {
       FeatureInfo fi = (FeatureInfo)ois.readObject();
       return fi;
     } catch (Exception ex) {
+      System.err.println("WARNING: could not read feature info: "+ex.getMessage());
       // we silently ignore this for now since not all engines even create this file (YET!)
       // throw new GateRuntimeException("Could not load feature info file "+infoFile,ex);
       return null;

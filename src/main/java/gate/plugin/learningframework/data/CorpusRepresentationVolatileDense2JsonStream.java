@@ -81,6 +81,9 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
     return outDataFile;
   }
   public File getMetaFile() {
+    if(outMetaFile == null) {
+      outMetaFile = new File(outDir, META_FILE_NAME);
+    }
     return outMetaFile;
   }
   
@@ -89,6 +92,10 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
   // some statistics we update while writing the corpus to the file and those
   // get included in the metadata written as well
   private int linesWritten = 0;
+  
+  public int getNumberInstances() {
+    return linesWritten;
+  }
   
   
   /**

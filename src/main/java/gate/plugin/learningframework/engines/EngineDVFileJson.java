@@ -141,6 +141,7 @@ public abstract class EngineDVFileJson extends EngineDV {
   @Override
   protected void initWhenCreating(URL directory, Algorithm algorithm, String parms, FeatureInfo featureInfo, TargetType targetType) {
     dataDir = Files.fileFromURL(directory);
+    this.featureInfo = featureInfo;
     corpusRepresentation = new CorpusRepresentationVolatileDense2JsonStream(dataDir, featureInfo);
     corpusRepresentation.startAdding();
     // NOTE: we are copying the wrapper code only when starting training, not
@@ -150,6 +151,7 @@ public abstract class EngineDVFileJson extends EngineDV {
 
   @Override
   protected void loadAndSetCorpusRepresentation(URL directory) {
+    System.err.println("DEBUG EngineDVFileJson: running loadAndSetCorpusRepresentation "+directory);
     // this does not actually need to load anything but the featureInfo ... 
     // this is needed to convert our instance data to JSON, which is then sent
     // off to the script or server which is responsible to use any other saved
@@ -161,6 +163,7 @@ public abstract class EngineDVFileJson extends EngineDV {
 
   @Override
   protected void loadModel(URL directory, String parms) {
+    loadAndSetCorpusRepresentation(directory);
     // the loadModel method should get called before all the applyModel
     // calls, so here we can start the external process with which we communicate
     // in applyModel
@@ -248,8 +251,10 @@ public abstract class EngineDVFileJson extends EngineDV {
     process.waitFor();
     
     // we also need to save the updated info file
+    info.nrTrainingInstances = corpusRepresentation.getNumberInstances();
     info.engineClass = this.getClass().getName();
     info.save(dataDir);    
+    featureInfo.save(dataDir);
   }
 
   @Override

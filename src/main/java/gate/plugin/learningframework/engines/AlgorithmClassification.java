@@ -31,7 +31,7 @@ public enum AlgorithmClassification implements Algorithm {
   // Also consider supporting in addition this port: https://github.com/davidsoergel/jlibsvm/
   LIBSVM_CL(EngineLibSVM.class,libsvm.svm.class), 
   PYTORCH_CL_WRAPPER_DENSE(EngineDVFileJsonPyTorch.class,null),
-  PYTORCH_SEQ_WRAPPER_DENSE(EngineDVFileJsonPyTorch.class,null),
+  PYTORCH_SEQ_WRAPPER_DENSE(EngineDVFileJsonPyTorch.class,null,AlgorithmKind.SEQUENCE_TAGGER),
   KERAS_CL_WRAPPER_DENSE(EngineDVFileJsonKeras.class,null),
   KERAS_SEQ_WRAPPER_DENSE(EngineDVFileJsonKeras.class,null),
   MALLET_CL_BALANCED_WINNOW(EngineMBMalletClass.class,cc.mallet.classify.BalancedWinnowTrainer.class),

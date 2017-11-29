@@ -35,6 +35,7 @@ import gate.creole.metadata.RunTime;
 import gate.plugin.learningframework.data.CorpusRepresentation;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.engines.AlgorithmClassification;
+import gate.plugin.learningframework.engines.AlgorithmKind;
 import gate.plugin.learningframework.engines.Engine;
 import gate.plugin.learningframework.features.FeatureInfo;
 import gate.plugin.learningframework.features.FeatureSpecification;
@@ -210,12 +211,9 @@ public class LF_TrainClassification extends LF_TrainBase {
     if (getTrainingAlgorithm() == null) {
       throw new GateRuntimeException("LearningFramework: no training algorithm specified");
     }
-    if (getTrainingAlgorithm() == AlgorithmClassification.MALLET_SEQ_CRF || 
-        getTrainingAlgorithm() == AlgorithmClassification.MALLET_SEQ_CRF_SG ||
-        getTrainingAlgorithm() == AlgorithmClassification.MALLET_SEQ_CRF_VG ||
-        getTrainingAlgorithm() == AlgorithmClassification.MALLET_SEQ_MEMM) {
+    if (getTrainingAlgorithm().getAlgorithmKind() == AlgorithmKind.SEQUENCE_TAGGER) {
       if (getSequenceSpan() == null || getSequenceSpan().isEmpty()) {
-        throw new GateRuntimeException("SequenceSpan parameter is required for MALLET_SEQ_*");
+        throw new GateRuntimeException("SequenceSpan parameter is required for sequence tagging algorithm");
       }
     } else {
       if (getSequenceSpan() != null && !getSequenceSpan().isEmpty()) {
