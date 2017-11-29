@@ -430,14 +430,21 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
       for (String fname : fnames) {
         Stats s = stats.getStatistics(fname);
         if (s != null) { // when we store the initial metadata, none of these will exist yet
-          Map<String, Double> m = new HashMap<>();
-          m.put("mean", s.getMean());
-          m.put("min", s.getMin());
-          m.put("max", s.getMax());
-          m.put("variance", s.getVariance());
-          m.put("n", Long.valueOf(s.getN()).doubleValue());
-          featureStats.put(fname, m);
-        }
+          
+          // TODO: this will change to use something like s.getRepresentation() 
+          // which should then return a map that can be serialized directly
+          // !!! also to be used for the target stats!!!
+          if(s.isString()) {
+            
+          } else {
+            Map<String, Double> m = new HashMap<>();
+            m.put("mean", s.getMean());
+            m.put("min", s.getMin());
+            m.put("max", s.getMax());
+            m.put("variance", s.getVariance());
+            m.put("n", Long.valueOf(s.getN()).doubleValue());
+            featureStats.put(fname, m);
+          }
       }
       metadata.put("featureStats", featureStats);
       Stats targetStats = stats.getStatistics(StatsForFeatures.KEY_FOR_TARGET);

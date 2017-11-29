@@ -34,6 +34,7 @@ import gate.creole.metadata.RunTime;
 import gate.plugin.learningframework.data.CorpusRepresentation;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.engines.AlgorithmClassification;
+import gate.plugin.learningframework.engines.AlgorithmKind;
 import gate.plugin.learningframework.engines.Engine;
 import gate.plugin.learningframework.features.FeatureInfo;
 import gate.plugin.learningframework.features.FeatureSpecification;
@@ -238,9 +239,9 @@ public class LF_TrainChunking extends LF_TrainBase {
     if (getTrainingAlgorithm() == null) {
       throw new GateRuntimeException("LearningFramework: no training algorithm specified");
     }
-    if (getTrainingAlgorithm().toString().contains("MALLET_SEQ_")) {
+    if (getTrainingAlgorithm().getAlgorithmKind() == AlgorithmKind.SEQUENCE_TAGGER) {
       if (getSequenceSpan() == null || getSequenceSpan().isEmpty()) {
-        throw new GateRuntimeException("SequenceSpan parameter is required for MALLET_SEQ_*");
+        throw new GateRuntimeException("SequenceSpan parameter is required for Sequence Taggers");
       }
       haveSequenceTagger = true;
     } else {
@@ -254,7 +255,7 @@ public class LF_TrainChunking extends LF_TrainBase {
     FeatureInfo fi = featureSpec.getFeatureInfo();
     fi.setGlobalScalingMethod(scaleFeatures);
     engine = Engine.createEngine(trainingAlgorithm, getAlgorithmParameters(), fi, TargetType.NOMINAL, dataDirectory);
-    corpusRepresentation = (CorpusRepresentationMallet)engine.getCorpusRepresentation();
+    corpusRepresentation = engine.getCorpusRepresentation();
     System.err.println("DEBUG: created the engine: " + engine + " with CR="+engine.getCorpusRepresentation());  
     nrDocuments = 0;
   }
