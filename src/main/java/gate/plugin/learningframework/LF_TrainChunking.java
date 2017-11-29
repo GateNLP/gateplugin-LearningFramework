@@ -279,8 +279,12 @@ public class LF_TrainChunking extends LF_TrainBase {
         System.out.println("LearningFramework: Attributes " + crm.getRepresentationMallet().getDataAlphabet().toString().replaceAll("\\n", " "));
       }
     }
+    // NOTE: some parts of the info instance should/could get updated inside the
+    // engine as part of the trainModel() method (the EngineMB engines delegate
+    // this into their own updateInfo() method). 
     engine.getInfo().nrTrainingInstances = corpusRepresentation.nrInstances();
-
+    engine.getInfo().classAnnotationTypes = getClassAnnotationTypes();
+    // engine.getInfo().classLabels = corpusRepresentation.classLabels();
     // Store some additional information in the info datastructure which will be saved with the model
     engine.getInfo().nrTrainingDocuments = nrDocuments;
     

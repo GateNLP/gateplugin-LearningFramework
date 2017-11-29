@@ -19,7 +19,6 @@
  */
 package gate.plugin.learningframework.stats;
 
-import gate.plugin.learningframework.LFUtils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,39 +43,25 @@ import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
  * @author Johann Petrak <johann.petrak@gmail.com>
  */
 public class StatsForFeatures {
-  private Map<String,SummaryStatistics> feature2stats = new HashMap<>();
+  private Map<String,Stats> feature2stats = new HashMap<>();
   private final Object lockingObject = new Object();
+  
+  public static final String KEY_FOR_TARGET = "╳TARGET╳";
   
   public void addValue(String featureName, Object value) {
     synchronized(lockingObject) {
-      SummaryStatistics stats;
+      Stats stats;
       if(feature2stats.containsKey(featureName)) {
         stats = feature2stats.get(featureName);
       } else {
-        stats = new SummaryStatistics();
+        stats = new Stats(value);
         feature2stats.put(featureName, stats);
       }
-      if(value instanceof Double) {
-        stats.addValue((Double)value);
-      } else if(value instanceof Number) {
-         stats.addValue(((Number) value).doubleValue());
-      } else if(value instanceof String) {
-        // none for now     
-      } else if(value instanceof Boolean) {
-        stats.addValue(((Boolean)value) ? 1.0 : 0.0);
-      } else if(value instanceof List) {
-        stats.addValue(((List)value).size());
-      } else if(value instanceof String[]) {
-        stats.addValue(((double[])value).length);
-      } else if(value instanceof double[]) {
-        stats.addValue(((double[])value).length);
-      } else {
-        // for now just silently ignore this!!
-      }
+      stats.addValue(value);
     } // synchronized
   } // addValue(...)
   
-  public SummaryStatistics getStatistics(String featureName) {
+  public Stats getStatistics(String featureName) {
     synchronized(lockingObject) {
       return feature2stats.get(featureName);
     }

@@ -161,6 +161,7 @@ public abstract class EngineDVFileJson extends EngineDV {
     corpusRepresentation = new CorpusRepresentationVolatileDense2JsonStream(dataDir, featureInfo);
   }
 
+  
   @Override
   protected void loadModel(URL directory, String parms) {
     loadAndSetCorpusRepresentation(directory);
@@ -215,6 +216,12 @@ public abstract class EngineDVFileJson extends EngineDV {
   public void trainModel(File dataDirectoryZZZ, String instanceType, String parms) {    
     // first of all close the corpus and save the metadata
     corpusRepresentation.finishAdding();
+    
+    // update the info instance with stuff we should know now
+    info.classLabels = corpusRepresentation.getTargetLabels();
+    info.nrTargetValues = info.classLabels.size();
+    info.nrTrainingDimensions = corpusRepresentation.getNrFeatures();
+    
     // first of all copy the wrapper files into the data directory if needed
     Utils4Engines.copyWrapper(WRAPPER_NAME, dataDir);
     
