@@ -2,4 +2,4 @@
 
 echo '!!!!!!!!!!!!!!!!!!!!!! RUNNING apply.sh'
 echo 'args:' "$@"
-tee -f "$1".applydata
+tee  "$1".applydata

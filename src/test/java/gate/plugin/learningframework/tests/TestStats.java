@@ -20,6 +20,7 @@
 
 package gate.plugin.learningframework.tests;
 
+import gate.plugin.learningframework.stats.Stats;
 import gate.plugin.learningframework.stats.StatsForFeatures;
 import java.net.MalformedURLException;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
@@ -43,9 +44,9 @@ public class TestStats {
     stats.addValue("feature1", 2);
     stats.addValue("feature2", false);
     stats.addValue("feature3", new double[]{1.0});
-    SummaryStatistics st_feature1 = stats.getStatistics("feature1");
-    SummaryStatistics st_feature2 = stats.getStatistics("feature2");
-    SummaryStatistics st_feature3 = stats.getStatistics("feature3");
+    Stats st_feature1 = stats.getStatistics("feature1");
+    Stats st_feature2 = stats.getStatistics("feature2");
+    Stats st_feature3 = stats.getStatistics("feature3");
     //System.err.println("TestStats/testStats1 Debug: feature1="+st_feature1.toString());   
     //System.err.println("TestStats/testStats1 Debug: feature2="+st_feature2.toString());   
     //System.err.println("TestStats/testStats1 Debug: feature3="+st_feature3.toString());   
@@ -53,7 +54,7 @@ public class TestStats {
     assertEquals(3,st_feature1.getN());
     assertEquals(0.0,st_feature1.getMin(),0.00001);
     assertEquals(13.0,st_feature1.getMax(),0.00001);
-    assertEquals(7.0,st_feature1.getStandardDeviation(),0.00001);
+    assertEquals(49.0,st_feature1.getVariance(),0.00001);
 
     assertEquals(3,st_feature2.getN());
     assertEquals(0.0,st_feature2.getMin(),0.00001);

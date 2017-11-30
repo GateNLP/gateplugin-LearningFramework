@@ -34,7 +34,6 @@ import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
 import gate.plugin.learningframework.data.CorpusRepresentation;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
-import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
 import gate.plugin.learningframework.engines.AlgorithmRegression;
 import gate.plugin.learningframework.engines.Engine;
 import gate.plugin.learningframework.features.FeatureInfo;
@@ -196,7 +195,7 @@ public class LF_TrainRegression extends LF_TrainBase {
     FeatureInfo fi = featureSpec.getFeatureInfo();
     fi.setGlobalScalingMethod(scaleFeatures);
     engine = Engine.createEngine(trainingAlgorithm, getAlgorithmParameters(), fi, TargetType.NUMERIC, dataDirectory);
-    corpusRepresentation = (CorpusRepresentationMalletTarget)engine.getCorpusRepresentation();
+    corpusRepresentation = (CorpusRepresentation)engine.getCorpusRepresentation();
     System.err.println("DEBUG: created the engine: " + engine);
 
     nrDocuments = 0;

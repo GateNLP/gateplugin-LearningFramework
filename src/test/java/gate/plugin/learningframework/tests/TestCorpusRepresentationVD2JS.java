@@ -170,7 +170,7 @@ public class TestCorpusRepresentationVD2JS {
     //System.err.println("TestCorpusRepresentationVD2JS/json4stuff Debug: inst3="+inst3);    
     
     // Now convert the instances to JSON and see if that works
-    String inst1_json = cr.internal2Json(inst1);
+    String inst1_json = cr.internal2Json(inst1,false);
     //System.err.println("TestCorpusRepresentationVD2JS/json4stuff Debug: inst1_json="+inst1_json);   
     
     
@@ -186,7 +186,7 @@ public class TestCorpusRepresentationVD2JS {
           targetFeatureName, TargetType.NOMINAL,
           weightFeature, null /* seqEncoder */);
     //System.err.println("TestCorpusRepresentationVD2JS/json4stuff Debug: instLong1="+instLong1);   
-    String instLong1_json = cr.internal2Json(instLong1);
+    String instLong1_json = cr.internal2Json(instLong1,false);
     //System.err.println("TestCorpusRepresentationVD2JS/json4stuff Debug: instLong1_json="+instLong1_json);   
     assertEquals(fnames.size(),instLong1.numFeatures());
     for(int i=0;i<fnames.size();i++) {
@@ -217,7 +217,7 @@ public class TestCorpusRepresentationVD2JS {
             cr.instancesForSequence(instancesAS, longAnn, inputAS, classAS, targetFeatureName, TargetType.NOMINAL, null);
     //System.err.println("TestCorpusRepresentationVD2JS/json4stuff Debug: insts4seq="+insts4seq);   
     assertEquals(3, insts4seq.size());
-    String json = cr.internal2Json(insts4seq);
+    String json = cr.internal2Json(insts4seq,false);
     //System.err.println("TestCorpusRepresentationVD2JS/json4stuff Debug: insts4seq_json="+json);   
 
     /*

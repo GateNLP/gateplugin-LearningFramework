@@ -42,6 +42,9 @@ hs_err_*.log
 /tests/cl-ionosphere/model-keras-m1/indep.csv
 /tests/cl-ionosphere/model-keras-m1/kerasmodel.h5
 
+/tests/seq-wikipedia1/model-dense-pytorch-1/*
+/tests/cl-ionosphere/model-dense-pytorch/*
+/tests/rg-abalone/model-dense-pytorch-1/*
 
 /nbproject/private/
 /build/

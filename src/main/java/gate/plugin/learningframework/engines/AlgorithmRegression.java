@@ -29,6 +29,7 @@ public enum AlgorithmRegression implements Algorithm {
   LIBSVM_RG(EngineLibSVM.class,null),
   //GENERIC_RG_SERVER(EngineServer.class,null),
   WEKA_RG_WRAPPER(EngineMBWekaWrapper.class,null),
+  PYTORCH_RG_WRAPPER_Dense(EngineDVFileJsonPyTorch.class,null),
   SKLEARN_RG_WRAPPER(EngineMBSklearnWrapper.class,null),
   //TENSORFLOW_RG_WRAPPER(EngineTensorFlowWrapper.class,null),
   KERAS_RG_WRAPPER(EngineKerasWrapper.class,null);

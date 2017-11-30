@@ -68,16 +68,21 @@ public abstract class LearningFrameworkPRBase
   }
 
 
-  protected String algorithmParameters;
+  protected String algorithmParameters = "";
   protected boolean algorithmParamtersChanged = true;
 
   @RunTime
   @Optional
   @CreoleParameter(comment = "Some of the learners take parameters. Parameters "
-          + "can be entered here. For example, the LibSVM supports parameters.")
+          + "can be entered here. For example, the LibSVM supports parameters.", defaultValue = "")
   public void setAlgorithmParameters(String learnerParams) {
-    this.algorithmParameters = learnerParams;
-    algorithmParamtersChanged = true;
+    if(learnerParams == null) learnerParams = "";
+    if(learnerParams.equals(this.algorithmParameters)) {
+      // do nothing
+    } else {
+      algorithmParamtersChanged = true;
+      this.algorithmParameters = learnerParams;
+    }
   }
 
   public String getAlgorithmParameters() {

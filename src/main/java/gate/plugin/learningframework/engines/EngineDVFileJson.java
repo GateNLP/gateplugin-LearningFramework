@@ -279,8 +279,8 @@ public abstract class EngineDVFileJson extends EngineDV {
       for (Annotation instanceAnnotation : instanceAnnotations) {
 
         InstanceRepresentation inst = 
-                corpusRepresentation.unlabeledAnnotation2instance(instanceAnnotation, inputAS, null);
-        String json = corpusRepresentation.internal2Json(inst);
+                corpusRepresentation.unlabeledAnnotation2Instance(instanceAnnotation, inputAS, null);
+        String json = corpusRepresentation.internal2Json(inst,true);
         process.writeObject(json);
         // TODO: need to decide on the format of the response. Probably best to
         // expect a map with both data and metadata
@@ -288,19 +288,50 @@ public abstract class EngineDVFileJson extends EngineDV {
 
         // depending on what kind of learning problem we have, use the appropriate 
         // constructor (regression, classification, .. 
-        // For now we assume: if what we get is a number it was regression, otherwise 
-        // it was classification. OR: the metadata in the response tells us
+        // The info.yaml and the metadata file should both tell us which it is
         
-        
-        // for regression
-        // ModelApplication ma = new ModelApplication(instanceAnnotation,2.0); 
-        // for classification, class, confidence of class, full list of classes, full list of confidences
-        ModelApplication ma = new ModelApplication(instanceAnnotation,"class", 0.99, null, null);
+        ModelApplication ma = null;
+        if(info.task.equals(AlgorithmKind.REGRESSOR.toString())) {
+          ma = new ModelApplication(instanceAnnotation,2.0); 
+        } else if(info.task.equals(AlgorithmKind.CLUSTERING.toString())) {
+          throw new GateRuntimeException("Not implemented yet: task CLUSTERING");
+        } else if(info.task.equals(AlgorithmKind.CLASSIFIER.toString())) {
+          // same for sequence tagging and classification??
+          ma = new ModelApplication(instanceAnnotation,"class", 0.99, null, null);
+        } else if(info.task.equals(AlgorithmKind.SEQUENCE_TAGGER.toString())) {
+          // error: if no sequence AS is specified we should not get this!
+          throw new GateRuntimeException("Model application not possible: no sequenceAS but model expects it!");
+        }
         modelapps.add(ma);
       }      
     } else {
       // sequences
-      throw new GateRuntimeException("Sequence application NOT YET IMPLEMENTED!");
+      for(Annotation sequenceAnn : sequenceAS) {
+        int seq_id = sequenceAnn.getId();
+        List<Annotation> instanceAnnotations = gate.Utils.getContainedAnnotations(
+              instancesAS, sequenceAnn).inDocumentOrder();        
+        List<InstanceRepresentation> insts4seq
+                = corpusRepresentation.unlabeledInstancesForSequence(instancesAS, sequenceAnn, inputAS);
+        String json = corpusRepresentation.internal2Json(insts4seq,true);
+
+        process.writeObject(json);
+        // TODO: need to decide on the format of the response. Probably best to
+        // expect a map with both data and metadata
+        String returnJson = (String)process.readObject();
+        
+        ModelApplication ma = null;
+        if(info.task.equals(AlgorithmKind.SEQUENCE_TAGGER.toString())) {
+          // we need to get back as many labels as there are instances in the insts4seq list
+          for(Annotation ann : instanceAnnotations) {
+            // expects class, confidence, sequence span id
+            ma = new ModelApplication(ann, "O", 0.99, seq_id);
+            modelapps.add(ma);
+          }
+        } else {
+          // error: sequence AS is specified but this is not a Sequence tagger model
+          throw new GateRuntimeException("Model application not possible: sequenceAS specified but model does not expect it!");
+        }        
+      }
     }
     
     // * use the predictions to create the return list

@@ -204,7 +204,7 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
         // now that we have the internal instance representation, send it off
         // by first converting to a json string and then sending the string to the output
         // file
-        json = internal2Json(inst);
+        json = internal2Json(inst,false);
         writeData(json);
       }
     } else {
@@ -218,7 +218,7 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
         List<InstanceRepresentation> insts4seq
                 = instancesForSequence(instancesAS, sequenceAnnotation, inputAS, classAS, targetFeatureName, targetType, seqEncoder);
         seqLenStats.addValue(insts4seq.size());
-        json = internal2Json(insts4seq);
+        json = internal2Json(insts4seq,false);
         writeData(json);
       }
 
@@ -257,12 +257,30 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
     return insts4seq;
   }
 
+  public List<InstanceRepresentation> unlabeledInstancesForSequence(
+          AnnotationSet instancesAS, Annotation sequenceAnnotation,
+          AnnotationSet inputAS
+  ) {
+
+    // get all the instances from within the sequence in order
+    List<Annotation> instanceAnnotations = gate.Utils.getContainedAnnotations(instancesAS, sequenceAnnotation).inDocumentOrder();
+    List<InstanceRepresentation> insts4seq = new ArrayList<>(instanceAnnotations.size());
+    // for each instance annotation, get the instance representation and add it to the list
+    for (Annotation instanceAnnotation : instanceAnnotations) {
+      InstanceRepresentation inst
+              = unlabeledAnnotation2Instance(instanceAnnotation, inputAS, null);
+      insts4seq.add(inst);
+    }
+
+    return insts4seq;
+  }
+
   public InstanceRepresentation labeledAnnotation2Instance(Annotation instanceAnnotation,
           AnnotationSet inputAS, AnnotationSet classAS,
           String targetFeatureName, TargetType targetType,
           String instanceWeightFeature, SeqEncoder seqEncoder) {
     // create a new dense instance representation
-    InstanceRepresentation inst = unlabeledAnnotation2instance(
+    InstanceRepresentation inst = unlabeledAnnotation2Instance(
             instanceAnnotation, inputAS, instanceWeightFeature);
     // add the stats for all the features
     // TODO: maybe this is too slow and eventually we need to just limit this to 
@@ -289,7 +307,7 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
     return inst;
   }
 
-  public InstanceRepresentation unlabeledAnnotation2instance(Annotation instanceAnnotation,
+  public InstanceRepresentation unlabeledAnnotation2Instance(Annotation instanceAnnotation,
           AnnotationSet inputAS,
           String instanceWeightFeature) {
     // create a new dense instance representation
@@ -320,27 +338,36 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
    * representation!
    *
    * @param inst
+   * @param noTarget - if true, does not include  the target(s) and does not use outermost list for 
+   * indep / target pair
    * @return
    */
-  public String internal2Json(InstanceRepresentation inst) {
+  public String internal2Json(InstanceRepresentation inst, boolean noTarget) {
     // can this be shared between multiple threads?
     ObjectMapper mapper = new ObjectMapper();
     List<Object> values = internal2array(inst);
     // the final instance is a list containing the values and the target (for now)
-    ArrayList<Object> theInstance = new ArrayList<Object>(2);
-    theInstance.add(values);
-    theInstance.add(inst.getTargetValue());
-    // now convert this to a JSON String
-    String json = "";
-    try {
-      json = mapper.writeValueAsString(theInstance);
-    } catch (JsonProcessingException ex) {
-      throw new GateRuntimeException("Could not convert instance to json", ex);
+    // unless noTarget has been given
+    if(noTarget) {
+      try {
+        return mapper.writeValueAsString(values);
+      } catch (JsonProcessingException ex) {
+        throw new GateRuntimeException("Could not convert instance to json", ex);
+      }      
+    } else {
+      ArrayList<Object> theInstance = new ArrayList<Object>(2);
+      theInstance.add(values);
+      theInstance.add(inst.getTargetValue());
+      // now convert this to a JSON String
+      try {
+        return mapper.writeValueAsString(theInstance);
+      } catch (JsonProcessingException ex) {
+        throw new GateRuntimeException("Could not convert instance to json", ex);
+      }
     }
-    return json;
   }
 
-  public String internal2Json(List<InstanceRepresentation> instseq) {
+  public String internal2Json(List<InstanceRepresentation> instseq, boolean noTarget) {
     // can this be shared between multiple threads?
     ObjectMapper mapper = new ObjectMapper();
     // the format is a two-element list, where the first element is 
@@ -351,19 +378,25 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
     for (InstanceRepresentation inst : instseq) {
       List<Object> values = internal2array(inst);
       indepList.add(values);
-      targetList.add(inst.getTargetValue());
+      if(!noTarget) targetList.add(inst.getTargetValue());
     }
-    List<Object> finalList = new ArrayList<>();
-    finalList.add(indepList);
-    finalList.add(targetList);
-    // now convert this to a JSON String
-    String json = "";
-    try {
-      json = mapper.writeValueAsString(finalList);
-    } catch (JsonProcessingException ex) {
-      throw new GateRuntimeException("Could not convert instance sequence to json", ex);
+    if(noTarget) {
+      try {
+        return mapper.writeValueAsString(indepList);
+      } catch (JsonProcessingException ex) {
+        throw new GateRuntimeException("Could not convert instance sequence to json", ex);
+      }      
+    } else {
+      List<Object> finalList = new ArrayList<>();
+      finalList.add(indepList);
+      finalList.add(targetList);
+      // now convert this to a JSON String
+      try {
+        return mapper.writeValueAsString(finalList);
+      } catch (JsonProcessingException ex) {
+        throw new GateRuntimeException("Could not convert instance sequence to json", ex);
+      }
     }
-    return json;
   }
 
   private List<Object> internal2array(InstanceRepresentation inst) {
@@ -417,7 +450,9 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
       metadata.put("featureInfo", featureInfo);
       metadata.put("featureNames", fnames);
       metadata.put("linesWritten", linesWritten);
-      metadata.put("dataFile", outDataFile.getAbsolutePath());
+      // outDataFile may be null if somebody calls this before the startAdding()
+      // method
+      metadata.put("dataFile", (outDataFile==null ? "" : outDataFile.getAbsolutePath()));
       metadata.put("isSequence", isSequence);
       if (isSequence != null && isSequence) {
         metadata.put("sequLengths.mean", seqLenStats.getMean());
@@ -426,42 +461,19 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
         metadata.put("sequLengths.variance", seqLenStats.getVariance());
       }
 
-      Map<String, Map<String, Double>> featureStats = new HashMap<>();
+      Map<String, Stats.StatsObject> featureStats = new HashMap<>();
       for (String fname : fnames) {
         Stats s = stats.getStatistics(fname);
         if (s != null) { // when we store the initial metadata, none of these will exist yet
-          
-          // TODO: this will change to use something like s.getRepresentation() 
-          // which should then return a map that can be serialized directly
-          // !!! also to be used for the target stats!!!
-          if(s.isString()) {
-            
-          } else {
-            Map<String, Double> m = new HashMap<>();
-            m.put("mean", s.getMean());
-            m.put("min", s.getMin());
-            m.put("max", s.getMax());
-            m.put("variance", s.getVariance());
-            m.put("n", Long.valueOf(s.getN()).doubleValue());
-            featureStats.put(fname, m);
-          }
+          featureStats.put(fname, s.getStatsObject());
+        }
       }
       metadata.put("featureStats", featureStats);
       Stats targetStats = stats.getStatistics(StatsForFeatures.KEY_FOR_TARGET);
       // note: we also write the metadata before we see training intances, in this
       // case the targetStats object will be null!
       if (targetStats != null) {
-        if (targetStats.isString()) {
-          metadata.put("stringTargetStats", targetStats.stringCounts());
-        } else {
-          Map<String, Double> m = new HashMap<>();
-          m.put("mean", targetStats.getMean());
-          m.put("min", targetStats.getMin());
-          m.put("max", targetStats.getMax());
-          m.put("variance", targetStats.getVariance());
-          m.put("n", Long.valueOf(targetStats.getN()).doubleValue());
-          metadata.put("numericTargetStats", m);
-        }
+        metadata.put("targetStats", targetStats.getStatsObject());
       }
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd,HH:mm:ss");
       metadata.put("savedOn", sdf.format(new Date()));
@@ -475,6 +487,10 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
 
   /**
    * Save the current metadata.
+   * 
+   * TODO: since metadata can be quite big, do not convert to String first
+   * but combine json4metadata and this to write parts directly!
+   * Size comes from the statistics for tokens/ngrams.
    */
   public void saveMetadata() {
     outMetaFile = new File(outDir, META_FILE_NAME);
