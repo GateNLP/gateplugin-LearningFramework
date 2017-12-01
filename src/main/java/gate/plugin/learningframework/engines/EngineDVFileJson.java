@@ -66,13 +66,13 @@ public abstract class EngineDVFileJson extends EngineDV {
   protected String getCommandPathTrain()  {
     File wrapperRoot = new File(dataDir, WRAPPER_NAME);
     String ext = getShellExtension();
-    File cmd = new File(new File(wrapperRoot,"bin"), COMMAND_BASE_TRAIN+ext);
+    File cmd = new File(wrapperRoot, COMMAND_BASE_TRAIN+ext);
     return cmd.getAbsolutePath();
   }
   protected String getCommandPathApply() {
     File wrapperRoot = new File(dataDir, WRAPPER_NAME);
     String ext = getShellExtension();
-    File cmd = new File(new File(wrapperRoot, "bin"), COMMAND_BASE_APPLY + ext);
+    File cmd = new File(wrapperRoot, COMMAND_BASE_APPLY + ext);
     return cmd.getAbsolutePath();
   }
   

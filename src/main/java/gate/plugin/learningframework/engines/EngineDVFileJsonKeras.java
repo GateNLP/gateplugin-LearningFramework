@@ -15,6 +15,10 @@ package gate.plugin.learningframework.engines;
  * @author Johann Petrak
  */
 public class EngineDVFileJsonKeras extends EngineDVFileJson {
+
+  public EngineDVFileJsonKeras() {
+    WRAPPER_NAME = "FileJsonKeras";
+  }
   
   
 }
