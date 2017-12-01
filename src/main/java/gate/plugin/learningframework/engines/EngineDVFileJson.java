@@ -8,6 +8,7 @@
  */
 package gate.plugin.learningframework.engines;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gate.Annotation;
 import gate.AnnotationSet;
 import gate.lib.interaction.process.Process4StringStream;
@@ -24,6 +25,7 @@ import gate.util.Files;
 import gate.util.GateRuntimeException;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
@@ -31,6 +33,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.yaml.snakeyaml.Yaml;
 
 /**
@@ -271,33 +275,53 @@ public abstract class EngineDVFileJson extends EngineDV {
 
   @Override
   public List<ModelApplication> applyModel(AnnotationSet instancesAS, AnnotationSet inputAS, AnnotationSet sequenceAS, String parms) {
+    ObjectMapper mapper = new ObjectMapper();
     List<ModelApplication> modelapps = new ArrayList<ModelApplication>();
     if(sequenceAS==null) {
       // non-sequences
       List<Annotation> instanceAnnotations = instancesAS.inDocumentOrder();
       
+      // We have two choices here: send each instace separately or send them all
+      // together in one go. For now we send each instance separately.
+      // TODO: figure out which mode is better/faster!!
       for (Annotation instanceAnnotation : instanceAnnotations) {
 
         InstanceRepresentation inst = 
                 corpusRepresentation.unlabeledAnnotation2Instance(instanceAnnotation, inputAS, null);
-        String json = corpusRepresentation.internal2Json(inst,true);
+        String json = corpusRepresentation.internal2Json(inst,true);        
         process.writeObject(json);
-        // TODO: need to decide on the format of the response. Probably best to
-        // expect a map with both data and metadata
         String returnJson = (String)process.readObject();
-
-        // depending on what kind of learning problem we have, use the appropriate 
-        // constructor (regression, classification, .. 
-        // The info.yaml and the metadata file should both tell us which it is
-        
+        Object obj = null;
+        try {
+          obj = mapper.readValue(returnJson,Map.class);          
+        } catch (IOException ex) {
+          throw new GateRuntimeException("Could not interpret response json: ",ex);
+        }
+        // we always expect a map as a response!
+        Map<String,Object>retMap = (Map<String,Object>)obj;
+        // we always expect these keys, having these types!
+        String status = (String)retMap.get("status");
+        if(status==null) status = "";
+        if(!"ok".equals(status.toLowerCase())) {
+          throw new GateRuntimeException("Something went wrong applying the model, got status: "+status);
+        }
+        // outputs and confidence can both be a scalar (for a single feature vector) or a list
+        // for a sequence of feature vectors. Also the type depends on the kind of algorithm...
         ModelApplication ma = null;
         if(info.task.equals(AlgorithmKind.REGRESSOR.toString())) {
-          ma = new ModelApplication(instanceAnnotation,2.0); 
+          Double output = (Double)retMap.get("output");
+          if(output==null) throw new GateRuntimeException("Did not get a regression result from model");
+          // NOTE: eventually we may get variance or confidence interval boundaries here: "ci_upper"/"ci_lower"/"ci_p"
+          // Double variance = (Double)retMap.get("variance");
+          ma = new ModelApplication(instanceAnnotation,output); 
         } else if(info.task.equals(AlgorithmKind.CLUSTERING.toString())) {
           throw new GateRuntimeException("Not implemented yet: task CLUSTERING");
         } else if(info.task.equals(AlgorithmKind.CLASSIFIER.toString())) {
-          // same for sequence tagging and classification??
-          ma = new ModelApplication(instanceAnnotation,"class", 0.99, null, null);
+          String output = (String)retMap.get("output");
+          if(output==null) throw new GateRuntimeException("Did not get a classification result from model");
+          // note: the confidence actually may be null (missing in the map) meaning we do not have it
+          Double confidence = (Double)retMap.get("confidence");
+          ma = new ModelApplication(instanceAnnotation,output, confidence, null, null);
         } else if(info.task.equals(AlgorithmKind.SEQUENCE_TAGGER.toString())) {
           // error: if no sequence AS is specified we should not get this!
           throw new GateRuntimeException("Model application not possible: no sequenceAS but model expects it!");
@@ -306,6 +330,9 @@ public abstract class EngineDVFileJson extends EngineDV {
       }      
     } else {
       // sequences
+      // Again, we could send the data for all sequences in one go but for
+      // now we just send each sequence separately.
+      // TODO: figure out what is better!
       for(Annotation sequenceAnn : sequenceAS) {
         int seq_id = sequenceAnn.getId();
         List<Annotation> instanceAnnotations = gate.Utils.getContainedAnnotations(
@@ -319,13 +346,39 @@ public abstract class EngineDVFileJson extends EngineDV {
         // expect a map with both data and metadata
         String returnJson = (String)process.readObject();
         
+        Object obj = null;
+        try {
+          obj = mapper.readValue(returnJson,Map.class);          
+        } catch (IOException ex) {
+          throw new GateRuntimeException("Could not interpret response json: ",ex);
+        }
+        // we always expect a map as a response!
+        Map<String,Object>retMap = (Map<String,Object>)obj;
+        // we always expect these keys, having these types!
+        String status = (String)retMap.get("status");
+        if(status==null) status = "";
+        if(!"ok".equals(status.toLowerCase())) {
+          throw new GateRuntimeException("Something went wrong applying the model, got status: "+status);
+        }
+        
+        // we expect output to be a list of string and if confidence exists, a list of double
+        List<String> output = (List<String>)retMap.get("output");
+        if(output==null) throw new GateRuntimeException("Did not get a classification result from model");
+        // note: the confidence actually may be null (missing in the map) meaning we do not have it
+        List<Double>confidence = (List<Double>)retMap.get("confidence");
+        
+        
         ModelApplication ma = null;
         if(info.task.equals(AlgorithmKind.SEQUENCE_TAGGER.toString())) {
           // we need to get back as many labels as there are instances in the insts4seq list
+          int i = 0;
           for(Annotation ann : instanceAnnotations) {
             // expects class, confidence, sequence span id
-            ma = new ModelApplication(ann, "O", 0.99, seq_id);
+            Double conf = null;
+            if(confidence!=null) conf=confidence.get(i);
+            ma = new ModelApplication(ann, output.get(i), conf, seq_id);
             modelapps.add(ma);
+            i++;
           }
         } else {
           // error: sequence AS is specified but this is not a Sequence tagger model
