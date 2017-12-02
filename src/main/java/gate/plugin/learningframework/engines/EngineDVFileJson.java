@@ -173,12 +173,23 @@ public abstract class EngineDVFileJson extends EngineDV {
     // calls, so here we can start the external process with which we communicate
     // in applyModel
     
+    // first, check if the wrapper is present. Normally this should be the case,
+    // but sometimes it may be required to update the wrapper on purpose, e.g.
+    // for debugging or for a bugfix. This can be achieved by removing the wrapper
+    // directory and running apply again which will then re-install the wrapper 
+    // here.
+    if(!new File(dataDir,"WRAPPER_NAME").exists()) {
+      Utils4Engines.copyWrapper(WRAPPER_NAME, dataDir);
+    }
+
+    
     // Start the process
     ArrayList<String> finalCommand = new ArrayList<String>();
     String modelBaseName = new File(dataDir, WRAPPER_NAME+".model").getAbsolutePath();
     finalCommand.add(getCommandPathApply());
     finalCommand.add(modelBaseName);
     finalCommand.add(corpusRepresentation.getMetaFile().getAbsolutePath());
+    finalCommand.add(new File(dataDir,WRAPPER_NAME).getAbsolutePath());
     if(!parms.trim().isEmpty()) {
       String[] tmp = parms.split("\\s+",-1);
       finalCommand.addAll(Arrays.asList(tmp));
@@ -275,6 +286,7 @@ public abstract class EngineDVFileJson extends EngineDV {
 
   @Override
   public List<ModelApplication> applyModel(AnnotationSet instancesAS, AnnotationSet inputAS, AnnotationSet sequenceAS, String parms) {
+    System.err.println("DEBUG: running applyModel");
     ObjectMapper mapper = new ObjectMapper();
     List<ModelApplication> modelapps = new ArrayList<ModelApplication>();
     if(sequenceAS==null) {
@@ -289,13 +301,16 @@ public abstract class EngineDVFileJson extends EngineDV {
         InstanceRepresentation inst = 
                 corpusRepresentation.unlabeledAnnotation2Instance(instanceAnnotation, inputAS, null);
         String json = corpusRepresentation.internal2Json(inst,true);        
+        System.err.println("DEBUG - sening json: "+json);
         process.writeObject(json);
+        System.err.println("DEBUG - before reading response");
         String returnJson = (String)process.readObject();
+        System.err.println("DEBUG - received return json: "+returnJson);
         Object obj = null;
         try {
           obj = mapper.readValue(returnJson,Map.class);          
         } catch (IOException ex) {
-          throw new GateRuntimeException("Could not interpret response json: ",ex);
+          throw new GateRuntimeException("Could not interpret response json: "+returnJson,ex);
         }
         // we always expect a map as a response!
         Map<String,Object>retMap = (Map<String,Object>)obj;
