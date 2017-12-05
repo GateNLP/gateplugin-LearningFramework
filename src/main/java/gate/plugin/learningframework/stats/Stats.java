@@ -23,20 +23,27 @@ public class Stats {
   public Stats(Object firstValue) {
     if(firstValue instanceof String) {
       stringStats = new HashMap<String,Long>();
+    } else if(firstValue instanceof String[]) {
+      numStats = new SummaryStatistics();
+      stringStats = new HashMap<String,Long>();
     } else {
       numStats = new SummaryStatistics();
+    }
+  }
+  
+  private void addStringValue(Object value) {
+    String val = (String)value;
+    if(stringStats.containsKey(val)) {
+      stringStats.put(val,stringStats.get(val)+1);
+    } else {
+      stringStats.put(val,1l);
     }
   }
   
   public void addValue(Object value) {
       if(value instanceof String) {
         if(stringStats == null) throw new GateRuntimeException("Stats object did not expect a String");
-        String val = (String)value;
-        if(stringStats.containsKey(val)) {
-          stringStats.put(val,stringStats.get(val)+1);
-        } else {
-          stringStats.put(val,1l);
-        }
+        addStringValue(value);
       } else {
         if(numStats == null) throw new GateRuntimeException("Stats object did not expect a non-String");
       if(value instanceof Double) {
@@ -48,8 +55,19 @@ public class Stats {
       } else if(value instanceof Boolean) {
         numStats.addValue(((Boolean)value) ? 1.0 : 0.0);
       } else if(value instanceof List) {
+        List<Object> l =  (List<Object>)value;
+        if(l.size()>0 && (l.get(0) instanceof String)) {
+          if(stringStats==null) stringStats = new HashMap<String,Long>();
+          for(Object o : l) {
+            addStringValue(o);
+          }
+        }
         numStats.addValue(((List)value).size());
       } else if(value instanceof String[]) {
+        // if we have several strings, then we also count the strings
+        for(String val : (String[])value) {
+          addStringValue(val);
+        }
         numStats.addValue(((double[])value).length);
       } else if(value instanceof double[]) {
         numStats.addValue(((double[])value).length);
@@ -66,6 +84,10 @@ public class Stats {
   
   public boolean isString() {
     return stringStats != null;
+  }
+  
+  public boolean isNum() {
+    return numStats != null;
   }
   
   /**

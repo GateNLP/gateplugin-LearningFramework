@@ -20,9 +20,7 @@
 package gate.plugin.learningframework.stats;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 /**
  * A simple lightweight wrapper class for maintaining stats about many features.
