@@ -454,6 +454,7 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
       // method
       metadata.put("dataFile", (outDataFile==null ? "" : outDataFile.getAbsolutePath()));
       metadata.put("isSequence", isSequence);
+      metadata.put("features", featureSpecAttributes2FeatureInfos(featureInfo.getAttributes()));
       if (isSequence != null && isSequence) {
         metadata.put("sequLengths.mean", seqLenStats.getMean());
         metadata.put("sequLengths.min", seqLenStats.getMin());
