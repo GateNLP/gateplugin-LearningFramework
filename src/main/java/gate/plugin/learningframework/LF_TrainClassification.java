@@ -170,9 +170,7 @@ public class LF_TrainClassification extends LF_TrainBase {
     // the sequenceAS must be specified for a sequence tagging algorithm and most not be specified
     // for a non-sequence tagging algorithm!
     AnnotationSet sequenceAS = null;
-    if (getTrainingAlgorithm() == AlgorithmClassification.MALLET_SEQ_CRF) {
-      // NOTE: we already have checked earlier, that in that case, the sequenceSpan parameter is 
-      // given!
+    if (getTrainingAlgorithm().getAlgorithmKind() == AlgorithmKind.SEQUENCE_TAGGER) {
       sequenceAS = inputAS.get(getSequenceSpan());
     }
 
