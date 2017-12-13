@@ -20,7 +20,9 @@
 package gate.plugin.learningframework.features;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -212,6 +214,46 @@ public class FeatureExtractionBase {
       } else {
         fnames.add(featureName(attr,0));
       }
+    }
+    return fnames;
+  }
+  
+  /**
+   * This creates, for every named feature, a map String to Object which 
+   * contains the following entries:
+   * - name: the name of the feature
+   * - attrid: the id/index of the attribute
+   * - kind: the "kind", one of N, A or L
+   * 
+   * @param attrs
+   * @return 
+   */
+  public static List<Map<String,Object>> featureSpecAttributes2FeatureInfos(List<FeatureSpecAttribute> attrs) {
+    List<Map<String,Object>> fnames = new ArrayList<>();    
+    int index = 0;
+    for(FeatureSpecAttribute attr : attrs) {
+      if(attr instanceof FeatureSpecAttributeList) {
+        int from = ((FeatureSpecAttributeList)attr).from;
+        int to = ((FeatureSpecAttributeList)attr).to;
+        for(int i=from;i<=to;i++) {
+          Map<String,Object> m = new HashMap<>();
+          String fname = featureName(attr,i);
+          m.put("name",fname);
+          m.put("attrid", index);
+          m.put("kind",attr.featureCode);
+          m.put("datatype",attr.datatype.toString());
+          fnames.add(m);
+        }
+      } else {
+        Map<String,Object> m = new HashMap<>();
+        String fname = featureName(attr,0);
+        m.put("name",fname);
+        m.put("attrid", index);
+        m.put("kind",attr.featureCode);
+        m.put("datatype",attr.datatype.toString());
+        fnames.add(m);
+      }
+      index++;
     }
     return fnames;
   }
