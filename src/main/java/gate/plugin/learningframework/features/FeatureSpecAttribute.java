@@ -42,6 +42,12 @@ public abstract class FeatureSpecAttribute implements Serializable, Cloneable {
   public String listsep = null;
   public String featureCode = "INVALID";
   
+  public String emb_file = "";
+  public String emb_id = "";
+  public Integer emb_dims = 0;
+  public String emb_train = "";
+  
+  
   public abstract void stopGrowth();
   public abstract void startGrowth();
   

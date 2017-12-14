@@ -75,6 +75,10 @@ public class FeatureSpecAttributeList extends FeatureSpecSimpleAttribute impleme
     this.from = from;
     this.to = to;
     featureCode = "L";
+    this.emb_dims = att.emb_dims;
+    this.emb_file = att.emb_file;
+    this.emb_id = att.emb_id;
+    this.emb_train = att.emb_train;
   }
   
   public int from;

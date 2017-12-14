@@ -25,7 +25,9 @@ import java.io.File;
 import java.io.StringReader;
 
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -44,6 +46,13 @@ public class FeatureSpecification {
   private org.jdom.Document jdomDocConf = null;
 
   private URL url;
+  
+  // for error checking we remember all mappings from embedding ids to 
+  // each of the things that can be specified about embeddings:
+  // file, dims, train
+  private Map<String,String> embeddingId2file = new HashMap<>();
+  private Map<String,Integer> embeddingId2dims = new HashMap<>();
+  private Map<String,String> embeddingId2train = new HashMap<>();
 
   public FeatureSpecification(URL configFileURL) {
     url = configFileURL;
@@ -119,6 +128,70 @@ public class FeatureSpecification {
     }
   } // parseConfigXml
 
+  private FeatureSpecAttribute parseAndAddEmbeddingInfo(Element element, int i, FeatureSpecAttribute spec) {
+    // expects any FeatureSpec object and will add embedding info to it, if present
+    // This using the info already stored in the instance members to check for 
+    // contradictions in the specificatin
+    
+    // the element is the parent, so lets first get the embedding child, if any
+    Element emb = getChildOrNull(element, "EMBEDDINGS");
+    if(emb==null) return spec;  // nothing there, nothing to do
+    // get all the possible settings for the embedding
+    String emb_id = getChildTextOrElse(emb, "ID", "");
+    String emb_file = getChildTextOrElse(emb, "FILE", "");
+    String emb_dims_str = getChildTextOrElse(emb, "DIMS", "");
+    String emb_train = getChildTextOrElse(emb,"TRAIN","");
+    // only if any of the file,dim, or train things are set to non-empty, 
+    // we need to bother
+    if(!emb_file.isEmpty()) {
+      // TODO: check the file exists already here!!
+      String have_file = embeddingId2file.get(emb_id);
+      if(have_file == null) {
+        embeddingId2file.put(emb_id, emb_file);
+        spec.emb_file = emb_file;
+      } else {
+        throw new GateRuntimeException("EMBEDDING setting file to "+emb_file+" for attribute "+i+" contradicts "+
+                have_file+" set previously");
+      }
+    } else {
+      String have_file = embeddingId2file.get(emb_id);
+      if(have_file != null) spec.emb_file = have_file;
+    }
+    if(!emb_train.isEmpty()) {
+      if(!emb_train.equals("yes") && !emb_train.equals("no") && !emb_train.equals("mapping")) {
+        throw new GateRuntimeException("EMBEDDING TRAIN setting must be one of yes, no, or mapping for attribute"+i);
+      }
+      String have_train = embeddingId2train.get(emb_id);      
+      if(have_train == null) {
+        embeddingId2train.put(emb_id, emb_train);
+        spec.emb_train = emb_train;
+      } else {
+        throw new GateRuntimeException("EMBEDDING setting train to "+emb_train+" for attribute "+i+" contradicts "+
+                have_train+" set previously");
+      }
+    } else {
+      String have_train = embeddingId2train.get(emb_id);
+      if(have_train != null) spec.emb_train = have_train;
+    }
+    if(!emb_dims_str.isEmpty()) {
+      Integer have_dims = embeddingId2dims.get(emb_id);
+      Integer emb_dims = Integer.parseInt(emb_dims_str);
+      if(have_dims == null) {
+        embeddingId2dims.put(emb_id, emb_dims);
+        spec.emb_dims = emb_dims;
+      } else {
+        throw new GateRuntimeException("EMBEDDING setting dims to "+emb_dims+" for attribute "+i+" contradicts "+
+                have_dims+" set previously");
+      }
+    } else {
+      Integer have_dims = embeddingId2dims.get(emb_id);
+      if(have_dims != null) spec.emb_dims = have_dims;
+    }
+    spec.emb_id = emb_id;
+    return spec;
+  }
+
+  
   private FeatureSpecSimpleAttribute parseSimpleAttribute(Element attributeElement, int i) {
     String aname = getChildTextOrElse(attributeElement, "NAME", "").trim();
     String feat = getChildTextOrElse(attributeElement, "FEATURE", "").trim();
@@ -205,6 +278,14 @@ public class FeatureSpecification {
             listsep,
             featureName4Value
     );
+    // now if this is a nominal attribute, add any embedding block
+    if(dt == Datatype.nominal) {
+      att = (FeatureSpecSimpleAttribute)parseAndAddEmbeddingInfo(attributeElement, i, att);
+    } else {
+      if(getChildOrNull(attributeElement, "EMBEDDINGS") != null) {
+        throw new GateRuntimeException("EMBEDDINGS not allowed for non-NOMINAL ATTRIBUTE "+i);
+      }
+    }
     return att;
   }
 
@@ -228,6 +309,7 @@ public class FeatureSpecification {
             feature,
             featureName4Value
     );
+    ng = (FeatureSpecNgram)parseAndAddEmbeddingInfo(ngramElement, i, ng);
     return ng;
   }
 
@@ -257,6 +339,7 @@ public class FeatureSpecification {
     if (children.size() > 1) {
       throw new GateRuntimeException("Element " + parent.getName() + " has more than one nested " + name + " element");
     }
+    if(children.size() == 0) return elseVal;
     String tmp = parent.getChildTextTrim(name.toUpperCase());
     if(tmp == null) {
       tmp = parent.getChildText(name.toLowerCase());
@@ -266,6 +349,18 @@ public class FeatureSpecification {
     } else {
       return tmp;
     }
+  }
+  
+  private static Element getChildOrNull(Element parent, String name) {
+    List<Element> children = parent.getChildren(name);
+    if (children.size() > 1) {
+      throw new GateRuntimeException("Element " + parent.getName() + " has more than one nested " + name + " element");
+    } else if (children.size() == 0) {
+      return null;
+    } else {
+      return children.get(0);
+    }
+   
   }
 
 }
