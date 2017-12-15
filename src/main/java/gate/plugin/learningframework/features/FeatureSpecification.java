@@ -149,25 +149,30 @@ public class FeatureSpecification {
       if(have_file == null) {
         embeddingId2file.put(emb_id, emb_file);
         spec.emb_file = emb_file;
-      } else {
+      } else if(!emb_file.equals(have_file)) {
         throw new GateRuntimeException("EMBEDDING setting file to "+emb_file+" for attribute "+i+" contradicts "+
                 have_file+" set previously");
+      } else {
+        spec.emb_file = emb_file;
       }
     } else {
       String have_file = embeddingId2file.get(emb_id);
       if(have_file != null) spec.emb_file = have_file;
     }
     if(!emb_train.isEmpty()) {
-      if(!emb_train.equals("yes") && !emb_train.equals("no") && !emb_train.equals("mapping")) {
-        throw new GateRuntimeException("EMBEDDING TRAIN setting must be one of yes, no, or mapping for attribute"+i);
+      if(!emb_train.equals("yes") && !emb_train.equals("no") && !emb_train.equals("mapping") && 
+         !emb_train.equals("onehot")) {
+        throw new GateRuntimeException("EMBEDDING TRAIN setting must be one of yes, no, onehot or mapping for attribute"+i);
       }
       String have_train = embeddingId2train.get(emb_id);      
       if(have_train == null) {
         embeddingId2train.put(emb_id, emb_train);
         spec.emb_train = emb_train;
-      } else {
+      } else if(!emb_train.equals(have_train)) {
         throw new GateRuntimeException("EMBEDDING setting train to "+emb_train+" for attribute "+i+" contradicts "+
                 have_train+" set previously");
+      } else {
+        spec.emb_train = emb_train;        
       }
     } else {
       String have_train = embeddingId2train.get(emb_id);
@@ -179,9 +184,11 @@ public class FeatureSpecification {
       if(have_dims == null) {
         embeddingId2dims.put(emb_id, emb_dims);
         spec.emb_dims = emb_dims;
-      } else {
+      } else if(!emb_dims.equals(have_dims)) {
         throw new GateRuntimeException("EMBEDDING setting dims to "+emb_dims+" for attribute "+i+" contradicts "+
                 have_dims+" set previously");
+      } else {
+        spec.emb_dims = emb_dims;        
       }
     } else {
       Integer have_dims = embeddingId2dims.get(emb_id);
