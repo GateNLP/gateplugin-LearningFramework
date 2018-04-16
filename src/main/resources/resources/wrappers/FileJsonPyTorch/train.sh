@@ -29,7 +29,7 @@ else
   fi
 fi
 
-PYTHONPATH="$wrapperdir/gate-lf-python-data:$wrapperdir/gate-lf-pytorch-wrapper"
+export PYTHONPATH="$wrapperdir/gate-lf-python-data:$wrapperdir/gate-lf-pytorch-wrapper"
 
 echo 'MODEL BASE NAME = ' $modelbase >&2
 echo 'META FILE       = ' $metafile  >&2
