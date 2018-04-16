@@ -1,6 +1,7 @@
 import sys
 import json
 import os
+import logging
 from gatelfdata import Dataset
 from gatelfpytorch import ModelWrapperSimple
 # from gatelfpytorch import ModelWrapper
@@ -32,12 +33,18 @@ ds=Dataset(metafile)
 
 # create the wrapper
 # TODO: cuda autodetect finds cuda on zeus but then runs into an error
+# TODO: this should maybe also allow to directly (from the algorithm parameters) choose a pre-defined 
+#  variation of the model wrapper. For example for ionosphere, choose a simple dense classification network.
+#  Maybe the parameter value can be something like "SimpleDense(22,33)" as long as there is no whitespace in the value?
 wrapper = ModelWrapperSimple(ds,cuda=False)
 
 wrapper.prepare_data()
 wrapper.validate_every_batches = 10
 #wrapper.train(batch_size=33,
 #        early_stopping=lambda x: ModelWrapper.early_stopping_checker(x, max_variance=0.0000001))
+print("Created the following model:\n", wrapper.module, file=sys.stderr)
+print("Loss function is:", wrapper.lossfunction, file=sys.stderr)
+print("Optimizer is:", wrapper.optimizer, file=sys.stderr)
 print("DEBUG: before running the training", file=sys.stderr)
 wrapper.train()
 print("DEBUG: after running the training", file=sys.stderr)
