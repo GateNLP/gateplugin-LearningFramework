@@ -33,17 +33,45 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.yaml.snakeyaml.Yaml;
 
 /**
  * Common base class for all Engines which are dense, volatile and write JSON to a file.
  * 
+ * <p>
+ * See <a href="https://github.com/GateNLP/gateplugin-LearningFramework/wiki/Class_EngineDVFileJson">Wiki</a>
  * 
  * @author Johann Petrak
  */
 public abstract class EngineDVFileJson extends EngineDV {
+  
+  
+  // NOTEs about how to find python:
+  // On linux, python is usually on the path, but we cannot be sure if it is python 3
+  // In some cases, python3 is the version 3 command.
+  // On Windows (10) if installing using anaconda3, the installer recommends NOT
+  // putting python on the path and to install for the user only by default.
+  // !! In that case, it gets installed by default into C:\\Users\\username\\Anaconda3 which 
+  // contains python.exe, but things like ipython.exe are in the Scripts subdirectory.
+  // If installing for all, it gets installed by default into C:\\ProgramData\\Anaconda3
+  // If installing pythong from python.org we have the options:
+  // 1) Windows executable installer (python-3.6.5-amd64.exe): 
+  // this one recommends to install for all users but does not add to PATH by default
+  // Also recommends to disable the path length limit
+  // Installing for all: This gets installed into C:\\Users\\username\\AppData\\Local\\Programs\\Python\\Python36
+  // which contains python, Scripts contains pip
+  // 2) Web-based installer (python-3.6.5-amd64-webinstall.exe): seems to use the same location
+  // (could not test after already installed using the other installer)
+  
+  // So in order to find python we do the following:
+  // 1) check if there is a config file in the data dir, use the pythonhome variable from there
+  // 2) check if the PYTHON_BIN environment variable is set, use it as full path to the executable
+  // 3) try to find it on the executable path (this is not easy in Java, instead try to run python/python3
+  //    or python.exe with parameter "-V" to get version. May use Runtime.getRuntime().exec("...") in a 
+  //    try catch for that or own interaction library to get back the output.
+  // 3) if on Windows, check one of the two paths above
+  // 4) if on Linux check in decreasing order of importance: /usr/bin/python3 or /usr/bin/python
+  
   
   // Wrapper name: this is set by the actual implementing engine class and 
   // will influence the file name of scripts, config files etc specific to that
@@ -228,7 +256,7 @@ public abstract class EngineDVFileJson extends EngineDV {
   // NOTE: if we already pass and initialise the dataDir when initialising, we
   // do not need the file as a parameter here??? Refactor to remove this parm!
   @Override
-  public void trainModel(File dataDirectoryZZZ, String instanceType, String parms) {    
+  public void trainModel(File dataDirectory, String instanceType, String parms) {    
     // first of all close the corpus and save the metadata
     corpusRepresentation.finishAdding();
     
