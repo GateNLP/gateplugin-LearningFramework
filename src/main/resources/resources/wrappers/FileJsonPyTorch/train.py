@@ -1,5 +1,6 @@
 import sys
 import json
+import os
 from gatelfdata import Dataset
 from gatelfpytorch import ModelWrapperSimple
 # from gatelfpytorch import ModelWrapper
@@ -9,6 +10,20 @@ print("MODIFIED!!! PYTHON TRAINING SCRIPT, args=",sys.argv,file=sys.stderr)
 modelprefix=sys.argv[1]
 metafile=sys.argv[2]
 datadir=sys.argv[3]
+
+# Set up logging
+logger = logging.getLogger("gatelfdata")
+logger.setLevel(logging.ERROR)
+logger = logging.getLogger("gatelfpytorch")
+logger.setLevel(logging.DEBUG)
+streamhandler = logging.StreamHandler(stream=sys.stderr)
+formatter = logging.Formatter(
+                '%(asctime)s %(name)-12s %(levelname)-8s %(message)s')
+streamhandler.setFormatter(formatter)
+logger.addHandler(streamhandler)
+filehandler = logging.FileHandler(os.path.join(datadir,"FileJsonPyTorch.train.log"))
+logger.addHandler(filehandler)
+
 
 # TODO: maybe allow passing additional parms here from what gets passed as additional parms to the script etc?
 # TODO: this may be essential for setting cuda manuall!
