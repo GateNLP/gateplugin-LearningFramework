@@ -1,0 +1,6 @@
+[submodule "src/main/resources/resources/wrappers/FileJsonPyTorch/gate-lf-python-data"]
+	path = src/main/resources/resources/wrappers/FileJsonPyTorch/gate-lf-python-data
+	url = https://github.com/GateNLP/gate-lf-python-data.git
+[submodule "src/main/resources/resources/wrappers/FileJsonPyTorch/gate-lf-pytorch-wrapper"]
+	path = src/main/resources/resources/wrappers/FileJsonPyTorch/gate-lf-pytorch-wrapper
+	url = https://github.com/GateNLP/gate-lf-pytorch-wrapper.git
