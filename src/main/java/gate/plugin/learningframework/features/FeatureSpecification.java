@@ -106,7 +106,8 @@ public class FeatureSpecification {
     // Make an else part where we document how we might add additional stuff...
     Element rootElement = jdomDocConf.getRootElement();
 
-    List<Element> elements = rootElement.getChildren();
+    @SuppressWarnings("unchecked")
+    List<Element> elements = (List<Element>)rootElement.getChildren();
     
     int n = 0;
     for (Element element : elements) {
@@ -135,15 +136,15 @@ public class FeatureSpecification {
     for (FeatureSpecAttribute fs : featureInfo.featureSpecs) {
       if(fs.datatype == Datatype.nominal) {
         if(fs.emb_file.isEmpty()) {
-          String tmp_emb_file = embeddingid2file.get(fs.emb_id);
+          String tmp_emb_file = embeddingId2file.get(fs.emb_id);
           if(tmp_emb_file != null) fs.emb_file = tmp_emb_file;
         }
         if(fs.emb_dims == 0) {
-          Integer tmp_emb_dims = embeddingid2dims.get(fs.emb_id);
+          Integer tmp_emb_dims = embeddingId2dims.get(fs.emb_id);
           if(tmp_emb_dims != null) fs.emb_dims = tmp_emb_dims;
         }
         if(fs.emb_train.isEmpty()) {
-          String tmp_emb_train = embeddingid2train.get(fs.emb_id);
+          String tmp_emb_train = embeddingId2train.get(fs.emb_id);
           if(tmp_emb_train != null) fs.emb_train = tmp_emb_train;
         }
       }
