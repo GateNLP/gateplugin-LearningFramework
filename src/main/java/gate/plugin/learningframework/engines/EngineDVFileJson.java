@@ -329,7 +329,7 @@ public abstract class EngineDVFileJson extends EngineDV {
         InstanceRepresentation inst = 
                 corpusRepresentation.unlabeledAnnotation2Instance(instanceAnnotation, inputAS, null);
         String json = corpusRepresentation.internal2Json(inst,true);        
-        System.err.println("DEBUG - sening json: "+json);
+        System.err.println("DEBUG - sending json: "+json);
         process.writeObject(json);
         System.err.println("DEBUG - before reading response");
         String returnJson = (String)process.readObject();
@@ -364,6 +364,10 @@ public abstract class EngineDVFileJson extends EngineDV {
           if(output==null) throw new GateRuntimeException("Did not get a classification result from model");
           // note: the confidence actually may be null (missing in the map) meaning we do not have it
           Double confidence = (Double)retMap.get("confidence");
+          // NOTE/TODO: currently the model application can only take lists of confidences, where 
+          // the order is predefined, we either need to map the map to a list here
+          // or support having a map in the final feature instead??
+          Map<String,Double> confidences = (Map<String,Double>)retMap.get("confidences");
           ma = new ModelApplication(instanceAnnotation,output, confidence, null, null);
         } else if(info.task.equals(AlgorithmKind.SEQUENCE_TAGGER.toString())) {
           // error: if no sequence AS is specified we should not get this!

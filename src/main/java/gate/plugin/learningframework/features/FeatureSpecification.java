@@ -126,12 +126,34 @@ public class FeatureSpecification {
         throw new GateRuntimeException("Not a recognized element name for the LearningFramework config file: " + elementName);
       }
     }
+    // go through all the feature specifications and make sure the 
+    // embedding settings are set to whatever we have stored for the id.
+    // If after this some values are still blank, it is the responsibility
+    // of the backend code to find the appropriate default values since 
+    // different backends or algorithms could work better with different 
+    // defaults
+    for (FeatureSpecAttribute fs : featureInfo.featureSpecs) {
+      if(fs.datatype == Datatype.nominal) {
+        if(fs.emb_file.isEmpty()) {
+          String tmp_emb_file = embeddingid2file.get(fs.emb_id);
+          if(tmp_emb_file != null) fs.emb_file = tmp_emb_file;
+        }
+        if(fs.emb_dims == 0) {
+          Integer tmp_emb_dims = embeddingid2dims.get(fs.emb_id);
+          if(tmp_emb_dims != null) fs.emb_dims = tmp_emb_dims;
+        }
+        if(fs.emb_train.isEmpty()) {
+          String tmp_emb_train = embeddingid2train.get(fs.emb_id);
+          if(tmp_emb_train != null) fs.emb_train = tmp_emb_train;
+        }
+      }
+    }
   } // parseConfigXml
 
   private FeatureSpecAttribute parseAndAddEmbeddingInfo(Element element, int i, FeatureSpecAttribute spec) {
     // expects any FeatureSpec object and will add embedding info to it, if present
     // This using the info already stored in the instance members to check for 
-    // contradictions in the specificatin
+    // contradictions in the specification
     
     // the element is the parent, so lets first get the embedding child, if any
     Element emb = getChildOrNull(element, "EMBEDDINGS");
@@ -155,7 +177,10 @@ public class FeatureSpecification {
       } else {
         spec.emb_file = emb_file;
       }
-    } else {
+    } else {  // the file spec is empty:
+      // if the file spec has been set for this id earlier, use that,
+      // otherwise the default value in the specification object is unchanged
+      // (empty string)
       String have_file = embeddingId2file.get(emb_id);
       if(have_file != null) spec.emb_file = have_file;
     }
