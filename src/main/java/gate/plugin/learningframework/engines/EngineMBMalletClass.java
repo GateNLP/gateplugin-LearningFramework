@@ -50,6 +50,7 @@ import java.util.List;
 import java.util.Random;
 import org.apache.log4j.Logger;
 import static gate.plugin.learningframework.LFUtils.newURL;
+import java.lang.reflect.Constructor;
 
 /**
  *
@@ -115,7 +116,9 @@ public class EngineMBMalletClass extends EngineMBMallet {
       // no parameters, just instantiate the class
       Class trainerClass = algorithm.getTrainerClass();
       try {
-        trainer = (ClassifierTrainer) trainerClass.newInstance();
+        @SuppressWarnings("unchecked")
+        Constructor tmpc = trainerClass.getDeclaredConstructor();
+        trainer = (ClassifierTrainer) tmpc.newInstance();
       } catch (Exception ex) {
         throw new GateRuntimeException("Could not create trainer instance for " + trainerClass, ex);
       }
@@ -187,7 +190,9 @@ public class EngineMBMalletClass extends EngineMBMallet {
         logger.warn("IMPORTANT: parameters ignored when creating Mallet trainer " + algorithm.getTrainerClass());
         Class trainerClass = algorithm.getTrainerClass();
         try {
-          trainer = (ClassifierTrainer) trainerClass.newInstance();
+          @SuppressWarnings("unchecked")
+          Constructor tmpc = trainerClass.getDeclaredConstructor();
+          trainer = (ClassifierTrainer) tmpc.newInstance();
         } catch (Exception ex) {
           throw new GateRuntimeException("Could not create trainer instance for " + trainerClass, ex);
         }

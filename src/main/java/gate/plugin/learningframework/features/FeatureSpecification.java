@@ -368,6 +368,7 @@ public class FeatureSpecification {
    * NOTE: this tries both the all-uppercase and the all-lowercase variant of the given name.
    */
   private static String getChildTextOrElse(Element parent, String name, String elseVal) {
+    @SuppressWarnings("unchecked")
     List<Element> children = parent.getChildren(name);
     if (children.size() > 1) {
       throw new GateRuntimeException("Element " + parent.getName() + " has more than one nested " + name + " element");
@@ -385,6 +386,7 @@ public class FeatureSpecification {
   }
   
   private static Element getChildOrNull(Element parent, String name) {
+    @SuppressWarnings("unchecked")
     List<Element> children = parent.getChildren(name);
     if (children.size() > 1) {
       throw new GateRuntimeException("Element " + parent.getName() + " has more than one nested " + name + " element");

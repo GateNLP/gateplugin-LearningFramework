@@ -31,6 +31,7 @@ import gate.plugin.learningframework.export.CorpusExporterJsonTarget;
 import gate.plugin.learningframework.features.TargetType;
 import gate.plugin.learningframework.mallet.LFPipe;
 import java.io.File;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 
 public enum Exporter {
@@ -58,7 +59,9 @@ public enum Exporter {
   public static void export(CorpusRepresentationMallet crm, Exporter exporter, File directory, String instanceType, String parms) {
     CorpusExporter ce = null;
     try {
-      ce = (CorpusExporter) exporter.getCorpusExporterClass().newInstance();
+      @SuppressWarnings("unchecked")
+      Constructor tmpc = exporter.getCorpusExporterClass().getDeclaredConstructor();
+      ce = (CorpusExporter) tmpc.newInstance();
     } catch (Exception ex) {
       throw new RuntimeException("Could not instanciate exporter class " + exporter.getCorpusExporterClass(), ex);
     }

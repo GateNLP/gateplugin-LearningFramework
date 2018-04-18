@@ -265,6 +265,7 @@ public abstract class EngineMBSklearnBase extends EngineMB {
   }
 
   @Override
+  @SuppressWarnings("unchecked")
   public List<ModelApplication> applyModel(AnnotationSet instanceAS, AnnotationSet inputAS, 
           AnnotationSet sequenceAS, String parms) {
     CorpusRepresentationMalletTarget data = (CorpusRepresentationMalletTarget)corpusRepresentation;
@@ -329,7 +330,9 @@ public abstract class EngineMBSklearnBase extends EngineMB {
     Object ret = process.readObject();
     Map<String,Object> response = null;
     if(ret instanceof Map) {
-      response = (Map)ret;
+      @SuppressWarnings("unchecked")
+      Map<String,Object> tmpresponse = (Map<String,Object>)ret;
+      response = tmpresponse;
     }
     if(response == null) {
       throw new RuntimeException("Got a response from Sklearn process which cannot be used: "+response);
@@ -343,7 +346,9 @@ public abstract class EngineMBSklearnBase extends EngineMB {
     if(status == null || !status.equals("OK")) {
       throw new RuntimeException("Status of response is not OK but "+status);
     }
+    @SuppressWarnings("unchecked")
     ArrayList<Double> targets = (ArrayList<Double>)response.get("targets");
+    @SuppressWarnings("unchecked")
     ArrayList<ArrayList<Double>> probas = (ArrayList<ArrayList<Double>>)response.get("probas");
     
     ModelApplication gc = null;

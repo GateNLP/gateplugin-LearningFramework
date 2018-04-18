@@ -998,9 +998,11 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
       throw new GateRuntimeException("No target value for feature " + targetFeature
               + " for instance at offset " + gate.Utils.start(instanceAnnotation) + " in document " + doc.getName());
     } else if (obj instanceof List) {
+      @SuppressWarnings("unchecked")
       NominalTargetWithCosts lwc = new NominalTargetWithCosts((List<Double>) obj);
       inst.setTarget(labelalphabet.lookupLabel(lwc));
     } else if (obj instanceof double[]) {
+      @SuppressWarnings("unchecked")
       NominalTargetWithCosts lwc = new NominalTargetWithCosts((double[]) obj);
       inst.setTarget(labelalphabet.lookupLabel(lwc));
     } else {

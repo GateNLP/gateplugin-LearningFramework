@@ -135,6 +135,7 @@ public abstract class EngineDVFileJson extends EngineDV {
    * Read a WRAPPERNAME.yaml file from the data dir, if it exists.
    * @return 
    */
+  @SuppressWarnings("unchecked")
   public Map<String,String> getWrapperConfig() {
     File wrapperInfoFile = new File(dataDir,WRAPPER_NAME+".yaml");
     if(wrapperInfoFile.exists()) {
@@ -313,6 +314,7 @@ public abstract class EngineDVFileJson extends EngineDV {
   }
 
   @Override
+  @SuppressWarnings("unchecked")
   public List<ModelApplication> applyModel(AnnotationSet instancesAS, AnnotationSet inputAS, AnnotationSet sequenceAS, String parms) {
     System.err.println("DEBUG: running applyModel");
     ObjectMapper mapper = new ObjectMapper();

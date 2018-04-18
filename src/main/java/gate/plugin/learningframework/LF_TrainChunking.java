@@ -42,6 +42,7 @@ import gate.plugin.learningframework.features.SeqEncoder;
 import gate.plugin.learningframework.features.SeqEncoderEnum;
 import gate.plugin.learningframework.features.TargetType;
 import gate.util.GateRuntimeException;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -220,7 +221,9 @@ public class LF_TrainChunking extends LF_TrainBase {
     
     try {
       System.err.println("Trying to create instance of "+getSeqEncoder().getEncoderClass());
-      seqEncoder = (SeqEncoder) getSeqEncoder().getEncoderClass().newInstance();
+      @SuppressWarnings("unchecked")
+      Constructor tmpc = getSeqEncoder().getEncoderClass().getDeclaredConstructor();
+      seqEncoder = (SeqEncoder) tmpc.newInstance();
       seqEncoder.setOptions(getSeqEncoder().getOptions());
     } catch (Exception ex) {
       throw new GateRuntimeException("Could not create SeqEncoder instance",ex);

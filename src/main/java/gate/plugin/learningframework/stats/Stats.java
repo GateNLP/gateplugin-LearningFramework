@@ -55,6 +55,7 @@ public class Stats {
       } else if(value instanceof Boolean) {
         numStats.addValue(((Boolean)value) ? 1.0 : 0.0);
       } else if(value instanceof List) {
+        @SuppressWarnings("unchecked")
         List<Object> l =  (List<Object>)value;
         if(l.size()>0 && (l.get(0) instanceof String)) {
           if(stringStats==null) stringStats = new HashMap<String,Long>();

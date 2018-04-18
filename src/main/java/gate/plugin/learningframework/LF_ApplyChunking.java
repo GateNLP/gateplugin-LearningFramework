@@ -34,6 +34,7 @@ import gate.plugin.learningframework.engines.AlgorithmKind;
 import gate.plugin.learningframework.engines.Engine;
 import gate.plugin.learningframework.features.SeqEncoder;
 import gate.util.GateRuntimeException;
+import java.lang.reflect.Constructor;
 import java.net.URL;
 
 /**
@@ -182,7 +183,9 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
     String seco = engine.getInfo().seqEncoderOptions;
     
     try {
-      seqEncoder = (SeqEncoder) Class.forName(secn).newInstance();
+      @SuppressWarnings("unchecked")
+      Constructor tmpc = Class.forName(secn).getDeclaredConstructor();
+      seqEncoder = (SeqEncoder) tmpc.newInstance();
     } catch (Exception ex) {
       throw new GateRuntimeException("Could not create SeqEncoder instance",ex);
     }

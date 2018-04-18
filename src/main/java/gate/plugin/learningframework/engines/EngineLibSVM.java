@@ -213,7 +213,7 @@ public class EngineLibSVM extends EngineMB {
         ModelApplication gc = new ModelApplication(instAnn, prediction);
         gcs.add(gc);
       } else {
-        int bestLabel = (new Double(svm.svm_predict(svmModel, svmInstance))).intValue();
+        int bestLabel = ((Double)(svm.svm_predict(svmModel, svmInstance))).intValue();
         if (svm.svm_check_probability_model(svmModel) == 1) {
           double[] confidences = new double[numberOfLabels];
           double v = svm.svm_predict_probability(svmModel, svmInstance, confidences);
@@ -312,6 +312,7 @@ public class EngineLibSVM extends EngineMB {
    * @return 
    */
   @Override
+  @SuppressWarnings("unchecked")
   public EvaluationResult evaluate(String algorithmParameters, 
           EvaluationMethod evaluationMethod, int numberOfFolds, double trainingFraction, 
           int numberOfRepeats) {
@@ -399,7 +400,7 @@ public class EngineLibSVM extends EngineMB {
           for(int k=0; k<svm_test.l; k++) {
             nrTotal++;
             svm_node[] svmInstance = svm_test.x[k];
-            int bestLabel = (new Double(svm.svm_predict(model, svmInstance))).intValue();
+            int bestLabel = ((Double)(svm.svm_predict(model, svmInstance))).intValue();
             if(bestLabel == Math.round(svm_test.y[k])) {
               nrCorrect++;
             } else {

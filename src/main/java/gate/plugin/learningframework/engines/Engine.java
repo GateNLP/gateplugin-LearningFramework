@@ -28,6 +28,7 @@ import gate.plugin.learningframework.features.FeatureInfo;
 import gate.plugin.learningframework.features.TargetType;
 import gate.util.GateRuntimeException;
 import java.io.File;
+import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.util.List;
 import org.apache.log4j.Logger;
@@ -133,7 +134,9 @@ public abstract class Engine {
     Engine eng;
     try {
       System.err.println("CREATE ENGINE: trying to create for class "+algorithm.getEngineClass());
-      eng = (Engine)algorithm.getEngineClass().newInstance();
+      @SuppressWarnings("unchecked")
+      Constructor tmpc = algorithm.getEngineClass().getDeclaredConstructor();
+      eng = (Engine)tmpc.newInstance();
     } catch (Exception ex) {
       throw new GateRuntimeException("Could not create the Engine "+algorithm.getEngineClass(),ex);
     }
@@ -192,7 +195,7 @@ public abstract class Engine {
       //eng = (Engine)info.getClass().getClassLoader().loadClass(classname).newInstance();
       //System.err.println("Trying fomr var: >"+info.engineClass+"<");      
       //eng = (Engine)info.getClass().getClassLoader().loadClass(info.engineClass.trim()).newInstance();
-      eng = (Engine)Class.forName(info.engineClass).newInstance();
+      eng = (Engine)Class.forName(info.engineClass).getDeclaredConstructor().newInstance();
     } catch (Exception ex) {
       throw new GateRuntimeException("Error creating engine class when loading: "+info.engineClass,ex);
     }
