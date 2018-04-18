@@ -92,6 +92,7 @@ public class TestCorpusRepresentationVD2JS {
   }  
 
   @Test
+  @SuppressWarnings("unchecked")
   public void json4stuff1() {
     String spec = "<ROOT>"+
             "<ATTRIBUTE><FEATURE>theFeature</FEATURE><DATATYPE>nominal</DATATYPE></ATTRIBUTE>"+

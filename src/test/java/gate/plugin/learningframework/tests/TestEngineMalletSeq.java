@@ -75,6 +75,7 @@ public class TestEngineMalletSeq {
   }
   
   @Test
+  @SuppressWarnings("unchecked")
   public void testEngineMalletSeq1() throws MalformedURLException, ResourceInstantiationException, IOException, XMLStreamException {
     File configFile = new File("tests/seq-wikipedia1/feats2.xml");
     FeatureSpecification spec = new FeatureSpecification(configFile);
@@ -204,10 +205,10 @@ public class TestEngineMalletSeq {
     //   still not as good as we were before refactoring: 0.3646/0.42988
     // Comparison with the previous version shows that Token.orth often was MV,
     // so we deliberately use special_value for that feature: 0.2745/0.3379
-    // After adding back the NE features which are not boolean, got 0.3597/0.4223
+    // After adding back the NE features which are not boolean, got 0.3775/0.4223
     // => Good enough, it seems this works now correctly!
     
-    assertEquals(0.3597, stats.getFMeasureStrict(1.0), 0.01);
+    assertEquals(0.3775, stats.getFMeasureStrict(1.0), 0.01);
     assertEquals(0.4223, stats.getFMeasureLenient(1.0), 0.01);
         
   }
