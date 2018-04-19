@@ -285,7 +285,7 @@ public class LF_EvaluateClassification extends LF_TrainBase {
     // Create the engine from the Algorithm parameter
     FeatureInfo fi = featureSpec.getFeatureInfo();
     fi.setGlobalScalingMethod(scaleFeatures);
-    engine = Engine.createEngine(trainingAlgorithm, getAlgorithmParameters(), fi, TargetType.NOMINAL, dataDirURL);
+    engine = Engine.create(trainingAlgorithm, getAlgorithmParameters(), fi, TargetType.NOMINAL, dataDirURL);
     
     System.err.println("DEBUG: created the engine: " + engine);
 

@@ -175,7 +175,7 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
     dataDir = dataDirectory;
 
     // Restore the Engine
-    engine = gate.plugin.learningframework.engines.Engine.loadEngine(dataDir, getAlgorithmParameters());
+    engine = gate.plugin.learningframework.engines.Engine.load(dataDir, getAlgorithmParameters());
     System.out.println("LF-Info: model loaded is now "+engine);
 
     // TODO: the Info file for a sequence tagger should include the SeqEncoder class and options to be used

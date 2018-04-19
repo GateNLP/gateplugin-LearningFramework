@@ -177,7 +177,7 @@ public class LF_ApplyRegression extends LearningFrameworkPRBase {
     } else {
 
       // Restore the Engine
-      engine = Engine.loadEngine(savedModelDirectoryURL, getAlgorithmParameters());
+      engine = Engine.load(savedModelDirectoryURL, getAlgorithmParameters());
       System.out.println("LF-Info: model loaded is now " + engine);
 
       if (engine.getModel() == null) {

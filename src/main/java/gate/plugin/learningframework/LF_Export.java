@@ -31,9 +31,12 @@ import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
+import gate.plugin.learningframework.data.CorpusRepresentation;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletSeq;
+import gate.plugin.learningframework.engines.AlgorithmKind;
 import gate.plugin.learningframework.engines.Engine;
+import gate.plugin.learningframework.export.CorpusExporter;
 import gate.plugin.learningframework.features.FeatureSpecification;
 import gate.plugin.learningframework.features.SeqEncoder;
 import gate.plugin.learningframework.features.SeqEncoderEnum;
@@ -157,13 +160,9 @@ public class LF_Export extends LF_ExportBase {
   public TargetType getTargetType() { return targetType; }
   
   
-  // Depending on what the user wants, we use one of the two, so we avoid constant casting.
-  private CorpusRepresentationMalletTarget corpusRepresentationTarget = null;
-  private CorpusRepresentationMalletSeq corpusRepresentationSeq = null;
+  private CorpusRepresentation corpusRepresentation = null;
   
   private FeatureSpecification featureSpec = null;
-
-  private Engine engine = null;
 
   protected String sequenceSpan;
 
@@ -213,6 +212,7 @@ public class LF_Export extends LF_ExportBase {
   
   private boolean haveSequenceProblem = false;  // true if a classAnnotationType is specified
   private boolean haveSequenceAlg    = false;  // tue if we export for MALLET_SEQ
+  private CorpusExporter corpusExporter = null;
   
   // TODO: 
   // Some export formats may need to directly write each document at execute time while
@@ -229,49 +229,37 @@ public class LF_Export extends LF_ExportBase {
     if(haveSequenceAlg) {
       if(haveSequenceProblem) {
         AnnotationSet classAS = inputAS.get(classAnnotationTypesSet);
-        corpusRepresentationSeq.add(instanceAS, inputAS.get(getSequenceSpan()), inputAS, classAS, null, targetType, instanceWeightFeature, nameFeatureName, seqEncoder);
+        corpusRepresentation.add(instanceAS, inputAS.get(getSequenceSpan()), inputAS, classAS, null, targetType, instanceWeightFeature, nameFeatureName, seqEncoder);
       } else {
-        corpusRepresentationSeq.add(instanceAS, inputAS.get(getSequenceSpan()), inputAS, null, getTargetFeature(), targetType, instanceWeightFeature, nameFeatureName, seqEncoder);        
+        corpusRepresentation.add(instanceAS, inputAS.get(getSequenceSpan()), inputAS, null, getTargetFeature(), targetType, instanceWeightFeature, nameFeatureName, seqEncoder);        
       }
     } else {
       if(haveSequenceProblem) {
         AnnotationSet classAS = inputAS.get(classAnnotationTypesSet);
-        corpusRepresentationTarget.add(instanceAS, null, inputAS, classAS, null, targetType, instanceWeightFeature, nameFeatureName, seqEncoder);
+        corpusRepresentation.add(instanceAS, null, inputAS, classAS, null, targetType, instanceWeightFeature, nameFeatureName, seqEncoder);
       } else {
-        corpusRepresentationTarget.add(instanceAS, null, inputAS, null, getTargetFeature(), targetType, instanceWeightFeature, nameFeatureName, seqEncoder);
+        corpusRepresentation.add(instanceAS, null, inputAS, null, getTargetFeature(), targetType, instanceWeightFeature, nameFeatureName, seqEncoder);
       }
     }
     return doc;
   }
 
   @Override
-  public void afterLastDocument(Controller arg0, Throwable t) {
-    File outDir = Files.fileFromURL(getDataDirectory());
-    
-    if(!haveSequenceAlg) { 
-      // TODO: eventually the finish adding should maybe get into some Exporter method,
-      // similar how this is now done by the Engine?
-      corpusRepresentationTarget.finishAdding();
-      Exporter.export(corpusRepresentationTarget, exporter, outDir, getInstanceType(), getAlgorithmParameters());
-    } else {
-      corpusRepresentationSeq.finishAdding();
-      Exporter.export(corpusRepresentationSeq, exporter, outDir, getInstanceType(), getAlgorithmParameters());
-    }
-  }
-
-  @Override
-  protected void finishedNoDocument(Controller c, Throwable t) {
-    logger.error("Processing finished, but got an error or no documents seen, cannot export!");
-  }
-
-  @Override
   protected void beforeFirstDocument(Controller controller) {
 
+    if(getExporter() == null) {
+      throw new GateRuntimeException("Exporter parameter is null");
+    }
+    
     System.err.println("DEBUG: Before Documents.");
     if(getSeqEncoder().getEncoderClass() == null) {
       throw new GateRuntimeException("SeqEncoder class not yet implemented, please choose another one: "+getSeqEncoder());
     }
     
+    // Read and parse the feature specification
+    featureSpec = new FeatureSpecification(featureSpecURL);
+    System.err.println("DEBUG Read the feature specification: "+featureSpec);
+
     try {
       @SuppressWarnings("unchecked")
       Constructor tmpc = getSeqEncoder().getEncoderClass().getDeclaredConstructor();
@@ -282,15 +270,43 @@ public class LF_Export extends LF_ExportBase {
     }
     
     if(getClassAnnotationTypes() == null) setClassAnnotationTypes(new ArrayList<>());
-    if(!getClassAnnotationTypes().isEmpty()) {
+    if(!getClassAnnotationTypes().isEmpty()) {      
       classAnnotationTypesSet = new HashSet<>();
       classAnnotationTypesSet.addAll(classAnnotationTypes);
+      // having span annotations means that we have a sequence problem
+      haveSequenceProblem = true;
+      // in this case, the target feature must not be set
+      if(getTargetFeature() != null && !getTargetFeature().isEmpty()) {
+        throw new GateRuntimeException("Either targetFeature or classAnnotationTypes must be specified, not both");
+      }
+    } else {
+      // we do not have class annotations, so we must have the target feature
+      if(getTargetFeature() == null || getTargetFeature().isEmpty()) {
+        throw new GateRuntimeException("One of targetFeature or classAnnotationTypes must be specified");
+      }
+      // we do not have a sequence tagging problem
+      haveSequenceProblem = false;      
+    }
+    
+    AlgorithmKind algkind = exporter.getAlgorithmKind();
+    // now check if the problem is compatible with the algorithm kind:
+    // here are all combinations and if they are compatible:
+    // seq prob / SEQU:  yes
+    // seq prob / REGR:  NO
+    // seq prob / CLASS: yes
+    // no seq   / SEQU:  NO
+    // no seq   / REGR:  yes
+    // no seq   / CLASS: yes
+    if(haveSequenceProblem && algkind == AlgorithmKind.REGRESSOR) {
+      throw new GateRuntimeException("Cannot use a regressor for a sequence tagging problem");
+    } else if(!haveSequenceProblem && algkind == AlgorithmKind.SEQUENCE_TAGGER) {
+      throw new GateRuntimeException("Cannot use a sequence tagger if it is not a sequence tagging problem");
     }
 
-    
-    if(getExporter() == Exporter.EXPORTER_JSON_SEQ) {
+    // Check if we have a sequence span if the algorithm is a Sequence Tagger
+    if(getExporter().getAlgorithmKind() == AlgorithmKind.SEQUENCE_TAGGER) {
       if(getSequenceSpan() == null || getSequenceSpan().isEmpty()) {
-        throw new GateRuntimeException("SequenceSpan parameter is required for EXPORTER_PYTHON_SEQ");
+        throw new GateRuntimeException("SequenceSpan parameter is required for Sequence exporter");
       } 
     } else {    
       if(getSequenceSpan() != null && !getSequenceSpan().isEmpty()) {
@@ -298,47 +314,34 @@ public class LF_Export extends LF_ExportBase {
         throw new GateRuntimeException("SequenceSpan parameter must not be specified unless Sequence exporter is used");
       }
     }
-    
-    
-    
-    // Read and parse the feature specification
-    featureSpec = new FeatureSpecification(featureSpecURL);
-    System.err.println("DEBUG Read the feature specification: "+featureSpec);
+    haveSequenceAlg = (algkind == AlgorithmKind.SEQUENCE_TAGGER);
 
-    if(getTargetFeature() != null && !getTargetFeature().isEmpty()) {
-      // we want to export things as regression or classification problem, classAnnotationType must be empty
-      haveSequenceProblem = false;
-      if(getClassAnnotationTypes() != null && !getClassAnnotationTypes().isEmpty()) {
-        throw new GateRuntimeException("Either targetFeature or classAnnotationType must be specified, not both");
-      }
-      // NOTE: if we do not have a sequence tagging problem, we do not allow to export sequences!
-      haveSequenceAlg = false; //(getExporter() == Exporter.EXPORTER_MALLET_SEQ);
-      corpusRepresentationTarget = new CorpusRepresentationMalletTarget(featureSpec.getFeatureInfo(), scaleFeatures, targetType);
-      haveSequenceAlg = false; //(getExporter() == Exporter.EXPORTER_MALLET_SEQ);
-      System.err.println("DEBUG: created the corpusRepresentationMalletClass: "+corpusRepresentationTarget);
-    } else if(getClassAnnotationTypes() != null && !getClassAnnotationTypes().isEmpty()) {
-      haveSequenceProblem = true;
-      if(getTargetFeature() != null && !getTargetFeature().isEmpty()) {
-        throw new GateRuntimeException("Either targetFeature or classAnnotationTypes must be specified, not both");
-      }
-      // If we have a sequence tagging problem, we can still export in various ways. 
-      // TOOD: currently we always create a Mallet representation here, depending on the exporter, 
-      // one for sequence tagging or classification, but eventually, the exporter class should decide
-      // which representation is the best for it!     
-      if(getExporter() == Exporter.EXPORTER_JSON_SEQ) {
-        corpusRepresentationSeq = new CorpusRepresentationMalletSeq(featureSpec.getFeatureInfo(), scaleFeatures);
-        System.err.println("DEBUG: created the corpusRepresentationMalletSeq: "+corpusRepresentationSeq);
-        haveSequenceAlg = true;
-      } else {
-        corpusRepresentationTarget = new CorpusRepresentationMalletTarget(featureSpec.getFeatureInfo(), scaleFeatures,TargetType.NOMINAL);
-        System.err.println("DEBUG: created the corpusRepresentationMalletClass: "+corpusRepresentationTarget);        
-        haveSequenceAlg = false; 
-      }
-  }
+    // create the corpus exporter
+    corpusExporter = CorpusExporter.create(exporter, getAlgorithmParameters(), featureSpec.getFeatureInfo(), getInstanceType(), dataDirectory);
     
-    
+    corpusRepresentation = corpusExporter.getCorpusRepresentation();
+
     
     System.err.println("DEBUG: setup of the export PR complete");
+  }
+
+  @Override
+  public void afterLastDocument(Controller arg0, Throwable t) {
+    File outDir = Files.fileFromURL(getDataDirectory());
+    
+    corpusRepresentation.finishAdding();
+    corpusExporter.export();
+  }
+
+  @Override
+  protected void finishedNoDocument(Controller c, Throwable t) {
+    logger.error("Processing finished, but got an error or no documents seen, cannot export!");
+  }
+
+
+  
+  private Exception GateRuntimeException(String exporter_parameter_is_null) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
 }

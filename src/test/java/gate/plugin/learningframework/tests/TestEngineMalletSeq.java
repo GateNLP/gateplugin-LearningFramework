@@ -81,7 +81,7 @@ public class TestEngineMalletSeq {
     FeatureSpecification spec = new FeatureSpecification(configFile);
     FeatureInfo featureInfo = spec.getFeatureInfo();
     System.out.println("FeatureInfo="+featureInfo);
-    Engine engine = Engine.createEngine(AlgorithmClassification.MALLET_SEQ_CRF, "", featureInfo, TargetType.NOMINAL, null);
+    Engine engine = Engine.create(AlgorithmClassification.MALLET_SEQ_CRF, "", featureInfo, TargetType.NOMINAL, null);
     CorpusRepresentationMalletSeq crm = (CorpusRepresentationMalletSeq)engine.getCorpusRepresentation();
     System.err.println("TESTS: have engine "+engine);
     
@@ -129,7 +129,7 @@ public class TestEngineMalletSeq {
     engine.saveEngine(new File("."));
     
     // Now check if we can restore the engine and thus the corpus representation
-    Engine engine2 = Engine.loadEngine(new File(".").toURI().toURL(), "");
+    Engine engine2 = Engine.load(new File(".").toURI().toURL(), "");
     System.err.println("RESTORED engine is "+engine2);
     
     // check if the corpusRepresentation has been restored correctly
@@ -209,7 +209,7 @@ public class TestEngineMalletSeq {
     // => Good enough, it seems this works now correctly!
     
     assertEquals(0.3775, stats.getFMeasureStrict(1.0), 0.01);
-    assertEquals(0.4223, stats.getFMeasureLenient(1.0), 0.01);
+    assertEquals(0.4442, stats.getFMeasureLenient(1.0), 0.01);
         
   }
 

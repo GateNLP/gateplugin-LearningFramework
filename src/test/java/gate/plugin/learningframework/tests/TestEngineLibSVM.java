@@ -72,7 +72,7 @@ public class TestEngineLibSVM {
     File configFile = new File("tests/cl-ionosphere/feats.xml");
     FeatureSpecification spec = new FeatureSpecification(configFile);
     FeatureInfo featureInfo = spec.getFeatureInfo();
-    Engine engine = Engine.createEngine(AlgorithmClassification.LIBSVM_CL, "", featureInfo, TargetType.NOMINAL, null);
+    Engine engine = Engine.create(AlgorithmClassification.LIBSVM_CL, "", featureInfo, TargetType.NOMINAL, null);
     CorpusRepresentationMalletTarget crm = (CorpusRepresentationMalletTarget)engine.getCorpusRepresentation();
     System.err.println("TESTS: have engine "+engine);
     
@@ -95,7 +95,7 @@ public class TestEngineLibSVM {
     engine.saveEngine(new File("."));
     
     // Now check if we can restore the engine and thus the corpus representation
-    Engine engine2 = Engine.loadEngine(new File(".").toURI().toURL(), "");
+    Engine engine2 = Engine.load(new File(".").toURI().toURL(), "");
     System.err.println("RESTORED engine is "+engine2);
     
     // check if the corpusRepresentation has been restored correctly
@@ -142,7 +142,7 @@ public class TestEngineLibSVM {
     File configFile = new File("tests/cl-ionosphere/feats.xml");
     FeatureSpecification spec = new FeatureSpecification(configFile);
     FeatureInfo featureInfo = spec.getFeatureInfo();
-    Engine engine = Engine.createEngine(AlgorithmClassification.LIBSVM_CL, "", featureInfo, TargetType.NOMINAL, null);
+    Engine engine = Engine.create(AlgorithmClassification.LIBSVM_CL, "", featureInfo, TargetType.NOMINAL, null);
     System.err.println("TestEngineLibSVM-testEngineLibSvmEvalClass: have engine "+engine);
     CorpusRepresentationMalletTarget crm = (CorpusRepresentationMalletTarget)engine.getCorpusRepresentation();
     
@@ -174,7 +174,7 @@ public class TestEngineLibSVM {
     File configFile = new File("tests/rg-abalone/feats.xml");
     FeatureSpecification spec = new FeatureSpecification(configFile);
     FeatureInfo featureInfo = spec.getFeatureInfo();
-    Engine engine = Engine.createEngine(AlgorithmRegression.LIBSVM_RG, "", featureInfo, TargetType.NUMERIC, null);
+    Engine engine = Engine.create(AlgorithmRegression.LIBSVM_RG, "", featureInfo, TargetType.NUMERIC, null);
     CorpusRepresentationMalletTarget crm = (CorpusRepresentationMalletTarget)engine.getCorpusRepresentation();
     System.err.println("TESTS: have engine "+engine);
     
@@ -195,7 +195,7 @@ public class TestEngineLibSVM {
     engine.saveEngine(new File("."));
     
     // Now check if we can restore the engine and thus the corpus representation
-    Engine engine2 = Engine.loadEngine(new File(".").toURI().toURL(), "");
+    Engine engine2 = Engine.load(new File(".").toURI().toURL(), "");
     System.err.println("RESTORED engine is "+engine2);
     
     // check if the corpusRepresentation has been restored correctly

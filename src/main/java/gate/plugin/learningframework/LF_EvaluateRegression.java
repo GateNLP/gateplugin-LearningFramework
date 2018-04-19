@@ -229,7 +229,7 @@ public class LF_EvaluateRegression extends LF_TrainBase {
     fi.setGlobalScalingMethod(scaleFeatures);
     
     // Create the engine from the Algorithm parameter
-    engine = Engine.createEngine(trainingAlgorithm, getAlgorithmParameters(), fi, TargetType.NUMERIC, dataDirURL);
+    engine = Engine.create(trainingAlgorithm, getAlgorithmParameters(), fi, TargetType.NUMERIC, dataDirURL);
     
     System.err.println("DEBUG: created the engine: " + engine);
     corpusRepresentation = (CorpusRepresentationMalletTarget)engine.getCorpusRepresentation();

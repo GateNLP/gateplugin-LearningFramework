@@ -29,7 +29,6 @@ import cc.mallet.types.LabelAlphabet;
 import gate.plugin.learningframework.Globals;
 import gate.plugin.learningframework.data.Attribute;
 import gate.plugin.learningframework.data.Attributes;
-import gate.plugin.learningframework.data.CorpusRepresentation;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.engines.Info;
 import gate.plugin.learningframework.engines.Parms;
@@ -62,8 +61,9 @@ public class CorpusExporterCSV extends CorpusExporterMalletRelated {
   }
 
   @Override
-  public void export(File directory, CorpusRepresentation cr, String instanceType, String parms) {   
-    CorpusRepresentationMallet crm = (CorpusRepresentationMallet)cr;
+  public void export() {   
+    exportMeta();
+    CorpusRepresentationMallet crm = (CorpusRepresentationMallet)corpusRepresentation;
     InstanceList malletInstances = crm.getRepresentationMallet();
     Pipe pipe = malletInstances.getPipe();
     Attributes attrs = new Attributes(pipe,instanceType);
@@ -106,7 +106,7 @@ public class CorpusExporterCSV extends CorpusExporterMalletRelated {
       if(twofiles) {
         basename = "indep";
       }
-      dataFile = new File(directory,basename+extension);
+      dataFile = new File(dataDirFile,basename+extension);
       dataOut = new PrintStream(new FileOutputStream(dataFile));
     } catch (Exception ex) {
       throw new RuntimeException("Could not open "+dataFile.getAbsolutePath(),ex);
@@ -116,7 +116,7 @@ public class CorpusExporterCSV extends CorpusExporterMalletRelated {
     File targetFile = null;
     if(twofiles) {
       try {
-        targetFile = new File(directory,"dep"+extension);
+        targetFile = new File(dataDirFile,"dep"+extension);
         targetOut = new PrintStream(new FileOutputStream(targetFile));
         //System.err.println("DEBUG: opened dep file "+targetFile.getAbsolutePath());
       } catch (Exception ex) {
@@ -275,5 +275,6 @@ public class CorpusExporterCSV extends CorpusExporterMalletRelated {
     what = what.replaceAll("[\\n\\t]"," ");
     return what;
   }
+
   
 }

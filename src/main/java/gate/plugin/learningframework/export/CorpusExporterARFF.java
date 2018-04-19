@@ -59,15 +59,16 @@ public class CorpusExporterARFF extends CorpusExporterMalletRelated {
   }
 
   @Override
-  public void export(File directory, CorpusRepresentation cr, String instanceType, String parms) {    
-    CorpusRepresentationMallet crm = (CorpusRepresentationMallet)cr;
+  public void export() {    
+    exportMeta();
+    CorpusRepresentationMallet crm = (CorpusRepresentationMallet)corpusRepresentation;
     InstanceList malletInstances = crm.getRepresentationMallet();
     Pipe pipe = malletInstances.getPipe();
     Attributes attrs = new Attributes(pipe,instanceType);
     // We create two files: one with just the header and no instances and
     // one with everything
-    File headerOnlyFile = new File(directory,Globals.headerBasename+".arff");
-    File dataFile = new File(directory,Globals.dataBasename+".arff");
+    File headerOnlyFile = new File(dataDirFile,Globals.headerBasename+".arff");
+    File dataFile = new File(dataDirFile,Globals.dataBasename+".arff");
     PrintStream headerOut = null;
     try {
       headerOut = new PrintStream(new FileOutputStream(headerOnlyFile));
@@ -297,5 +298,11 @@ public class CorpusExporterARFF extends CorpusExporterMalletRelated {
     }
     return sb.toString();
   } 
+
+
+  @Override
+  public void initWhenCreating() {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
   
 }

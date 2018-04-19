@@ -27,7 +27,6 @@ import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelAlphabet;
 import gate.plugin.learningframework.Globals;
 import gate.plugin.learningframework.data.Attributes;
-import gate.plugin.learningframework.data.CorpusRepresentation;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.engines.Info;
 import gate.plugin.learningframework.engines.Parms;
@@ -66,8 +65,9 @@ public class CorpusExporterJsonTarget extends CorpusExporterJsonBase {
   }
 
   @Override
-  public void export(File directory, CorpusRepresentation cr, String instanceType, String parms) {
-    CorpusRepresentationMallet crm = (CorpusRepresentationMallet)cr;
+  public void export() {
+    exportMeta();
+    CorpusRepresentationMallet crm = (CorpusRepresentationMallet)corpusRepresentation;
     InstanceList malletInstances = crm.getRepresentationMallet();
     Pipe pipe = malletInstances.getPipe();
     Attributes attrs = new Attributes(pipe, instanceType);
@@ -89,7 +89,7 @@ public class CorpusExporterJsonTarget extends CorpusExporterJsonBase {
     File dataFile = null;
     try {
       String basename = Globals.dataBasename;
-      dataFile = new File(directory, basename + ".py.json");
+      dataFile = new File(dataDirFile, basename + ".py.json");
       dataOut = new PrintStream(new FileOutputStream(dataFile));
     } catch (Exception ex) {
       throw new RuntimeException("Could not open " + dataFile.getAbsolutePath(), ex);

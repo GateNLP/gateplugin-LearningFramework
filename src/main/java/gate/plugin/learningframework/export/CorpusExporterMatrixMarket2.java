@@ -24,7 +24,6 @@ import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.Label;
 import gate.plugin.learningframework.LFUtils;
-import gate.plugin.learningframework.data.CorpusRepresentation;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.engines.Info;
 import gate.plugin.learningframework.features.FeatureExtractionMalletSparse;
@@ -54,16 +53,17 @@ public class CorpusExporterMatrixMarket2 extends CorpusExporterMalletRelated {
   }
 
   @Override
-  public void export(File directory, CorpusRepresentation cr, String instanceType, String parms) {
-    CorpusRepresentationMallet crm = (CorpusRepresentationMallet)cr;
+  public void export() {
+    exportMeta();
+    CorpusRepresentationMallet crm = (CorpusRepresentationMallet)corpusRepresentation;
     PrintStream outDep = null;
     PrintStream outIndep = null;
     PrintStream outInstWeights = null;
     PrintStream outCosts = null;
-    File outFileIndep = new File(directory, "indep.mtx");
-    File outFileDep = new File(directory, "dep.mtx");
-    File outFileCosts = new File(directory,"instcosts.mtx");
-    File outFileInstWeights = new File(directory, "instweights.mtx");
+    File outFileIndep = new File(dataDirFile, "indep.mtx");
+    File outFileDep = new File(dataDirFile, "dep.mtx");
+    File outFileCosts = new File(dataDirFile,"instcosts.mtx");
+    File outFileInstWeights = new File(dataDirFile, "instweights.mtx");
     try {
       outDep = new PrintStream(outFileDep);
       outIndep = new PrintStream(outFileIndep);

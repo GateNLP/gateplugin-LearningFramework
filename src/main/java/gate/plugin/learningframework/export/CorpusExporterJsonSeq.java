@@ -28,9 +28,10 @@ import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelAlphabet;
 import gate.plugin.learningframework.Globals;
+import gate.plugin.learningframework.ScalingMethod;
 import gate.plugin.learningframework.data.Attributes;
-import gate.plugin.learningframework.data.CorpusRepresentation;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
+import gate.plugin.learningframework.data.CorpusRepresentationMalletSeq;
 import gate.plugin.learningframework.engines.Info;
 import gate.plugin.learningframework.engines.Parms;
 import gate.plugin.learningframework.features.FeatureExtractionMalletSparse;
@@ -70,8 +71,9 @@ public class CorpusExporterJsonSeq extends CorpusExporterJsonBase {
   }
 
   @Override
-  public void export(File directory, CorpusRepresentation cr, String instanceType, String parms) {
-    CorpusRepresentationMallet crm = (CorpusRepresentationMallet)cr;
+  public void export() {
+    exportMeta();
+    CorpusRepresentationMallet crm = (CorpusRepresentationMallet)corpusRepresentation;
     InstanceList malletInstances = crm.getRepresentationMallet();
     Pipe pipe = malletInstances.getPipe();
     Attributes attrs = new Attributes(pipe, instanceType);
@@ -93,7 +95,7 @@ public class CorpusExporterJsonSeq extends CorpusExporterJsonBase {
     File dataFile = null;
     try {
       String basename = Globals.dataBasename;
-      dataFile = new File(directory, basename + ".py.json");
+      dataFile = new File(dataDirFile, basename + ".py.json");
       dataOut = new PrintStream(new FileOutputStream(dataFile));
     } catch (Exception ex) {
       throw new RuntimeException("Could not open " + dataFile.getAbsolutePath(), ex);
@@ -179,4 +181,9 @@ public class CorpusExporterJsonSeq extends CorpusExporterJsonBase {
     return sb.toString();
   }// instance2String
 
+  @Override
+  public void initWhenCreating() {
+    corpusRepresentation = (CorpusRepresentationMalletSeq)new CorpusRepresentationMalletSeq(featureInfo, ScalingMethod.NONE);
+  }
+  
 }

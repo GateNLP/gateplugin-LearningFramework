@@ -29,7 +29,11 @@ import gate.lib.interaction.process.ProcessSimple;
 import gate.plugin.learningframework.EvaluationMethod;
 import gate.plugin.learningframework.Exporter;
 import gate.plugin.learningframework.ModelApplication;
+import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
+import gate.plugin.learningframework.export.CorpusExporter;
+import gate.plugin.learningframework.features.FeatureInfo;
+import gate.plugin.learningframework.features.TargetType;
 import gate.plugin.learningframework.mallet.LFPipe;
 import gate.util.Files;
 import gate.util.GateRuntimeException;
@@ -80,6 +84,17 @@ public abstract class EngineMBSklearnBase extends EngineMB {
   protected String shellcmd = null;
   protected String shellparms = null;
   protected String wrapperhome = null;
+  protected CorpusExporter corpusExporter = null;
+  
+  @Override
+  protected void initWhenCreating(URL directory, Algorithm algorithm, String parameters, FeatureInfo fi, TargetType tt) {
+    //Previously, this would create the proper corpus representation in the MB base class,
+    //now we instead create the corpus exporter we use later and get the CR from it
+    //super.initWhenCreating(directory, algorithm, parameters, fi, tt);
+    corpusExporter = CorpusExporter.create(Exporter.EXPORTER_CSV_CLASS, "-t -n "+parameters, featureInfo, parameters, directory);
+    corpusRepresentation = (CorpusRepresentationMallet)corpusExporter.getCorpusRepresentation();
+  } 
+  
   
   /**
    * Try to find the script running the sklearn-Wrapper command.
@@ -227,8 +242,12 @@ public abstract class EngineMBSklearnBase extends EngineMB {
     // find out if we train classification or regression
     // TODO: NOTE: not sure if classification/regression matters here as long as
     // the actual exporter class does the right thing based on the corpus representation!
-    Exporter.export(corpusRepresentation, 
-            Exporter.EXPORTER_MATRIXMARKET2_CLASS, dataDirectory, instanceType, parms);
+    
+    // was previously:
+    //Exporter.export(corpusRepresentation, 
+    //        Exporter.EXPORTER_MATRIXMARKET2_CLASS, dataDirectory, instanceType, parms);
+    corpusExporter.export();
+    
     String dataFileName = dataDirectory.getAbsolutePath()+File.separator;
     String modelFileName = new File(dataDirectory, MODEL_BASENAME).getAbsolutePath();
     finalCommand.add(commandFile.getAbsolutePath());

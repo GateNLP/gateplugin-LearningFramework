@@ -257,7 +257,7 @@ public class LF_TrainChunking extends LF_TrainBase {
     
     FeatureInfo fi = featureSpec.getFeatureInfo();
     fi.setGlobalScalingMethod(scaleFeatures);
-    engine = Engine.createEngine(trainingAlgorithm, getAlgorithmParameters(), fi, TargetType.NOMINAL, dataDirectory);
+    engine = Engine.create(trainingAlgorithm, getAlgorithmParameters(), fi, TargetType.NOMINAL, dataDirectory);
     corpusRepresentation = engine.getCorpusRepresentation();
     System.err.println("DEBUG: created the engine: " + engine + " with CR="+engine.getCorpusRepresentation());  
     nrDocuments = 0;

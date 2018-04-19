@@ -36,7 +36,7 @@ import org.apache.log4j.Logger;
 /**
  * Base class for all engines.
  * This is the base class for all engines. It also provides the static factory methods 
- * createEngine and loadEngine for creating and re-loading engines.
+ create and load for creating and re-loading engines.
  * @author Johann Petrak
  */
 public abstract class Engine {
@@ -130,7 +130,7 @@ public abstract class Engine {
    * @param directory
    * @return 
    */
-  public static Engine createEngine(Algorithm algorithm, String parms, FeatureInfo featureInfo, TargetType targetType, URL directory) {
+  public static Engine create(Algorithm algorithm, String parms, FeatureInfo featureInfo, TargetType targetType, URL directory) {
     Engine eng;
     try {
       System.err.println("CREATE ENGINE: trying to create for class "+algorithm.getEngineClass());
@@ -181,7 +181,7 @@ public abstract class Engine {
    * @param directory
    * @return 
    */
-  public static Engine loadEngine(URL directory, String parms) {
+  public static Engine load(URL directory, String parms) {
     // 1) read the info file
     Info info = Info.load(directory);
     // read the feature info file: not all engines do this (YET!) so if there is 

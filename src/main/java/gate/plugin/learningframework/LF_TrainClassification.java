@@ -234,7 +234,7 @@ public class LF_TrainClassification extends LF_TrainBase {
     // Create the engine from the Algorithm parameter
     FeatureInfo fi = featureSpec.getFeatureInfo();
     fi.setGlobalScalingMethod(scaleFeatures);
-    engine = Engine.createEngine(trainingAlgorithm, getAlgorithmParameters(), fi, TargetType.NOMINAL, dataDirectory);    
+    engine = Engine.create(trainingAlgorithm, getAlgorithmParameters(), fi, TargetType.NOMINAL, dataDirectory);    
     corpusRepresentation = (CorpusRepresentation)engine.getCorpusRepresentation();
     System.err.println("DEBUG: created the engine: " + engine + " with CR="+corpusRepresentation);
 

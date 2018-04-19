@@ -227,7 +227,7 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
       // reload the engine.
       if (engine == null || !dataDirectory.equals(oldDataDirectory) || getAlgorithmParametersIsChanged()) {
         oldDataDirectory = dataDirectory;
-        engine = Engine.loadEngine(dataDirectory, getAlgorithmParameters());
+        engine = Engine.load(dataDirectory, getAlgorithmParameters());
       }
       System.out.println("LF-Info: loaded model is " + engine);
 
