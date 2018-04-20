@@ -57,7 +57,7 @@ import java.io.PrintStream;
  *
  * @author Johann Petrak
  */
-public class CorpusExporterMBJsonSeq extends CorpusExporterMBJsonBase {
+public class CorpusExporterMRJsonSeq extends CorpusExporterMRJsonBase {
 
   @Override
   public Info getInfo() {

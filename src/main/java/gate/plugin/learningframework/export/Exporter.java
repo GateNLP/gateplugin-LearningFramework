@@ -19,30 +19,30 @@
  */
 package gate.plugin.learningframework.export;
 
-import gate.plugin.learningframework.export.CorpusExporterMBARFF;
-import gate.plugin.learningframework.export.CorpusExporterMBLibSVM;
+import gate.plugin.learningframework.export.CorpusExporterMRARFF;
+import gate.plugin.learningframework.export.CorpusExporterMRLibSVM;
 import gate.plugin.learningframework.engines.AlgorithmKind;
-import gate.plugin.learningframework.export.CorpusExporterMBCSV;
-import gate.plugin.learningframework.export.CorpusExporterMBMatrixMarket2;
-import gate.plugin.learningframework.export.CorpusExporterMBJsonSeq;
-import gate.plugin.learningframework.export.CorpusExporterMBJsonTarget;
+import gate.plugin.learningframework.export.CorpusExporterMRCSV;
+import gate.plugin.learningframework.export.CorpusExporterMRMatrixMarket2;
+import gate.plugin.learningframework.export.CorpusExporterMRJsonSeq;
+import gate.plugin.learningframework.export.CorpusExporterMRJsonTarget;
 import gate.plugin.learningframework.features.TargetType;
 
 public enum Exporter {
   //JSON_CL_DR(CorpusExporterDenseJsonTarget.class,TargetType.NOMINAL,AlgorithmKind.CLASSIFIER),
   //JSON_RG_DR(CorpusExporterDenseJsonTarget.class,TargetType.NUMERIC,AlgorithmKind.REGRESSOR),
   //JSON_SEQ_DR(CorpusExporterDenseJsonSeq.class,TargetType.NOMINAL,AlgorithmKind.SEQUENCE_TAGGER),
-  ARFF_CL_MR(CorpusExporterMBARFF.class,TargetType.NOMINAL,AlgorithmKind.CLASSIFIER),  
-  ARFF_RG_MR(CorpusExporterMBARFF.class,TargetType.NUMERIC,AlgorithmKind.REGRESSOR),  
-  CSV_CL_MR(CorpusExporterMBCSV.class,TargetType.NOMINAL,AlgorithmKind.CLASSIFIER),  
-  CSV_RG_MR(CorpusExporterMBCSV.class,TargetType.NUMERIC,AlgorithmKind.REGRESSOR),  
-  JSON_CL_MR(CorpusExporterMBJsonTarget.class,TargetType.NOMINAL,AlgorithmKind.CLASSIFIER),
-  JSON_RG_MR(CorpusExporterMBJsonTarget.class,TargetType.NUMERIC,AlgorithmKind.REGRESSOR),
-  JSON_SEQ_MR(CorpusExporterMBJsonSeq.class,TargetType.NOMINAL,AlgorithmKind.SEQUENCE_TAGGER),
-  LibSVM_CL_MR(CorpusExporterMBLibSVM.class,TargetType.NOMINAL,AlgorithmKind.CLASSIFIER),
-  LibSVM_RG_MR(CorpusExporterMBLibSVM.class,TargetType.NUMERIC,AlgorithmKind.REGRESSOR),
-  MatrixMarket2_CL_MR(CorpusExporterMBMatrixMarket2.class,TargetType.NOMINAL,AlgorithmKind.CLASSIFIER),
-  MatrixMatket2_RG_MR(CorpusExporterMBMatrixMarket2.class,TargetType.NUMERIC,AlgorithmKind.REGRESSOR
+  ARFF_CL_MR(CorpusExporterMRARFF.class,TargetType.NOMINAL,AlgorithmKind.CLASSIFIER),  
+  ARFF_RG_MR(CorpusExporterMRARFF.class,TargetType.NUMERIC,AlgorithmKind.REGRESSOR),  
+  CSV_CL_MR(CorpusExporterMRCSV.class,TargetType.NOMINAL,AlgorithmKind.CLASSIFIER),  
+  CSV_RG_MR(CorpusExporterMRCSV.class,TargetType.NUMERIC,AlgorithmKind.REGRESSOR),  
+  JSON_CL_MR(CorpusExporterMRJsonTarget.class,TargetType.NOMINAL,AlgorithmKind.CLASSIFIER),
+  JSON_RG_MR(CorpusExporterMRJsonTarget.class,TargetType.NUMERIC,AlgorithmKind.REGRESSOR),
+  JSON_SEQ_MR(CorpusExporterMRJsonSeq.class,TargetType.NOMINAL,AlgorithmKind.SEQUENCE_TAGGER),
+  LibSVM_CL_MR(CorpusExporterMRLibSVM.class,TargetType.NOMINAL,AlgorithmKind.CLASSIFIER),
+  LibSVM_RG_MR(CorpusExporterMRLibSVM.class,TargetType.NUMERIC,AlgorithmKind.REGRESSOR),
+  MatrixMarket2_CL_MR(CorpusExporterMRMatrixMarket2.class,TargetType.NOMINAL,AlgorithmKind.CLASSIFIER),
+  MatrixMatket2_RG_MR(CorpusExporterMRMatrixMarket2.class,TargetType.NUMERIC,AlgorithmKind.REGRESSOR
   );
 
   

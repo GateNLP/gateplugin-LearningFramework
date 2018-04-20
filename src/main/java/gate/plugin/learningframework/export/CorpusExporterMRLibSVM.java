@@ -36,7 +36,7 @@ import java.text.DecimalFormat;
  *
  * @author johann
  */
-public class CorpusExporterMBLibSVM extends CorpusExporterMB {
+public class CorpusExporterMRLibSVM extends CorpusExporterMR {
 
   @Override
   public Info getInfo() {

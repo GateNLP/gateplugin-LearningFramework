@@ -39,7 +39,7 @@ import java.text.DecimalFormat;
  * 
  * @author Johann Petrak
  */
-public class CorpusExporterMBMatrixMarket2 extends CorpusExporterMB {
+public class CorpusExporterMRMatrixMarket2 extends CorpusExporterMR {
 
   @Override
   public Info getInfo() {

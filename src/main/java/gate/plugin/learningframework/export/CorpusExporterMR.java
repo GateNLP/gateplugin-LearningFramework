@@ -31,7 +31,7 @@ import java.util.ArrayList;
  * Common base class of all mallet-related exporters.
  * @author johann
  */
-public abstract class CorpusExporterMB extends CorpusExporter {
+public abstract class CorpusExporterMR extends CorpusExporter {
   
   @Override
   public void initWhenCreating() {

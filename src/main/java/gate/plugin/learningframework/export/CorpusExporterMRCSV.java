@@ -47,7 +47,7 @@ import java.io.PrintStream;
  * 
  * @author johann
  */
-public class CorpusExporterMBCSV extends CorpusExporterMB {
+public class CorpusExporterMRCSV extends CorpusExporterMR {
 
   @Override
   public Info getInfo() {

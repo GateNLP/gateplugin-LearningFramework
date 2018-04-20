@@ -51,7 +51,7 @@ import java.io.PrintStream;
  *
  * @author Johann Petrak
  */
-public class CorpusExporterMBJsonTarget extends CorpusExporterMBJsonBase {
+public class CorpusExporterMRJsonTarget extends CorpusExporterMRJsonBase {
 
   @Override
   public Info getInfo() {

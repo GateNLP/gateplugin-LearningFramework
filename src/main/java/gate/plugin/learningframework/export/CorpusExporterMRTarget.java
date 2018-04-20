@@ -21,9 +21,7 @@
 package gate.plugin.learningframework.export;
 
 import cc.mallet.types.InstanceList;
-import gate.plugin.learningframework.ScalingMethod;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
-import gate.plugin.learningframework.data.CorpusRepresentationMalletSeq;
 import gate.plugin.learningframework.engines.Info;
 import java.io.File;
 
@@ -31,12 +29,12 @@ import java.io.File;
  *
  * @author johann
  */
-public class CorpusExporterMBSeq extends CorpusExporterMB {
+public class CorpusExporterMRTarget extends CorpusExporterMR {
 
   @Override
   public Info getInfo() {
     Info info = new Info();
-    info.algorithmClass = "gate.plugin.learningframework.engines.AlgorithmSequenceTagging";
+    info.algorithmClass = "gate.plugin.learningframework.engines.AlgorithmClassification";
     info.algorithmName = "DUMMY";
     info.engineClass = "DUMMY";
     info.modelClass =  "DUMMY";    
@@ -50,13 +48,8 @@ public class CorpusExporterMBSeq extends CorpusExporterMB {
     InstanceList malletInstances = crm.getRepresentationMallet();
     //Pipe pipe = malletInstances.getPipe();
     //Attributes attrs = new Attributes(pipe,instanceType);
-    malletInstances.save(new File(dataDirFile, "data.malletseq.ser"));    
+    malletInstances.save(new File(dataDirFile, "data.mallettarget.ser"));
   } // export
 
-  @Override
-  public void initWhenCreating() {
-    corpusRepresentation = (CorpusRepresentationMalletSeq)new CorpusRepresentationMalletSeq(featureInfo, ScalingMethod.NONE);
-  }
-  
   
 }
