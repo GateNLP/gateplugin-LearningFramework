@@ -81,7 +81,7 @@ public class TestEngineMalletSeq {
     FeatureSpecification spec = new FeatureSpecification(configFile);
     FeatureInfo featureInfo = spec.getFeatureInfo();
     System.out.println("FeatureInfo="+featureInfo);
-    Engine engine = Engine.create(AlgorithmClassification.MALLET_SEQ_CRF, "", featureInfo, TargetType.NOMINAL, null);
+    Engine engine = Engine.create(AlgorithmClassification.MalletCRF_SEQ_MR, "", featureInfo, TargetType.NOMINAL, null);
     CorpusRepresentationMalletSeq crm = (CorpusRepresentationMalletSeq)engine.getCorpusRepresentation();
     System.err.println("TESTS: have engine "+engine);
     

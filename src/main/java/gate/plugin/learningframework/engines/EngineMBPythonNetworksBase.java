@@ -29,7 +29,7 @@ import gate.lib.interaction.process.Process4JsonStream;
 import gate.lib.interaction.process.ProcessBase;
 import gate.lib.interaction.process.ProcessSimple;
 import gate.plugin.learningframework.EvaluationMethod;
-import gate.plugin.learningframework.Exporter;
+import gate.plugin.learningframework.export.Exporter;
 import gate.plugin.learningframework.ModelApplication;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
@@ -88,7 +88,7 @@ public abstract class EngineMBPythonNetworksBase extends EngineMB {
     //Previously, this would create the proper corpus representation in the MB base class,
     //now we instead create the corpus exporter we use later and get the CR from it
     //super.initWhenCreating(directory, algorithm, parameters, fi, tt);
-    corpusExporter = CorpusExporter.create(Exporter.EXPORTER_CSV_CLASS, "-t -n "+parameters, featureInfo, parameters, directory);
+    corpusExporter = CorpusExporter.create(Exporter.CSV_CL_MR, "-t -n "+parameters, featureInfo, parameters, directory);
     corpusRepresentation = (CorpusRepresentationMallet)corpusExporter.getCorpusRepresentation();
   } 
   
@@ -250,7 +250,7 @@ public abstract class EngineMBPythonNetworksBase extends EngineMB {
     // -n: noheaders, do not add a header row
     
     // Exporter.export(corpusRepresentation, 
-    //        Exporter.EXPORTER_CSV_CLASS, dataDirectory, instanceType, "-t -n");
+    //        Exporter.CSV_CL_MR, dataDirectory, instanceType, "-t -n");
     corpusExporter.export();
     String dataFileName = dataDirectory.getAbsolutePath()+File.separator;
     String modelFileName = new File(dataDirectory, MODEL_BASENAME).getAbsolutePath();

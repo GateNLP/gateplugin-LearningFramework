@@ -38,7 +38,7 @@ import gate.util.GateRuntimeException;
  *
  * @author Johann Petrak
  */
-public abstract class CorpusExporterJsonBase extends CorpusExporterMalletRelated {
+public abstract class CorpusExporterMBJsonBase extends CorpusExporterMB {
 
   // This returns the string representation of the feature vector
   public static String featureVector2String(FeatureVector fv, int nrFeatures, Attributes attrs, boolean asString) {

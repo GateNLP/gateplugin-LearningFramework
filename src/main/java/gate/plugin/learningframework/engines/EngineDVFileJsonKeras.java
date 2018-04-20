@@ -9,7 +9,7 @@
 package gate.plugin.learningframework.engines;
 
 /**
- * Common base class for all Engines which are dense, volatile and write JSON to a file.
+ * Keras wrapper for dense vector representation
  * 
  * 
  * @author Johann Petrak

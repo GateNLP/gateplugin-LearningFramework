@@ -21,43 +21,49 @@ package gate.plugin.learningframework.export;
 
 import cc.mallet.pipe.Pipe;
 import cc.mallet.types.Alphabet;
+import cc.mallet.types.FeatureSequence;
 import cc.mallet.types.FeatureVector;
+import cc.mallet.types.FeatureVectorSequence;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelAlphabet;
 import gate.plugin.learningframework.Globals;
+import gate.plugin.learningframework.ScalingMethod;
 import gate.plugin.learningframework.data.Attributes;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
+import gate.plugin.learningframework.data.CorpusRepresentationMalletSeq;
 import gate.plugin.learningframework.engines.Info;
 import gate.plugin.learningframework.engines.Parms;
 import gate.plugin.learningframework.features.FeatureExtractionMalletSparse;
+import gate.util.GateRuntimeException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 
+
 /**
- * Exporter (experimental so far!) for exporting feature vectors in python-readable
+ * Exporter (experimental so far!) for exporting sequences in python-readable
  * format.
  *
  * This format is very basic JSON where each example is represented as a list
  * with either two or one element: if there are two, the second element is for
- * the targets, otherwise there are only inputs. The first element is a list that
- * represents the feature vector (independent variables).
- * The optional second element is a target. If the Mallet instance does not 
- * have a target (the target object is null), then the second element is missing
+ * the targets, otherwise there are only inputs. The first element is a list of
+ * lists, each inner list represents the feature vector of a sequence element.
+ * The optional second element is a list of targets. If targets are present then
+ * the number of targets must be identical to the number of feature vectors.
  * <p>
- * Example with targets: '[[0.1, 2.3], 1]'<br>
- * Example without targets: '[[0.1, 2.3]]'
+ * Example with targets: '[[[0.1, 2.3], [1.1, 1.2]], [1, 2]]'<br>
+ * Example without targets: '[[[0.1, 2.3], [1.1, 1.2]]]'
  *
  * @author Johann Petrak
  */
-public class CorpusExporterJsonTarget extends CorpusExporterJsonBase {
+public class CorpusExporterMBJsonSeq extends CorpusExporterMBJsonBase {
 
   @Override
   public Info getInfo() {
     Info info = new Info();
 
-    info.algorithmClass = "gate.plugin.learningframework.engines.AlgorithmClassification";
+    info.algorithmClass = "gate.plugin.learningframework.engines.AlgorithmSequenceTagging";
     info.algorithmName = "DUMMY";
     info.engineClass = "DUMMY";
     info.modelClass = "DUMMY";
@@ -119,25 +125,65 @@ public class CorpusExporterJsonTarget extends CorpusExporterJsonBase {
           boolean asString,
           boolean filterMV) {
     StringBuilder sb = new StringBuilder();
-    sb.append("[");  // outermost list 
-    FeatureVector fv = (FeatureVector)inst.getData();
-    Object targetObject = inst.getTarget();
-    if (filterMV) {
-      Object ignore = inst.getProperty(FeatureExtractionMalletSparse.PROP_IGNORE_HAS_MV);
-      if (ignore != null && ignore.equals(true)) {
-          return null;
+    // For sequences, each instance wraps a feature vector list and a feature vector
+    // was created as new Instance(fvseq, fseq, null, null);
+    // where FeatureVectorSequence fvseq = new FeatureVectorSequence(vectors);
+    // and FeatureSequence fseq = new FeatureSequence(pipe.getTargetAlphabet(), labelidxs);
+
+    // First unpack the feature vector sequence and fseq 
+    FeatureVectorSequence fvseq = (FeatureVectorSequence) inst.getData();
+    FeatureSequence fseq = (FeatureSequence) inst.getTarget();
+    boolean haveTargets = (fseq != null && fseq.size() > 0);
+    if (haveTargets && (fseq.size() != fvseq.size())) {
+      throw new GateRuntimeException("There are targets but not the same number, in fvseq=" + fvseq.size() + ", targets=" + fseq.size());
+    }
+    sb.append("[");  // outermost list which encloses the list of feature vectors and the list of targets      
+    boolean firstList = true;
+    sb.append("["); // for the feature vector list
+    for (int i = 0; i < fvseq.size(); i++) {
+      FeatureVector fv = fvseq.get(i);
+      Object targetObject = fseq.get(i);
+      if (filterMV) {
+        Object ignore = inst.getProperty(FeatureExtractionMalletSparse.PROP_IGNORE_HAS_MV);
+        if (ignore != null && ignore.equals(true)) {
+          continue;
+        }
       }
+      if (firstList) {
+        firstList = false;
+      } else {
+        sb.append(", ");
+      }
+      // TODO: the python format does not allow the use of instance weights, instead the 
+      // weight must become an additional feature!
+      Double instanceWeight = (Double) inst.getProperty("instanceWeight");
+      boolean first = true;
+
+      sb.append(featureVector2String(fv, nrFeatures, attrs, asString));
     }
-    sb.append(featureVector2String(fv, nrFeatures, attrs, asString));
-    // for now, we always try to output the target, even if it is null, this may change 
-    // in the future
-    if (targetObject!=null) {
-      sb.append(", ");
-      sb.append(target2String(targetObject, targetAlphabet, asString));
-    }
+    sb.append("]"); // close the feature vector list
+    // Only if there are targets, add another list with the targets
+    if (haveTargets) {
+      sb.append(", [");
+      boolean first = true;
+      for (int i = 0; i < fseq.size(); i++) {
+        Object target = fseq.get(i);
+        if (first) {
+          first = false;
+        } else {
+          sb.append(", ");
+        }
+        sb.append(target2String(target, targetAlphabet, asString));
+      } // for each target
+      sb.append("]"); // close target list
+    } // if haveTargets
     sb.append("]");  // close outer list
     return sb.toString();
   }// instance2String
-  
+
+  @Override
+  public void initWhenCreating() {
+    corpusRepresentation = (CorpusRepresentationMalletSeq)new CorpusRepresentationMalletSeq(featureInfo, ScalingMethod.NONE);
+  }
   
 }

@@ -20,6 +20,7 @@
  */
 package gate.plugin.learningframework;
 
+import gate.plugin.learningframework.export.Exporter;
 import gate.AnnotationSet;
 import java.net.URL;
 
@@ -32,10 +33,7 @@ import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
 import gate.plugin.learningframework.data.CorpusRepresentation;
-import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
-import gate.plugin.learningframework.data.CorpusRepresentationMalletSeq;
 import gate.plugin.learningframework.engines.AlgorithmKind;
-import gate.plugin.learningframework.engines.Engine;
 import gate.plugin.learningframework.export.CorpusExporter;
 import gate.plugin.learningframework.features.FeatureSpecification;
 import gate.plugin.learningframework.features.SeqEncoder;
@@ -210,8 +208,8 @@ public class LF_Export extends LF_ExportBase {
   
   // ----------------------------------------------------------------------------
   
-  private boolean haveSequenceProblem = false;  // true if a classAnnotationType is specified
-  private boolean haveSequenceAlg    = false;  // tue if we export for MALLET_SEQ
+  private boolean haveSequenceProblem = false; 
+  private boolean haveSequenceAlg    = false;  
   private CorpusExporter corpusExporter = null;
   
   // TODO: 

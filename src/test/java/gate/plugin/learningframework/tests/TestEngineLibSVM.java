@@ -72,7 +72,7 @@ public class TestEngineLibSVM {
     File configFile = new File("tests/cl-ionosphere/feats.xml");
     FeatureSpecification spec = new FeatureSpecification(configFile);
     FeatureInfo featureInfo = spec.getFeatureInfo();
-    Engine engine = Engine.create(AlgorithmClassification.LIBSVM_CL, "", featureInfo, TargetType.NOMINAL, null);
+    Engine engine = Engine.create(AlgorithmClassification.LibSVM_CL_MR, "", featureInfo, TargetType.NOMINAL, null);
     CorpusRepresentationMalletTarget crm = (CorpusRepresentationMalletTarget)engine.getCorpusRepresentation();
     System.err.println("TESTS: have engine "+engine);
     
@@ -142,7 +142,7 @@ public class TestEngineLibSVM {
     File configFile = new File("tests/cl-ionosphere/feats.xml");
     FeatureSpecification spec = new FeatureSpecification(configFile);
     FeatureInfo featureInfo = spec.getFeatureInfo();
-    Engine engine = Engine.create(AlgorithmClassification.LIBSVM_CL, "", featureInfo, TargetType.NOMINAL, null);
+    Engine engine = Engine.create(AlgorithmClassification.LibSVM_CL_MR, "", featureInfo, TargetType.NOMINAL, null);
     System.err.println("TestEngineLibSVM-testEngineLibSvmEvalClass: have engine "+engine);
     CorpusRepresentationMalletTarget crm = (CorpusRepresentationMalletTarget)engine.getCorpusRepresentation();
     
@@ -174,7 +174,7 @@ public class TestEngineLibSVM {
     File configFile = new File("tests/rg-abalone/feats.xml");
     FeatureSpecification spec = new FeatureSpecification(configFile);
     FeatureInfo featureInfo = spec.getFeatureInfo();
-    Engine engine = Engine.create(AlgorithmRegression.LIBSVM_RG, "", featureInfo, TargetType.NUMERIC, null);
+    Engine engine = Engine.create(AlgorithmRegression.LibSVM_RG_MR, "", featureInfo, TargetType.NUMERIC, null);
     CorpusRepresentationMalletTarget crm = (CorpusRepresentationMalletTarget)engine.getCorpusRepresentation();
     System.err.println("TESTS: have engine "+engine);
     

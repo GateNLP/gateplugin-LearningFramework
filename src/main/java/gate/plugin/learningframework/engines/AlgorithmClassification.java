@@ -29,32 +29,32 @@ public enum AlgorithmClassification implements Algorithm {
   // NOTE: not sure if the different LIBSVM algorithms should get a different entry here or 
   // if we want to use parameters for those.
   // Also consider supporting in addition this port: https://github.com/davidsoergel/jlibsvm/
-  LIBSVM_CL(EngineLibSVM.class,libsvm.svm.class), 
-  PYTORCH_CL_WRAPPER_DENSE(EngineDVFileJsonPyTorch.class,null),
-  PYTORCH_SEQ_WRAPPER_DENSE(EngineDVFileJsonPyTorch.class,null,AlgorithmKind.SEQUENCE_TAGGER),
-  KERAS_CL_WRAPPER_DENSE(EngineDVFileJsonKeras.class,null),
-  KERAS_SEQ_WRAPPER_DENSE(EngineDVFileJsonKeras.class,null),
-  MALLET_CL_BALANCED_WINNOW(EngineMBMalletClass.class,cc.mallet.classify.BalancedWinnowTrainer.class),
-  MALLET_CL_C45(EngineMBMalletClass.class,cc.mallet.classify.C45Trainer.class),
-  MALLET_CL_DECISION_TREE(EngineMBMalletClass.class,cc.mallet.classify.DecisionTreeTrainer.class),
-  MALLET_CL_MAX_ENT(EngineMBMalletClass.class,cc.mallet.classify.MaxEntTrainer.class),
-  MALLET_CL_NAIVE_BAYES_EM(EngineMBMalletClass.class,cc.mallet.classify.NaiveBayesEMTrainer.class),
-  MALLET_CL_NAIVE_BAYES(EngineMBMalletClass.class,cc.mallet.classify.NaiveBayesTrainer.class),
-  MALLET_CL_WINNOW(EngineMBMalletClass.class,cc.mallet.classify.WinnowTrainer.class),
-  MALLET_SEQ_CRF(EngineMBMalletSeq.class,null,AlgorithmKind.SEQUENCE_TAGGER), // ByLabelLikelihood or ByThreadedLabelLikelihood
-  MALLET_SEQ_CRF_SG(EngineMBMalletSeq.class,null,AlgorithmKind.SEQUENCE_TAGGER), // Stochastic gradient
-  MALLET_SEQ_CRF_VG(EngineMBMalletSeq.class,null,AlgorithmKind.SEQUENCE_TAGGER), // Value gradient
+  CostclaWrapper_CL_MR(EngineMBCostclaWrapper.class,null),
+  KerasWrapper_CL_DR(EngineDVFileJsonKeras.class,null),
+  KerasWrapper_CL_MR(EngineKerasWrapper.class,null),
+  KerasWrapper_SEQ_DR(EngineDVFileJsonKeras.class,null),
+  LibSVM_CL_MR(EngineLibSVM.class,libsvm.svm.class), 
+  MalletBalancedWinnow_CL_MR(EngineMBMalletClass.class,cc.mallet.classify.BalancedWinnowTrainer.class),
+  MalletC45_CL_MR(EngineMBMalletClass.class,cc.mallet.classify.C45Trainer.class),
+  MalletCRF_SEQ_MR(EngineMBMalletSeq.class,null,AlgorithmKind.SEQUENCE_TAGGER), // ByLabelLikelihood or ByThreadedLabelLikelihood
+  MalletCRFSG_SEQ_MR(EngineMBMalletSeq.class,null,AlgorithmKind.SEQUENCE_TAGGER), // Stochastic gradient
+  MalletCRFVG_SEQ_MR(EngineMBMalletSeq.class,null,AlgorithmKind.SEQUENCE_TAGGER), // Value gradient
+  MalletDecisionTree_CL_MR(EngineMBMalletClass.class,cc.mallet.classify.DecisionTreeTrainer.class),
+  MalletMEMM_SEQ_MR(EngineMBMalletSeq.class,null,AlgorithmKind.SEQUENCE_TAGGER),
+  MalletMexEnt_CL_MR(EngineMBMalletClass.class,cc.mallet.classify.MaxEntTrainer.class),
+  MalletNaiveBayesEMT_CL_MR(EngineMBMalletClass.class,cc.mallet.classify.NaiveBayesEMTrainer.class),
+  MalletNaiveBayes_CL_MR(EngineMBMalletClass.class,cc.mallet.classify.NaiveBayesTrainer.class),
+  MalletWinnow_CL_MR(EngineMBMalletClass.class,cc.mallet.classify.WinnowTrainer.class),
+  PytorchWrapper_CL_DR(EngineDVFileJsonPyTorch.class,null),
+  PytorchWrapper_SEQ_DR(EngineDVFileJsonPyTorch.class,null,AlgorithmKind.SEQUENCE_TAGGER),
   // The following requires specification of an array of Optimizable.ByGradientValue
   // instances which need to be initialized with Instances 
   // We only add this after figuring out exactly how it needs to get set up!
-  // MALLET_SEQ_CRF_VGS(EngineMalletSeq.class,null), // ByValueGradients  
-  MALLET_SEQ_MEMM(EngineMBMalletSeq.class,null,AlgorithmKind.SEQUENCE_TAGGER),
-  //GENERIC_CL_SERVER(EngineServer.class,null),
-  WEKA_CL_WRAPPER(EngineMBWekaWrapper.class,null),
-  SKLEARN_CL_WRAPPER(EngineMBSklearnWrapper.class,null),
-  //TENSORFLOW_CL_WRAPPER(EngineTensorFlowWrapper.class,null),
-  KERAS_CL_WRAPPER(EngineKerasWrapper.class,null),
-  COSTCLA_CL_WRAPPER(EngineMBCostclaWrapper.class,null),
+  // MalletCRFVGS_SEQ_MR(EngineMalletSeq.class,null), // ByValueGradients  
+  //GenericServer_CL_MR(EngineServer.class,null),
+  SklearnWrapper_CL_MR(EngineMBSklearnWrapper.class,null),
+  WekaWrapper_CL_MR(EngineMBWekaWrapper.class,null),
+  //TensorflowWrapper_CL_MR(EngineTensorFlowWrapper.class,null),
   ;
   private AlgorithmClassification() {
     

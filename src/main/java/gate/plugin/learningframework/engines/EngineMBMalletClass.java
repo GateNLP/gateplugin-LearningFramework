@@ -125,7 +125,7 @@ public class EngineMBMalletClass extends EngineMBMallet {
     } else {      
       // there are parameters, so if it is one of the algorithms were we support setting
       // a parameter do this      
-      if (algorithm.equals(AlgorithmClassification.MALLET_CL_C45)) {      
+      if (algorithm.equals(AlgorithmClassification.MalletC45_CL_MR)) {      
         Parms ps = new Parms(parms, "m:maxDepth:i", "p:prune:B","n:minNumInsts:i");
         int maxDepth = (int)ps.getValueOrElse("maxDepth", 0);
         int minNumInsts = (int)ps.getValueOrElse("minNumInsts", 2);
@@ -141,7 +141,7 @@ public class EngineMBMalletClass extends EngineMBMallet {
         }
         c45trainer.setMinNumInsts(minNumInsts);
         trainer = c45trainer;
-      } else if(algorithm.equals(AlgorithmClassification.MALLET_CL_DECISION_TREE)) {
+      } else if(algorithm.equals(AlgorithmClassification.MalletDecisionTree_CL_MR)) {
         DecisionTreeTrainer dtTrainer = new DecisionTreeTrainer();
         Parms ps = new Parms(parms, "m:maxDepth:i", "i:minInfoGainSplit:d");
         int maxDepth = (int)ps.getValueOrElse("maxDepth", DecisionTreeTrainer.DEFAULT_MAX_DEPTH);
@@ -149,7 +149,7 @@ public class EngineMBMalletClass extends EngineMBMallet {
         dtTrainer.setMaxDepth(maxDepth);
         dtTrainer.setMinInfoGainSplit(minIGS);
         trainer = dtTrainer;
-      } else if(algorithm.equals(AlgorithmClassification.MALLET_CL_MAX_ENT)) {
+      } else if(algorithm.equals(AlgorithmClassification.MalletMexEnt_CL_MR)) {
         MaxEntTrainer tr = new MaxEntTrainer();
         Parms ps = new Parms(parms, "v:gaussianPriorVariance:d",
                 "l:l1Weight:d", "i:numIterations:i");
@@ -168,7 +168,7 @@ public class EngineMBMalletClass extends EngineMBMallet {
       // where ALGNAME is an AlgorithmClassification constant and N is the
       // numRounds parameter for AdaBoost[M2] and all the other parameters 
       // are for the base algorithm initialization
-      } else if(algorithm.equals(AlgorithmClassification.MALLET_CL_BALANCED_WINNOW)) {
+      } else if(algorithm.equals(AlgorithmClassification.MalletBalancedWinnow_CL_MR)) {
         Parms ps = new Parms(parms, "e:epsilon:d",
                 "d:delta:d", "i:maxIterations:i", "c:coolingRate:d");
         double epsilon = (double)ps.getValueOrElse("epsilon", BalancedWinnowTrainer.DEFAULT_EPSILON);
@@ -176,7 +176,7 @@ public class EngineMBMalletClass extends EngineMBMallet {
         int iters = (int)ps.getValueOrElse("int", BalancedWinnowTrainer.DEFAULT_MAX_ITERATIONS);
         double cr = (double)ps.getValueOrElse("coolingRate", BalancedWinnowTrainer.DEFAULT_COOLING_RATE);
         trainer = new BalancedWinnowTrainer(epsilon,delta,iters,cr);
-      } else if(algorithm.equals(AlgorithmClassification.MALLET_CL_WINNOW)) {
+      } else if(algorithm.equals(AlgorithmClassification.MalletWinnow_CL_MR)) {
         Parms ps = new Parms(parms, "a:alpha:d",
                 "b:beta:d", "n:nfact:d");
         double alpha = (double)ps.getValueOrElse("alpha", 2.0);

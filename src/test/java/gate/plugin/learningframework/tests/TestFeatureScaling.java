@@ -73,10 +73,10 @@ public class TestFeatureScaling {
     File outDir2 = new File(new File(System.getProperty("java.io.tmpdir")),"lf-scaled");
     outDir2.mkdir();
     //System.err.println("Exporting unscaled");
-    //Exporter.export(crm, Exporter.EXPORTER_ARFF_CLASS, outDir1, "Mention", "");
+    //Exporter.export(crm, Exporter.ARFF_CL_MR, outDir1, "Mention", "");
     crm.finishAdding();
     //System.err.println("Exporting scaled");
-    //Exporter.export(crm, Exporter.EXPORTER_ARFF_CLASS, outDir2, "Mention", "");
+    //Exporter.export(crm, Exporter.ARFF_CL_MR, outDir2, "Mention", "");
 
   }
   

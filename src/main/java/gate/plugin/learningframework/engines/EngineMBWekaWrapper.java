@@ -28,7 +28,7 @@ import gate.lib.interaction.process.Process4ObjectStream;
 import gate.lib.interaction.process.ProcessBase;
 import gate.lib.interaction.process.ProcessSimple;
 import gate.plugin.learningframework.EvaluationMethod;
-import gate.plugin.learningframework.Exporter;
+import gate.plugin.learningframework.export.Exporter;
 import gate.plugin.learningframework.ModelApplication;
 import gate.plugin.learningframework.Globals;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
@@ -87,7 +87,7 @@ public class EngineMBWekaWrapper extends EngineMB {
     //Previously, this would create the proper corpus representation in the MB base class,
     //now we instead create the corpus exporter we use later and get the CR from it
     //super.initWhenCreating(directory, algorithm, parameters, fi, tt);
-    corpusExporter = CorpusExporter.create(Exporter.EXPORTER_CSV_CLASS, "-t -n "+parameters, featureInfo, parameters, directory);
+    corpusExporter = CorpusExporter.create(Exporter.CSV_CL_MR, "-t -n "+parameters, featureInfo, parameters, directory);
     corpusRepresentation = (CorpusRepresentationMallet)corpusExporter.getCorpusRepresentation();
   } 
 
@@ -261,7 +261,7 @@ public class EngineMBWekaWrapper extends EngineMB {
     
     // Was previously:
     //Exporter.export(corpusRepresentation, 
-    //        Exporter.EXPORTER_ARFF_CLASS, dataDirectory, instanceType, parms);
+    //        Exporter.ARFF_CL_MR, dataDirectory, instanceType, parms);
     corpusExporter.export();
 
     String dataFileName = new File(dataDirectory,Globals.dataBasename+".arff").getAbsolutePath();

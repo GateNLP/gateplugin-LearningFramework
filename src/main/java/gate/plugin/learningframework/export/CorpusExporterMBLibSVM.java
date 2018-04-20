@@ -36,14 +36,14 @@ import java.text.DecimalFormat;
  *
  * @author johann
  */
-public class CorpusExporterLibSVM extends CorpusExporterMalletRelated {
+public class CorpusExporterMBLibSVM extends CorpusExporterMB {
 
   @Override
   public Info getInfo() {
     Info info = new Info();
     // TODO: we should check for regression vs classification HER£E
     info.algorithmClass = "gate.plugin.learningframework.engines.AlgorithmClassification";
-    info.algorithmName = "LibSVM_CL_DUMMY";
+    info.algorithmName = "DUMMY";
     info.engineClass = "DUMMY";
     info.modelClass =  "DUMMY";    
     return info;

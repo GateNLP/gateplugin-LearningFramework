@@ -62,7 +62,7 @@ public class TestEngineMalletClass {
     File configFile = new File("tests/cl-ionosphere/feats.xml");
     FeatureSpecification spec = new FeatureSpecification(configFile);
     FeatureInfo featureInfo = spec.getFeatureInfo();
-    Engine engine = Engine.create(AlgorithmClassification.MALLET_CL_C45, "", featureInfo, TargetType.NOMINAL, null);
+    Engine engine = Engine.create(AlgorithmClassification.MalletC45_CL_MR, "", featureInfo, TargetType.NOMINAL, null);
     CorpusRepresentationMalletTarget crm = (CorpusRepresentationMalletTarget)engine.getCorpusRepresentation();
     System.err.println("TESTS: have engine "+engine);
     

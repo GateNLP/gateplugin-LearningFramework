@@ -26,13 +26,15 @@ package gate.plugin.learningframework.engines;
  * @author johann
  */
 public enum AlgorithmRegression implements Algorithm {
-  LIBSVM_RG(EngineLibSVM.class,null),
-  //GENERIC_RG_SERVER(EngineServer.class,null),
-  WEKA_RG_WRAPPER(EngineMBWekaWrapper.class,null),
-  PYTORCH_RG_WRAPPER_Dense(EngineDVFileJsonPyTorch.class,null),
-  SKLEARN_RG_WRAPPER(EngineMBSklearnWrapper.class,null),
-  //TENSORFLOW_RG_WRAPPER(EngineTensorFlowWrapper.class,null),
-  KERAS_RG_WRAPPER(EngineKerasWrapper.class,null);
+  KerasWrapper_RG_DR(EngineDVFileJsonKeras.class,null),
+  KerasWrapper_RG_MR(EngineKerasWrapper.class,null),
+  LibSVM_RG_MR(EngineLibSVM.class,null),
+  //GenericServer_RG_MR(EngineServer.class,null),
+  PytorchWrapper_RG_DR(EngineDVFileJsonPyTorch.class,null),
+  SklearnWrapper_RG_MR(EngineMBSklearnWrapper.class,null),
+  WekaWrapper_RG_MR(EngineMBWekaWrapper.class,null),
+  //TensorflowWrapper_RG_MR(EngineTensorFlowWrapper.class,null),
+  ;
   private AlgorithmRegression() {
     
   }

@@ -20,7 +20,6 @@
 
 package gate.plugin.learningframework.export;
 
-import gate.plugin.learningframework.Exporter;
 import gate.plugin.learningframework.data.CorpusRepresentation;
 import gate.plugin.learningframework.engines.Info;
 import gate.plugin.learningframework.features.FeatureInfo;

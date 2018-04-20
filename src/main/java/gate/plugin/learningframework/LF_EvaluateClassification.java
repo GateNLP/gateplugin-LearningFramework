@@ -233,7 +233,7 @@ public class LF_EvaluateClassification extends LF_TrainBase {
     // the sequenceAS must be specified for a sequence tagging algorithm and most not be specified
     // for a non-sequence tagging algorithm!
     AnnotationSet sequenceAS = null;
-    if (getTrainingAlgorithm() == AlgorithmClassification.MALLET_SEQ_CRF) {
+    if (getTrainingAlgorithm() == AlgorithmClassification.MalletCRF_SEQ_MR) {
       // NOTE: we already have checked earlier, that in that case, the sequenceSpan parameter is 
       // given!
       // NOTE: we do not actually support a sequence learner yet!
@@ -262,9 +262,9 @@ public class LF_EvaluateClassification extends LF_TrainBase {
     if (getTrainingAlgorithm() == null) {
       throw new GateRuntimeException("LearningFramework: no training algorithm specified");
     }
-    if (getTrainingAlgorithm() == AlgorithmClassification.MALLET_SEQ_CRF) {
+    if (getTrainingAlgorithm() == AlgorithmClassification.MalletCRF_SEQ_MR) {
       if (getSequenceSpan() == null || getSequenceSpan().isEmpty()) {
-        throw new GateRuntimeException("SequenceSpan parameter is required for MALLET_SEQ_CRF");
+        throw new GateRuntimeException("SequenceSpan parameter is required for "+getTrainingAlgorithm());
       }
     } else {
       if (getSequenceSpan() != null && !getSequenceSpan().isEmpty()) {

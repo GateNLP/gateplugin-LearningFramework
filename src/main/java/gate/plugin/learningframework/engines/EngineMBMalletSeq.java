@@ -98,9 +98,11 @@ public class EngineMBMalletSeq extends EngineMBMallet {
     // Mallet also supports a lot of additional things, e.g. regularization 
     // on unlabeled data, but this cannot be used here. 
     // 
-    String alg = info.algorithmName;
+    AlgorithmClassification alg = AlgorithmClassification.valueOf(info.algorithmName);
     System.err.println("DEBUG: our algorithm name is "+alg);
-    if(alg.startsWith("MALLET_SEQ_CRF")) {
+    if(alg==AlgorithmClassification.MalletCRF_SEQ_MR || 
+            alg==AlgorithmClassification.MalletCRFSG_SEQ_MR ||
+            alg==AlgorithmClassification.MalletCRFVG_SEQ_MR) {
       
       CRF crf = new CRF(trainingData.getPipe(), null);
       
@@ -169,7 +171,7 @@ public class EngineMBMalletSeq extends EngineMBMallet {
       
       // now depending on which trainer we want we need to do slightly different
       // things
-      if(alg.equals("MALLET_SEQ_CRF")) { // By[Thread]LabelLikelihood
+      if(alg==AlgorithmClassification.MalletCRF_SEQ_MR) { // By[Thread]LabelLikelihood
         // if threads parameter is specified and >0, we use ByThreadLabelLikelihood
         int threads = (int) parms.getValueOrElse("threads", 0);
         boolean usw = (boolean) parms.getValueOrElse("useSparseWeights", false);
@@ -186,13 +188,13 @@ public class EngineMBMalletSeq extends EngineMBMallet {
           if(ssut) tr.setUseSomeUnsupportedTrick(true);
           transtrainer = tr;
         }        
-      } else if(alg.equals("MALLET_SEQ_CRF_SG")) {
+      } else if(alg==AlgorithmClassification.MalletCRFSG_SEQ_MR) {
         // TODO: instead of all trainingData, use sample?
         // TODO: allow to use training rate instead of trainingData?
         CRFTrainerByStochasticGradient crft = 
                 new CRFTrainerByStochasticGradient(crf, trainingData);
         
-      } else if(alg.equals("MALLET_SEQ_CRF_VG")) {
+      } else if(alg==AlgorithmClassification.MalletCRFVG_SEQ_MR) {
         //  CRFOptimizableBy* objects (terms in the objective function)
         // objective 1: label likelihood objective
         CRFOptimizableByLabelLikelihood optLabel
@@ -222,7 +224,7 @@ public class EngineMBMalletSeq extends EngineMBMallet {
         }
       };
       transtrainer.addEvaluator(viterbiWriter);   
-    } else if(alg.equals("MALLET_SEQ_MEMM")) {
+    } else if(alg==AlgorithmClassification.MalletMEMM_SEQ_MR) {
       // TODO: 
       MEMM memm = new MEMM(trainingData.getDataAlphabet(),trainingData.getTargetAlphabet());
       // check what this would do:

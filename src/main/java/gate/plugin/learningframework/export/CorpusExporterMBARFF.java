@@ -45,7 +45,7 @@ import java.io.PrintStream;
  *
  * @author johann
  */
-public class CorpusExporterARFF extends CorpusExporterMalletRelated {
+public class CorpusExporterMBARFF extends CorpusExporterMB {
 
   @Override
   public Info getInfo() {
