@@ -133,7 +133,7 @@
                 </entry>
                 <entry>
                   <string>exporter</string>
-                  <gate.plugin.learningframework.Exporter>EXPORTER_ARFF_REGRESSION</gate.plugin.learningframework.Exporter>
+                  <gate.plugin.learningframework.export.Exporter>ARFF_RG_MR</gate.plugin.learningframework.export.Exporter>
                 </entry>
                 <entry>
                   <string>featureSpecURL</string>

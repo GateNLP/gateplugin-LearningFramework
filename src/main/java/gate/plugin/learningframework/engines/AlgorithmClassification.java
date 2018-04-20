@@ -42,7 +42,7 @@ public enum AlgorithmClassification implements Algorithm {
   MalletDecisionTree_CL_MR(EngineMBMalletClass.class,cc.mallet.classify.DecisionTreeTrainer.class),
   MalletMEMM_SEQ_MR(EngineMBMalletSeq.class,null,AlgorithmKind.SEQUENCE_TAGGER),
   MalletMexEnt_CL_MR(EngineMBMalletClass.class,cc.mallet.classify.MaxEntTrainer.class),
-  MalletNaiveBayesEMT_CL_MR(EngineMBMalletClass.class,cc.mallet.classify.NaiveBayesEMTrainer.class),
+  MalletNaiveBayesEM_CL_MR(EngineMBMalletClass.class,cc.mallet.classify.NaiveBayesEMTrainer.class),
   MalletNaiveBayes_CL_MR(EngineMBMalletClass.class,cc.mallet.classify.NaiveBayesTrainer.class),
   MalletWinnow_CL_MR(EngineMBMalletClass.class,cc.mallet.classify.WinnowTrainer.class),
   PytorchWrapper_CL_DR(EngineDVFileJsonPyTorch.class,null),

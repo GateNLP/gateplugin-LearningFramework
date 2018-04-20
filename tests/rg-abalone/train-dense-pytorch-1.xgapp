@@ -156,7 +156,7 @@
                 </entry>
                 <entry>
                   <string>trainingAlgorithm</string>
-                  <gate.plugin.learningframework.engines.AlgorithmRegression>PYTORCH_RG_WRAPPER_Dense</gate.plugin.learningframework.engines.AlgorithmRegression>
+                  <gate.plugin.learningframework.engines.AlgorithmRegression>PytorchWrapper_RG_DR</gate.plugin.learningframework.engines.AlgorithmRegression>
                 </entry>
                 <entry>
                   <string>dataDirectory</string>

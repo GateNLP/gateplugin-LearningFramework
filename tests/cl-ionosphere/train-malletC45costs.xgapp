@@ -216,7 +216,7 @@
                 </entry>
                 <entry>
                   <string>trainingAlgorithm</string>
-                  <gate.plugin.learningframework.engines.AlgorithmClassification>MALLET_CL_C45</gate.plugin.learningframework.engines.AlgorithmClassification>
+                  <gate.plugin.learningframework.engines.AlgorithmClassification>MalletC45_CL_MR</gate.plugin.learningframework.engines.AlgorithmClassification>
                 </entry>
                 <entry>
                   <string>dataDirectory</string>

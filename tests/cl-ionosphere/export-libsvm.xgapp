@@ -184,7 +184,7 @@
                 </entry>
                 <entry>
                   <string>exporter</string>
-                  <gate.plugin.learningframework.Exporter>EXPORTER_LIBSVM_CLASS</gate.plugin.learningframework.Exporter>
+                  <gate.plugin.learningframework.export.Exporter>EXPORTER_LibSVM_CL_MRASS</gate.plugin.learningframework.export.Exporter>
                 </entry>
                 <entry>
                   <string>featureSpecURL</string>

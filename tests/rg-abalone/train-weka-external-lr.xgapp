@@ -152,7 +152,7 @@
                 </entry>
                 <entry>
                   <string>trainingAlgorithm</string>
-                  <gate.plugin.learningframework.engines.AlgorithmRegression>WEKA_RG_WRAPPER</gate.plugin.learningframework.engines.AlgorithmRegression>
+                  <gate.plugin.learningframework.engines.AlgorithmRegression>WekaWrapper_RG_MR</gate.plugin.learningframework.engines.AlgorithmRegression>
                 </entry>
                 <entry>
                   <string>dataDirectory</string>

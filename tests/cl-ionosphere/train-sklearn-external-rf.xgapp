@@ -155,7 +155,7 @@
                 </entry>
                 <entry>
                   <string>trainingAlgorithm</string>
-                  <gate.plugin.learningframework.engines.AlgorithmClassification>SKLEARN_CL_WRAPPER</gate.plugin.learningframework.engines.AlgorithmClassification>
+                  <gate.plugin.learningframework.engines.AlgorithmClassification>SklearnWrapper_CL_MR</gate.plugin.learningframework.engines.AlgorithmClassification>
                 </entry>
                 <entry>
                   <string>dataDirectory</string>

@@ -174,7 +174,7 @@
                 </entry>
                 <entry>
                   <string>trainingAlgorithm</string>
-                  <gate.plugin.learningframework.engines.AlgorithmRegression>LIBSVM_RG</gate.plugin.learningframework.engines.AlgorithmRegression>
+                  <gate.plugin.learningframework.engines.AlgorithmRegression>LibSVM_RG_MR</gate.plugin.learningframework.engines.AlgorithmRegression>
                 </entry>
                 <entry>
                   <string>evaluationMethod</string>

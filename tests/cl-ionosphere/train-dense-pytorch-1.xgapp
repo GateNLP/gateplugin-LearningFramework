@@ -159,7 +159,7 @@
                 </entry>
                 <entry>
                   <string>trainingAlgorithm</string>
-                  <gate.plugin.learningframework.engines.AlgorithmClassification>PYTORCH_CL_WRAPPER_DENSE</gate.plugin.learningframework.engines.AlgorithmClassification>
+                  <gate.plugin.learningframework.engines.AlgorithmClassification>PytorchWrapper_CL_DR</gate.plugin.learningframework.engines.AlgorithmClassification>
                 </entry>
                 <entry>
                   <string>dataDirectory</string>

@@ -1132,7 +1132,7 @@
                 </entry>
                 <entry>
                   <string>trainingAlgorithm</string>
-                  <gate.plugin.learningframework.engines.AlgorithmClassification>MALLET_SEQ_CRF</gate.plugin.learningframework.engines.AlgorithmClassification>
+                  <gate.plugin.learningframework.engines.AlgorithmClassification>MalletCRF_SEQ_MR</gate.plugin.learningframework.engines.AlgorithmClassification>
                 </entry>
                 <entry>
                   <string>dataDirectory</string>
