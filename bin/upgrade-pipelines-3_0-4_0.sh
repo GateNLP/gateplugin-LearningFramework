@@ -10,7 +10,6 @@ find "$dir" -name '*.gapp' -o -name '*.xgapp' | while read f
 do
   echo "Updating file $f"
   sed -i.bak '
-s/LIBSVM_CL/LibSVM_CL_MR/g
 s/PYTORCH_CL_WRAPPER_DENSE/PytorchWrapper_CL_DR/g
 s/PYTORCH_SEQ_WRAPPER_DENSE/PytorchWrapper_SEQ_DR/g
 s/KERAS_CL_WRAPPER_DENSE/KerasWrapper_CL_DR/g
@@ -46,6 +45,7 @@ s/EXPORTER_LIBSVM_CLASS/LibSVM_CL_MR/g
 s/EXPORTER_LIBSVM_REGRESSION/LibSVM_RG_MR/g
 s/EXPORTER_MATRIXMARKET2_CLASS/MatrixMarket2_CL_MR/g
 s/EXPORTER_MATRIXMARKET2_REGRESSION/MatrixMatket2_RG_MR/g
+s/LIBSVM_CL/LibSVM_CL_MR/g
 s/learningframework.Exporter/learningframework.export.Exporter/g
 ' $f
 done

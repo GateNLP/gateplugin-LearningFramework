@@ -19,19 +19,13 @@
  */
 package gate.plugin.learningframework.export;
 
-import gate.plugin.learningframework.export.CorpusExporterMRARFF;
-import gate.plugin.learningframework.export.CorpusExporterMRLibSVM;
 import gate.plugin.learningframework.engines.AlgorithmKind;
-import gate.plugin.learningframework.export.CorpusExporterMRCSV;
-import gate.plugin.learningframework.export.CorpusExporterMRMatrixMarket2;
-import gate.plugin.learningframework.export.CorpusExporterMRJsonSeq;
-import gate.plugin.learningframework.export.CorpusExporterMRJsonTarget;
 import gate.plugin.learningframework.features.TargetType;
 
 public enum Exporter {
-  //JSON_CL_DR(CorpusExporterDenseJsonTarget.class,TargetType.NOMINAL,AlgorithmKind.CLASSIFIER),
-  //JSON_RG_DR(CorpusExporterDenseJsonTarget.class,TargetType.NUMERIC,AlgorithmKind.REGRESSOR),
-  //JSON_SEQ_DR(CorpusExporterDenseJsonSeq.class,TargetType.NOMINAL,AlgorithmKind.SEQUENCE_TAGGER),
+  JSON_CL_DR(CorpusExporterDRJson.class,TargetType.NOMINAL,AlgorithmKind.CLASSIFIER),
+  JSON_RG_DR(CorpusExporterDRJson.class,TargetType.NUMERIC,AlgorithmKind.REGRESSOR),
+  JSON_SEQ_DR(CorpusExporterDRJson.class,TargetType.NOMINAL,AlgorithmKind.SEQUENCE_TAGGER),
   ARFF_CL_MR(CorpusExporterMRARFF.class,TargetType.NOMINAL,AlgorithmKind.CLASSIFIER),  
   ARFF_RG_MR(CorpusExporterMRARFF.class,TargetType.NUMERIC,AlgorithmKind.REGRESSOR),  
   CSV_CL_MR(CorpusExporterMRCSV.class,TargetType.NOMINAL,AlgorithmKind.CLASSIFIER),  

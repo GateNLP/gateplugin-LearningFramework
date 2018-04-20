@@ -53,7 +53,7 @@ public abstract class CorpusExporter {
   public static CorpusExporter create(Exporter exporter, String parms, FeatureInfo featureInfo, String instanceType, URL datadir) {
     CorpusExporter ce = null;
     try {
-      @SuppressWarnings("unchecked")
+      @SuppressWarnings("unchecked")             
       Constructor constr = exporter.getCorpusExporterClass().getDeclaredConstructor();
       ce = (CorpusExporter)constr.newInstance();
     } catch (Exception ex) {
