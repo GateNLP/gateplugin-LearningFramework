@@ -37,6 +37,8 @@ import gate.plugin.learningframework.features.TargetType;
 import static gate.plugin.learningframework.tests.Utils.*;
 import gate.util.GateException;
 import java.io.File;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.List;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import org.junit.After;
@@ -73,7 +75,7 @@ public class TestCorpusRepresentationVD2JS {
   }
   
   @Test  
-  public void json4metadata1() {
+  public void json4metadata1() throws IOException {
     // NOTE: so far this is mainly here so we can print out the JSON if needed,
     // not any useful tests really
     String spec = "<ROOT>"+
@@ -86,7 +88,12 @@ public class TestCorpusRepresentationVD2JS {
     FeatureInfo fi = new FeatureSpecification(spec).getFeatureInfo();
     // NOTE: just creating the instance will overwrite any other meta and data files created in the same directory
     CorpusRepresentationVolatileDense2JsonStream cr = new CorpusRepresentationVolatileDense2JsonStream(TESTS_DIR, fi);
-    String json = cr.json4metadata();
+    String json = "";
+    try 
+      (StringWriter sw = new StringWriter()) {
+       cr.json4metadata(sw);
+       json = sw.toString();
+    } 
     //System.err.println("TestCorpusRepresentation/json4metadata1 Debug: json="+json);
     assertTrue(json.contains("someOtherType┆╬A"));
   }  

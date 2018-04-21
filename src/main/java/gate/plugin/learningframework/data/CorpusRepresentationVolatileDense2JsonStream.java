@@ -40,6 +40,8 @@ import java.util.ArrayList;
 import static gate.plugin.learningframework.features.FeatureExtractionBase.*;
 import gate.plugin.learningframework.stats.Stats;
 import gate.plugin.learningframework.stats.StatsForFeatures;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -442,7 +444,7 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
     throw new UnsupportedOperationException("Not supported by this corpus representation");
   }
 
-  public String json4metadata() {
+  public void json4metadata(Writer writer) {
     System.err.println("DEBUG: writing the metadata file!!");
     try {
       ObjectMapper mapper = new ObjectMapper();
@@ -478,8 +480,7 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
       }
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd,HH:mm:ss");
       metadata.put("savedOn", sdf.format(new Date()));
-      String json = mapper.writeValueAsString(metadata);
-      return json;
+      mapper.writeValue(writer, metadata);
     } catch (Exception ex) {
       throw new GateRuntimeException("Could not serialize metadata", ex);
     }
@@ -496,11 +497,12 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
   public void saveMetadata() {
     outMetaFile = new File(outDir, META_FILE_NAME);
     try (
-            FileOutputStream fos = new FileOutputStream(outMetaFile);) {
-      String json = json4metadata();
+            FileOutputStream fos = new FileOutputStream(outMetaFile);
+            OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
+            ) {
       synchronized (LOCKING_OBJECT) {
-        fos.write(json.getBytes("UTF-8"));
-        fos.write("\n".getBytes("UTF-8"));
+        json4metadata(osw);
+        osw.append("\n"); // TODO: why do we need this again?
       }
     } catch (Exception ex) {
       throw new GateRuntimeException("Could not write metadata to file", ex);
