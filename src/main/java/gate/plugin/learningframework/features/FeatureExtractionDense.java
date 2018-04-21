@@ -23,16 +23,11 @@ import gate.Annotation;
 import gate.AnnotationSet;
 import gate.Document;
 import gate.Utils;
-import gate.plugin.learningframework.LFUtils;
 import gate.plugin.learningframework.data.InstanceRepresentation;
-import gate.plugin.learningframework.mallet.NominalTargetWithCosts;
 import gate.util.GateRuntimeException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import org.apache.commons.lang.NotImplementedException;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 /**
