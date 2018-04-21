@@ -4,6 +4,7 @@
 /classes
 /build.properties
 *~
+*.bak
 #*#
 *.class
 TEST-*.xml
@@ -45,6 +46,9 @@ hs_err_*.log
 /tests/seq-wikipedia1/model-dense-pytorch-1/*
 /tests/cl-ionosphere/model-dense-pytorch/*
 /tests/rg-abalone/model-dense-pytorch-1/*
+
+/tests/cl-ionosphere/export-dense/*
+!/tests/cl-ionosphere/export-dense/.keep
 
 /nbproject/private/
 /build/
