@@ -13,6 +13,7 @@ TESTS-TestSuites.xml
 junit-noframes.html
 hs_err_*.log
 
+/tmp*
 /tests/*/*/pipe.pipe
 /tests/*/*/info.yaml
 /tests/*/*/lf.model

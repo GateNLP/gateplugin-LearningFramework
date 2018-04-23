@@ -42,4 +42,9 @@ along with this software. If not, see <http://www.gnu.org/licenses/>.
   <JAR>lib/mallet-deps.jar</JAR>
   <JAR>lib/snakeyaml-1.16.jar</JAR>
   <JAR>lib/unirest-java-1.4.9.jar</JAR>
+  <!--
+    seems it is not possible to use a newer version than we have in gatehome/lib
+    <JAR>lib/jackson-core-2.9.5.jar</JAR>
+    <JAR>lib/jackson-databind-2.9.5.jar</JAR>
+  -->
 </CREOLE-DIRECTORY>

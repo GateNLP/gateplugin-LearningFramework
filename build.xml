@@ -62,10 +62,10 @@ along with this software. If not, see <http://www.gnu.org/licenses/>.
   
   <!-- GATE classes plus local lib jars -->
   <path id="compile.classpath">
-    <path refid="gate.classpath" />
     <fileset dir="lib"> 
       <include name="*.jar"/>
     </fileset>
+    <path refid="gate.classpath" />
   </path>
 
   <path id="compile-test.classpath">

@@ -19,6 +19,7 @@
  */
 package gate.plugin.learningframework.data;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import gate.Annotation;
 import gate.AnnotationSet;
 import gate.plugin.learningframework.LFUtils;
@@ -448,6 +449,13 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
     System.err.println("DEBUG: writing the metadata file!!");
     try {
       ObjectMapper mapper = new ObjectMapper();
+      // NOTE: the default mapper constructor uses a factory which 
+      // auto-closes the stream or writer, this could be used to prevent it
+      // but only with a newer version of jackson than in the GATE lib.
+      // For now disabled.
+      // This is needed to add a final newline to the meta-data file written
+      // so that it has one line and not zero, technically
+      // mapper.disable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
       Map<String, Object> metadata = new HashMap<>();
       metadata.put("featureInfo", featureInfo);
       metadata.put("featureNames", fnames);
@@ -502,7 +510,9 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
             ) {
       synchronized (LOCKING_OBJECT) {
         json4metadata(osw);
-        osw.append("\n"); // TODO: why do we need this again?
+        // TODO: can only be done once we can use a more recent Jackson library, 
+        // see the json4metadata method!
+        // osw.append("\n");
       }
     } catch (Exception ex) {
       throw new GateRuntimeException("Could not write metadata to file", ex);
