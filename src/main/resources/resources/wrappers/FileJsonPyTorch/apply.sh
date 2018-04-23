@@ -31,7 +31,7 @@ else
   fi
 fi
 
-export PYTHONPATH="$wrapperdir/gate-lf-python-data:$wrapperdir/gate-lf-pytorch-wrapper"
+export PYTHONPATH="$wrapperdir/gate-lf-python-data:$wrapperdir/gate-lf-pytorch-json"
 
 
 echo 'MODEL BASE NAME = ' $modelbase >&2

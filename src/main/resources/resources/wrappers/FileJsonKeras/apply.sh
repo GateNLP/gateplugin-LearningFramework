@@ -1,15 +1,17 @@
 #!/bin/bash
 
 ## Args we should get
-metafile="$1"
-shift
 modelbase="$1"
 shift
-datadir=`dirname $metafile`
-datadir=`cd $datadir; pwd -P`
+metafile="$1"
+shift
+wrapperdir="$1"
+shift
 
-wrapperdir=$datadir/FileJsonPyTorch
-wrappertrain=$wrapperdir/train.py
+wrapperapply=$wrapperdir/apply.py
+
+datadir=`dirname modelbase`
+datadir=`cd $datadir; pwd -P`
 
 versionpython="UNKNOWN"
 wherepython=`which python`
@@ -29,16 +31,18 @@ else
   fi
 fi
 
-export PYTHONPATH="$wrapperdir/gate-lf-python-data:$wrapperdir/gate-lf-pytorch-json"
+export PYTHONPATH="$wrapperdir/gate-lf-python-data:$wrapperdir/gate-lf-keras-json"
+
 
 echo 'MODEL BASE NAME = ' $modelbase >&2
 echo 'META FILE       = ' $metafile  >&2
 echo 'DATA DIR        = ' $datadir   >&2
-echo 'WRAPPER SCRIPT  = ' $wrappertrain >&2
+echo 'ADDITIONALPARMS = ' "$@"       >&2
+echo 'WRAPPER SCRIPT  = ' $wrapperapply >&2
 echo 'ADDITIONALPARMS = ' "$@"       >&2
 echo 'PYTHON          = ' $wherepython >&2
 echo 'PYTHONPATH      = ' $PYTHONPATH >&2
-echo 'RUNNING         = ' ${wherepython} "${wrappertrain}" "${modelbase}" "${metafile}" "${datadir}" "$@"  >&2
+echo 'RUNNING         = ' ${wherepython} "${wrapperapply}" "${modelbase}" "${metafile}" "${datadir}" "$@"  >&2
 
-${wherepython} "${wrappertrain}" "${modelbase}" "${metafile}" "${datadir}" "$@" 
+${wherepython} "${wrapperapply}" "${modelbase}" "${metafile}" "${datadir}" "$@" 
 

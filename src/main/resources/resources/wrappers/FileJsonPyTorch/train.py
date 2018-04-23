@@ -3,8 +3,8 @@ import json
 import os
 import logging
 from gatelfdata import Dataset
-from gatelfpytorch import ModelWrapperSimple
-# from gatelfpytorch import ModelWrapper
+from gatelfpytorchjson import ModelWrapperSimple
+from gatelfpytorchjson import ModelWrapper
 
 print("MODIFIED!!! PYTHON TRAINING SCRIPT, args=",sys.argv,file=sys.stderr)
 
@@ -15,7 +15,7 @@ datadir=sys.argv[3]
 # Set up logging
 logger = logging.getLogger("gatelfdata")
 logger.setLevel(logging.ERROR)
-logger = logging.getLogger("gatelfpytorch")
+logger = logging.getLogger("gatelfpytorchjson")
 logger.setLevel(logging.DEBUG)
 streamhandler = logging.StreamHandler(stream=sys.stderr)
 formatter = logging.Formatter(

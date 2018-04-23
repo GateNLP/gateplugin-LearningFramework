@@ -3,11 +3,8 @@ import json
 import os
 import logging
 from gatelfdata import Dataset
-from gatelfpytorchjson import ModelWrapperSimple
-from gatelfpytorchjson import ModelWrapper
+#from gatelfkerasjson import ???
 
-
-print("PYTHON APPLICATION SCRIPT, args=",sys.argv,file=sys.stderr)
 
 modelprefix=sys.argv[1]
 metafile=sys.argv[2]
@@ -16,22 +13,22 @@ datadir=sys.argv[3]
 # Set up logging
 logger = logging.getLogger("gatelfdata")
 logger.setLevel(logging.ERROR)
-logger = logging.getLogger("gatelfpytorchjson")
+logger = logging.getLogger("gatelfkerasjson")
 logger.setLevel(logging.DEBUG)
 streamhandler = logging.StreamHandler(stream=sys.stderr)
 formatter = logging.Formatter(
                 '%(asctime)s %(name)-12s %(levelname)-8s %(message)s')
 streamhandler.setFormatter(formatter)
 logger.addHandler(streamhandler)
-filehandler = logging.FileHandler(os.path.join(datadir,"FileJsonPyTorch.train.log"))
+filehandler = logging.FileHandler(os.path.join(datadir,"FileJsonKerasWrapper.train.log"))
 logger.addHandler(filehandler)
 
 # restore the wrapper
-wrapper = ModelWrapperSimple.load(modelprefix)
+wrapper = SOMETHING.load(modelprefix)
 
 with sys.stdin as infile:
     for line in infile:
-        print("PYTHON APPLICATION, input=",line,file=sys.stderr)
+        print("PYTHON FileJsonKeras APPLICATION, input=",line,file=sys.stderr)
         if line == "STOP":
             break
         # TODO: currently the LF sends individual instances here, we may want to change
@@ -46,13 +43,12 @@ with sys.stdin as infile:
         # from our returned data here
         # confidences: a map with confidences for all labels, may be null: this is NOT SUPPORTED in the LF yet!
         preds=wrapper.apply([instancedata])
-        print("PYTHON APPLICATION, preds=", preds, file=sys.stderr)
+        print("PYTHON  APPLICATION, preds=", preds, file=sys.stderr)
         # preds are a list of one or two lists, where the first list contains all the labels and the second
         # list contains all the confidences in the order used by the model. 
         # For now we just extract the label or for a sequence, the list of labels, knowing that for now we always process only one instance/sequence!
         ret = {"status":"ok", "output":preds[0][0]}
-        print("PYTHON APPLICATION, return=", ret, file=sys.stderr)
+        print("PYTHON FileJsonKeras APPLICATION, return=", ret, file=sys.stderr)
         print(json.dumps(ret))
         # TODO: IMPORTANT!!! What the model returns is currently different from what the LF code expects!!!
         sys.stdout.flush()
-print("PYTHON APPLICATION SCRIPT: finishing",file=sys.stderr)

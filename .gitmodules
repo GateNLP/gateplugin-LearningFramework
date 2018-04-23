@@ -1,6 +1,12 @@
 [submodule "src/main/resources/resources/wrappers/FileJsonPyTorch/gate-lf-python-data"]
 	path = src/main/resources/resources/wrappers/FileJsonPyTorch/gate-lf-python-data
 	url = https://github.com/GateNLP/gate-lf-python-data.git
-[submodule "src/main/resources/resources/wrappers/FileJsonPyTorch/gate-lf-pytorch-wrapper"]
-	path = src/main/resources/resources/wrappers/FileJsonPyTorch/gate-lf-pytorch-wrapper
-	url = https://github.com/GateNLP/gate-lf-pytorch-wrapper.git
+[submodule "src/main/resources/resources/wrappers/FileJsonKeras/gate-lf-python-data"]
+	path = src/main/resources/resources/wrappers/FileJsonKeras/gate-lf-python-data
+	url = https://github.com/GateNLP/gate-lf-python-data.git
+[submodule "src/main/resources/resources/wrappers/FileJsonPyTorch/gate-lf-pytorch-json"]
+	path = src/main/resources/resources/wrappers/FileJsonPyTorch/gate-lf-pytorch-json
+	url = https://github.com/GateNLP/gate-lf-pytorch-json.git
+[submodule "src/main/resources/resources/wrappers/FileJsonKeras/gate-lf-keras-json"]
+	path = src/main/resources/resources/wrappers/FileJsonKeras/gate-lf-keras-json
+	url = https://github.com/GateNLP/gate-lf-keras-json.git
