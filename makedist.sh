@@ -1,5 +1,5 @@
 #!/bin/bash
-
+# 
 name=gateplugin-LearningFramework
 tmpdir=/tmp
 curdir=`pwd -P`
