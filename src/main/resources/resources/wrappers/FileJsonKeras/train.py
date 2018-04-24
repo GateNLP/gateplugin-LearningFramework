@@ -3,8 +3,7 @@ import json
 import os
 import logging
 from gatelfdata import Dataset
-# from gatelfkerasjson import ??
-
+from gatelfkerasjson import KerasWrapperImpl1
 modelprefix=sys.argv[1]
 metafile=sys.argv[2]
 datadir=sys.argv[3]
@@ -22,4 +21,10 @@ logger.addHandler(streamhandler)
 filehandler = logging.FileHandler(os.path.join(datadir,"FileJsonPyTorch.train.log"))
 logger.addHandler(filehandler)
 
+ds = Dataset(metaFile)
+
+kerasModel = KerasWrapperImpl1(ds)
+kerasModel.genKerasModel()
+kerasModel.trainModel()
+kerasModel.saveModel(modelprefix)
 
