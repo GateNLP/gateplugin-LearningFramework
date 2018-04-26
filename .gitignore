@@ -51,6 +51,9 @@ hs_err_*.log
 /tests/cl-ionosphere/export-dense/*
 !/tests/cl-ionosphere/export-dense/.keep
 
+/tests/dense-pos-seq-2/model-dense-pytorch1/
+!/tests/dense-pos-seq-2/model-dense-pytorch1/.keepme
+
 /nbproject/private/
 /build/
 /dist/
