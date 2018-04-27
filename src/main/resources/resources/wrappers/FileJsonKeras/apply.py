@@ -4,7 +4,7 @@ import os
 import logging
 from gatelfdata import Dataset
 #from gatelfkerasjson import ???
-
+from gatelfkerasjson import KerasWrapperImpl1
 
 modelprefix=sys.argv[1]
 metafile=sys.argv[2]
@@ -24,7 +24,9 @@ filehandler = logging.FileHandler(os.path.join(datadir,"FileJsonKerasWrapper.tra
 logger.addHandler(filehandler)
 
 # restore the wrapper
-wrapper = SOMETHING.load(modelprefix)
+ds = Dataset(metafile)
+wrapper = KerasWrapperImpl1(ds)
+wrapper.loadModel(modelprefix)
 
 with sys.stdin as infile:
     for line in infile:
@@ -42,7 +44,7 @@ with sys.stdin as infile:
         # confidence: some confidence/probability score for the output, may be null: this gets extracted
         # from our returned data here
         # confidences: a map with confidences for all labels, may be null: this is NOT SUPPORTED in the LF yet!
-        preds=wrapper.apply([instancedata])
+        preds=wrapper.applyModel(instancedata)
         print("PYTHON  APPLICATION, preds=", preds, file=sys.stderr)
         # preds are a list of one or two lists, where the first list contains all the labels and the second
         # list contains all the confidences in the order used by the model. 

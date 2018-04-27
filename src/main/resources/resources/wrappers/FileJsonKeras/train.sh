@@ -8,7 +8,7 @@ shift
 datadir=`dirname $metafile`
 datadir=`cd $datadir; pwd -P`
 
-wrapperdir=$datadir/FileJsonPyTorch
+wrapperdir=$datadir/FileJsonKeras
 wrappertrain=$wrapperdir/train.py
 
 versionpython="UNKNOWN"
@@ -29,7 +29,7 @@ else
   fi
 fi
 
-export PYTHONPATH="$wrapperdir/gate-lf-python-data:$wrapperdir/gate-lf-pytorch-wrapper"
+export PYTHONPATH="$wrapperdir/gate-lf-python-data:$wrapperdir/gate-lf-keras-json"
 
 echo 'MODEL BASE NAME = ' $modelbase >&2
 echo 'META FILE       = ' $metafile  >&2

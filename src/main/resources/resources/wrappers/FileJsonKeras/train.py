@@ -21,7 +21,7 @@ logger.addHandler(streamhandler)
 filehandler = logging.FileHandler(os.path.join(datadir,"FileJsonPyTorch.train.log"))
 logger.addHandler(filehandler)
 
-ds = Dataset(metaFile)
+ds = Dataset(metafile)
 
 kerasModel = KerasWrapperImpl1(ds)
 kerasModel.genKerasModel()
