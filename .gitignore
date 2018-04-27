@@ -48,6 +48,11 @@ hs_err_*.log
 /tests/cl-ionosphere/model-dense-pytorch/*
 /tests/rg-abalone/model-dense-pytorch-1/*
 
+/tests/seq-wikipedia1/model-dense-keras-1/*
+/tests/cl-ionosphere/model-dense-keras/*
+/tests/rg-abalone/model-dense-keras-1/*
+
+
 /tests/cl-ionosphere/export-dense/*
 !/tests/cl-ionosphere/export-dense/.keep
 
