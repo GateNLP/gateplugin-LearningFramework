@@ -329,6 +329,7 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
   }
 
   public void addToStatsForFeatures(InstanceRepresentation inst) {
+    // System.err.println("DEBUG: addToStatsForFeatures for "+inst);
     for (String fname : fnames) {
       stats.addValue(fname, inst.getFeature(fname));
     }
@@ -475,6 +476,7 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
       Map<String, Stats.StatsObject> featureStats = new HashMap<>();
       for (String fname : fnames) {
         Stats s = stats.getStatistics(fname);
+        //System.err.println("!!!!Getting feature stats for "+fname+": "+s);
         if (s != null) { // when we store the initial metadata, none of these will exist yet
           featureStats.put(fname, s.getStatsObject());
         }
@@ -503,6 +505,7 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
    * Size comes from the statistics for tokens/ngrams.
    */
   public void saveMetadata() {
+    // System.err.println("DEBUG: SAVING METADATA");
     outMetaFile = new File(outDir, META_FILE_NAME);
     try (
             FileOutputStream fos = new FileOutputStream(outMetaFile);
