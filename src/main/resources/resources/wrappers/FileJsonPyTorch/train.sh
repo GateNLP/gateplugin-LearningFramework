@@ -40,5 +40,5 @@ echo 'PYTHON          = ' $wherepython >&2
 echo 'PYTHONPATH      = ' $PYTHONPATH >&2
 echo 'RUNNING         = ' ${wherepython} "${wrappertrain}" "${modelbase}" "${metafile}" "${datadir}" "$@"  >&2
 
-${wherepython} "${wrappertrain}" "${modelbase}" "${metafile}"  "$@" 
+${wherepython} "${wrappertrain}" "${metafile}" "${modelbase}"  "$@" 
 
