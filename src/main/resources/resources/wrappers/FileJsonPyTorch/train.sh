@@ -9,7 +9,7 @@ datadir=`dirname $metafile`
 datadir=`cd $datadir; pwd -P`
 
 wrapperdir=$datadir/FileJsonPyTorch
-wrappertrain=$wrapperdir/train.py
+wrappertrain=$wrapperdir/gate-lf-pytorch-json/train.py
 
 versionpython="UNKNOWN"
 wherepython=`which python`
@@ -40,5 +40,5 @@ echo 'PYTHON          = ' $wherepython >&2
 echo 'PYTHONPATH      = ' $PYTHONPATH >&2
 echo 'RUNNING         = ' ${wherepython} "${wrappertrain}" "${modelbase}" "${metafile}" "${datadir}" "$@"  >&2
 
-${wherepython} "${wrappertrain}" "${modelbase}" "${metafile}" "${datadir}" "$@" 
+${wherepython} "${wrappertrain}" "${modelbase}" "${metafile}"  "$@" 
 
