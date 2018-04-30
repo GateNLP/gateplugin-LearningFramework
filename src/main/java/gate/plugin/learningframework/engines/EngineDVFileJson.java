@@ -382,6 +382,9 @@ public abstract class EngineDVFileJson extends EngineDV {
       // Again, we could send the data for all sequences in one go but for
       // now we just send each sequence separately.
       // TODO: figure out what is better!
+      // DONE: we generally send instances separately. This is mainly for the non-sequence
+      // case where we may need to inject the prediction of the previous instance, which is
+      // really only properly possible if we handle each instance separately.
       for(Annotation sequenceAnn : sequenceAS) {
         int seq_id = sequenceAnn.getId();
         List<Annotation> instanceAnnotations = gate.Utils.getContainedAnnotations(

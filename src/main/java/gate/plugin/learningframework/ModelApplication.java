@@ -270,6 +270,8 @@ public class ModelApplication {
             ata.annType = tac[0];
             //Update the end on the offchance that this is it
             ata.thisEnd = inst.getEndNode().getOffset();
+            Object tmpfv = inst.getFeatures().get(Globals.outputProbFeature);
+            ata.conf += tmpfv == null ? 0.0 : (Double)tmpfv;
             ata.conf = (Double) inst.getFeatures().get(Globals.outputProbFeature);
             ata.len++;
             annsToAdd.put(tac[0], ata);            
@@ -283,7 +285,8 @@ public class ModelApplication {
                 //System.err.println("extending existing annotation to offset "+inst.getEndNode().getOffset());
                 touchedTypes.add(tac[0]);
                 // continue the ann and extend the span
-                entry.getValue().conf += (Double) inst.getFeatures().get(Globals.outputProbFeature);
+                Object tmpfv = inst.getFeatures().get(Globals.outputProbFeature);
+                entry.getValue().conf += tmpfv == null ? 0.0 : (Double)tmpfv;
                 entry.getValue().len++;
                 //Update the end on the offchance that this is it
                 entry.getValue().thisEnd = inst.getEndNode().getOffset();
