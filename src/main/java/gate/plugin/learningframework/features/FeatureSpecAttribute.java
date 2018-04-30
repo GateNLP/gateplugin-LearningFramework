@@ -46,6 +46,7 @@ public abstract class FeatureSpecAttribute implements Serializable, Cloneable {
   public String emb_id = "";
   public Integer emb_dims = 0;
   public String emb_train = "";
+  public Integer emb_minfreq = 0;
   
   
   public abstract void stopGrowth();

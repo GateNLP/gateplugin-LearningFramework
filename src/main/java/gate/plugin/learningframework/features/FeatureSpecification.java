@@ -52,6 +52,7 @@ public class FeatureSpecification {
   // file, dims, train
   private Map<String,String> embeddingId2file = new HashMap<>();
   private Map<String,Integer> embeddingId2dims = new HashMap<>();
+  private Map<String,Integer> embeddingId2minfreq = new HashMap<>();
   private Map<String,String> embeddingId2train = new HashMap<>();
 
   public FeatureSpecification(URL configFileURL) {
@@ -147,6 +148,11 @@ public class FeatureSpecification {
           String tmp_emb_train = embeddingId2train.get(fs.emb_id);
           if(tmp_emb_train != null) fs.emb_train = tmp_emb_train;
         }
+        if(fs.emb_minfreq == 0) {
+          Integer tmp_emb_minfreq = embeddingId2minfreq.get(fs.emb_id);
+          if(tmp_emb_minfreq != null) fs.emb_minfreq = tmp_emb_minfreq;
+          else fs.emb_minfreq = 1;
+        }
       }
     }
   } // parseConfigXml
@@ -163,6 +169,7 @@ public class FeatureSpecification {
     String emb_id = getChildTextOrElse(emb, "ID", "");
     String emb_file = getChildTextOrElse(emb, "FILE", "");
     String emb_dims_str = getChildTextOrElse(emb, "DIMS", "");
+    String emb_minfreq_str = getChildTextOrElse(emb, "MINFREQ", "");
     String emb_train = getChildTextOrElse(emb,"TRAIN","");
     // only if any of the file,dim, or train things are set to non-empty, 
     // we need to bother
@@ -219,6 +226,22 @@ public class FeatureSpecification {
     } else {
       Integer have_dims = embeddingId2dims.get(emb_id);
       if(have_dims != null) spec.emb_dims = have_dims;
+    }
+    if(!emb_minfreq_str.isEmpty()) {
+      Integer have_minfreq = embeddingId2minfreq.get(emb_id);
+      Integer emb_minfreq = Integer.parseInt(emb_minfreq_str);
+      if(have_minfreq == null) {
+        embeddingId2minfreq.put(emb_id, emb_minfreq);
+        spec.emb_minfreq = emb_minfreq;
+      } else if(!emb_minfreq.equals(have_minfreq)) {
+        throw new GateRuntimeException("EMBEDDING setting minfreq to "+emb_minfreq+" for attribute "+i+" contradicts "+
+                have_minfreq+" set previously");
+      } else {
+        spec.emb_minfreq = emb_minfreq;        
+      }
+    } else {
+      Integer have_minfreq = embeddingId2minfreq.get(emb_id);
+      if(have_minfreq != null) spec.emb_minfreq = have_minfreq;
     }
     spec.emb_id = emb_id;
     return spec;
