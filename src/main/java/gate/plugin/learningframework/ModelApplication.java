@@ -271,8 +271,7 @@ public class ModelApplication {
             //Update the end on the offchance that this is it
             ata.thisEnd = inst.getEndNode().getOffset();
             Object tmpfv = inst.getFeatures().get(Globals.outputProbFeature);
-            ata.conf += tmpfv == null ? 0.0 : (Double)tmpfv;
-            ata.conf = (Double) inst.getFeatures().get(Globals.outputProbFeature);
+            ata.conf += (tmpfv == null ? 0.0 : (Double)tmpfv);
             ata.len++;
             annsToAdd.put(tac[0], ata);            
           } else if(tac[1].equals(SeqEncoder.CODE_INSIDE)) {
@@ -286,7 +285,7 @@ public class ModelApplication {
                 touchedTypes.add(tac[0]);
                 // continue the ann and extend the span
                 Object tmpfv = inst.getFeatures().get(Globals.outputProbFeature);
-                entry.getValue().conf += tmpfv == null ? 0.0 : (Double)tmpfv;
+                entry.getValue().conf += (tmpfv == null ? 0.0 : (Double)tmpfv);
                 entry.getValue().len++;
                 //Update the end on the offchance that this is it
                 entry.getValue().thisEnd = inst.getEndNode().getOffset();
