@@ -31,8 +31,8 @@ public enum AlgorithmClassification implements Algorithm {
   // Also consider supporting in addition this port: https://github.com/davidsoergel/jlibsvm/
   CostclaWrapper_CL_MR(EngineMBCostclaWrapper.class,null),
   KerasWrapper_CL_DR(EngineDVFileJsonKeras.class,null),
-  KerasWrapper_CL_MR(EngineKerasWrapper.class,null),
-  KerasWrapper_SEQ_DR(EngineDVFileJsonKeras.class,null),
+  KerasWrapper_CL_MR(EngineKerasWrapper.class,null,AlgorithmKind.CLASSIFIER),
+  KerasWrapper_SEQ_DR(EngineDVFileJsonKeras.class,null,AlgorithmKind.SEQUENCE_TAGGER),
   LibSVM_CL_MR(EngineLibSVM.class,libsvm.svm.class), 
   MalletBalancedWinnow_CL_MR(EngineMBMalletClass.class,cc.mallet.classify.BalancedWinnowTrainer.class),
   MalletC45_CL_MR(EngineMBMalletClass.class,cc.mallet.classify.C45Trainer.class),
@@ -45,7 +45,7 @@ public enum AlgorithmClassification implements Algorithm {
   MalletNaiveBayesEM_CL_MR(EngineMBMalletClass.class,cc.mallet.classify.NaiveBayesEMTrainer.class),
   MalletNaiveBayes_CL_MR(EngineMBMalletClass.class,cc.mallet.classify.NaiveBayesTrainer.class),
   MalletWinnow_CL_MR(EngineMBMalletClass.class,cc.mallet.classify.WinnowTrainer.class),
-  PytorchWrapper_CL_DR(EngineDVFileJsonPyTorch.class,null),
+  PytorchWrapper_CL_DR(EngineDVFileJsonPyTorch.class,null,AlgorithmKind.CLASSIFIER),
   PytorchWrapper_SEQ_DR(EngineDVFileJsonPyTorch.class,null,AlgorithmKind.SEQUENCE_TAGGER),
   // The following requires specification of an array of Optimizable.ByGradientValue
   // instances which need to be initialized with Instances 
