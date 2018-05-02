@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with this software. If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<project name="gateplugin-LearningFramework" basedir="."  default="jar" >
+<project name="gateplugin-LearningFramework" basedir="."  default="jar" xmlns:if="ant:if">
   <!-- Prevent Ant from warning about includeantruntime not being set -->
   <property name="build.sysclasspath" value="ignore" />
 
@@ -51,14 +51,19 @@ along with this software. If not, see <http://www.gnu.org/licenses/>.
   <property name="javadoc.dir" location="${doc.dir}/javadoc" />
   <property name="jar.location" location="gateplugin-${plugin.name}.jar" />
 
+  <available property="gate.lib.exists" file="${gate.lib}" />
+  <loadfile property="gate.classpath.content" srcFile="${gate.home}/gate.classpath" failonerror="false"/>
+
   <!-- Path to compile - includes gate.jar and GATE/lib/*.jar -->
-  <path id="gate.classpath">
+  <path id="gate.classpath" if:set="gate.lib.exists">
     <pathelement location="${gate.jar}" />
     <fileset dir="${gate.lib}">
       <include name="**/*.jar" />
       <include name="**/*.zip" />
     </fileset>
   </path>
+
+  <path id="gate.classpath" if:set="gate.classpath.content" path="${gate.classpath.content}" />
   
   <!-- GATE classes plus local lib jars -->
   <path id="compile.classpath">
