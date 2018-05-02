@@ -24,7 +24,7 @@ filehandler = logging.FileHandler(os.path.join(datadir,"FileJsonKerasWrapper.tra
 logger.addHandler(filehandler)
 
 # restore the wrapper
-ds = Dataset(metafile)
+ds = Dataset(metafile, targets_need_padding=False)
 wrapper = KerasWrapperImpl1(ds)
 wrapper.loadModel(modelprefix)
 
