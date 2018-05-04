@@ -49,7 +49,7 @@ with sys.stdin as infile:
         # preds are a list of one or two lists, where the first list contains all the labels and the second
         # list contains all the confidences in the order used by the model. 
         # For now we just extract the label or for a sequence, the list of labels, knowing that for now we always process only one instance/sequence!
-        ret = {"status":"ok", "output":preds[0][0]}
+        ret = {"status":"ok", "output":preds[0]}
         print("PYTHON FileJsonKeras APPLICATION, return=", ret, file=sys.stderr)
         print(json.dumps(ret))
         # TODO: IMPORTANT!!! What the model returns is currently different from what the LF code expects!!!
