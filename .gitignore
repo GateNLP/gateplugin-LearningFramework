@@ -4,6 +4,7 @@
 /classes
 /build.properties
 *~
+*.bak
 #*#
 *.class
 TEST-*.xml
@@ -12,6 +13,7 @@ TESTS-TestSuites.xml
 junit-noframes.html
 hs_err_*.log
 
+/tmp*
 /tests/*/*/pipe.pipe
 /tests/*/*/info.yaml
 /tests/*/*/lf.model
@@ -42,4 +44,21 @@ hs_err_*.log
 /tests/cl-ionosphere/model-keras-m1/indep.csv
 /tests/cl-ionosphere/model-keras-m1/kerasmodel.h5
 
+/tests/seq-wikipedia1/model-dense-pytorch-1/*
+/tests/cl-ionosphere/model-dense-pytorch/*
+/tests/rg-abalone/model-dense-pytorch-1/*
 
+/tests/seq-wikipedia1/model-dense-keras-1/*
+/tests/cl-ionosphere/model-dense-keras/*
+/tests/rg-abalone/model-dense-keras-1/*
+
+
+/tests/cl-ionosphere/export-dense/*
+!/tests/cl-ionosphere/export-dense/.keep
+
+/tests/dense-pos-seq-2/model-dense-pytorch1/
+!/tests/dense-pos-seq-2/model-dense-pytorch1/.keepme
+
+/nbproject/private/
+/build/
+/dist/
