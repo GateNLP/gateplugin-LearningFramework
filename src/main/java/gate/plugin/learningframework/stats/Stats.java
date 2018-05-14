@@ -14,7 +14,7 @@ import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
  * The kind of backing object is determined at construction time when 
  * the (first) object to be added already needs to get passed.
  * 
- * @author Johann Petrak <johann.petrak@gmail.com>
+ * @author Johann Petrak 
  */
 public class Stats {
   SummaryStatistics numStats;

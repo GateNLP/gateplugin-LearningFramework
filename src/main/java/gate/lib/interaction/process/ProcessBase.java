@@ -21,20 +21,19 @@ public abstract class ProcessBase
 
   private static final Logger LOGGER = Logger.getLogger(ProcessBase.class.getName());
   
-  protected List<String> command = new ArrayList<String>();
+  protected List<String> command = new ArrayList<>();
   protected ProcessBuilder builder = null;
   protected Process process = null;
   protected File workingDir = new File(".");
   protected Thread loggerThread;
-  protected Map<String,String> envvars = new HashMap<String,String>();
+  protected Map<String,String> envvars = new HashMap<>();
     
   /**
    * Make sure the process is running.
    * Returns true if the process was started freshly, false if it was 
    * already running.
    * 
-   * @return
-   * @throws IOException 
+   * @return flag 
    */
   public boolean ensureProcess() {
     if(need2start()) {
@@ -64,28 +63,27 @@ public abstract class ProcessBase
    * Read an object from the process.
    * This will block until the message is available and may currently 
    * block forever!
-   * @return
-   * @throws IOException 
+   * @return  object read
    */
   public abstract Object readObject();
   
   
   /**
-   * Send an object to the process.
-   * @param object 
+   * Send an object to the process. 
+   * @param message object to send
    */
   public abstract void writeObject(Object message);
   
   /**
    * Check if the external process is running.
-   * @return 
+   * @return  flag
    */
   public boolean isAlive() {
     return !need2start();
   }
 
   public int waitFor() {
-    int exitCode = 0;
+    int exitCode;
     try {
       // wait until the process finishes
       exitCode = process.waitFor();
@@ -127,7 +125,8 @@ public abstract class ProcessBase
   
   /**
    * Copy the stream output to the logger using the given logging level.
-   * @param stream 
+   * @param stream stream to copy 
+   * @param level  loggin level
    */
   protected void logStream(final InputStream stream, Level level) {
     // Not sure how to do this yet, probably a thread that copies the 
@@ -135,6 +134,7 @@ public abstract class ProcessBase
     // actually writes to the logger
     // For now we do nothing at all
     loggerThread = new Thread() {
+      @Override
       public void run() {
         try {
           IOUtils.copy(stream, System.err);
@@ -175,7 +175,7 @@ public abstract class ProcessBase
    * This is mainly about dealing with commands and arguments that contain spaces for now.
    * On a Windows-like system, everything that contains spaces is surrounded with double quotes.
    * On a Linux-like system, spaces are escaped with a backslash.
-   * @param command 
+   * @param command command
    */
   protected void updateCommand4OS(List<String> command) {
     boolean linuxLike = System.getProperty("file.separator").equals("/");

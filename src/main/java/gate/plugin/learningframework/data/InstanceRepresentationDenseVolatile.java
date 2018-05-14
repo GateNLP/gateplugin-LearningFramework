@@ -34,7 +34,7 @@ import java.util.Map;
  * <p>
  * NOTE: this does not support removing features for now!
  * 
- * @author Johann Petrak <johann.petrak@gmail.com>
+ * @author Johann Petrak 
  */
 public class InstanceRepresentationDenseVolatile implements InstanceRepresentation {
   protected Map<String,Object> map = new HashMap<>();

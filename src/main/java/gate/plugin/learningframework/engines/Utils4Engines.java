@@ -20,7 +20,7 @@ import java.util.HashMap;
  * Class for factoring out static methods that do not fit into the Engine
  * hierarchy.
  *
- * @author Johann Petrak <johann.petrak@gmail.com>
+ * @author Johann Petrak
  */
 public class Utils4Engines {
 

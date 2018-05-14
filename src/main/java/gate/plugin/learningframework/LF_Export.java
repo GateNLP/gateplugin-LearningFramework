@@ -192,6 +192,7 @@ public class LF_Export extends LF_ExportBase {
   private SeqEncoder seqEncoder;
   /**
    * The sequence to classification algorithm to use.
+   * @param val which sequence encoder to use
    */
   @RunTime
   @Optional

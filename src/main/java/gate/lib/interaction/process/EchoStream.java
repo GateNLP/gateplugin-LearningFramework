@@ -42,7 +42,7 @@ public class EchoStream {
             System.err.println("Received the stop signal from JSON");
             break;        
           }
-        } catch (Exception ex) {
+        } catch (IOException ex) {
           // ignore... could have been something that is not actually a JSON map
         }
       }

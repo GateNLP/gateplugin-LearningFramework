@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 
 /**
  * Class for implementing methods to convert sequences to classes and back
- * @author Johann Petrak <johann.petrak@gmail.com>
+ * @author Johann Petrak 
  */
 public abstract class SeqEncoder {
   public static final String CODESEP = "|";

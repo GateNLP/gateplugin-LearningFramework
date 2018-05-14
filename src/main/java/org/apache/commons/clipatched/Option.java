@@ -34,8 +34,8 @@ import java.util.List;
  * <b>Note:</b> once an {@link Option} has been added to an instance
  * of {@link Options}, it's required flag may not be changed anymore.
  *
- * @see org.apache.commons.cli.Options
- * @see org.apache.commons.cli.CommandLine
+ * @see org.apache.commons.clipatched.Options
+ * @see org.apache.commons.clipatched.CommandLine
  *
  * @version $Id: Option.java 1756753 2016-08-18 10:18:43Z britter $
  */

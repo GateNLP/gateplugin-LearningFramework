@@ -57,6 +57,7 @@ public class Process4StringStream extends ProcessBase
   }
   
   
+  @Override
   public Object readObject() {
     try {
       synchronized(synchronizer) {
@@ -64,7 +65,7 @@ public class Process4StringStream extends ProcessBase
         //System.err.println("DEBUG: got line: "+str);
         return str;
       }
-    } catch (Exception ex) {
+    } catch (IOException ex) {
       throw new RuntimeException("Problem when reading from stream",ex);
     }
   }
@@ -72,7 +73,7 @@ public class Process4StringStream extends ProcessBase
   
   /**
    * Send a message to the process.
-   * @param object 
+   * @param object  object to send
    */
   public void writeObject(Object object) {
     try {
@@ -88,8 +89,9 @@ public class Process4StringStream extends ProcessBase
   
   /**
    * Check if the external process is running.
-   * @return 
+   * @return flag 
    */
+  @Override
   public boolean isAlive() {
     return !need2start();
   }

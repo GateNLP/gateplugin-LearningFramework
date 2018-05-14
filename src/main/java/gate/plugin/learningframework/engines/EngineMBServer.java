@@ -69,7 +69,7 @@ import java.util.logging.Logger;
  * 
  * For receiving data:
  * preds: a vector of vectors of double. Each inner vector is either of length 1 if it contains
- *   the prediction or of length > 1 if it contains the probabilities for the classes.
+ *   the prediction or of length greater than 1 if it contains the probabilities for the classes.
  *   type: double
  * 
  * 

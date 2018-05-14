@@ -36,7 +36,7 @@ import java.util.Map;
  * values.  Additionally, it may parse only a portion of a commandline,
  * allowing for flexible multi-stage parsing.
  *
- * @see org.apache.commons.cli.CommandLine
+ * @see org.apache.commons.clipatched.CommandLine
  *
  * @version $Id: Options.java 1754332 2016-07-27 18:47:57Z britter $
  */

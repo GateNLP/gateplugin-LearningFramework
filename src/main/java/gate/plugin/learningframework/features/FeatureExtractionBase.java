@@ -147,10 +147,9 @@ public class FeatureExtractionBase {
    * Convert a FeatureSpecAttribute instance to its internal feature name.
    * 
    * 
-   * @param attr
-   * @param annType
+   * @param attr attribute
    * @param listEl: for a list attribute, the element number, otherwise ignored
-   * @return 
+   * @return  internal feature name
    */
   public static String featureName(FeatureSpecAttribute attr, int listEl) {
     String internalFeatureName;
@@ -198,9 +197,8 @@ public class FeatureExtractionBase {
    * feature name. Since the annotation type part of the name should be blank
    * if the name in the feature specification matches the name specified in the PR,
    * this method also needs the annotation type. 
-   * @param attrs
-   * @param annType
-   * @return 
+   * @param attrs list of feature specification attributes
+   * @return  list of names
    */
   public static List<String> featureSpecAttributes2FeatureNames(List<FeatureSpecAttribute> attrs) {
     List<String> fnames = new ArrayList<>();    

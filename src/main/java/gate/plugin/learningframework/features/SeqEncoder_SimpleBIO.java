@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Class for implementing methods to convert sequences to classes and back
  *
- * @author Johann Petrak <johann.petrak@gmail.com>
+ * @author Johann Petrak 
  */
 public class SeqEncoder_SimpleBIO extends SeqEncoder {
 

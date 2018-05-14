@@ -618,11 +618,11 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
    * 
    * TODO: handle array of costs
    * 
-   * @param inst
-   * @param alphabet the label alphabet, must be of type LabelAlphabet
-   * @param targetFeature
-   * @param instanceAnnotation
-   * @param doc
+   * @param inst instance representation
+   * @param targetFeature target feature 
+   * @param instanceAnnotation instance annotation
+   * @param inputAS input annotation set
+   * @return  instance representation
    */
   public static InstanceRepresentation extractClassTarget(InstanceRepresentation inst, String targetFeature, Annotation instanceAnnotation, AnnotationSet inputAS) {
     Document doc = inputAS.getDocument();
@@ -651,12 +651,14 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
    * annotation, it's a "beginning". In the middle or at the end, it's an "inside". Instances that
    * don't occur in the span of a class annotation are an "outside".
    *
-   * @param alph the label alphabet to use, must be an instance of LabelAlphabet
-   * @param instanceAnnotation, the instance annotation, e.g. "Token".
+     * @param inst instance representation 
+     * @param classAS class annotation set
+     * @param instanceAnnotation instance annotation
+     * @param seqEncoder sequence encoder
+     * @return  instance representation
    */
   public static InstanceRepresentation extractClassForSeqTagging(InstanceRepresentation inst, AnnotationSet classAS, Annotation instanceAnnotation, SeqEncoder seqEncoder) {
-    String target = "";
-    Document doc = classAS.getDocument();
+    String target;
     AnnotationSet overlappingClassAnns = Utils.getOverlappingAnnotations(classAS, instanceAnnotation);
     // NOTE: previously we only allowed at most one class annotation, but now we are as flexible
     // as possible here: any number of class annotations of any number of types can overlap.
@@ -702,9 +704,9 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
   /**
    * Return the attribute name part of a ML feature.
    *
-   * @param attributes
-   * @param mlFeature
-   * @return
+   * @param attributes the attributes
+   * @param mlFeature the feature name
+   * @return the attribute name
    */
   public static String attrName4MlFeature(String mlFeature) {
     // first get the attribute name part
@@ -721,9 +723,9 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
    * This requries the instance annotation type because the way how the ML feature is generated
    * depends on the instance annotation type.
    *
-   * @param attributes
-   * @param featureName
-   * @return
+   * @param attributes the attributes
+   * @param featureName the feature name 
+   * @return the attribute
    */
   public static FeatureSpecAttribute lookupAttributeForFeatureName(List<FeatureSpecAttribute> attributes,
           String mlFeatureName, String instanceType) {

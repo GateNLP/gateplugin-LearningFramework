@@ -30,7 +30,7 @@ package gate.plugin.learningframework.data;
  * target property value (an Object). Again, specific implementations can
  * limit the available target property names and/or the type of their values.
  * 
- * @author Johann Petrak <johann.petrak@gmail.com>
+ * @author Johann Petrak 
  */
 public interface InstanceRepresentation {
   /**

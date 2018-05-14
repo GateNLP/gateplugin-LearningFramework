@@ -53,8 +53,9 @@ public class ProcessSimple extends ProcessBase
 
   /**
    * This always returns null for this class.
-   * @return 
+   * @return null
    */
+  @Override
   public Object readObject() {
     return null;
   }
@@ -62,23 +63,32 @@ public class ProcessSimple extends ProcessBase
   
   /**
    * Does nothing.
-   * @param object 
+   * @param object to send
    */
+  @Override
   public void writeObject(Object object) {
   }
   
   /**
    * Check if the external process is running.
-   * @return 
+   * @return  flag
    */
+  @Override
   public boolean isAlive() {
     return !need2start();
   }
   
   ///////////////////////////////////////////////////////////////////
+
+    /**
+     * Copy stream
+     * @param processStream to copy
+     * @param ourStream where to copy
+     */
   
   protected void copyStream(final InputStream processStream, final OutputStream ourStream) {
     Thread copyThread = new Thread() {
+      @Override
       public void run() {
         try {
           IOUtils.copy(processStream, ourStream);

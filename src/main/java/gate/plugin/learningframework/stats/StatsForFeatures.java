@@ -38,7 +38,7 @@ import java.util.Map;
  * <li>List/Array: over the size of the list or array
  * </ul>
  * 
- * @author Johann Petrak <johann.petrak@gmail.com>
+ * @author Johann Petrak 
  */
 public class StatsForFeatures {
   private Map<String,Stats> feature2stats = new HashMap<>();

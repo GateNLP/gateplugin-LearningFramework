@@ -22,7 +22,7 @@ package gate.plugin.learningframework.features;
 
 /**
  *
- * @author johann
+ * @author Johann Petrak
  */
 public enum TargetType {
   NUMERIC, NOMINAL, NONE

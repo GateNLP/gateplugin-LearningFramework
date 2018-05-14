@@ -983,11 +983,11 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
    * instance is used as the Entry for a mallet Label and as long as the minimum cost class is the
    * same, the hashcodes and equals function will consider them to be identical.
    *
-   * @param inst
+   * @param inst the instance
    * @param alphabet the label alphabet, must be of type LabelAlphabet
-   * @param targetFeature
-   * @param instanceAnnotation
-   * @param doc
+   * @param targetFeature the target feature
+   * @param instanceAnnotation the instance annotation
+   * @param doc the document
    */
   public static void extractClassTarget(Instance inst, Alphabet alphabet, String targetFeature, Annotation instanceAnnotation, AnnotationSet inputAS) {
     LabelAlphabet labelalphabet = (LabelAlphabet) alphabet;
@@ -1103,9 +1103,8 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
   /**
    * Return the attribute name part of a ML feature.
    *
-   * @param attributes
-   * @param mlFeature
-   * @return
+   * @param mlFeature the feature name
+   * @return the attribute name
    */
   public static String attrName4MlFeature(String mlFeature) {
     // first get the attribute name part
@@ -1122,9 +1121,9 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
    * This requries the instance annotation type because the way how the ML feature is generated
    * depends on the instance annotation type.
    *
-   * @param attributes
-   * @param featureName
-   * @return
+   * @param attributes the list of feature attributes
+   * @param featureName the feature name
+   * @return the attribute
    */
   public static FeatureSpecAttribute lookupAttributeForFeatureName(List<FeatureSpecAttribute> attributes,
           String mlFeatureName, String instanceType) {

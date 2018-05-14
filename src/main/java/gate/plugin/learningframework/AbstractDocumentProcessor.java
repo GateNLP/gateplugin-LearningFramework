@@ -43,7 +43,7 @@ public abstract class AbstractDocumentProcessor
   /**
    *
    */
-  private Logger logger = Logger.getLogger(AbstractDocumentProcessor.class.getCanonicalName());
+  private final Logger logger = Logger.getLogger(AbstractDocumentProcessor.class.getCanonicalName());
 
   private int seenDocuments = 0;
 
@@ -123,11 +123,12 @@ public abstract class AbstractDocumentProcessor
    * This must return a document which will usually be the same object
    * as it was passed.
    * NOTE: in the future the better option here may be to return 
-   * Optional<Document> or even List<Document>. That way downstream
+   * Optional of Document or even List of Document. That way downstream
    * PRs could be made to not process filtered documents and to process
    * additional generated documents. 
    * 
-   * @param document 
+   * @param document  the document
+   * @return document
    */
   protected abstract Document process(Document document);
 
@@ -144,21 +145,24 @@ public abstract class AbstractDocumentProcessor
    * This will run once before any document is processed and before the method
    * beforeFirstDocument is invoked, even if no document is being processed at all.
    * 
-   * @param ctrl 
+   * @param ctrl the controller
    */
   protected void processingStarted(Controller ctrl) { };
   
+  /**
+   * Handler for processing after last document
+   * @param ctrl the controller
+   * @param t any throwable 
+   */
   protected abstract void afterLastDocument(Controller ctrl, Throwable t);
 
+  /**
+   * Handler for processing after finishing without any document
+   * @param ctrl the controller
+   * @param t any throwable
+   */
   protected abstract void finishedNoDocument(Controller ctrl, Throwable t);
   
-  /**
-   * Implement high-level API functions that can be used without importing
-   * anything.
-   * @param methodName
-   * @param parms
-   * @return 
-   */
   // TODO: not yet, we will implement this once we removed the requirement to
   // be compatible with Java 7
   /*

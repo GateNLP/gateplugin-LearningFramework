@@ -28,7 +28,7 @@ import java.util.Objects;
 /**
  * Represent a cost vector in a way that Mallet can use as a classification label.
  * 
- * This can be created from a List<Double> or double[] of per-instance costs, 
+ * This can be created from a List of Double or double[] of per-instance costs, 
  * in which case the "label" used will be the String representation of the class index
  * with the minimum cost. 
  * If the instance is used directly as a target, then instead of the index, the 
