@@ -26,6 +26,7 @@ import gate.plugin.learningframework.features.FeatureSpecification;
 import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import gate.test.GATEPluginTests;
 
 
 /**
@@ -33,7 +34,7 @@ import static org.junit.Assert.*;
  * 
  * @author Johann Petrak
  */
-public class TestFeatureSpecification {
+public class TestFeatureSpecification extends GATEPluginTests {
   
   @Test
   public void basicSpecParsing1() {

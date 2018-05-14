@@ -23,12 +23,13 @@ package gate.plugin.learningframework.tests;
 import gate.plugin.learningframework.engines.Parms;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import gate.test.GATEPluginTests;
 
 /**
  * Tester for the Parms class.
  * @author Johann Petrak
  */
-public class TestParms {
+public class TestParms extends GATEPluginTests {
   @Test
   public void testParms1() {
     Parms ps = new Parms("-toIgnore -maxDepth 3 -prune ", "m:maxDepth:i", "p:prune:b", "x:xoxo:d");

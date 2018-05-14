@@ -58,12 +58,13 @@ import javax.xml.stream.XMLStreamException;
 import org.apache.commons.io.FileUtils;
 import static org.junit.Assert.*;
 import static gate.plugin.learningframework.tests.Utils.TESTS_DIR;
+import gate.test.GATEPluginTests;
 
 /**
  *
  * @author Johann Petrak
  */
-public class TestEngineMalletSeq {
+public class TestEngineMalletSeq extends GATEPluginTests {
 
   @BeforeClass
   public static void init() throws GateException {

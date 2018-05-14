@@ -44,6 +44,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import gate.test.GATEPluginTests;
 
 
 /**
@@ -51,7 +52,7 @@ import org.junit.BeforeClass;
  * 
  * @author Johann Petrak
  */
-public class TestFeatureExtraction {
+public class TestFeatureExtraction extends GATEPluginTests {
   
   private static final String specAttrNoFeature = "<ROOT>"+
             "<ATTRIBUTE><TYPE>theType</TYPE><DATATYPE>nominal</DATATYPE></ATTRIBUTE>"+

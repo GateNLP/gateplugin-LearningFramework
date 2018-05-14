@@ -26,12 +26,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import gate.test.GATEPluginTests;
 
 /**
  *
  * @author Johann Petrak
  */
-public class TestInfo {
+public class TestInfo extends GATEPluginTests {
   @Test
   public void testInfo1() throws MalformedURLException {
     Info info = new Info();

@@ -23,12 +23,13 @@ package gate.plugin.learningframework.tests;
 import gate.plugin.learningframework.engines.Utils4Engines;
 import java.net.MalformedURLException;
 import org.junit.Test;
+import gate.test.GATEPluginTests;
 
 /**
  *
  * @author Johann Petrak
  */
-public class TestUtils4Engines {
+public class TestUtils4Engines extends GATEPluginTests {
   @Test
   public void test1() throws MalformedURLException {
     Utils4Engines.copyWrapper("FileJsonPyTorch", Utils.TESTS_DIR);

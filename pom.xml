@@ -1,23 +1,38 @@
 <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <name>Learning Framework</name>
+  <name>LearningFramework</name>
   <description>
+    A plugin for the GATE NLP framework that allows to use many different machine learning
+    algorithms for a wide range of NLP-related machine learning tasks.
   </description>
   <url>https://github.com/GateNLP/gateplugin-LearningFramework</url>
-  <!--
+  <organization>
+    <name>GateNLP</name>
+    <url>http://gate.ac.uk</url>
+  </organization>
+  <developers>
+    <developer>
+      <id>gate-team</id>
+      <name>GATE Team</name>
+      <email/>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/GateNLP/gateplugin-LearningFramework.git</connection>
+    <developerConnection>scm:git:git@github.com:GateNLP/gateplugin-LearningFramework.git</developerConnection>
+    <url>https://github.com/GateNLP/gateplugin-LearningFramework</url>
+  </scm>
   <parent>
     <groupId>uk.ac.gate</groupId>
     <artifactId>gate-plugin-base</artifactId>
     <version>8.5-SNAPSHOT</version>
     <relativePath/>
   </parent>
-  -->
   <!-- this is the description of this plugin -->
   <groupId>uk.ac.gate.plugins</groupId>
   <artifactId>learningframework</artifactId>
   <version>4.0-SNAPSHOT</version>
-
   <licenses>
     <license>
       <name>GNU Lesser General Public License (LGPL), Version 3</name>
@@ -25,14 +40,10 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
-
   <properties>
-    <!-- configure the compiler to use those settings -->
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
-
-
   <dependencies>
     <dependency>
       <groupId>uk.ac.gate</groupId>
@@ -50,46 +61,39 @@
       <artifactId>libsvm</artifactId>
       <version>3.22</version>
     </dependency>
-
     <dependency>
       <groupId>cc.mallet</groupId>
       <artifactId>mallet</artifactId>
       <version>2.0.8</version>
     </dependency>
-<dependency>
-    <groupId>com.fasterxml.jackson.core</groupId>
-    <artifactId>jackson-core</artifactId>
-    <version>2.9.5</version>
-</dependency>
-
-<dependency>
-    <groupId>com.fasterxml.jackson.core</groupId>
-    <artifactId>jackson-databind</artifactId>
-    <version>2.9.5</version>
-</dependency>
-
-<!-- https://mvnrepository.com/artifact/org.yaml/snakeyaml -->
-<dependency>
-    <groupId>org.yaml</groupId>
-    <artifactId>snakeyaml</artifactId>
-    <version>1.21</version>
-</dependency>
-
-<!-- https://mvnrepository.com/artifact/com.mashape.unirest/unirest-java -->
-<!-- NOTE: temporary dependency as long as we include a copy of gatelib-interaction -->
-<dependency>
-    <groupId>com.mashape.unirest</groupId>
-    <artifactId>unirest-java</artifactId>
-    <version>1.4.9</version>
-</dependency>
-
-<dependency>
-    <groupId>uk.ac.gate</groupId>
-    <artifactId>evaluation</artifactId>
-    <version>0.8-SNAPSHOT</version>
-    <scope>test</scope>
-</dependency>
-
-
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>2.9.5</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.9.5</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.yaml/snakeyaml -->
+    <dependency>
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+      <version>1.21</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/com.mashape.unirest/unirest-java -->
+    <!-- NOTE: temporary dependency as long as we include a copy of gatelib-interaction -->
+    <dependency>
+      <groupId>com.mashape.unirest</groupId>
+      <artifactId>unirest-java</artifactId>
+      <version>1.4.9</version>
+    </dependency>
+    <dependency>
+      <groupId>uk.ac.gate</groupId>
+      <artifactId>evaluation</artifactId>
+      <version>0.8-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>

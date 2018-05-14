@@ -26,12 +26,13 @@ import java.net.MalformedURLException;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import static org.junit.Assert.*;
 import org.junit.Test;
+import gate.test.GATEPluginTests;
 
 /**
  *
  * @author Johann Petrak
  */
-public class TestStats {
+public class TestStats extends GATEPluginTests {
   @Test
   public void testStats1() throws MalformedURLException {
     StatsForFeatures stats = new StatsForFeatures();

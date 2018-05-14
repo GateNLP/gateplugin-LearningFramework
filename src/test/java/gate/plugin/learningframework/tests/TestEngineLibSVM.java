@@ -53,12 +53,13 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import gate.test.GATEPluginTests;
 
 /**
  *
  * @author Johann Petrak
  */
-public class TestEngineLibSVM {
+public class TestEngineLibSVM extends GATEPluginTests {
 
   @BeforeClass
   public static void init() throws GateException {

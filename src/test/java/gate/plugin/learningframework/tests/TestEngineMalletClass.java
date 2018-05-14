@@ -43,12 +43,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import static org.junit.Assert.*;
+import gate.test.GATEPluginTests;
 
 /**
  *
  * @author Johann Petrak
  */
-public class TestEngineMalletClass {
+public class TestEngineMalletClass extends GATEPluginTests {
 
   @BeforeClass
   public static void init() throws GateException {

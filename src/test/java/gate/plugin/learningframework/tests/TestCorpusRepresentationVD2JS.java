@@ -46,6 +46,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import gate.test.GATEPluginTests;
 
 
 /**
@@ -53,7 +54,7 @@ import org.junit.BeforeClass;
  * 
  * @author Johann Petrak
  */
-public class TestCorpusRepresentationVD2JS {
+public class TestCorpusRepresentationVD2JS extends GATEPluginTests {
   
   
   @BeforeClass

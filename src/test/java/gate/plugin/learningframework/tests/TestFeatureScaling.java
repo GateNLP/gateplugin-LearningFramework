@@ -34,15 +34,16 @@ import java.io.File;
 import java.net.MalformedURLException;
 import org.junit.Test;
 import org.junit.BeforeClass;
+import gate.test.GATEPluginTests;
 
 /**
  *
  * @author Johann Petrak
  */
-public class TestFeatureScaling {
+public class TestFeatureScaling extends GATEPluginTests {
 
   @BeforeClass
-  public static void init() throws GateException {
+  public static void init() throws GateException  {
     gate.Gate.init();
     // load the plugin
     gate.Utils.loadPlugin(new File("."));

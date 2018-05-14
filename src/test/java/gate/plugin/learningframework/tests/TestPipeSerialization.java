@@ -27,6 +27,7 @@ import cc.mallet.types.Instance;
 import cc.mallet.types.LabelAlphabet;
 import gate.Annotation;
 import gate.Document;
+import gate.test.GATEPluginTests;
 import gate.creole.ResourceInstantiationException;
 import gate.plugin.learningframework.features.FeatureSpecAttribute;
 import gate.plugin.learningframework.features.FeatureExtractionMalletSparse;
@@ -51,7 +52,7 @@ import static org.junit.Assert.*;
  *
  * @author Johann Petrak
  */
-public class TestPipeSerialization {
+public class TestPipeSerialization extends GATEPluginTests {
   // Test if we can serialize a pipe that has a FeatureInfo stored with it and
   // get everything back as needed
   @Test
