@@ -51,9 +51,7 @@ public class Utils4Engines {
             = FileSystems.newFileSystem(artifactURL.toURI(), new HashMap<>());) {
 
       Path target = Paths.get(targetDir.toURI());
-      System.err.println("DEBUG: target=" + target);
       Path pathInZip = zipFs.getPath(root);
-      System.err.println("DEBUG: pathInZip=" + pathInZip);
       if (!Files.isDirectory(pathInZip)) {
         throw new GateRuntimeException("ODD: not a directory " + pathInZip);
       }
@@ -64,14 +62,14 @@ public class Utils4Engines {
                 BasicFileAttributes attrs) throws IOException {
           // Make sure that we conserve the hierachy of files and folders
           // inside the zip
-          System.err.println("DEBUG filePath=" + filePath);
+          //System.err.println("DEBUG filePath=" + filePath);
           Path relativePathInZip = parentPathInZip.relativize(filePath);
           Path targetPath = target.resolve(relativePathInZip.toString());
-          System.err.println("DEBUG: WARNING create directories" + targetPath.getParent());
+          //System.err.println("DEBUG: WARNING create directories" + targetPath.getParent());
           Files.createDirectories(targetPath.getParent());
 
           // And extract the file
-          System.err.println("DEBUG: WARNING copy from " + filePath + " to " + targetPath);
+          //System.err.println("DEBUG: WARNING copy from " + filePath + " to " + targetPath);
           Files.copy(filePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
           // if the file ends in .sh or .cmd make it executable
           String tp = targetPath.toString();

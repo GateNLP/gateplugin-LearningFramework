@@ -45,8 +45,6 @@ public class TestFeatureScaling extends GATEPluginTests {
   @BeforeClass
   public static void init() throws GateException  {
     gate.Gate.init();
-    // load the plugin
-    gate.Utils.loadPlugin(new File("."));
   }
   
   @Test

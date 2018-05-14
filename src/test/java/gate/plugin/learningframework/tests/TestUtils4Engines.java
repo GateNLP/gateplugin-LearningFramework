@@ -30,7 +30,9 @@ import gate.test.GATEPluginTests;
  * @author Johann Petrak
  */
 public class TestUtils4Engines extends GATEPluginTests {
-  @Test
+  // Cannot use this test any more: with the new Maven-based approach for running the tests,
+  // we do not have the JAR/ZIP yet, so we cannot find and copy anything out of it
+  // @Test
   public void test1() throws MalformedURLException {
     Utils4Engines.copyWrapper("FileJsonPyTorch", Utils.TESTS_DIR);
   }

@@ -1,0 +1,8 @@
+<?xml version="1.0"?>  
+<CREOLE-DIRECTORY>
+
+	<!-- plugins can require other plugins.
+	For example to require ANNIE you would include the following:
+	<REQUIRES GROUP="uk.ac.gate.plugins" ARTIFACT="annie" VERSION="8.5-SNAPSHOT"/>
+	-->
+</CREOLE-DIRECTORY>
