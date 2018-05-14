@@ -90,7 +90,7 @@
       <version>1.4.9</version>
     </dependency>
     <dependency>
-      <groupId>uk.ac.gate</groupId>
+      <groupId>uk.ac.gate.plugins</groupId>
       <artifactId>evaluation</artifactId>
       <version>0.8-SNAPSHOT</version>
       <scope>test</scope>
