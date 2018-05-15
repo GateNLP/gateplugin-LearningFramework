@@ -60,6 +60,7 @@ public class FeatureInfo implements Serializable {
 
   /**
    * Create an FeatureInfo instance that is a deep copy of another one.
+   * @param other TODO
    */
   public FeatureInfo(FeatureInfo other) {
     this.growthStopped = other.growthStopped;
@@ -71,12 +72,16 @@ public class FeatureInfo implements Serializable {
   
   /**
    * Add a new FeatureSpecAttribut and assign its id.
+   * @param attr TODO
    */
   public void add(FeatureSpecAttribute attr) {    
     featureSpecs.add(attr);
     attr.featureId = featureSpecs.size()-1;
   }
   
+  /**
+   * TODO
+   */
   public void stopGrowth() {
     // make sure that all alphabets we have stored with some of the featureSpecs are
     // locked too!
@@ -86,10 +91,17 @@ public class FeatureInfo implements Serializable {
     growthStopped = true;
   }
 
+  /**
+   * TODO
+   */
   public void startGrowth() {
     growthStopped = false;
   }
 
+  /**
+   * TODO
+   * @return TODO
+   */
   public boolean growthStopped() {
     return growthStopped;
   }
@@ -99,16 +111,32 @@ public class FeatureInfo implements Serializable {
 
   protected ScalingMethod globalScalingMethod = ScalingMethod.NONE;
   
+  /**
+   * TODO
+   * @param sm TODO
+   */
   public void setGlobalScalingMethod(ScalingMethod sm) {
     globalScalingMethod = sm;
   }
   
+  /**
+   * TODO
+   * @return TODO
+   */
   public ScalingMethod getGlobalScalingMethod() {
     return globalScalingMethod;
   }
   
+  /**
+   * TODO
+   * @return TODO
+   */
   public List<FeatureSpecAttribute> getAttributes() { return featureSpecs; }
   
+  /**
+   * TODO
+   * @param dirFile TODO
+   */
   public void save(File dirFile) {
     try (OutputStream os = new FileOutputStream(new File(dirFile,FILENAME_FEATUREINFO));
             ObjectOutputStream oos = new ObjectOutputStream(os)
@@ -119,6 +147,11 @@ public class FeatureInfo implements Serializable {
     }
   }
   
+  /**
+   * TODO
+   * @param dirURL TODO
+   * @return TODO
+   */
   public static FeatureInfo load(URL dirURL) {    
     URL infoFile = newURL(dirURL,FILENAME_FEATUREINFO);
     try (InputStream is = infoFile.openStream();
@@ -134,6 +167,7 @@ public class FeatureInfo implements Serializable {
     }    
   }
   
+  @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("FeatureInfo{growthStopped=");

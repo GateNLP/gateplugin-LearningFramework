@@ -40,7 +40,7 @@ public abstract class CorpusRepresentation {
    * Returns whatever object the concrete representation uses to represent the instances.
    * In addition, each specific CorpusRepresentation subclass has a representation specific
    * method that returns the correct type of data, e.g. getRepresentationLibSVM 
-   * @return 
+   * @return TODO
    */
   public abstract Object getRepresentation();
   
@@ -56,7 +56,7 @@ public abstract class CorpusRepresentation {
    * Returns the number of training instances added to this CR so far.
    * 
    * 
-   * @return 
+   * @return  TODO
    */
   public abstract int nrInstances();
   

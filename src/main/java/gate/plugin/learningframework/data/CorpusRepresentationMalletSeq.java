@@ -56,7 +56,7 @@ public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
     scalingMethod = sm;
 
     Pipe innerPipe = new Noop(new Alphabet(), new LabelAlphabet());
-    List<Pipe> pipes = new ArrayList<Pipe>();
+    List<Pipe> pipes = new ArrayList<>();
     pipes.add(innerPipe);
     pipe = new LFPipe(pipes);
     pipe.setFeatureInfo(fi);
@@ -78,8 +78,8 @@ public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
   /**
    * Create a new instance based on the pipe stored in directory.
    *
-   * @param directory
-   * @return
+   * @param directory TODO
+   * @return TODO
    */
   public static CorpusRepresentationMalletSeq load(URL directory) {
     // load the pipe from a Java object serialization representation
@@ -106,9 +106,14 @@ public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
    * and classAS must be null. if the parameter nameFeatureName is non-null, then a Mallet instance
    * name is added from the source document and annotation.
    *
-   * @param instancesAS
-   * @param inputAS
-   * @param nameFeatureName
+   * @param instancesAS TODO
+   * @param sequenceAS TODO
+   * @param inputAS TODO
+   * @param classAS TODO
+   * @param targetFeatureName TODO
+   * @param targetType TODO
+   * @param nameFeatureName TODO
+   * @param seqEncoder TODO
    */
   public void addOld(AnnotationSet instancesAS, AnnotationSet sequenceAS, AnnotationSet inputAS, AnnotationSet classAS, String targetFeatureName, TargetType targetType, String nameFeatureName, SeqEncoder seqEncoder) {
     if (sequenceAS == null) {
@@ -122,9 +127,9 @@ public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
     // from the array of instances and create a final Mallet instance with the featuresequence
     // as data and the labelsequence as target
     for (Annotation sequenceAnnotation : sequenceAS.inDocumentOrder()) {
-      List<Instance> instanceList = new ArrayList<Instance>(sequenceAS.size());
+      List<Instance> instanceList = new ArrayList<>(sequenceAS.size());
       List<Annotation> instanceAnnotations = gate.Utils.getContainedAnnotations(instancesAS, sequenceAnnotation).inDocumentOrder();
-      for (Annotation instanceAnnotation : instanceAnnotations) {
+      instanceAnnotations.stream().map((instanceAnnotation) -> {
         Instance inst = extractIndependentFeaturesHelper(instanceAnnotation, inputAS, featureInfo, pipe);
         if (classAS != null) {
           // extract the target as required for sequence tagging
@@ -134,10 +139,10 @@ public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
         } else if (targetType == TargetType.NUMERIC) {
           FeatureExtractionMalletSparse.extractNumericTarget(inst, targetFeatureName, instanceAnnotation, inputAS);
         }
-        if (!FeatureExtractionMalletSparse.ignoreInstanceWithMV(inst)) {
-          instanceList.add(inst);
-        }
-      }
+        return inst;
+      }).filter((inst) -> (!FeatureExtractionMalletSparse.ignoreInstanceWithMV(inst))).forEachOrdered((inst) -> {
+        instanceList.add(inst);
+      });
       // create a feature sequence from all the feature vectors in each of the instances in instanceList
       // create a label index sequence from all the labels of the instances in instance list
       // However, we do all this only if there is at least one instance in the first place
@@ -176,10 +181,15 @@ public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
    * and classAS must be null. if the parameter nameFeatureName is non-null, then a Mallet instance
    * name is added from the source document and annotation.
    *
-   * @param instancesAS
-   * @param inputAS
+   * @param instancesAS TODO
+   * @param sequenceAS TODO
+   * @param inputAS TODO
+   * @param classAS TODO
+   * @param targetFeatureName TODO
+   * @param targetType TODO
    * @param instanceWeightFeature ignored, this is only relevant for classification/regression
-   * @param nameFeatureName
+   * @param nameFeatureName TODO
+   * @param seqEncoder TODO
    */
   @Override
   public void add(AnnotationSet instancesAS, AnnotationSet sequenceAS, AnnotationSet inputAS, AnnotationSet classAS, String targetFeatureName, TargetType targetType, String instanceWeightFeature, String nameFeatureName, SeqEncoder seqEncoder) {
@@ -202,14 +212,15 @@ public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
   /**
    * Get a single Instance for a sequence annotation. If the
    *
-   * @param instancesAS
-   * @param sequenceAnnotation
-   * @param inputAS
-   * @param classAS
-   * @param targetFeatureName
-   * @param targetType
-   * @param nameFeatureName
-   * @return
+   * @param instancesAS TODO
+   * @param sequenceAnnotation TODO
+   * @param inputAS TODO
+   * @param classAS TODO
+   * @param targetFeatureName TODO
+   * @param targetType TODO
+   * @param nameFeatureName TODO
+   * @param seqEncoder TODO
+   * @return TODO
    */
   public Instance getInstanceForSequence(
           AnnotationSet instancesAS,
@@ -222,7 +233,7 @@ public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
           SeqEncoder seqEncoder) {
 
     List<Annotation> instanceAnnotations = gate.Utils.getContainedAnnotations(instancesAS, sequenceAnnotation).inDocumentOrder();
-    List<Instance> instanceList = new ArrayList<Instance>(instanceAnnotations.size());
+    List<Instance> instanceList = new ArrayList<>(instanceAnnotations.size());
     for (Annotation instanceAnnotation : instanceAnnotations) {
       Instance inst = extractIndependentFeaturesHelper(instanceAnnotation, inputAS, featureInfo, pipe);
       if (targetType != TargetType.NONE) {

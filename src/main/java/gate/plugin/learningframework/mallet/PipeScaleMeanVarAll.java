@@ -41,6 +41,11 @@ public class PipeScaleMeanVarAll extends Pipe implements Serializable {
   double variances[];
   boolean normalize[];
   
+  /**
+   * TODO 
+   * @param alphabet TODO
+   * @param stats TODO
+   */
   public PipeScaleMeanVarAll(Alphabet alphabet, FVStatsMeanVarAll stats) {
     super(alphabet, null);
     List<PerFeatureStats> pfss = stats.getStats();

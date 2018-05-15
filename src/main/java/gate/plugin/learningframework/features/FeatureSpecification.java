@@ -55,6 +55,10 @@ public class FeatureSpecification {
   private Map<String,Integer> embeddingId2minfreq = new HashMap<>();
   private Map<String,String> embeddingId2train = new HashMap<>();
 
+  /**
+   * TODO 
+   * @param configFileURL TODO
+   */
   public FeatureSpecification(URL configFileURL) {
     url = configFileURL;
 
@@ -71,6 +75,10 @@ public class FeatureSpecification {
     }
   }
 
+  /**
+   * TODO 
+   * @param configString TODO
+   */
   public FeatureSpecification(String configString) {
     SAXBuilder saxBuilder = new SAXBuilder(false);
     try {
@@ -85,6 +93,10 @@ public class FeatureSpecification {
     }
   }
 
+  /**
+   * TODO
+   * @param configFile TODO
+   */
   public FeatureSpecification(File configFile) {
     SAXBuilder saxBuilder = new SAXBuilder(false);
     try {
@@ -376,7 +388,7 @@ public class FeatureSpecification {
    * This will always return a new deep copy of the FeatureInfo that corresponds
    * to the information inf the FeatureSepcification. 
    * 
-   * @return 
+   * @return  TODO
    */
   public FeatureInfo getFeatureInfo() {
     return new FeatureInfo(featureInfo); // this returns a cloned copy of the original

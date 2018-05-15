@@ -71,7 +71,7 @@ public class FeatureExtractionBase {
   public static final String VALSEP = "═";
 
   /**
-   * Separates the grams in an n-gram with n>1.
+   * Separates the grams in an n-gram with n &lt; 1.
    */
   public static final String NGRAMSEP = "┋";
 
@@ -174,8 +174,8 @@ public class FeatureExtractionBase {
    * This generates the prefix up to and including the NAMESEP, but 
    * not including the actual indicator for the attribute type (A/N/L).
    * 
-   * @param attr
-   * @return 
+   * @param attr TODO
+   * @return  TODO
    */
   public static String featureNamePrefix(FeatureSpecAttribute attr) {
     String internalFeatureName;
@@ -223,8 +223,8 @@ public class FeatureExtractionBase {
    * - attrid: the id/index of the attribute
    * - kind: the "kind", one of N, A or L
    * 
-   * @param attrs
-   * @return 
+   * @param attrs TODO
+   * @return  TODO
    */
   public static List<Map<String,Object>> featureSpecAttributes2FeatureInfos(List<FeatureSpecAttribute> attrs) {
     List<Map<String,Object>> fnames = new ArrayList<>();    

@@ -21,10 +21,7 @@ package gate.plugin.learningframework.data;
 
 import cc.mallet.types.Alphabet;
 import cc.mallet.types.InstanceList;
-import gate.AnnotationSet;
 import gate.plugin.learningframework.features.FeatureInfo;
-import gate.plugin.learningframework.features.SeqEncoder;
-import gate.plugin.learningframework.features.TargetType;
 import gate.plugin.learningframework.mallet.LFPipe;
 import gate.util.GateRuntimeException;
 import java.io.File;
@@ -43,8 +40,10 @@ public abstract class CorpusRepresentationMallet extends CorpusRepresentationMal
 
   protected InstanceList instances;
 
+  @Override
   public InstanceList getRepresentationMallet() { return instances; }
   
+  @Override
   public Object getRepresentation() { return instances; }
   
   public LFPipe getPipe() {
@@ -87,7 +86,7 @@ public abstract class CorpusRepresentationMallet extends CorpusRepresentationMal
     try {
       oos = new ObjectOutputStream(new FileOutputStream(outFile));
       oos.writeObject(pipe);
-    } catch (Exception ex) {
+    } catch (IOException ex) {
       throw new GateRuntimeException("Could not save LFPipe for CorpusRepresentationMallet to "+outFile,ex);
     } finally {
       if(oos!=null) try {
@@ -102,8 +101,8 @@ public abstract class CorpusRepresentationMallet extends CorpusRepresentationMal
   /**
    * Finish adding data to the CR. This will do any re-scaling and other outstanding calculations
    * on the whole corpus. 
-   * @param scaleFeatures 
    */
+  @Override
   public abstract void finishAdding();
   
   // TODO: need to do this better: make sure if there are thousands of 

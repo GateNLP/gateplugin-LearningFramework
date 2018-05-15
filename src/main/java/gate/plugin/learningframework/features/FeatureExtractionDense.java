@@ -57,11 +57,11 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
   
   /**
    * Dispatch to the proper helper method for extracting a feature of that type.
-   * @param inst
-   * @param att
-   * @param inputAS
-   * @param instanceAnnotation 
-   * @return  
+   * @param inst TODO
+   * @param att TODO
+   * @param inputAS TPDP
+   * @param instanceAnnotation TODO 
+   * @return   TODO
    */
   public static InstanceRepresentation extractFeature(
           InstanceRepresentation inst,
@@ -113,11 +113,11 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
    * value or the backend is able to handle data where the value is sometimes a list
    * and sometimes not.
    * 
-   * @param inst
-   * @param att
-   * @param inputASname
-   * @param instanceAnnotation
-   * @param doc
+   * @param inst TODO
+   * @param att TODO
+   * @param inputASname TODO
+   * @param instanceAnnotation TODO
+   * @param doc TODO
    */
   private static InstanceRepresentation extractFeatureHelper(
           InstanceRepresentation inst,
@@ -176,7 +176,7 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
             sourceAnnotation = ann;
           }
         }
-      } else if (overlappings.size() == 0) {
+      } else if (overlappings.isEmpty()) {
         // there is no overlappign annotation so we have to pass on null 
         // and treat this as a missing value
         sourceAnnotation = null;
@@ -428,10 +428,10 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
       return inst;
     }
     // this will hold the actual token strings to use for creating the n-grams
-    List<String> strings = new ArrayList<String>();
+    List<String> strings = new ArrayList<>();
     // this will hold the score to use for each string we extract, but only of the
     // featureName4Value was specified and exists.
-    List<Double> scores = new ArrayList<Double>();
+    List<Double> scores = new ArrayList<>();
 
     for (Annotation ann : al) {
       // for ngrams we either have a featureName name 
@@ -520,15 +520,15 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
    * attribute specification, e.g. "A" for attribute or something like "L-3" for attribute list
    * @param inst the mallet instance
    * @param sourceAnnotation the annotation from which to extract the feature value
-   * @param doc
+   * @param doc TODO
    * @param annType the annotation type as defined in the attribute specification. This can be empty
    * if the original instance annotation is used.
    * @param featureName the feature name as defined in the attribute specification.
-   * @param alphabet
-   * @param dt
-   * @param mvt
-   * @param codeas
-   * @param listsep
+   * @param alphabet TODO
+   * @param dt TODO
+   * @param mvt TODO
+   * @param codeas TODO
+   * @param listsep TODO
    * @param specialsymbol: if this is non-null, then an attribute is generated
    * for some special symbol (e.g. start/stop indicator). In this case, some other parameters 
    * are usually ignored.
@@ -588,6 +588,15 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
   // *****************************************************************************
   // Extract the target stuff
   // *****************************************************************************
+
+  /**
+   * TODO
+   * @param inst TODO 
+   * @param targetFeature TODO
+   * @param instanceAnnotation TODO
+   * @param inputAS TODO
+   * @return TODO
+   */
   public static InstanceRepresentation extractNumericTarget(InstanceRepresentation inst, String targetFeature, Annotation instanceAnnotation, AnnotationSet inputAS) {
     Document doc = inputAS.getDocument();
     Object obj = instanceAnnotation.getFeatures().get(targetFeature);
@@ -704,7 +713,6 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
   /**
    * Return the attribute name part of a ML feature.
    *
-   * @param attributes the attributes
    * @param mlFeature the feature name
    * @return the attribute name
    */
@@ -723,8 +731,9 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
    * This requries the instance annotation type because the way how the ML feature is generated
    * depends on the instance annotation type.
    *
-   * @param attributes the attributes
-   * @param featureName the feature name 
+   * @param attributes the attributes 
+   * @param mlFeatureName  TODO
+   * @param instanceType  TODO
    * @return the attribute
    */
   public static FeatureSpecAttribute lookupAttributeForFeatureName(List<FeatureSpecAttribute> attributes,

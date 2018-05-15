@@ -32,6 +32,7 @@ import gate.plugin.learningframework.mallet.LFPipe;
 import gate.util.Files;
 import gate.util.GateRuntimeException;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -120,7 +121,7 @@ public class EngineLibSVM extends EngineMB {
             Double value = Double.NaN;
             try {
               value = Double.parseDouble(valueString);
-            } catch (Exception ex) {
+            } catch (NumberFormatException ex) {
               // ignore this
             }
             if (!Double.isNaN(value)) {
@@ -198,7 +199,7 @@ public class EngineLibSVM extends EngineMB {
     }
     svm_model svmModel = (svm_model) model;
     // iterate over all the mallet instances
-    List<ModelApplication> gcs = new ArrayList<ModelApplication>();
+    List<ModelApplication> gcs = new ArrayList<>();
     for (Annotation instAnn : instanceAS.inDocumentOrder()) {
       Instance malletInstance = data.extractIndependentFeatures(instAnn, inputAS);
       malletInstance = pipe.instanceFrom(malletInstance);
@@ -246,7 +247,7 @@ public class EngineLibSVM extends EngineMB {
   public void saveModel(File directory) {
     try {
       svm.svm_save_model(new File(directory, FILENAME_MODEL).getAbsolutePath(), (svm_model) model);
-    } catch (Exception e) {
+    } catch (IOException e) {
       throw new GateRuntimeException("Error saving LIBSVM model", e);
     }
     // Since we do not have a proper model, save our info here
@@ -303,13 +304,12 @@ public class EngineLibSVM extends EngineMB {
    * Perform an evaluation.
    * 
    * 
-   * @param algorithmParameters
-   * @param evaluationMethod
-   * @param numberOfFolds
-   * @param trainingFraction
-   * @param numberOfRepeats
-   * @param doStratification
-   * @return 
+   * @param algorithmParameters TODO
+   * @param evaluationMethod TODO
+   * @param numberOfFolds TODO
+   * @param trainingFraction TODO
+   * @param numberOfRepeats TODO
+   * @return  TODO
    */
   @Override
   @SuppressWarnings("unchecked")
@@ -363,7 +363,7 @@ public class EngineLibSVM extends EngineMB {
         int seed = (int) ps.getValueOrElse("seed", 1);
         libsvm.svm.rand.setSeed(seed);
         
-        List<Double> accuracies = new ArrayList<Double>(numberOfRepeats);
+        List<Double> accuracies = new ArrayList<>(numberOfRepeats);
         svm_problem svmprob = CorpusRepresentationLibSVM.getFromMallet(corpusRepresentation);
         int total = svmprob.l;
         int trainsize = (int)(total * trainingFraction);
@@ -382,7 +382,7 @@ public class EngineLibSVM extends EngineMB {
         int[] idx = new int[total];
         for(int i = 0; i<idx.length; i++) { idx[i] = i; }
         shuffle(idx,rgen);
-        List<Double> accs = new ArrayList<Double>();
+        List<Double> accs = new ArrayList<>();
         int nrCorrectAll = 0;
         int nrIncorrectAll = 0;
         int nrTotalAll = 0;
@@ -469,7 +469,7 @@ public class EngineLibSVM extends EngineMB {
         System.err.println("Random seed set to "+seed);
         libsvm.svm.rand.setSeed(seed);
         
-        List<Double> accuracies = new ArrayList<Double>(numberOfRepeats);
+        List<Double> accuracies = new ArrayList<>(numberOfRepeats);
         svm_problem svmprob = CorpusRepresentationLibSVM.getFromMallet(corpusRepresentation);
         int total = svmprob.l;
         int trainsize = (int)(total * trainingFraction);
@@ -528,6 +528,12 @@ public class EngineLibSVM extends EngineMB {
   
   // in place shuffle the array, using the given pre-initialized random object
   // lets have full control here and do it ourselves, using Fisher-Yates
+
+  /**
+   * TODO
+   * @param idx TODO
+   * @param rgen TODO
+   */
   public static void shuffle(int[] idx, Random rgen) {
         for(int i = 0; i<idx.length; i++) { idx[i] = i; }
         // lets have full control here and do it ourselves, using Fisher-Yates
@@ -547,6 +553,13 @@ public class EngineLibSVM extends EngineMB {
         
   }
 
+  /**
+   * TODO
+   * @param all TODO
+   * @param train TODO
+   * @param test TODO
+   * @param idx TODO
+   */
   public void split(svm_problem all, svm_problem train, svm_problem test, int idx[]) {
     // this assumes that train and test already have the correct sizes and that
     // the size of idx is the sum of these sizes

@@ -24,6 +24,11 @@ import java.util.HashMap;
  */
 public class Utils4Engines {
 
+  /**
+   * TODO
+   * @param wrapperName TODO
+   * @param targetDirectory TODO
+   */
   public static void copyWrapper(String wrapperName, File targetDirectory) {
     // First of all, check if the target directory already has the directory expected.
     // If ths is the case just silently quit.
@@ -34,6 +39,11 @@ public class Utils4Engines {
     copyResources(targetDirectory, "/resources/wrappers/"+wrapperName);
   }
 
+  /**
+   * TODO
+   * @param targetDir TODO
+   * @param root TODO
+   */
   public static void copyResources(File targetDir, String root) {
 
     // TODO: check targetDir is a dir?

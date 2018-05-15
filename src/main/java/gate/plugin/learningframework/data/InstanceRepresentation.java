@@ -33,16 +33,6 @@ package gate.plugin.learningframework.data;
  * @author Johann Petrak 
  */
 public interface InstanceRepresentation {
-  /**
-   * Set the value of a feature.
-   * 
-   * This maps the given name to the given value, if a mapping for that
-   * name already existed, overriding it. Depending on the implementation,
-   * this method may return a new immutable InstanceRepresentation object.
-   * @param name
-   * @param value
-   * @return 
-   */
   
   public static final String TARGET_VALUE = "╔TARGETVALUE╗";
   public static final String TARGET_COSTS = "╔TARGETCOSTS╗";

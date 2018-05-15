@@ -81,7 +81,7 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
     if (statsForTarget != null && statsForTarget.isString()) {
       return statsForTarget.stringValues();
     } else {
-      return new ArrayList<String>();
+      return new ArrayList<>();
     }
   }
 
@@ -122,7 +122,8 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
    * this one instance, and their calls to the add method will automatically get
    * synchronized.
    *
-   * @param outFile
+   * @param outDir TODO
+   * @param featureInfo TODO
    */
   public CorpusRepresentationVolatileDense2JsonStream(File outDir, FeatureInfo featureInfo) {
     this.outDir = outDir;
@@ -165,15 +166,15 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
    * !!!TODO: explain which methods are used by this to convert to dense
    * internal instance representation and then to the final output format.
    *
-   * @param instancesAS
-   * @param sequenceAS
-   * @param inputAS
-   * @param classAS
-   * @param targetFeatureName
-   * @param targetType
-   * @param instanceWeightFeature
-   * @param nameFeatureName
-   * @param seqEncoder
+   * @param instancesAS TODO
+   * @param sequenceAS TODO
+   * @param inputAS TODO
+   * @param classAS TODO
+   * @param targetFeatureName TODO
+   * @param targetType TODO
+   * @param instanceWeightFeature TODO
+   * @param nameFeatureName TODO
+   * @param seqEncoder TODO
    */
   @Override
   public void add(
@@ -188,7 +189,7 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
           SeqEncoder seqEncoder) {
     // first of all, distinguish between processing for sequences and for non-sequences
     // if the sequenceAS parameter is non-null we process sequences of instances, otherwise we process plain instances
-    String json = "";
+    String json;
     if (sequenceAS == null) {
       if (isSequence == null) {
         isSequence = false;
@@ -235,7 +236,7 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
         outStream.write("\n".getBytes("UTF-8"));
         linesWritten += 1;
       }
-    } catch (Exception ex) {
+    } catch (IOException ex) {
       throw new GateRuntimeException("Could not write generated JSON", ex);
     }
   }
@@ -278,6 +279,17 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
     return insts4seq;
   }
 
+  /**
+   * TODO
+   * @param instanceAnnotation TODO
+   * @param inputAS TODO
+   * @param classAS TODO
+   * @param targetFeatureName TODO
+   * @param targetType TODO
+   * @param instanceWeightFeature TODO
+   * @param seqEncoder TODO
+   * @return TODO
+   */
   public InstanceRepresentation labeledAnnotation2Instance(Annotation instanceAnnotation,
           AnnotationSet inputAS, AnnotationSet classAS,
           String targetFeatureName, TargetType targetType,
@@ -310,6 +322,13 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
     return inst;
   }
 
+  /**
+   * TODO
+   * @param instanceAnnotation TODO
+   * @param inputAS TODO
+   * @param instanceWeightFeature TODO
+   * @return TODO
+   */
   public InstanceRepresentation unlabeledAnnotation2Instance(Annotation instanceAnnotation,
           AnnotationSet inputAS,
           String instanceWeightFeature) {
@@ -328,6 +347,10 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
     return inst;
   }
 
+  /**
+   * TODO
+   * @param inst TODO
+   */
   public void addToStatsForFeatures(InstanceRepresentation inst) {
     // System.err.println("DEBUG: addToStatsForFeatures for "+inst);
     for (String fname : fnames) {
@@ -341,10 +364,10 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
    * Note: this is influenced by the feature info set in the corpus
    * representation!
    *
-   * @param inst
+   * @param inst TODO
    * @param noTarget - if true, does not include  the target(s) and does not use outermost list for 
    * indep / target pair
-   * @return
+   * @return TODO
    */
   public String internal2Json(InstanceRepresentation inst, boolean noTarget) {
     // can this be shared between multiple threads?
@@ -359,7 +382,7 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
         throw new GateRuntimeException("Could not convert instance to json", ex);
       }      
     } else {
-      ArrayList<Object> theInstance = new ArrayList<Object>(2);
+      ArrayList<Object> theInstance = new ArrayList<>(2);
       theInstance.add(values);
       theInstance.add(inst.getTargetValue());
       // now convert this to a JSON String
@@ -371,6 +394,12 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
     }
   }
 
+  /**
+   * TODO
+   * @param instseq TODO
+   * @param noTarget TODO
+   * @return TODO
+   */
   public String internal2Json(List<InstanceRepresentation> instseq, boolean noTarget) {
     // can this be shared between multiple threads?
     ObjectMapper mapper = new ObjectMapper();
@@ -411,6 +440,10 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
     return values;
   }
 
+  /**
+   * TODO
+   */
+  @Override
   public void startAdding() {
     File outFile = new File(outDir, DATA_FILE_NAME);
     this.outDataFile = outFile;
@@ -429,8 +462,8 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
    * Finish adding data to the CR. This may close or finish any channel for
    * passing on the data to a file, database or other sink.
    *
-   * @param scaleFeatures
    */
+  @Override
   public void finishAdding() {
     // TODO: write the metadata file (again)!!!
     try {
@@ -446,6 +479,10 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
     throw new UnsupportedOperationException("Not supported by this corpus representation");
   }
 
+  /**
+   * TODO
+   * @param writer TODO
+   */
   public void json4metadata(Writer writer) {
     System.err.println("DEBUG: writing the metadata file!!");
     try {
@@ -491,7 +528,7 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd,HH:mm:ss");
       metadata.put("savedOn", sdf.format(new Date()));
       mapper.writeValue(writer, metadata);
-    } catch (Exception ex) {
+    } catch (IOException ex) {
       throw new GateRuntimeException("Could not serialize metadata", ex);
     }
 

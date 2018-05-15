@@ -70,15 +70,14 @@ public class Parms {
    * d if the parameter has a double value or i if the parameter has an integer value.
    * B is used for a parameter with an excplicit boolean value.
    * If the value cannot be parsed to the given type, it is equivalent to the parameter missing.
-   * @param names
-   * @param parmString
-   * @return 
+   * @param names TODO
+   * @param parmString TODO
    */
   public Parms(String parmString, String... names) {
     // just treat a parmString of null equal to the empty string: do nothing
     if(parmString == null || parmString.isEmpty()) return;
-    List<String> longNames = new ArrayList<String>();
-    List<String> types = new ArrayList<String>();
+    List<String> longNames = new ArrayList<>();
+    List<String> types = new ArrayList<>();
     Options options = new Options();
     for(String name : names) {
       String[] info = name.split(":");
@@ -132,10 +131,21 @@ public class Parms {
     }
   }
   
+  /**
+   * TODO
+   * @param name TODO
+   * @return TODO
+   */
   public Object getValue(String name) {
     return parmValues.get(name);
   }
   
+  /**
+   * TODO
+   * @param name TODO
+   * @param elseValue TODO
+   * @return TODO
+   */
   public Object getValueOrElse(String name, Object elseValue) {
     Object tmp = parmValues.get(name);
     if(tmp==null) {
@@ -145,6 +155,10 @@ public class Parms {
     }
   }
   
+  /**
+   * TODO 
+   * @return TODO
+   */
   public int size() { return parmValues.size(); }
   
 }

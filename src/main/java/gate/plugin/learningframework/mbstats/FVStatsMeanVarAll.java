@@ -34,6 +34,10 @@ import java.util.List;
  */
 public class FVStatsMeanVarAll implements FeatureVectorStats {
 
+  /**
+   * TODO 
+   * @param instances TODO
+   */
   public FVStatsMeanVarAll(InstanceList instances) {
     for(Instance instance : instances) {
       FeatureVector fv = (FeatureVector)instance.getData();

@@ -21,7 +21,6 @@
 package gate.plugin.learningframework.features;
 
 import cc.mallet.types.Alphabet;
-import gate.util.GateRuntimeException;
 import java.io.Serializable;
 
 /**
@@ -32,6 +31,21 @@ public class FeatureSpecSimpleAttribute extends FeatureSpecAttribute implements 
 
   private static final long serialVersionUID = -2346560362547132478L;
 
+  /**
+   * TODO
+   * @param aname TODO
+   * @param type TODO
+   * @param feature TODO
+   * @param datatype TODO
+   * @param codeas TODO
+   * @param missingValueTreatment TODO
+   * @param missingValueValue TODO
+   * @param scalingMethod TODO
+   * @param transformMethod TODO
+   * @param withinType TODO
+   * @param listsep TODO
+   * @param featureName4Value TODO
+   */
   public FeatureSpecSimpleAttribute(
           String aname, 
           String type, 

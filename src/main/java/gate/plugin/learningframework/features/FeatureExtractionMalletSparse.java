@@ -115,7 +115,13 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
 
   private static final Logger LOGGER = Logger.getLogger(FeatureExtractionMalletSparse.class.getName());
 
-  
+  /**
+   * TODO
+   * @param inst TODO
+   * @param att TODO
+   * @param inputAS TODO
+   * @param instanceAnnotation TODO
+   */
   public static void extractFeature(
           Instance inst,
           FeatureSpecAttribute att,
@@ -152,11 +158,11 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
    * if the instance annotation or the source annotation is not covered by an within annotation.
    * 
    *
-   * @param inst
-   * @param att
-   * @param inputASname
-   * @param instanceAnnotation
-   * @param doc
+   * @param inst TODO
+   * @param att TODO
+   * @param inputASname TODO
+   * @param instanceAnnotation TODO
+   * @param doc TODO
    */
   private static void extractFeatureHelper(
           Instance inst,
@@ -628,15 +634,15 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
    * attribute specification, e.g. "A" for attribute or something like "L-3" for attribute list
    * @param inst the mallet instance
    * @param sourceAnnotation the annotation from which to extract the feature value
-   * @param doc
+   * @param doc TODO
    * @param annType the annotation type as defined in the attribute specification. This can be empty
    * if the original instance annotation is used.
    * @param featureName the feature name as defined in the attribute specification.
-   * @param alphabet
-   * @param dt
-   * @param mvt
-   * @param codeas
-   * @param listsep
+   * @param alphabet TODO
+   * @param dt TODO
+   * @param mvt TODO
+   * @param codeas TODO
+   * @param listsep TODO
    * @param specialsymbol: if this is non-null, then an attribute is generated
    * for some special symbol (e.g. start/stop indicator). In this case, some other parameters 
    * are usually ignored.
@@ -949,6 +955,14 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
   // *****************************************************************************
   // Extract the target stuff
   // *****************************************************************************
+
+  /**
+   * TODO
+   * @param inst TODO
+   * @param targetFeature TODO
+   * @param instanceAnnotation TODO
+   * @param inputAS TODO
+   */
   public static void extractNumericTarget(Instance inst, String targetFeature, Annotation instanceAnnotation, AnnotationSet inputAS) {
     Document doc = inputAS.getDocument();
     Object obj = instanceAnnotation.getFeatures().get(targetFeature);
@@ -987,7 +1001,7 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
    * @param alphabet the label alphabet, must be of type LabelAlphabet
    * @param targetFeature the target feature
    * @param instanceAnnotation the instance annotation
-   * @param doc the document
+   * @param inputAS TODO
    */
   public static void extractClassTarget(Instance inst, Alphabet alphabet, String targetFeature, Annotation instanceAnnotation, AnnotationSet inputAS) {
     LabelAlphabet labelalphabet = (LabelAlphabet) alphabet;
@@ -1020,8 +1034,11 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
    * annotation, it's a "beginning". In the middle or at the end, it's an "inside". Instances that
    * don't occur in the span of a class annotation are an "outside".
    *
+   * @param inst TODO
    * @param alph the label alphabet to use, must be an instance of LabelAlphabet
+   * @param classAS TODO
    * @param instanceAnnotation, the instance annotation, e.g. "Token".
+   * @param seqEncoder TODO
    */
   public static void extractClassForSeqTagging(Instance inst, Alphabet alph, AnnotationSet classAS, Annotation instanceAnnotation, SeqEncoder seqEncoder) {
     String target = "";
@@ -1074,6 +1091,11 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
     inst.setTarget(labelalph.lookupLabel(target));
   }
 
+  /**
+   * TODO
+   * @param inst TODO
+   * @return TODO
+   */
   public static boolean ignoreInstanceWithMV(Instance inst) {
     Object val = inst.getProperty(PROP_IGNORE_HAS_MV);
     if (val == null) {
@@ -1082,6 +1104,11 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
     return ((Boolean) inst.getProperty(PROP_IGNORE_HAS_MV));
   }
 
+  /**
+   * TODO
+   * @param inst TODO 
+   * @return TODO
+   */
   public static boolean instanceHasMV(Instance inst) {
     Object val = inst.getProperty(PROP_HAVE_MV);
     if (val == null) {
@@ -1093,6 +1120,9 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
   /**
    * Extract the exact location of the instance for use as an instance name. The name string is made
    * up of the document name plus the start and end offsets of the instance annotation.
+   * @param inst TODO
+   * @param instanceAnnotation TODO
+   * @param doc TODO
    */
   public static void extractName(Instance inst, Annotation instanceAnnotation, Document doc) {
     String value = doc.getName() + ":" + gate.Utils.start(instanceAnnotation) + ":"
@@ -1122,7 +1152,8 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
    * depends on the instance annotation type.
    *
    * @param attributes the list of feature attributes
-   * @param featureName the feature name
+   * @param mlFeatureName TODO
+   * @param instanceType TODO
    * @return the attribute
    */
   public static FeatureSpecAttribute lookupAttributeForFeatureName(List<FeatureSpecAttribute> attributes,

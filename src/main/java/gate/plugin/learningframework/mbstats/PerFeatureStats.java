@@ -34,6 +34,7 @@ public class PerFeatureStats {
   public double max = Double.NaN;
   public Boolean binary = null;
 
+  @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("PerFeature{");

@@ -47,13 +47,14 @@ public class Attributes implements Iterable<Attribute> {
    * Generate the attributes object from the information in the pipe.
    * The pipe should be a LFPipe, but we also try to come up with something
    * if it is an ordinary pipe. 
-   * @param pipe 
+   * @param pipe  TODO
+   * @param instanceType TODO 
    */
   public Attributes(Pipe pipe, String instanceType) {
     // first create the attributes (independent vars)    
     Alphabet dataAlphabet = pipe.getDataAlphabet();
     // if we can, also represent the pipe as LFPipe
-    LFPipe lfPipe = null;
+    LFPipe lfPipe;
     FeatureInfo featureInfo = null;
     if(pipe instanceof LFPipe) {
       lfPipe = (LFPipe)pipe;
@@ -140,7 +141,8 @@ public class Attributes implements Iterable<Attribute> {
    * Get the independent Attribute object for the attribute with that name.
    * If no such attribute exists, return null. The target attribute cannot
    * be retrieved that way, use getTargetAttribute() instead.
-   * @param name 
+   * @param name TODO
+   * @return  TODO
    */
   public Attribute getAttribute(String name) {
     Integer idx = name2index.get(name);
@@ -151,8 +153,8 @@ public class Attributes implements Iterable<Attribute> {
    * Return the independent attribute with the given index.
    * The target attribute cannot be retrieved that way, use getTargetAttribute()
    * instead.
-   * @param index
-   * @return 
+   * @param index TODO
+   * @return TODO
    */
   public Attribute getAttribute(int index) {
     if(index>=attributes.size()) {
@@ -171,7 +173,7 @@ public class Attributes implements Iterable<Attribute> {
    * NOTE: the target attribute has index one larger than the highest
    * index of the independent attributes, but this index cannot be used
    * to retrieve it! 
-   * @return 
+   * @return TODO
    */
   public Attribute getTargetAttribute() {
     return targetAttribute;

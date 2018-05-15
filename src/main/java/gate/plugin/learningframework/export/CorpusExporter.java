@@ -48,7 +48,12 @@ public abstract class CorpusExporter {
    * Create a corpus exporter ce for the given Exporter.
    * This method will create the proper corpus representation for the 
    * algorithm and the feature info. 
-   * @return 
+   * @param exporter TODO
+   * @param parms TODO
+   * @param featureInfo TODO
+   * @param instanceType TODO
+   * @param datadir TODO
+   * @return  TODO
    */
   public static CorpusExporter create(Exporter exporter, String parms, FeatureInfo featureInfo, String instanceType, URL datadir) {
     CorpusExporter ce = null;
@@ -78,6 +83,7 @@ public abstract class CorpusExporter {
   
   /**
    * Return a new Info object suitable for the data exported.
+   * @return  TODO
    */
   public abstract Info getInfo();
     
@@ -87,9 +93,7 @@ public abstract class CorpusExporter {
    * to a file anyway.
    * Depending on the format this will create one or more files in the 
    * given directory. The file name and extension is chosen automatically
-   * and any existing file will get overwritten.
-   * @param directory
-   * @param cr 
+   * and any existing file will get overwritten. 
    */
   public abstract void export();
   
@@ -99,7 +103,7 @@ public abstract class CorpusExporter {
    * target type from the corpus representation. If it is 
    * set and the corpus representation uses a different target type,
    * an error is thrown when the data is exported.
-   * @param tt 
+   * @param tt  TODO
    */
   public void setTargetType(TargetType tt) {
     targetType = tt;
@@ -109,7 +113,7 @@ public abstract class CorpusExporter {
   
   /**
    * Return a corpus representation ce to use with this exporter. 
-   * @return 
+   * @return TODO
    */
   public CorpusRepresentation getCorpusRepresentation() {
     return corpusRepresentation; 

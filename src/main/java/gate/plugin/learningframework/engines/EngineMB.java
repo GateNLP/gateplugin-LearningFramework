@@ -56,7 +56,7 @@ public abstract class EngineMB extends Engine {
       info.nrTargetValues = targetAlph.size();
       //info.classLabels = 
       Object[] objs = targetAlph.toArray();
-      ArrayList<String> labels = new ArrayList<String>();
+      ArrayList<String> labels = new ArrayList<>();
       for(Object obj : objs) { labels.add(obj.toString()); }
       info.classLabels = labels;
     }

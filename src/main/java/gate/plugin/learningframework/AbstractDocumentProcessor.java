@@ -136,7 +136,7 @@ public abstract class AbstractDocumentProcessor
    * This can be overridden in PRs and will be run once before
    * the first document seen. 
    * This method is not called if no documents are processed at all. 
-   * @param ctrl 
+   * @param ctrl  controller
    */
   protected abstract void beforeFirstDocument(Controller ctrl);
 

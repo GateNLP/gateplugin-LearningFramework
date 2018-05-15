@@ -41,6 +41,11 @@ public class PipeScaleMinMaxAll extends Pipe implements Serializable {
   double max[];
   boolean normalize[];
   
+  /**
+   * TODO
+   * @param alphabet TODO
+   * @param stats TODO
+   */
   public PipeScaleMinMaxAll(Alphabet alphabet, FVStatsMeanVarAll stats) {
     super(alphabet, null);
     List<PerFeatureStats> pfss = stats.getStats();
@@ -62,6 +67,7 @@ public class PipeScaleMinMaxAll extends Pipe implements Serializable {
     System.err.println("DEBUG: Creating PipeScaleMinMaxAll instance with mins="+Arrays.toString(min)+",maxs="+Arrays.toString(max));
   }
 
+  @Override
   public Instance pipe(Instance carrier) {
     if (!(carrier.getData() instanceof FeatureVector)) {
       System.out.println(carrier.getData().getClass());

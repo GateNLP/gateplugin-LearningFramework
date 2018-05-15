@@ -30,6 +30,11 @@ public abstract class SeqEncoder {
   public void setOptions(Map<String,String> options) {
     if(options != null) this.options.putAll(options);
   }
+
+  /**
+   * TODO
+   * @return TODO
+   */
   public Map<String,String> getOptions() { return options; }
   // TODO: not sure yet what the best way is to implement the conversion back from
   // class labels to annotations. This probably needs to map the full sequence

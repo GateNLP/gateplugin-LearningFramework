@@ -25,8 +25,10 @@ import gate.util.Files;
 import gate.util.GateRuntimeException;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -90,13 +92,21 @@ public abstract class EngineDVFileJson extends EngineDV {
     return wrapperRoot.getAbsolutePath();
   }
   
-  
+  /**
+   * TODO
+   * @return TODO
+   */
   protected String getCommandPathTrain()  {
     File wrapperRoot = new File(dataDir, WRAPPER_NAME);
     String ext = getShellExtension();
     File cmd = new File(wrapperRoot, COMMAND_BASE_TRAIN+ext);
     return cmd.getAbsolutePath();
   }
+
+  /**
+   * TODO
+   * @return TODO
+   */
   protected String getCommandPathApply() {
     File wrapperRoot = new File(dataDir, WRAPPER_NAME);
     String ext = getShellExtension();
@@ -104,6 +114,10 @@ public abstract class EngineDVFileJson extends EngineDV {
     return cmd.getAbsolutePath();
   }
   
+  /**
+   * TODO
+   * @return TODO
+   */
   protected String getShellExtension() {
     return getOsType() == OsType.LINUXLIKE ? ".sh" : ".cmd";
   }
@@ -111,7 +125,7 @@ public abstract class EngineDVFileJson extends EngineDV {
   /**
    * Return LINUXLIKE, WINDOWSLIKE, or throw an exception for anything else
    * 
-   * @return 
+   * @return  TODO
    */
   protected OsType getOsType() {
     boolean linuxLike = System.getProperty("file.separator").equals("/");
@@ -126,6 +140,9 @@ public abstract class EngineDVFileJson extends EngineDV {
     
   }
   
+  /**
+   * TODO
+   */
   public enum OsType {
     WINDOWSLIKE,
     LINUXLIKE
@@ -133,7 +150,7 @@ public abstract class EngineDVFileJson extends EngineDV {
   
   /**
    * Read a WRAPPERNAME.yaml file from the data dir, if it exists.
-   * @return 
+   * @return  TODO
    */
   @SuppressWarnings("unchecked")
   public Map<String,String> getWrapperConfig() {
@@ -143,7 +160,7 @@ public abstract class EngineDVFileJson extends EngineDV {
       Object obj;
       try {
         obj = yaml.load(new InputStreamReader(new FileInputStream(wrapperInfoFile),"UTF-8"));
-      } catch (Exception ex) {
+      } catch (FileNotFoundException | UnsupportedEncodingException ex) {
         throw new GateRuntimeException("Could not load yaml file "+wrapperInfoFile,ex);
       }    
       Map map = null;
@@ -154,7 +171,7 @@ public abstract class EngineDVFileJson extends EngineDV {
       }
       return map;
     } else {
-      return new HashMap<String,String>();
+      return new HashMap<>();
     }
     
   }
@@ -170,7 +187,14 @@ public abstract class EngineDVFileJson extends EngineDV {
     return corpusRepresentation; 
   }
   
-    
+  /**
+   * TODO
+   * @param directory TODO
+   * @param algorithm TODO
+   * @param parms TODO
+   * @param featureInfo TODO
+   * @param targetType TODO
+   */
   @Override
   protected void initWhenCreating(URL directory, Algorithm algorithm, String parms, FeatureInfo featureInfo, TargetType targetType) {
     dataDir = Files.fileFromURL(directory);
@@ -238,7 +262,7 @@ public abstract class EngineDVFileJson extends EngineDV {
     for(int i=0; i<finalCommand.size();i++) {
       System.err.println(i+": >"+finalCommand.get(i)+"<");
     }
-    Map<String,String> env = new HashMap<String,String>();
+    Map<String,String> env = new HashMap<>();
     env.put("WRAPPER_HOME",getWrapperHome());
     process = Process4StringStream.create(dataDir,env,finalCommand);
     

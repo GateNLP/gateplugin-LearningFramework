@@ -41,6 +41,15 @@ import gate.util.GateRuntimeException;
 public abstract class CorpusExporterMRJsonBase extends CorpusExporterMR {
 
   // This returns the string representation of the feature vector
+
+  /**
+   * TODO
+   * @param fv TODO
+   * @param nrFeatures TODO
+   * @param attrs TODO
+   * @param asString TODO
+   * @return TODO
+   */
   public static String featureVector2String(FeatureVector fv, int nrFeatures, Attributes attrs, boolean asString) {
     StringBuilder sb = new StringBuilder();
     // TODO: can we use some JSON library instead?
@@ -91,6 +100,13 @@ public abstract class CorpusExporterMRJsonBase extends CorpusExporterMR {
     return sb.toString();
   }
 
+  /**
+   * TODO
+   * @param target TODO
+   * @param targetAlphabet TODO
+   * @param asString TODO
+   * @return TODO
+   */
   public static String target2String(Object target, LabelAlphabet targetAlphabet, boolean asString) {
     StringBuilder sb = new StringBuilder();
     if (targetAlphabet != null) {

@@ -97,6 +97,7 @@ public class NominalTargetWithCosts implements Serializable {
   // all the built in mallet classifiers.
   // This also makes it easy to convert the label back into an index even if
   // we do not have the full interface of LabelWithCosts imported.
+  @Override
   public String toString() {
     return label;
     /*

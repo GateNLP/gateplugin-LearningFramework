@@ -40,6 +40,10 @@ public class Stats {
     }
   }
   
+  /**
+   * TODO 
+   * @param value TODO
+   */
   public void addValue(Object value) {
       if(value instanceof String) {
         if(stringStats == null) throw new GateRuntimeException("Stats object did not expect a String");
@@ -79,34 +83,55 @@ public class Stats {
     n += 1;
   }
   
+  /**
+   * TODO 
+   * @return TODO
+   */ 
   public long getN() {
     return n;
   }
   
+  /**
+   * TODO
+   * @return TODO
+   */
   public boolean isString() {
     return stringStats != null;
   }
   
+  /**
+   * TODO
+   * @return TODO
+   */
   public boolean isNum() {
     return numStats != null;
   }
   
   /**
    * Number of different values, only if isString() is true, exception otherwise.
+   * @return  TODO
    */
   public int nrValues() {
     if(stringStats==null) throw new GateRuntimeException("Cannot use nrValues for non-String statistics");
     return stringStats.keySet().size();
   }
   
+  /**
+   * TODO
+   * @return TODO
+   */
   public List<String> stringValues() {
     if(stringStats==null) throw new GateRuntimeException("Cannot use stringValues for non-String statistics");
     return new ArrayList<String>(stringStats.keySet());
   }
   
+  /**
+   * TODO
+   * @return TODO
+   */
   public Map<String,Long> stringCounts() {
     if(stringStats==null) throw new GateRuntimeException("Cannot use stringCounts for non-String statistics");
-    return new HashMap<String,Long>(stringStats);
+    return new HashMap<>(stringStats);
   }
   
   // wrapped SummaryStatistics methods as we need them

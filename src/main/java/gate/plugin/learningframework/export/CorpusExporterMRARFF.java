@@ -29,7 +29,6 @@ import cc.mallet.types.Label;
 import gate.plugin.learningframework.Globals;
 import gate.plugin.learningframework.data.Attribute;
 import gate.plugin.learningframework.data.Attributes;
-import gate.plugin.learningframework.data.CorpusRepresentation;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.engines.Info;
 import gate.plugin.learningframework.features.CodeAs;
@@ -162,8 +161,8 @@ public class CorpusExporterMRARFF extends CorpusExporterMR {
    * Also, a backslash is escaped with a backslash.
    * If any character needed to be escaped, the whole string is quoted. 
    * The string is also quoted if it contains curly braces.
-   * @param what
-   * @return 
+   * @param what TODO
+   * @return  TODO
    */
   public static String escape4Arff(String what) {
   	if(what == null) what = "";
@@ -178,6 +177,12 @@ public class CorpusExporterMRARFF extends CorpusExporterMR {
     return what;
   }
   
+  /**
+   * TODO
+   * @param alph TODO
+   * @param mvt TODO
+   * @return TODO
+   */
   public String alphabet2Arff(Alphabet alph, MissingValueTreatment mvt) {
     // NOTE: mvt can be null, if this is used for a target!!
     StringBuilder sb = new StringBuilder();
@@ -198,8 +203,9 @@ public class CorpusExporterMRARFF extends CorpusExporterMR {
    * This does not include a final new-line character!
    * NOTE: this returns null if the instance is flagged that it should
    * be ignored because it contains a missing value. 
-   * @param instance
-   * @return 
+   * @param inst TODO
+   * @param attrs TODO
+   * @return  TODO
    */
   public String instance2WekaArffLine(Instance inst, Attributes attrs) {
     return instance2WekaArffLine(inst,attrs,true);

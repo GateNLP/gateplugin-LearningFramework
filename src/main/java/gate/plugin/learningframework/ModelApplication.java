@@ -121,8 +121,11 @@ public class ModelApplication {
  target features and additional LearningFramework-specific features (confidence etc.).
  If outputAS is specified, new annotations which are a copy of the instance annotations
  are created in the outputAS and the target features are stored in those copies.
-   * @param doc
-   * @param gcs 
+   * @param doc TODO
+   * @param gcs  TODO
+   * @param targetFeature TODO
+   * @param outputAS TODO
+   * @param minConfidence TODO
    */
   public static void applyClassification(Document doc, 
           List<ModelApplication> gcs, 
@@ -136,7 +139,7 @@ public class ModelApplication {
         //Skip it
         continue;
       }      
-      FeatureMap fm = null;
+      FeatureMap fm;
       if(outputAS == null) {
         fm = gc.getInstance().getFeatures();
       } else {
@@ -176,12 +179,12 @@ public class ModelApplication {
    * NOTE: originally, this was just using B/I/O, we now changed to using Type|B
    * Type|I and O. However, this should really get moved to the corresponding SeqEncode subclass.
    * 
-   * @param unused
-   * @param instanceAS
-   * @param outputAS
-   * @param outputAnnType
-   * @param minConfidence 
-   * @param seqEncoder 
+   * @param unused TODO
+   * @param instanceAS TODO
+   * @param outputAS TODO
+   * @param outputAnnType TODO
+   * @param minConfidence  TODO
+   * @param seqEncoder  TODO
    */
   public static void addSurroundingAnnotations( 
           AnnotationSet unused, 
@@ -198,7 +201,7 @@ public class ModelApplication {
     // if we do not have a sequence, then a whole document. 
     
     // map of open annotations, per sequence annotation type
-    Map<String, AnnToAdd> annsToAdd = new HashMap<String, AnnToAdd>();
+    Map<String, AnnToAdd> annsToAdd = new HashMap<>();
 
     int oldSeqId = -1;  // keep track of which sequence annotation we are in
     
@@ -318,11 +321,10 @@ public class ModelApplication {
    * If confidence constraint is satisfied, add Annotation and return it, otherwise
    * add nothing and return null.
    * 
-   * @param annToAdd
-   * @param outputAS
-   * @param outputAnnType
-   * @param minConfidence
-   * @return 
+   * @param annToAdd TODO
+   * @param outputAS TODO
+   * @param minConfidence TODO
+   * @return TODO
    */
   public static Annotation addSequenceAnn(AnnToAdd annToAdd, AnnotationSet outputAS, Double minConfidence) {
     double entityConfidence = annToAdd.conf / annToAdd.len;

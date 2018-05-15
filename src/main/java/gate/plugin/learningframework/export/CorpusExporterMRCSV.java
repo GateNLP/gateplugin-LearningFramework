@@ -39,6 +39,7 @@ import gate.plugin.learningframework.mallet.NominalTargetWithCosts;
 import gate.util.GateRuntimeException;
 import gate.util.Strings;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 
@@ -108,7 +109,7 @@ public class CorpusExporterMRCSV extends CorpusExporterMR {
       }
       dataFile = new File(dataDirFile,basename+extension);
       dataOut = new PrintStream(new FileOutputStream(dataFile));
-    } catch (Exception ex) {
+    } catch (FileNotFoundException ex) {
       throw new RuntimeException("Could not open "+dataFile.getAbsolutePath(),ex);
     }
     
@@ -119,7 +120,7 @@ public class CorpusExporterMRCSV extends CorpusExporterMR {
         targetFile = new File(dataDirFile,"dep"+extension);
         targetOut = new PrintStream(new FileOutputStream(targetFile));
         //System.err.println("DEBUG: opened dep file "+targetFile.getAbsolutePath());
-      } catch (Exception ex) {
+      } catch (FileNotFoundException ex) {
         throw new RuntimeException("Could not open "+targetFile.getAbsolutePath(),ex);
       }
     } else {
@@ -201,7 +202,7 @@ public class CorpusExporterMRCSV extends CorpusExporterMR {
       Object target = inst.getTarget();
       LabelAlphabet targetAlphabet = (LabelAlphabet)inst.getTargetAlphabet();
       if(targetAlphabet != null) {
-        Label tl = null;
+        Label tl;
         if(target instanceof Label) {
           tl = (Label)target;
         } else {
@@ -255,8 +256,8 @@ public class CorpusExporterMRCSV extends CorpusExporterMR {
    * Also, a backslash is escaped with a backslash.
    * If any character needed to be escaped, the whole string is quoted. 
    * The string is also quoted if it contains curly braces.
-   * @param what
-   * @return 
+   * @param what TODO
+   * @return  TODO
    */
   public String escape4CSV(String what) {
     if(what==null) what = "";
@@ -271,6 +272,12 @@ public class CorpusExporterMRCSV extends CorpusExporterMR {
   
   // This just makes sure that a string does not contain either a tab or
   // a newline. For now, we replace those with spaces
+
+  /**
+   * TODO
+   * @param what TODO
+   * @return TODO
+   */
   public String prepare4TSV(String what) {
     what = what.replaceAll("[\\n\\t]"," ");
     return what;

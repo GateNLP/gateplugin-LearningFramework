@@ -114,7 +114,7 @@ public class LF_TrainChunking extends LF_TrainBase {
   private SeqEncoder seqEncoder;
   /**
    * The sequence to classification algorithm to use.
-   * @param val
+   * @param val TODO
    */
   @RunTime
   @Optional

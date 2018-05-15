@@ -116,7 +116,16 @@ public class CorpusExporterMRJsonSeq extends CorpusExporterMRJsonBase {
     }
   } // export
 
-  
+  /**
+   * TODO
+   * @param inst TODO
+   * @param targetAlphabet TODO
+   * @param attrs TODO
+   * @param nrFeatures TODO
+   * @param asString TODO
+   * @param filterMV TODO
+   * @return TODO
+   */
   public String instance2String(
           Instance inst,
           LabelAlphabet targetAlphabet,

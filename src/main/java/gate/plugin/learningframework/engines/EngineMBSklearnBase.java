@@ -107,8 +107,9 @@ public abstract class EngineMBSklearnBase extends EngineMB {
    * if it exists. 
    * The setting for the sklearn wrapper home can be relative in which case it
    * will be resolved relative to the dataDirectory
-   * @param dataDirectory
-   * @return 
+   * @param dataDirectory TODO
+   * @param apply TODO
+   * @return  TODO
    */
   protected File findWrapperCommand(File dataDirectory, boolean apply) {
     String homeDir = System.getenv(ENV_WRAPPER_HOME);

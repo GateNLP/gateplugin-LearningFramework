@@ -52,9 +52,9 @@ public class LFUtils {
   /**
    * Convert the object to a double or, if it is null or not convertible, use the orElse value.
    *
-   * @param any
-   * @param orElse
-   * @return
+   * @param any what to convert 
+   * @param orElse default value
+   * @return converted value
    */
   public static double anyToDoubleOrElse(Object any, double orElse) {
     if (any == null) {
@@ -81,6 +81,12 @@ public class LFUtils {
     }
   }
 
+  /**
+   * Convert any object to a String representation
+   * @param any the object
+   * @param orElse default value
+   * @return string representation
+   */
   public static String anyToStringOrElse(Object any, String orElse) {
     if (any == null) {
       return orElse;
@@ -93,9 +99,9 @@ public class LFUtils {
    * "true" or "True" is false, if it is a number, then anything that
    * is not 0.0 is true.
    * 
-   * @param any
-   * @param orElse
-   * @return 
+   * @param any any object
+   * @param orElse default value
+   * @return  the Boolean 
    */
   public static Boolean anyToBooleanOrElse(Object any, Boolean orElse) {
     if (any == null) {
@@ -116,8 +122,8 @@ public class LFUtils {
   /**
    * Create a URL from the String.
    * If the String does not have a protocol/scheme, file:// is assumed and prepended.
-   * @param str
-   * @return 
+   * @param str the string representation
+   * @return the URL
    */
   public static URL newURL(String str) {
     try {
@@ -140,8 +146,9 @@ public class LFUtils {
    * <p>
    * Note: if the dirURL contains a query and/or a fragment, those parts are 
    * lost in the resulting URL.
-   * @param dir
-   * @param file 
+   * @param dirURL directory URL
+   * @param fileName  file name
+   * @return the URL
    */
   public static URL newURL(URL dirURL, String fileName) {
     URI dirURI;
@@ -181,8 +188,8 @@ public class LFUtils {
   
   /**
    * Return the last path component of a hierarchical path of URL.
-   * @param url
-   * @return 
+   * @param url the URL
+   * @return  the string representation of the last path component
    */
   public static String getName(URL url) {
     URI uri;
@@ -212,6 +219,8 @@ public class LFUtils {
    * This is the path, with the last component of the path removed, i.e.
    * with that part removed that is returned by the getName() method.
    * 
+   * @param url the url
+   * @return  parent path url
    */
   public static URL getParentURL(URL url) {
     URL ret;
@@ -228,6 +237,8 @@ public class LFUtils {
    * This is the path, with the last component of the path removed, i.e.
    * with that part removed that is returned by the getName() method.
    * 
+   * @param url the url
+   * @return  the parent path 
    */
   public static String getParent(URL url) {
     return getParentURL(url).toString();
@@ -236,8 +247,8 @@ public class LFUtils {
   /** 
    * Returns true if the URL can be opened for reading.
    * 
-   * @param url
-   * @return 
+   * @param url the url
+   * @return  true if can be opened
    */
   public static boolean exists(URL url) {
     boolean ret = true;
@@ -251,8 +262,8 @@ public class LFUtils {
   
   /**
    * Return truen if the URL is a file URL.
-   * @param url
-   * @return 
+   * @param url the url 
+   * @return true if a file
    */
   public static boolean isFile(URL url) {
     return "file".equals(url.getProtocol());
@@ -267,9 +278,9 @@ public class LFUtils {
    * This makes sure that the dirURL ends with a slash before creating the final URL,
    * since the constructor new URL(url1, "file") will remove the last part of the 
    * path of url1 if it does not end in a slash.
-   * @param dirURL
-   * @param fileName
-   * @return 
+   * @param dirURL URL
+   * @param fileName filename
+   * @return url
    */
   public static URL newURLOld(URL dirURL, String fileName) {
     String s = dirURL.toExternalForm();

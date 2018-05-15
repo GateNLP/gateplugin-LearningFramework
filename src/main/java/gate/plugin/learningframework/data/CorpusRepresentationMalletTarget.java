@@ -65,8 +65,9 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
 
   /**
    * Constructor for creating a new CorpusRepresentation from a FeatureInfo. 
-   * @param fi
-   * @param sm 
+   * @param fi TODO
+   * @param sm  TODO
+   * @param targetType TODO
    */
   public CorpusRepresentationMalletTarget(FeatureInfo fi, ScalingMethod sm, TargetType targetType) {
     featureInfo = fi;
@@ -74,7 +75,7 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
 
     LabelAlphabet targetAlphabet = (targetType == TargetType.NOMINAL) ? new LabelAlphabet() : null;
     Pipe innerPipe = new Noop(new Alphabet(), targetAlphabet);
-    List<Pipe> pipes = new ArrayList<Pipe>();
+    List<Pipe> pipes = new ArrayList<>();
     pipes.add(innerPipe);
     pipe = new LFPipe(pipes);
     pipe.setFeatureInfo(fi);
@@ -94,8 +95,8 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
 
   /**
    * Create a new CRMT instance based on the pipe stored in directory.
-   * @param directory
-   * @return 
+   * @param directory TODO
+   * @return  TODO
    */
   public static CorpusRepresentationMalletTarget load(URL directory) {
     // load the pipe
@@ -130,6 +131,13 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
   // is loaded for application. The Pipe is then again used with extractIndependentFeaturesHelper 
   // to get the instances.
 
+  /**
+   * TODO
+   * @param instanceAnnotation TODO
+   * @param inputAS TODO
+   * @return TODO 
+   */
+
 
   public Instance extractIndependentFeatures(
           Annotation instanceAnnotation,
@@ -147,13 +155,13 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
    * in the featureInfo object. The information in the featureInfo instance gets updated 
    * by this. 
    * NOTE: this method is static so that it can be used in the CorpusRepresentationMalletSeq class too.
-   * @param instanceAnnotation
-   * @param inputAS
-   * @param targetFeatureName
-   * @param featureInfo
-   * @param pipe
-   * @param nameFeature
-   * @return 
+   * @param instanceAnnotation TODO
+   * @param inputAS TODO
+   * @param targetFeatureName TODO
+   * @param featureInfo TODO
+   * @param pipe TODO
+   * @param nameFeature TODO
+   * @return  TODO
    */
   static Instance extractIndependentFeaturesHelper(
           Annotation instanceAnnotation,
@@ -183,9 +191,15 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
    * classAS must be null. if the parameter nameFeatureName is non-null, then a Mallet instance name
    * is added from the source document and annotation.
    *
-   * @param instancesAS
-   * @param inputAS
-   * @param nameFeatureName
+   * @param instancesAS TODO
+   * @param sequenceAS TODO
+   * @param inputAS TODO
+   * @param classAS TODO
+   * @param targetFeatureName TODO
+   * @param targetType TODO
+   * @param instanceWeightFeature TODO
+   * @param nameFeatureName TODO
+   * @param seqEncoder TODO
    */
   @Override
   public void add(AnnotationSet instancesAS, AnnotationSet sequenceAS, AnnotationSet inputAS, AnnotationSet classAS, String targetFeatureName, TargetType targetType, String instanceWeightFeature, String nameFeatureName, SeqEncoder seqEncoder) {
@@ -224,8 +238,7 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
   
   /**
    * Finish adding instances to the CR. 
-   * This will also do the rescaling and any other additional calculations, if necessary.
-   * @param scaleFeatures 
+   * This will also do the rescaling and any other additional calculations, if necessary. 
    */
   @Override
   public void finishAdding() {    

@@ -54,14 +54,15 @@ public abstract class CorpusRepresentationVolatileBase extends CorpusRepresentat
     // TODO: this may be useful for sparse volatile representations, not used yet
   }
       
+  @Override
   public abstract void add(AnnotationSet instancesAS, AnnotationSet sequenceAS, AnnotationSet inputAS, AnnotationSet classAS, String targetFeatureName, TargetType targetType, String instanceWeightFeature, String nameFeatureName, SeqEncoder seqEncoder);
   
   /**
    * Finish adding data to the CR. This may close or finish any channel for
    * passing on the data to a file, database or other sink. 
    * 
-   * @param scaleFeatures 
    */
+  @Override
   public abstract void finishAdding();
   
   

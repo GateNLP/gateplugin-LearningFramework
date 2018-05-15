@@ -42,7 +42,9 @@ import gate.plugin.learningframework.features.TargetType;
 import gate.util.Files;
 import gate.util.GateRuntimeException;
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -65,7 +67,7 @@ public class LF_Export extends LF_ExportBase {
   { 
     try {
       dataDirectory = new File(".").getCanonicalFile().toURI().toURL();
-    } catch (Exception ex) {
+    } catch (IOException ex) {
       throw new GateRuntimeException("Could not create URL for current directory to use as a default for dataDirectory",ex);
     }
   }
@@ -264,7 +266,7 @@ public class LF_Export extends LF_ExportBase {
       Constructor tmpc = getSeqEncoder().getEncoderClass().getDeclaredConstructor();
       seqEncoder = (SeqEncoder) tmpc.newInstance();
       seqEncoder.setOptions(getSeqEncoder().getOptions());
-    } catch (Exception ex) {
+    } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | SecurityException | InvocationTargetException ex) {
       throw new GateRuntimeException("Could not create SeqEncoder instance",ex);
     }
     
