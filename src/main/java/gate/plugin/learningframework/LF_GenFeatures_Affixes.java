@@ -43,6 +43,8 @@ import java.util.Locale;
         comment = "Generate features: prefixes and suffixes")
 public class LF_GenFeatures_Affixes extends AbstractDocumentProcessor {
 
+  private static final long serialVersionUID = 7672148279436444950L;
+
   private final Logger logger = Logger.getLogger(LF_GenFeatures_Affixes.class.getCanonicalName());
 
   protected Boolean genPrefixes = false;  

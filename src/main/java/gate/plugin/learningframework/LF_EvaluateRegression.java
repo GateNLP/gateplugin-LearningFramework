@@ -51,6 +51,8 @@ import gate.util.GateRuntimeException;
         comment = "Evaluate an algorithm and parameter settings for regression")
 public class LF_EvaluateRegression extends LF_TrainBase {
 
+  private static final long serialVersionUID = -4216855026883354L;
+
   private final Logger logger = Logger.getLogger(LF_EvaluateRegression.class.getCanonicalName());
 
   /**

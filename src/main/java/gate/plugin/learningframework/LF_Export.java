@@ -59,6 +59,8 @@ import java.util.Set;
         comment = "Export training instances in various formats for external training and analysis")
 public class LF_Export extends LF_ExportBase {
 
+  private static final long serialVersionUID = 606764899130852772L;
+
   private final Logger logger = Logger.getLogger(LF_Export.class.getCanonicalName());
 
   protected URL dataDirectory;

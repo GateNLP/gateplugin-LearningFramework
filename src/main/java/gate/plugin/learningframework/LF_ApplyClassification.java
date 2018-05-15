@@ -46,6 +46,7 @@ import java.net.URL;
 public class LF_ApplyClassification extends LearningFrameworkPRBase {
 
   static final Logger LOGGER = Logger.getLogger(LF_ApplyClassification.class.getCanonicalName());
+  private static final long serialVersionUID = -754439854542759988L;
 
   protected URL dataDirectory;
   protected URL oldDataDirectory;

@@ -42,6 +42,8 @@ import gate.util.GateRuntimeException;
         comment = "Generate various kinds of features")
 public class LF_GenFeatures_Misc extends AbstractDocumentProcessor {
 
+  private static final long serialVersionUID = -4854556257508853640L;
+
   private final Logger logger = Logger.getLogger(LF_GenFeatures_Misc.class.getCanonicalName());
 
   protected Boolean genWordShape = false;  

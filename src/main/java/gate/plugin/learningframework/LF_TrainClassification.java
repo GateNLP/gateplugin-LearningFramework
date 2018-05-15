@@ -49,6 +49,8 @@ import java.io.File;
         comment = "Train a machine learning model for classification")
 public class LF_TrainClassification extends LF_TrainBase {
 
+  private static final long serialVersionUID = 4218101157699142046L;
+
   private final Logger logger = Logger.getLogger(LF_TrainClassification.class.getCanonicalName());
 
   protected URL dataDirectory;

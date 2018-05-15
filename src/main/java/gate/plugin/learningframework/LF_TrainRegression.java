@@ -48,6 +48,8 @@ import java.io.File;
         comment = "Train a machine learning model for regression")
 public class LF_TrainRegression extends LF_TrainBase {
 
+  private static final long serialVersionUID = 3354214881596583124L;
+
   private final Logger logger = Logger.getLogger(LF_TrainRegression.class.getCanonicalName());
 
   protected URL dataDirectory;

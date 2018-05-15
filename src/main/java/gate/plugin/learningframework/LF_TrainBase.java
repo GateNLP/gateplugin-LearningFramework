@@ -27,4 +27,7 @@ package gate.plugin.learningframework;
  */
 public abstract class LF_TrainBase extends LearningFrameworkPRBase {
   // TODO
+
+  private static final long serialVersionUID = -3329427508147263971L;
+  // TODO
 }

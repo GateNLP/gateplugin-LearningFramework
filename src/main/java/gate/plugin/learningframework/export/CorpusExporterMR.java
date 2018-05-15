@@ -40,7 +40,8 @@ public abstract class CorpusExporterMR extends CorpusExporter {
     // exporter. We provide a default implementation here which creates a 
     // target CR, the seq exporters then override in turn
     // TODO: need to properly support scaling when exporting!
-    corpusRepresentation = (CorpusRepresentationMalletTarget)new CorpusRepresentationMalletTarget(featureInfo, ScalingMethod.NONE, targetType);
+    corpusRepresentation = new CorpusRepresentationMalletTarget(featureInfo, 
+            ScalingMethod.NONE, targetType);
   }
   
   // All the mallet related exporters also write the pipe and the info, each

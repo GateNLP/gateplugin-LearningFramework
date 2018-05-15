@@ -59,7 +59,7 @@ public abstract class CorpusExporter {
     CorpusExporter ce = null;
     try {
       @SuppressWarnings("unchecked")             
-      Constructor constr = exporter.getCorpusExporterClass().getDeclaredConstructor();
+      Constructor<?> constr = exporter.getCorpusExporterClass().getDeclaredConstructor();
       ce = (CorpusExporter)constr.newInstance();
     } catch (Exception ex) {
       throw new GateRuntimeException("Error creating CorpusExporter instance for "+exporter.getCorpusExporterClass(),ex);

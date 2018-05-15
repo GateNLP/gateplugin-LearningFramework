@@ -32,6 +32,8 @@ import gate.creole.metadata.RunTime;
 public abstract class LearningFrameworkPRBase
         extends AbstractDocumentProcessor {
 
+  private static final long serialVersionUID = 1910596246240743484L;
+
   private Logger logger = Logger.getLogger(LearningFrameworkPRBase.class.getCanonicalName());
 
   // =================================================================

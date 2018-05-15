@@ -48,6 +48,7 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
 
 
   static final Logger LOGGER = Logger.getLogger(LF_ApplyClassification.class.getCanonicalName());
+  private static final long serialVersionUID = -5955373184542660323L;
 
   protected URL dataDirectory;
 

@@ -52,6 +52,8 @@ import java.io.File;
         comment = "Evaluate an algorithm and parameter settings for classification")
 public class LF_EvaluateClassification extends LF_TrainBase {
 
+  private static final long serialVersionUID = -3542195765685547360L;
+
   private final Logger logger = Logger.getLogger(LF_EvaluateClassification.class.getCanonicalName());
 
   /**

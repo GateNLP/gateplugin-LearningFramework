@@ -45,6 +45,7 @@ import java.net.URL;
 public class LF_ApplyRegression extends LearningFrameworkPRBase {
 
   static final Logger logger = Logger.getLogger(LF_ApplyRegression.class.getCanonicalName());
+  private static final long serialVersionUID = 5851732674711579672L;
 
   protected URL dataDirectory;
 
