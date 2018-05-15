@@ -521,7 +521,10 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
     // TODO: this we rely on the ngram only having allowed field values, e.g. annType
     // has to be non-null and non-empty and number has to be > 0.
     // If featureName is null, then for ngrams, the string comes from the covered document
-    String[] gram = new String[number];
+    
+    // TODO: this was in the code but was unusade, make sure we do not miss anything!
+    // (Note: same line was also copy-pasted into the dense feature extractor)
+    // String[] gram = new String[number];
     List<Annotation> al = Utils.getContainedAnnotations(inputAS, instanceAnnotation, annType).inDocumentOrder();
     // If we have less annotations than our n for n-gram, there is certainly nothing to do, 
     // leave the featureName vector untouched.
@@ -529,10 +532,10 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
       return;
     }
     // this will hold the actual token strings to use for creating the n-grams
-    List<String> strings = new ArrayList<String>();
+    List<String> strings = new ArrayList<>();
     // this will hold the score to use for each string we extract, but only of the
     // featureName4Value was specified and exists.
-    List<Double> scores = new ArrayList<Double>();
+    List<Double> scores = new ArrayList<>();
 
     for (Annotation ann : al) {
       // for ngrams we either have a featureName name 
