@@ -40,7 +40,6 @@ import org.junit.Test;
 import org.junit.BeforeClass;
 import static gate.plugin.learningframework.tests.Utils.*;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 import static org.junit.Assert.*;
 import gate.test.GATEPluginTests;

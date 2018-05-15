@@ -23,7 +23,6 @@ package gate.plugin.learningframework.tests;
 import gate.plugin.learningframework.stats.Stats;
 import gate.plugin.learningframework.stats.StatsForFeatures;
 import java.net.MalformedURLException;
-import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import gate.test.GATEPluginTests;

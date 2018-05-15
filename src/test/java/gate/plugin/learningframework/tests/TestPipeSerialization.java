@@ -63,7 +63,7 @@ public class TestPipeSerialization extends GATEPluginTests {
     FeatureInfo fi = new FeatureSpecification(spec).getFeatureInfo();
     // Create a pipe with a data and target alphabet
     Pipe tmppipe = new Noop(new Alphabet(),new LabelAlphabet());
-    List<Pipe> pipes = new ArrayList<Pipe>();
+    List<Pipe> pipes = new ArrayList<>();
     pipes.add(tmppipe);
     LFPipe pipe = new LFPipe(pipes);
     pipe.setFeatureInfo(fi);
@@ -89,13 +89,14 @@ public class TestPipeSerialization extends GATEPluginTests {
     // No serialize the lfpipe
     File tmpFile = File.createTempFile("LF_test",".pipe");
     tmpFile.deleteOnExit();
-    ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(tmpFile));
-    oos.writeObject(pipe);
-    oos.close();    
-    // Now read it back and check if everything is there
-    ObjectInputStream ois = new ObjectInputStream (new FileInputStream(tmpFile));
-    LFPipe pipe2 = (LFPipe) ois.readObject();
-    ois.close();
+    try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(tmpFile))) {
+      oos.writeObject(pipe);
+    }    
+    LFPipe pipe2;
+    try ( // Now read it back and check if everything is there
+            ObjectInputStream ois = new ObjectInputStream (new FileInputStream(tmpFile))) {
+      pipe2 = (LFPipe) ois.readObject();
+    }
     // check if the data and target alphabets match
     assertTrue(pipe2.alphabetsMatch(pipe));
     // Do we have a feature info?

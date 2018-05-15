@@ -21,12 +21,10 @@
 package gate.plugin.learningframework.tests;
 
 import gate.Annotation;
-import gate.AnnotationSet;
 import gate.Document;
 import gate.Factory;
 import gate.Gate;
 import gate.creole.ResourceInstantiationException;
-import gate.plugin.learningframework.data.CorpusRepresentationVolatileDense2JsonStream;
 import gate.plugin.learningframework.data.InstanceRepresentation;
 import gate.plugin.learningframework.data.InstanceRepresentationDenseVolatile;
 import gate.plugin.learningframework.features.FeatureExtractionDense;
@@ -34,10 +32,8 @@ import static gate.plugin.learningframework.features.FeatureExtractionBase.*;
 import gate.plugin.learningframework.features.FeatureSpecAttribute;
 import gate.plugin.learningframework.features.FeatureInfo;
 import gate.plugin.learningframework.features.FeatureSpecification;
-import gate.plugin.learningframework.features.TargetType;
 import static gate.plugin.learningframework.tests.Utils.*;
 import gate.util.GateException;
-import java.io.File;
 import java.util.List;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import org.junit.After;

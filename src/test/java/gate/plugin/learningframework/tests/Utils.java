@@ -57,6 +57,13 @@ public class Utils {
   
   /**
    * Add an annotation to the set with the given name and return the set.
+   * @param doc the document to which to add to
+   * @param setName annotation set to add to
+   * @param from from offset
+   * @param to to offset
+   * @param type annotation type
+   * @param fm feature map
+   * @return  the annotation
    */  
   public static Annotation addAnn(Document doc, String setName, int from, int to, String type, FeatureMap fm) {
     AnnotationSet set = doc.getAnnotations(setName);

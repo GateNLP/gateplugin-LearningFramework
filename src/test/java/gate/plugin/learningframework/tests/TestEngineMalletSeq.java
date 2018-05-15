@@ -50,7 +50,6 @@ import org.junit.Test;
 import org.junit.BeforeClass;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -60,7 +59,6 @@ import static org.junit.Assert.*;
 import static gate.plugin.learningframework.tests.Utils.TESTS_DIR;
 import gate.test.GATEPluginTests;
 import gate.creole.Plugin;
-import gate.creole.*;
 
 /**
  *
@@ -72,7 +70,7 @@ public class TestEngineMalletSeq extends GATEPluginTests {
   public static void init() throws GateException {
     gate.Gate.init();
     gate.Gate.getCreoleRegister().registerPlugin(new Plugin.Maven("uk.ac.gate.plugins", "format-fastinfoset", "8.5-SNAPSHOT"));
-    //gate.Utils.loadPlugin("Format_FastInfoset");
+    gate.Gate.getCreoleRegister().registerPlugin(new Plugin.Maven("uk.ac.gate.plugins", "evaluation", "0.8-SNAPSHOT"));
   }
   
   @Test
@@ -147,16 +145,16 @@ public class TestEngineMalletSeq extends GATEPluginTests {
     
     // For the application, first remove the class annotations from the default set. This is 
     // not strictly necessary but just so we are sure no cheating is possible
-    for(Document doc : corpus) {
+    corpus.forEach((doc) -> {
       doc.getAnnotations().removeAll(doc.getAnnotations().get("Link"));
-    }
+    });
     
     File outDir = new File(TESTS_DIR,"EngineMalletSeqOut");
     FileUtils.deleteDirectory(outDir);
     outDir.mkdirs();
     
     // Setup the evaluation
-    List<String> evalTypes = new ArrayList<String>();
+    List<String> evalTypes = new ArrayList<>();
     evalTypes.add("Link");
     AnnotationTypeSpecs annotationTypeSpecs = new AnnotationTypeSpecs(evalTypes);    
     EvalStatsTagging stats = new EvalStatsTagging4Score(Double.NaN);

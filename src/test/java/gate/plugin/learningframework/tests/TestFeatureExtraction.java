@@ -36,7 +36,6 @@ import gate.plugin.learningframework.features.FeatureSpecification;
 import gate.plugin.learningframework.features.FeatureSpecSimpleAttribute;
 import static gate.plugin.learningframework.tests.Utils.*;
 import gate.util.GateException;
-import gate.util.GateRuntimeException;
 import java.util.HashSet;
 import java.util.List;
 import org.junit.After;
@@ -568,7 +567,7 @@ public class TestFeatureExtraction extends GATEPluginTests {
     
     // prepare the document
     Annotation instAnn = addAnn(doc, "", 0, 10, "instanceType", gate.Utils.featureMap());
-    HashSet<String> v1 = new HashSet<String>();
+    HashSet<String> v1 = new HashSet<>();
     v1.add("setval1");
     v1.add("setval2");
     v1.add("setval3");
@@ -576,7 +575,7 @@ public class TestFeatureExtraction extends GATEPluginTests {
 
     
     Annotation instAnn2 = addAnn(doc, "", 11, 20, "instanceType", gate.Utils.featureMap());
-    HashSet<String> v2 = new HashSet<String>();
+    HashSet<String> v2 = new HashSet<>();
     v2.add("setval1");
     v2.add("setval4");
     v2.add("setval5");

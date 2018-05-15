@@ -36,7 +36,6 @@ import gate.plugin.learningframework.features.FeatureSpecification;
 import gate.plugin.learningframework.features.TargetType;
 import static gate.plugin.learningframework.tests.Utils.*;
 import gate.util.GateException;
-import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.List;

@@ -22,7 +22,6 @@ package gate.plugin.learningframework.tests;
 
 import gate.plugin.learningframework.engines.Utils4Engines;
 import java.net.MalformedURLException;
-import org.junit.Test;
 import gate.test.GATEPluginTests;
 
 /**
