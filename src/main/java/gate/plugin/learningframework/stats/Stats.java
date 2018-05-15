@@ -62,10 +62,10 @@ public class Stats {
         @SuppressWarnings("unchecked")
         List<Object> l =  (List<Object>)value;
         if(l.size()>0 && (l.get(0) instanceof String)) {
-          if(stringStats==null) stringStats = new HashMap<String,Long>();
-          for(Object o : l) {
+          if(stringStats==null) stringStats = new HashMap<>();
+          l.forEach((o) -> {
             addStringValue(o);
-          }
+          });
         }
         numStats.addValue(((List)value).size());
       } else if(value instanceof String[]) {
@@ -73,7 +73,7 @@ public class Stats {
         for(String val : (String[])value) {
           addStringValue(val);
         }
-        numStats.addValue(((double[])value).length);
+        numStats.addValue(((String[])value).length);
       } else if(value instanceof double[]) {
         numStats.addValue(((double[])value).length);
       } else {
