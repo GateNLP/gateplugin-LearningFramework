@@ -418,7 +418,9 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
     // TODO: this we rely on the ngram only having allowed field values, e.g. annType
     // has to be non-null and non-empty and number has to be > 0.
     // If featureName is null, then for ngrams, the string comes from the covered document
-    String[] gram = new String[number];
+    
+    // TODO: we had the following unsued variable in here previously, check why? 
+    // String[] gram = new String[number];
     List<Annotation> al = Utils.getContainedAnnotations(inputAS, instanceAnnotation, annType).inDocumentOrder();
     // If we have less annotations than our n for n-gram, there is certainly nothing to do, 
     // leave the featureName vector untouched.
