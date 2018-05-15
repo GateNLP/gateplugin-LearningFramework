@@ -32,7 +32,6 @@ import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
 import gate.util.GateRuntimeException;
-import java.util.Locale;
 
 /**
  *
@@ -42,8 +41,6 @@ import java.util.Locale;
         helpURL = "https://github.com/GateNLP/gateplugin-LearningFramework/wiki/LF_GenFeatures_Misc",
         comment = "Generate various kinds of features")
 public class LF_GenFeatures_Misc extends AbstractDocumentProcessor {
-
-  private static final long serialVersionUID = -420678904432830002L;
 
   private final Logger logger = Logger.getLogger(LF_GenFeatures_Misc.class.getCanonicalName());
 

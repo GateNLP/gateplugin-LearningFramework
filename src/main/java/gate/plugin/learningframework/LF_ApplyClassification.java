@@ -45,11 +45,6 @@ import java.net.URL;
         comment = "Apply a trained classification model to documents")
 public class LF_ApplyClassification extends LearningFrameworkPRBase {
 
-  /**
-   *
-   */
-  private static final long serialVersionUID = 1L;
-
   static final Logger LOGGER = Logger.getLogger(LF_ApplyClassification.class.getCanonicalName());
 
   protected URL dataDirectory;

@@ -30,12 +30,8 @@ import gate.creole.metadata.RunTime;
  * Base class for all LearningFramework PRs providing the shared parameters.
  */
 public abstract class LearningFrameworkPRBase
-        extends AbstractDocumentProcessor
-  {
+        extends AbstractDocumentProcessor {
 
-  /**
-   *
-   */
   private Logger logger = Logger.getLogger(LearningFrameworkPRBase.class.getCanonicalName());
 
   // =================================================================

@@ -31,11 +31,6 @@ import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
-import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
-import gate.plugin.learningframework.engines.AlgorithmClassification;
-import gate.plugin.learningframework.engines.Engine;
-import gate.plugin.learningframework.features.FeatureSpecification;
-import gate.plugin.learningframework.features.TargetType;
 import gate.util.GateRuntimeException;
 import java.util.Locale;
 
@@ -47,8 +42,6 @@ import java.util.Locale;
         helpURL = "https://github.com/GateNLP/gateplugin-LearningFramework/wiki/LF_GenFeatures_Affixes",
         comment = "Generate features: prefixes and suffixes")
 public class LF_GenFeatures_Affixes extends AbstractDocumentProcessor {
-
-  private static final long serialVersionUID = -420477194432830002L;
 
   private final Logger logger = Logger.getLogger(LF_GenFeatures_Affixes.class.getCanonicalName());
 

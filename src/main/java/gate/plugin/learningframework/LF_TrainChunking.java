@@ -57,11 +57,6 @@ import java.util.Set;
         comment = "Train a machine learning model for chunking")
 public class LF_TrainChunking extends LF_TrainBase {
 
-  /**
-   *
-   */
-  private static final long serialVersionUID = 1L;
-
   private final Logger LOGGER = Logger.getLogger(LF_TrainChunking.class.getCanonicalName());
 
   protected URL dataDirectory;

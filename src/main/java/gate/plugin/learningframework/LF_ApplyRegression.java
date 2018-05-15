@@ -44,11 +44,6 @@ import java.net.URL;
         comment = "Apply a trained regression model to documents")
 public class LF_ApplyRegression extends LearningFrameworkPRBase {
 
-  /**
-   *
-   */
-  private static final long serialVersionUID = 1L;
-
   static final Logger logger = Logger.getLogger(LF_ApplyRegression.class.getCanonicalName());
 
   protected URL dataDirectory;

@@ -38,7 +38,7 @@ import gate.creole.ExecutionException;
  */
 public abstract class AbstractDocumentProcessor
         extends AbstractLanguageAnalyser
-        implements Serializable, ControllerAwarePR {
+        implements  ControllerAwarePR {
 
   /**
    *

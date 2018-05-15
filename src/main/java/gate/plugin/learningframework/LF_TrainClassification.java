@@ -43,16 +43,11 @@ import gate.plugin.learningframework.features.TargetType;
 import gate.util.GateRuntimeException;
 import java.io.File;
 
-/**
- *
- */
 @CreoleResource(
         name = "LF_TrainClassification",
         helpURL = "https://github.com/GateNLP/gateplugin-LearningFramework/wiki/LF_TrainClassification",
         comment = "Train a machine learning model for classification")
 public class LF_TrainClassification extends LF_TrainBase {
-
-  private static final long serialVersionUID = -420477191226830002L;
 
   private final Logger logger = Logger.getLogger(LF_TrainClassification.class.getCanonicalName());
 

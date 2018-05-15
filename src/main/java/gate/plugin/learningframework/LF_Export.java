@@ -58,8 +58,6 @@ import java.util.Set;
         helpURL = "https://github.com/GateNLP/gateplugin-LearningFramework/wiki/LF_Export",
         comment = "Export training instances in various formats for external training and analysis")
 public class LF_Export extends LF_ExportBase {
-  private static final long serialVersionUID = -420477191226830002L;
-  
 
   private final Logger logger = Logger.getLogger(LF_Export.class.getCanonicalName());
 

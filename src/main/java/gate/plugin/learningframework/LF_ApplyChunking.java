@@ -46,10 +46,6 @@ import java.net.URL;
         comment = "Apply a trained chunking model to documents")
 public class LF_ApplyChunking extends LearningFrameworkPRBase {
 
-  /**
-   *
-   */
-  private static final long serialVersionUID = 1L;
 
   static final Logger LOGGER = Logger.getLogger(LF_ApplyClassification.class.getCanonicalName());
 
