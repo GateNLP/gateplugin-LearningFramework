@@ -225,7 +225,7 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
       // if the engine is still null, or the dataDirectory has changed since 
       // we last loaded the engine, or the algorithmParameters were changed,
       // reload the engine.
-      if (engine == null || !dataDirectory.equals(oldDataDirectory) || getAlgorithmParametersIsChanged()) {
+      if (engine == null || !dataDirectory.toString().equals(oldDataDirectory.toString()) || getAlgorithmParametersIsChanged()) {
         oldDataDirectory = dataDirectory;
         engine = Engine.load(dataDirectory, getAlgorithmParameters());
       }
