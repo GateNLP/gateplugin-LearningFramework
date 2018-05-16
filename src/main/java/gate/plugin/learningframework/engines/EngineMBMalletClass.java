@@ -192,7 +192,7 @@ public class EngineMBMalletClass extends EngineMBMallet {
         Class<?> trainerClass = algorithm.getTrainerClass();
         try {
           @SuppressWarnings("unchecked")
-          Constructor tmpc = trainerClass.getDeclaredConstructor();
+          Constructor<?> tmpc = trainerClass.getDeclaredConstructor();
           trainer = (ClassifierTrainer) tmpc.newInstance();
         } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | SecurityException | InvocationTargetException ex) {
           throw new GateRuntimeException("Could not create trainer instance for " + trainerClass, ex);
