@@ -40,7 +40,7 @@ import java.net.URL;
  * Training, evaluation and application of ML in GATE.</p>
  */
 @CreoleResource(name = "LF_ApplyRegression",
-        helpURL = "https://github.com/GateNLP/gateplugin-LearningFramework/wiki/LF_ApplyRegression",
+        helpURL = "https://gatenlp.github.io/gateplugin-LearningFramework/LF_ApplyRegression",
         comment = "Apply a trained regression model to documents")
 public class LF_ApplyRegression extends LearningFrameworkPRBase {
 

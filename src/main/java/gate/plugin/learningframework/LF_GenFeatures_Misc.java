@@ -38,7 +38,7 @@ import gate.util.GateRuntimeException;
  */
 @CreoleResource(
         name = "LF_GenFeatures_Misc",
-        helpURL = "https://github.com/GateNLP/gateplugin-LearningFramework/wiki/LF_GenFeatures_Misc",
+        helpURL = "https://gatenlp.github.io/gateplugin-LearningFramework/LF_GenFeatures_Misc",
         comment = "Generate various kinds of features")
 public class LF_GenFeatures_Misc extends AbstractDocumentProcessor {
 

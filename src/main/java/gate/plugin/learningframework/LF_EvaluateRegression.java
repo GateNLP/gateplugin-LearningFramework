@@ -47,7 +47,7 @@ import gate.util.GateRuntimeException;
  */
 @CreoleResource(
         name = "LF_EvaluateRegression",
-        helpURL = "https://github.com/GateNLP/gateplugin-LearningFramework/wiki/LF_EvaluateRegression",
+        helpURL = "https://gatenlp.github.io/gateplugin-LearningFramework/LF_EvaluateRegression",
         comment = "Evaluate an algorithm and parameter settings for regression")
 public class LF_EvaluateRegression extends LF_TrainBase {
 

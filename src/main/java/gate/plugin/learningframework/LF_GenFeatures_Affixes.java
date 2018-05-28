@@ -39,7 +39,7 @@ import java.util.Locale;
  */
 @CreoleResource(
         name = "LF_GenFeatures_Affixes",
-        helpURL = "https://github.com/GateNLP/gateplugin-LearningFramework/wiki/LF_GenFeatures_Affixes",
+        helpURL = "https://gatenlp.github.io/gateplugin-LearningFramework/LF_GenFeatures_Affixes",
         comment = "Generate features: prefixes and suffixes")
 public class LF_GenFeatures_Affixes extends AbstractDocumentProcessor {
 

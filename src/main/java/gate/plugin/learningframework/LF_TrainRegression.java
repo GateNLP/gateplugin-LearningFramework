@@ -44,7 +44,7 @@ import java.io.File;
 
 @CreoleResource(
         name = "LF_TrainRegression",
-        helpURL = "https://github.com/GateNLP/gateplugin-LearningFramework/wiki/LF_TrainRegression",
+        helpURL = "https://gatenlp.github.io/gateplugin-LearningFramework/LF_TrainRegression",
         comment = "Train a machine learning model for regression")
 public class LF_TrainRegression extends LF_TrainBase {
 

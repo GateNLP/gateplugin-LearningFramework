@@ -53,7 +53,7 @@ import java.util.Set;
  */
 @CreoleResource(
         name = "LF_TrainChunking",
-        helpURL = "https://github.com/GateNLP/gateplugin-LearningFramework/wiki/LF_TrainChunking",
+        helpURL = "https://gatenlp.github.io/gateplugin-LearningFramework/LF_TrainChunking",
         comment = "Train a machine learning model for chunking")
 public class LF_TrainChunking extends LF_TrainBase {
 

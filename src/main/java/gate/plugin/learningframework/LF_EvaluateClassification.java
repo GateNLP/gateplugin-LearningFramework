@@ -41,14 +41,13 @@ import gate.plugin.learningframework.features.FeatureInfo;
 import gate.plugin.learningframework.features.FeatureSpecification;
 import gate.plugin.learningframework.features.TargetType;
 import gate.util.GateRuntimeException;
-import java.io.File;
 
 /**
  *
  */
 @CreoleResource(
         name = "LF_EvaluateClassification",
-        helpURL = "https://github.com/GateNLP/gateplugin-LearningFramework/wiki/LF_EvaluateClassification",
+        helpURL = "https://gatenlp.github.io/gateplugin-LearningFramework/LF_EvaluateClassification",
         comment = "Evaluate an algorithm and parameter settings for classification")
 public class LF_EvaluateClassification extends LF_TrainBase {
 

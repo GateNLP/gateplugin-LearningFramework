@@ -42,7 +42,7 @@ import java.net.URL;
  * Training, evaluation and application of ML in GATE.</p>
  */
 @CreoleResource(name = "LF_ApplyChunking",
-        helpURL = "https://github.com/GateNLP/gateplugin-LearningFramework/wiki/LF_ApplyChunking",
+        helpURL = "https://gatenlp.github.io/gateplugin-LearningFramework/LF_ApplyChunking",
         comment = "Apply a trained chunking model to documents")
 public class LF_ApplyChunking extends LearningFrameworkPRBase {
 
