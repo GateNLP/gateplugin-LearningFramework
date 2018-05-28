@@ -9,7 +9,7 @@ You will need:
 * Course materials from the classification exercise
 * The Learning Framework plugin
 * The Learning Framework [Weka wrapper](https://github.com/GateNLP/weka-wrapper)
- 
+
 ## Exporting Data from GATE
 
 * Start up GATE Developer and load the corpora from the classification exercise
@@ -26,12 +26,12 @@ set inputASName to the annotation set where you have your features and class ann
     * scaleFeatures will not be used for this
     * sequenceSpan should be left blank, as we are not exporting sequence training data in this exercise
     * targetFeature is the name of the feature that contains your classes (the feature on the instance annotations)
-    * targetType indicates whether your class is nominal or numeric. 
+    * targetType indicates whether your class is nominal or numeric.
 * Run the application over the training data.
 * Take a look in the folder you specified for the data to be put in. "data.arff" contains your output data. Have a look at this. Does it look how you would expect? It begins with a feature list, which is an expanded version of the feature specification you gave. Then the instances are given, one per line.
- 
-[[images/Screenshot-GATEDeveloperLFExportParams.png]]
- 
+
+![](images/Screenshot-GATEDeveloperLFExportParams.png "Screenshot")
+
 ## Importing Data into Weka
 
 * Start up Weka and select "Explorer"
@@ -61,7 +61,7 @@ set inputASName to the annotation set where you have your features and class ann
     * Now we need to use just these features, not the others. This is going to involve a lot of clicking! Make a note of the selected features and return to the "Preprocess" tab. You can select these features by clicking in the box next to them on the left (a tick appears). To remove the other features, first click "Invert", above the feature list, then "Remove", below.
     * Now return to the "Classify" tab and see how the result you get now compares to the result you got earlier.
     * You can try different ways of selecting features. For example, you could use cross-validation to get a more reliable list.
- 
+
 ## Bringing what you Learned back into GATE
 
 * In order to get a Learning Framework model that encapsulates what we learned while using Weka, we need to approximate it and train within GATE. Start by getting the Weka wrapper and carefully following the instructions [here](https://github.com/GateNLP/weka-wrapper)
@@ -71,4 +71,3 @@ set inputASName to the annotation set where you have your features and class ann
 "Normalize" (feature scaling) in LibSVM isn't available in GATE, but there is a form of feature scaling that is a reasonable approximation.
 * You will have to look at the [LibSVM documentation](https://www.csie.ntu.edu.tw/~cjlin/libsvm/) to find matches for the Weka parameters, as they have different names in Weka.
 * Now you can evaluate a model in GATE and see if the result is approximately as you expect. If it's different, can you figure out why?
-
