@@ -41,7 +41,7 @@ import java.net.URL;
  * Training, evaluation and application of ML in GATE.</p>
  */
 @CreoleResource(name = "LF_ApplyClassification",
-        helpURL = "https://gatenlp.github.io/gateplugin-LearningFramework/LF_ApplyChunking",
+        helpURL = "https://gatenlp.github.io/gateplugin-LearningFramework/LF_ApplyClassification",
         comment = "Apply a trained classification model to documents")
 public class LF_ApplyClassification extends LearningFrameworkPRBase {
 
