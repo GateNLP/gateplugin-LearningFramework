@@ -1,0 +1,11 @@
+gate.lib.interaction.data
+gate.lib.interaction.process
+gate.plugin.learningframework
+gate.plugin.learningframework.data
+gate.plugin.learningframework.engines
+gate.plugin.learningframework.export
+gate.plugin.learningframework.features
+gate.plugin.learningframework.mallet
+gate.plugin.learningframework.mbstats
+gate.plugin.learningframework.stats
+org.apache.commons.clipatched
