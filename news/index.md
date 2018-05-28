@@ -1,6 +1,6 @@
 # News
 
-List if changes in reverse order of date:
+List of changes in reverse order of date:
 
 ## 2018-05-15
 
