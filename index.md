@@ -26,6 +26,8 @@ Overview of the documentation:
   * [LF_Export](LF_Export) export a training set to an external file
   * [LF_EvaluateClassification](LF_EvaluateClassification) estimate classification accuracy
   * [LF_EvaluateRegression](LF_EvaluateRegression) estimate regression quality
+  * [LF_GenFeatures_Affixes](LF_GenFeatures_Affixes) generate features from prefixes and suffixes
+  * [LF_GenFeatures_Misc](LF_GenFeatures_Misc) generate other features like word shape
 * Using Neural Networks
 * Tutorials
 
