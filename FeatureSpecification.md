@@ -38,13 +38,15 @@ The `ATTRIBUTE` element can have the following nested elements (see below for a 
 * `FEATURE` (optional) the feature name, if missing, the presence of an annotation is indicated by a boolean feature.
 * `DATATYPE` (required) the data type, one of `nominal`, `numeric`, `boolean`/`bool`. If `FEATURE` is missing, then the datatype must be `boolean` or can be missing to indicate `boolean`
 * `NAME` the attribute name to use internally. The LF usually provides a useful default, but this can be used to make information about trained models (decision trees, feature weights etc) more readable
-* `CODEAS` (optional) the way how the value of the attribute should get encoded. This is only relevant for non-numeric features and must be one of `one_of_k` or `number`. Non-nominal is always encoded as a number, the default for nominal is `one_of_k`.
-* `MISSINGVALUETREATMENT` (optional) how to handle situations where the value of the attribute is null or there is no annotation from which to take the value. One of `keep`, `zero_value`, or `special_value`. The default for nominal values encoded as `one_of_k` is `keep`, for boolean values is `zero_value` (identical to false) and for all other data types is `special_value`.
-* `<FEATURENAME4VALUE>` (optional): only allowed for datattype `nominal` and codeas `one_of_k`. The name of a feature which contains the value to assign to the attribute, instead of 1.0. This can be used e.g. to assign a TF*IDF score or some other score to each word. If the feature is not present or null, then no machine learning feature is created.
+* `CODEAS` (optional) the way how the value of the attribute should get encoded. This is only relevant for non-numeric features and must be one of `one_of_k` or `number`. Non-nominal is always encoded as a number, the default for nominal is `one_of_k`. This is ignored for dense instance representations.
+* `MISSINGVALUETREATMENT` (optional) how to handle situations where the value of the attribute is null or there is no annotation from which to take the value. One of `keep`, `zero_value`, or `special_value`. The default for nominal values encoded as `one_of_k` is `keep`, for boolean values is `zero_value` (identical to false) and for all other data types is `special_value`. For dense feature representations, will always use the value set bby MISSINGVALUE.
+* `MISSINGVALUE` (optional) currently only used for dense feature representations, the value to use if a feature is missing for some reason. If not set the default is "" for nominal, "false" for boolean and "0.0" for numeric. 
+* `<FEATURENAME4VALUE>` (optional): only allowed for datattype `nominal` and codeas `one_of_k`. The name of a feature which contains the value to assign to the attribute, instead of 1.0. This can be used e.g. to assign a TF*IDF score or some other score to each word. If the feature is not present or null, then no machine learning feature is created. This is ignored for dense feature representations.
 * `LISTSEP` (optional) a list separator string to use for nominal values which contain a string representing a list. In this case each element in the list is used as a separate indicator feature (a feature is generated for each element in the list and set to 1.0)
-* `WITHIN` (optional): an annotation type that represents some kind of sequence within which the attribute should occur. If this is specified, then only annotations which are within the same `WITHIN` annotation as the instance annotation will be used. In addition, if the beginning of the instance annotation is the same as the beginning of the `WITHIN` annotation, a special `START` symbol will be added, and if the end of the the instance annotation is the same as the end of the `WITHIN` annotation a special `END` symbol will be added. This can help the learning algorithm to detect situations where a word occurs at the beginning or end of a sentence, for example. IMPORTANT: the `WITHIN` element should only be specified for one attribute or attributelist feature if there are several since it is probably redundant and not helpful if the stop symbol attribute is generated more than once. 
+* `WITHIN` (optional): NOTE: This may get removed in the future (and a PR for setting features that indicate if an ATTRIBUTE begins with or ends with another annotation will be added).
+An annotation type that represents some kind of sequence within which the attribute should occur. If this is specified, then only annotations which are within the same `WITHIN` annotation as the instance annotation will be used. In addition, if the beginning of the instance annotation is the same as the beginning of the `WITHIN` annotation, a special `START` symbol will be added, and if the end of the the instance annotation is the same as the end of the `WITHIN` annotation a special `END` symbol will be added. This can help the learning algorithm to detect situations where a word occurs at the beginning or end of a sentence, for example. IMPORTANT: the `WITHIN` element should only be specified for one attribute or attributelist feature if there are several since it is probably redundant and not helpful if the stop symbol attribute is generated more than once. 
 
-A value of `one_of_k` forthe `CODEAS` element means that for each possible value of the annotation feature, a separate attribute (machine learning feature) is created, and that feature is set to 1.0 if that value is present and 0.0 if the value is not present. If instead `number` is used, then every possible value is mapped to a different integer value. `one_of_k` coding is normally used to represent words or tokens or other nominal features derived from words.
+(non-dense only:) A value of `one_of_k` forthe `CODEAS` element means that for each possible value of the annotation feature, a separate attribute (machine learning feature) is created, and that feature is set to 1.0 if that value is present and 0.0 if the value is not present. If instead `number` is used, then every possible value is mapped to a different integer value. `one_of_k` coding is normally used to represent words or tokens or other nominal features derived from words.
 
 Note that if the datatype is `nominal` and the coding is `one_of_k` then if the value of a feature is an array, an indicator feature for each element of the array is generated, if the value of a feature is a map than an indicator feature for each key/value combination in the map is generated.
 
@@ -71,6 +73,7 @@ specified in the PR is used. Whichever type is used, the annotations of this typ
 All settings from the `<ATTRIBUTE>` specification can be used plus:
 * `<FROM>` the starting number of the element in the list of annotations to generate features from
 * `<TO>` the ending number of the element in the list of annotations
+* `<WITHIN>` the annotation covering element 0 which can restrict with other list elements are included
 * all the parameters from the `<ATTRIBUTE>` specification
 
 The element numbers are zero based and increasing for annotations which start to the right of the
@@ -92,7 +95,34 @@ annotations to combine. For example if NUMBER is 2, and "MovieTitle" is
 "How" and "I", "I" and "learned" and all other pairs will be used to combine the feature values.
 If NUMBER is "1", unigrams are used. If this is not specified, "1" is used.
 * `<FEATURE>` the feature to use to get the value for each element of an NGRAM.
-* `<FEATURENAME4VALUE>` the name of a feature which contains the value to assign to each occurrence of a unigram. By default each individual unigram will get the value 1.0 assigned and the final feature for a unigram is the count of how often the unigram occurs within the instance. If this is specified, the value of that feature is used instead of 1.0 for each unigram. For ngrams where n is greater than 1, the value used for each ngram is the product of the value for each unigram before accumulation, and the final feature value is the sum of all ngram values for each of the ngrams that occur in the instance.
+* `<FEATURENAME4VALUE>` (only non-dense feature representations:) the name of a feature which contains the value to assign to each occurrence of a unigram. By default each individual unigram will get the value 1.0 assigned and the final feature for a unigram is the count of how often the unigram occurs within the instance. If this is specified, the value of that feature is used instead of 1.0 for each unigram. For ngrams where n is greater than 1, the value used for each ngram is the product of the value for each unigram before accumulation, and the final feature value is the sum of all ngram values for each of the ngrams that occur in the instance.
+
+For all nominal attributes (ATTRIBUTE, ATTRIBUTELIST or NGRAM), an EMBEDDINGS block can be specified (this will
+get ignored for sparse representations and may get ignored for some dense representations). Such a block 
+looks like this:
+```
+<EMBEDDINGS>
+  <ID>token</ID>
+  <DIMS>100</DIMS>
+  <FILE>embs/glove6b.txt.gz</FILE>
+  <TRAIN>mapping</TRAIN>
+</EMBEDDINGS>
+```
+Within the EMBEDDINGS block the following settings are possible:
+* ID: some arbitrary id or name for the embedding definition. This can be used if there are several features
+  which require separate embedding definitions but also makes it possible to share embeddings between 
+  features. If this is not specified the empty string is used as the default ID.
+* DIMS: the number of dimensions to use for the embeddings. Ignored if a FILE is specified, in that case,
+  the dimensions will get determined from there.
+* FILE: the path to an embeddings file containing pre-calculated emebddings in word2vec text,
+  gzip-compressed or uncompressed. 
+* TRAIN: how to train/use embeddings, must be one of "yes", "no", "onehot" or "mapping":
+  * yes: the embeddings are updated during training. If a FILE is specified, the initial embeddings are taken from there, otherwise the embeddings are initialized randomly. 
+  * no: the embeddings are left unchanged during training. This makes really only sense if FILE is specified to use pre-trained embeddings
+  * mapping: a dense layer is used to train a mapping from the existing pretrained embeddings to a new vector
+    of the same size. This makes only sense if FILE is also specified. 
+  * onehot: instead of embeddings, as many input units as there are values are used. The weights connecting these units to the hidden layer are trained.
+
 
 ### NOTES
 
