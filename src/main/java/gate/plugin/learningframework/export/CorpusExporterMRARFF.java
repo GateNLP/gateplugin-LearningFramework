@@ -305,10 +305,5 @@ public class CorpusExporterMRARFF extends CorpusExporterMR {
     return sb.toString();
   } 
 
-
-  @Override
-  public void initWhenCreating() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
   
 }
