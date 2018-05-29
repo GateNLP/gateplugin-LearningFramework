@@ -184,7 +184,7 @@ public class EngineMBMalletClass extends EngineMBMallet {
         double beta = (double)ps.getValueOrElse("beta", 2.0);
         double nfact = (double)ps.getValueOrElse("nfact", 0.5);
         
-        WinnowTrainer trainer = new WinnowTrainer(alpha, beta, nfact);
+        trainer = new WinnowTrainer(alpha, beta, nfact);
       } else {
         // all other algorithms are still just instantiated from the class name, we ignore
         // the parameters
