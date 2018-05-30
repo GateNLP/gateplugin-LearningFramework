@@ -6,6 +6,7 @@
 package gate.plugin.learningframework.features;
 
 import gate.Annotation;
+import gate.Document;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +27,7 @@ public abstract class SeqEncoder {
   public static final String CODE_END = "E";
   public static final String CODE_SINGLE = "S"; // = begin and end
   private Map<String,String> options = new HashMap<>();
-  public abstract String seqAnns2ClassLabel(Collection<Annotation> seqAnns, Annotation instAnn);
+  public abstract String seqAnns2ClassLabel(Collection<Annotation> seqAnns, Annotation instAnn, Document curDoc);
   public void setOptions(Map<String,String> options) {
     if(options != null) this.options.putAll(options);
   }

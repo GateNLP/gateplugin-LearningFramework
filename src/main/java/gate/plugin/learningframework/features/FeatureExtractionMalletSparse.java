@@ -1078,7 +1078,7 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
       // ideally we implement this as a method of one of an instance of several Seq2Class 
       // subclasses. If it is an instance we could maybe also implement methods where we
       // need to remember something about the last instance for which we did it!
-      target = seqEncoder.seqAnns2ClassLabel(overlappingClassAnns, instanceAnnotation);
+      target = seqEncoder.seqAnns2ClassLabel(overlappingClassAnns, instanceAnnotation, doc);
     } else {
       //No overlapping mentions so it's an outside
       target = seqEncoder.CODE_OUTSIDE;

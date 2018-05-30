@@ -671,6 +671,7 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
   public static InstanceRepresentation extractClassForSeqTagging(InstanceRepresentation inst, AnnotationSet classAS, Annotation instanceAnnotation, SeqEncoder seqEncoder) {
     String target;
     AnnotationSet overlappingClassAnns = Utils.getOverlappingAnnotations(classAS, instanceAnnotation);
+    Document doc = classAS.getDocument();
     // NOTE: previously we only allowed at most one class annotation, but now we are as flexible
     // as possible here: any number of class annotations of any number of types can overlap.
     // The class label for each instance is generated from the complete list of what overlaps,
@@ -696,7 +697,7 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
       // ideally we implement this as a method of one of an instance of several Seq2Class 
       // subclasses. If it is an instance we could maybe also implement methods where we
       // need to remember something about the last instance for which we did it!
-      target = seqEncoder.seqAnns2ClassLabel(overlappingClassAnns, instanceAnnotation);
+      target = seqEncoder.seqAnns2ClassLabel(overlappingClassAnns, instanceAnnotation, doc);
     } else {
       //No overlapping mentions so it's an outside
       target = seqEncoder.CODE_OUTSIDE;

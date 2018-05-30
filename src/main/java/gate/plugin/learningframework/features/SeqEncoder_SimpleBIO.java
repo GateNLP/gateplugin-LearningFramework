@@ -6,6 +6,7 @@
 package gate.plugin.learningframework.features;
 
 import gate.Annotation;
+import gate.Document;
 import gate.Utils;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,25 +26,34 @@ public class SeqEncoder_SimpleBIO extends SeqEncoder {
   // NOTE: currently this is implemented in a way that made it easy to add it
   // to the feature extraction code. However, this approach always only looks at
   // exactly one instance. Not sure if this will work for all we want to implement.
-  // NOTE: eventually we will have a caller which can maintain an instance
-  // of the SeqEncode class, but until then, we need a static method.
-  // For now we just directly access the static method defined in here for 
-  // that purpose.
   @Override
-  public String seqAnns2ClassLabel(Collection<Annotation> seqAnns, Annotation instAnn) {
+  public String seqAnns2ClassLabel(Collection<Annotation> seqAnns, Annotation instAnn, Document curDoc) {
     long instanceStartOffset = Utils.start(instAnn);
     long instanceEndOffset = Utils.end(instAnn);
     List<String> classnames = new ArrayList<>();
+    // NOTE: the boundaries of seqAnns may not always align with the boundaries of
+    // instAnns (e.g. Organization may start or end in the middle of a token).
+    // This can cause a lot of odd situations, e.g. several seqAnns of the same
+    // type all within a single instAnn. 
+    // Here, we ignore all seqAnns which do NOT  align with the beginning or 
+    // end. 
     for (Annotation clann : seqAnns) {
       String clType = clann.getType();
       boolean startsHere = (Utils.start(clann) == instanceStartOffset);
       boolean endsHere = (Utils.end(clann) == instanceEndOffset);
+      boolean startsInside = (Utils.start(clann) > instanceStartOffset && Utils.start(clann) < instanceEndOffset);
+      boolean endsInside = (Utils.end(clann) > instanceStartOffset && Utils.end(clann) < instanceEndOffset);
+      if(startsInside || endsInside) {
+        System.err.println("WARNING: class annotation does not align with beginning or end of instance annotation: ignored. In document="+
+                curDoc.getName()+" instAnn="+instAnn+" classAnns="+seqAnns);
+        continue;
+      }
       String code = CODE_INSIDE;
       // possibilities for start/end and corresponding codes:
       // false/false -> I (must be an inside)
       // true/false  -> B (begins here)
       // false/true  -> I (ends here, but we do not distinguish ends here)
-      // true/true   -> B (begins here but we do not distinguish begins and ends)
+      // true/true   -> B (begins here but we do not distinguish begins and ends)      
       if (startsHere) {
         code = CODE_BEGIN;
       }
