@@ -85,10 +85,11 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
   private Double confidenceThreshold;
 
   @RunTime
-  @CreoleParameter(defaultValue = "0.0", comment = "The minimum "
+  @Optional
+  @CreoleParameter(comment = "The minimum "
           + "confidence/probability for including "
           + "an annotation at application time. In the case of NER, the confidence "
-          + "threshold is applied to the average for the entire entity.")
+          + "threshold is applied to the average for the entire entity. If empty, ignore.")
   public void setConfidenceThreshold(Double confidenceThreshold) {
     this.confidenceThreshold = confidenceThreshold;
   }
