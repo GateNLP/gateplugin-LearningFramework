@@ -83,9 +83,10 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
   private Double confidenceThreshold;
 
   @RunTime
-  @CreoleParameter(defaultValue = "0.0", comment = "The minimum "
+  @Optional
+  @CreoleParameter(comment = "The minimum "
           + "confidence/probability for including "
-          + "an annotation at application time.")
+          + "an annotation at application time. If empty, ignore.")
   public void setConfidenceThreshold(Double confidenceThreshold) {
     this.confidenceThreshold = confidenceThreshold;
   }
@@ -252,11 +253,12 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
         throw new GateRuntimeException("Not targetFeature parameter specified and none available from the model info file either.");
       }
       targetFeatureToUse = targetFeatureFromModel;
-      System.err.println("Using target feature name from model: " + targetFeatureToUse);
+      LOGGER.warn("Using target feature name from model: " + targetFeatureToUse);
     } else {
       targetFeatureToUse = getTargetFeature();
-      System.err.println("Using target feature name from PR parameter: " + targetFeatureToUse);
+      LOGGER.warn("Using target feature name from PR parameter: " + targetFeatureToUse);
     }
+    LOGGER.debug("Parameter confidenceThreshold not given, not using confidence threshold");
   }
   
   @Override
