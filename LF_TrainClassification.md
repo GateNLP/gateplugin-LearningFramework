@@ -15,7 +15,7 @@ The classification training PR allows you to train a classifier suitable for pro
   * `MEANVARIANCE_ALL_FEATURES` normalize all features to have mean 0 and variance 1. [NOTE: this is not implement properly yet and may change in the future!]. See [FeatureScaling](FeatureScaling)
 * `sequenceSpan` (String, no default) this must be used for sequence tagging algorithms only! For such algorithms, it specifies the span across which to learn a sequence; for example a sentence is a meaningful sequence of words. If used like this a sequence algorithm can be used for classification, although this is not normally what one wants to do.
 * `targetFeature` (String, no default, required) the feature on the instance annotation that contains the nominal value which represents the class label. All instance annotations should have a class label.
-* `trainingAlgorithm` the classification training algorithm to use. See [UsingWeka](UsingWeka) for how to use WEKA_CL_WRAPPER to train a Weka model.
+* `trainingAlgorithm` the classification training algorithm to use (see below). See [UsingWeka](UsingWeka) for how to use WEKA_CL_WRAPPER to train a Weka model.
 
 ## Training a model
 

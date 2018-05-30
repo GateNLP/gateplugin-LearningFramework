@@ -16,8 +16,12 @@ The following libraries and tools are available in the LearningFramework through
 * [SciKit-Learn](http://scikit-learn.org/stable/) through the [sklearn-wrapper](https://github.com/GateNLP/sklearn-wrapper), see [Using SciKit Learn](UsingSklearn)
 * [CostSensitiveClassification](http://albahnsen.com/CostSensitiveClassification/index.html) through the [sklearn-wrapper](https://github.com/GateNLP/sklearn-wrapper), see [Using CostCla](UsingCostCla)
 * [Keras-Sparse](https://keras.io/) through the [gate-lf-keras-sparse wrapper](https://github.com/GateNLP/gate-lf-keras-sparse), see [Using KerasSparse](UsingKerasSparse)
+* Pytorch-Json: this is a built-in wrapper to use [Pytorch](https://pytorch.org/) neural networks, see [Using Neural Networks](UsingNeuralNetworks)
+* Keras-Json: this is a built-in wrapper to use [Keras](https://keras.io/) neral networks, see [Using Neural Networks](UsingNeuralNetworks)
 
-Finally, the application of a trained model can also be performed via the use of a HTTP model application server. The LearningFramework supports a very simple HTTP protocol for sending feature vectors to the server in JSON format, getting back the model predictions and applying them to the document that is being processed. See [[ServerForApplication]]
+Finally, the application of a trained model can also be performed via the use of a HTTP model application server. The LearningFramework supports a very simple HTTP protocol for sending feature vectors to the server in JSON format, getting back the model predictions and applying them to the document that is being processed. See [ServerForApplication](ServerApplication)
+
+## Supported Machine Learning Tasks
 
 The Learning Framework implements different task modes:
 * Classification, which simply assigns a class to each instance annotation. For example, each sentence might be classified as having positive or negative sentiment, each word may get assigned a part-of-speech tag, or a document may be classified as being relevant to some topic or not. With classification, the parts of text are known in advance and assigned one out of several possible class labels.
@@ -29,7 +33,7 @@ The Learning Framework implements different task modes:
 These are provided in separate processing resources (PRs), with separate PRs for training and application and evaluation plugins for classification and regression.
 Get started [here](GettingStarted)!
 
-### Feature Overview
+## Feature Overview
 
 * Supports classification, regression, sequence tagging
 * Supports learning algorithms from: LibSVM, Mallet, Weka (using a wrapper software) and Scikit-Learn (using a wrapper software)
@@ -43,7 +47,8 @@ Get started [here](GettingStarted)!
 * Supports multi-valied annotation features for numeric attributes: in this case the elements (which must be doubles or must be convertible to doubles) are "spliced" into the final feature vector (e.g. for making use of pre-calculated word embeddings).
 
 
-### Processing Resources:
+## Processing Resources:
+
 * [LF_TrainClassification](LF_TrainClassification) train a classification model
 * [LF_ApplyClassification](LF_ApplyClassification) apply a trained classification model
 * [LF_TrainRegression](LF_TrainRegression) train a regression model
@@ -57,6 +62,7 @@ Get started [here](GettingStarted)!
 * [LF_GenFeatures_Misc](LF_GenFeatures_Misc) generate other features like word shape
 
 ### Other important documentation pages:
+
 * [UsingWeka](UsingWeka) all about how to use Weka with the LearningFramework plugin.
 * [UsingSklearn](UsingSklearn) all about how to use SciKit Learn with the LearningFramework plugin.
 * [UsingCostCla](UsingCostCla) all about how to use CostCla (https://github.com/albahnsen/CostSensitiveClassification) with the LearningFramework plugin
