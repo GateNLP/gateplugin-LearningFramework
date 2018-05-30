@@ -1,23 +1,21 @@
-![GATE](https://gate.ac.uk/plugins/gau-0.1/images/logo-gate.png)
-
-# GATE Learning Framework Plugin
-
-[NOTE: the documentation is still work in progress! This documentation also usually reflects the very latest development version so the latest released version or the version available in the GATE plugin manager may be slightly different.]
+# Overview
 
 The Learning Framework is GATE's most recent machine learning plugin. It's still under active development, but stable enough to use. However future versions may introduce changes which may not be backwards compatible (meaning that pipelines may only work with the older versin or saved models may not be compatible between versions)
 
 It offers a wider variety of more up to date ML algorithms than earlier machine learning plugins, currently the following is supported natively (directly integrated in the plugin code):
 * most [Mallet]( http://mallet.cs.umass.edu/) classification algorithms
 * Mallet's CRF implementation
-* [LibSVM](https://www.csie.ntu.edu.tw/~cjlin/libsvm/), using the java implementation of the original LibSVM code.
+* [LibSVM](https://www.csie.ntu.edu.tw/~cjlin/libsvm/) for classification and regression, using the java implementation of the original LibSVM code.
 
-In addition, a growing number of machine learning libraries and tools are integrated using __wrappers__: this means that wrapper software (which needs to be downloaded and installed separately) runs the algorithms for training and application and the LearningFramework communicates with the wrapper software from a different process. This solution is used for two reasons: 1) the license of the machine learning library or tool is not compatible with the license of the LearningFramework (e.g. Weka) and 2) the machine learning tool is written in a different language, e.g. Python (e.g. Keras, SciKit-Learn).
+In addition, a growing number of machine learning libraries and tools are integrated using __wrappers__: this means that wrapper software runs the algorithms for training and application and the LearningFramework communicates with the wrapper software from a different process. This solution is used for two reasons:
+1. the license of the machine learning library or tool is not compatible with the license of the LearningFramework (e.g. Weka) and therefore cannot get distributed with it
+2. the machine learning tool is written in a different language, e.g. Python (e.g. Keras, Pytorch, SciKit-Learn).
 
 The following libraries and tools are available in the LearningFramework through a wrapper:
 * [Weka](http://www.cs.waikato.ac.nz/ml/weka/) through the [weka-wrapper](https://github.com/GateNLP/weka-wrapper), see  [Using Weka](UsingWeka)
 * [SciKit-Learn](http://scikit-learn.org/stable/) through the [sklearn-wrapper](https://github.com/GateNLP/sklearn-wrapper), see [Using SciKit Learn](UsingSklearn)
 * [CostSensitiveClassification](http://albahnsen.com/CostSensitiveClassification/index.html) through the [sklearn-wrapper](https://github.com/GateNLP/sklearn-wrapper), see [Using CostCla](UsingCostCla)
-* [Keras](https://keras.io/) through the [keras-wrapper](https://github.com/GateNLP/keras-wrapper), see [Using Keras](UsingKeras)
+* [Keras-Sparse](https://keras.io/) through the [gate-lf-keras-sparse wrapper](https://github.com/GateNLP/gate-lf-keras-sparse), see [Using KerasSparse](UsingKerasSparse)
 
 Finally, the application of a trained model can also be performed via the use of a HTTP model application server. The LearningFramework supports a very simple HTTP protocol for sending feature vectors to the server in JSON format, getting back the model predictions and applying them to the document that is being processed. See [[ServerForApplication]]
 

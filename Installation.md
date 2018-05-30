@@ -2,7 +2,7 @@
 
 With GATE version 8.5 or newer, the LearningFramework plugin gets installed just
 like most other standard GATE plugins, using the plugin manager. This is only
-necessary if you start with a new plugin that requires the plugin - if you load
+necessary if you start with a new pipeline that requires the plugin - if you load
 a pipeline that already uses the plugin, it will automatically get downloaded to
 your computer under the hood.
 
@@ -46,4 +46,4 @@ Upgrading the plugins and upgrading a pipeline from GATE 8.4.x or previous to GA
   version 3.9, that version may not be compatible with the changed PR parameters,
   algorithms and model formats used in 3.9 or later.
   Note that plugin version 3.9 provides a shell script (for Linux and MacOS) which  
-  helps with updating the PR parameters in pipelines automatically. 
+  helps with updating the PR parameters in pipelines automatically.
