@@ -7,7 +7,7 @@ The regression application PR allows you to apply a regression model you already
 * `inputASName` — Input annotation set containing attributes
 * `instanceType` — Annotation type to classify
 * `outputASName` — Where to put the new classifications. Leave blank to put them on the instance.
-* `serverUrl` (String, no default) if specified, will try to connect to the given URL and use the server there to get the predictions. See [[ServerForApplication]] for details.
+* `serverUrl` (String, no default) if specified, will try to connect to the given URL and use the server there to get the predictions. See [ServerForApplication](ServerForApplication) for details.
 * `targetFeature` — Which feature to write the classification onto. Leave blank to put it in the feature that was learned at training time.
 
 ## AlgorithmParameters
