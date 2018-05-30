@@ -30,8 +30,8 @@ import java.util.Map;
  */
 public enum SeqEncoderEnum {
   BIO(SeqEncoder_SimpleBIO.class,null), 
-  BIEO(null,null),
-  BISO(null,null),
+  //BIEO(null,null),
+  //BISO(null,null),
   ;
   private SeqEncoderEnum() {
     
