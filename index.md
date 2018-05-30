@@ -35,4 +35,5 @@ Overview of the documentation:
 Additional information:
 * [The GitHub source code repository](https://github.com/GateNLP/gateplugin-LearningFramework)
 * [Release Downloads for GATE 8.4 and earlier](https://github.com/GateNLP/gateplugin-LearningFramework/releases)
-* [Deverloper Documentation Wiki](https://github.com/GateNLP/gateplugin-LearningFramework/wiki)
+* [Developer Documentation Wiki](https://github.com/GateNLP/gateplugin-LearningFramework/wiki)
+* [JavaDoc](apidocs/)

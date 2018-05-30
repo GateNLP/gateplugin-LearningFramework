@@ -3,6 +3,11 @@
 The classification application PR allows you to apply a classifier you already learned using the classification training PR. The PR has no init time parameters. Here are the runtime parameters:
 
 * `algorithmParameters` Parameters to pass on to the application algorithm, if any.
+* `confidenceThreshold` (double, default: missing, do not use) - the minimum confidence score threshold required
+  for a classification to get assigned (this has no effect if the algorithm does not produce a classification confidence
+    score). If the minimum confidence is not reached, the instance annotation is not created or does not
+    get the targetFeature set or overriden. If this parameter is left unspecified, no checking for
+    a minimum confidenceThreshold is performed.
 * `dataDirectory` The directory that was used to save the model during training.
 * `inputASName` The annotation set that contains the instance annotations and the annotations specified in the feature configuration file.
 * `instanceType` The annotation type of the instance annotations.
