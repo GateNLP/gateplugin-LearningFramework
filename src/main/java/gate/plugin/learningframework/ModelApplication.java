@@ -239,8 +239,9 @@ public class ModelApplication {
       }
       if(sequenceSpanID != oldSeqId) {
         // if the oldSeqId is -1, do not worry, this is just the first instance annotation
-        if(oldSeqId == -1) oldSeqId = sequenceSpanID;
-        else {
+        if(oldSeqId == -1) {
+          oldSeqId = sequenceSpanID;
+        } else {
           // close any annotations still open and remove            
             Iterator<Map.Entry<String, AnnToAdd>> it = annsToAdd.entrySet().iterator();
             while(it.hasNext()) {
@@ -282,47 +283,52 @@ public class ModelApplication {
         for(String typeAndCode : typesAndCodes) {
           String[] tac = typeAndCode.split(SeqEncoder.CODESEP_PATTERN);
           //System.err.println("type/code="+tac[0]+"/"+tac[1]);
-          if(tac[1].equals(SeqEncoder.CODE_BEGIN)) {
-            touchedTypes.add(tac[0]);
-            // finish any ann which is of the same type and remove
-            Iterator<Map.Entry<String, AnnToAdd>> it = annsToAdd.entrySet().iterator();
-            while(it.hasNext()) {
-              Map.Entry<String,AnnToAdd> entry = it.next();              
-              if(entry.getKey().equals(tac[0])) {
-                //System.err.println("Finishing because B: "+entry.getValue().thisEnd);
-                addSequenceAnn(entry.getValue(), outputAS, minConfidence);
-                it.remove();
-              }
-            }
-            // now add a new open annotation for that type
-            AnnToAdd ata = new AnnToAdd();
-            ata.thisStart = inst.getStartNode().getOffset();
-            ata.annType = tac[0];
-            //Update the end on the offchance that this is it
-            ata.thisEnd = inst.getEndNode().getOffset();
-            Object tmpfv = inst.getFeatures().get(Globals.outputProbFeature);
-            ata.conf += (tmpfv == null ? 0.0 : (Double)tmpfv);
-            ata.len++;
-            annsToAdd.put(tac[0], ata);            
-          } else if(tac[1].equals(SeqEncoder.CODE_INSIDE)) {
-            // go through the open annotations and if we find one with that type, continue
-            // it
-            Iterator<Map.Entry<String, AnnToAdd>> it = annsToAdd.entrySet().iterator();
-            while(it.hasNext()) {
-              Map.Entry<String,AnnToAdd> entry = it.next();              
-              if(entry.getKey().equals(tac[0])) {
-                //System.err.println("extending existing annotation to offset "+inst.getEndNode().getOffset());
+          switch (tac[1]) {
+            case SeqEncoder.CODE_BEGIN:
+              {
                 touchedTypes.add(tac[0]);
-                // continue the ann and extend the span
-                Object tmpfv = inst.getFeatures().get(Globals.outputProbFeature);
-                entry.getValue().conf += (tmpfv == null ? 0.0 : (Double)tmpfv);
-                entry.getValue().len++;
+                // finish any ann which is of the same type and remove
+                Iterator<Map.Entry<String, AnnToAdd>> it = annsToAdd.entrySet().iterator();
+                while(it.hasNext()) {
+                  Map.Entry<String,AnnToAdd> entry = it.next();
+                  if(entry.getKey().equals(tac[0])) {
+                    //System.err.println("Finishing because B: "+entry.getValue().thisEnd);
+                    addSequenceAnn(entry.getValue(), outputAS, minConfidence);
+                    it.remove();
+                  }
+                }   // now add a new open annotation for that type
+                AnnToAdd ata = new AnnToAdd();
+                ata.thisStart = inst.getStartNode().getOffset();
+                ata.annType = tac[0];
                 //Update the end on the offchance that this is it
-                entry.getValue().thisEnd = inst.getEndNode().getOffset();
+                ata.thisEnd = inst.getEndNode().getOffset();
+                Object tmpfv = inst.getFeatures().get(Globals.outputProbFeature);
+                ata.conf += (tmpfv == null ? 0.0 : (Double)tmpfv);
+                ata.len++;
+                annsToAdd.put(tac[0], ata);
+                break;
               }
-            }            
-          } else {
-            throw new GateRuntimeException("Unexpected SeqEncoder code: "+tac[1]);
+            case SeqEncoder.CODE_INSIDE:
+              {
+                // go through the open annotations and if we find one with that type, continue
+                // it
+                Iterator<Map.Entry<String, AnnToAdd>> it = annsToAdd.entrySet().iterator();
+                while(it.hasNext()) {
+                  Map.Entry<String,AnnToAdd> entry = it.next();
+                  if(entry.getKey().equals(tac[0])) {
+                    //System.err.println("extending existing annotation to offset "+inst.getEndNode().getOffset());
+                    touchedTypes.add(tac[0]);
+                    // continue the ann and extend the span
+                    Object tmpfv = inst.getFeatures().get(Globals.outputProbFeature);
+                    entry.getValue().conf += (tmpfv == null ? 0.0 : (Double)tmpfv);
+                    entry.getValue().len++;
+                    //Update the end on the offchance that this is it
+                    entry.getValue().thisEnd = inst.getEndNode().getOffset();
+                  }
+                }   break;
+              }
+            default:
+              throw new GateRuntimeException("Unexpected SeqEncoder code: "+tac[1]);
           }
         } // for typeAndCode : typesAndCodes
         // after processing all the types/codes in the target, go through the 
@@ -353,7 +359,7 @@ public class ModelApplication {
    * @param minConfidence TODO
    * @return TODO
    */
-  public static Annotation addSequenceAnn(AnnToAdd annToAdd, AnnotationSet outputAS, Double minConfidence) {
+  private static Annotation addSequenceAnn(AnnToAdd annToAdd, AnnotationSet outputAS, Double minConfidence) {
     Double entityConfidence = annToAdd.conf == null ? null : annToAdd.conf / annToAdd.len;
     if(annToAdd.thisStart != -1 && annToAdd.thisEnd != -1 && 
             (minConfidence == null || entityConfidence == null || entityConfidence >= minConfidence)) {

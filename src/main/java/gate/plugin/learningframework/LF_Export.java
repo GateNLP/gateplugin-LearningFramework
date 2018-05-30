@@ -215,12 +215,6 @@ public class LF_Export extends LF_ExportBase {
   private boolean haveSequenceAlg    = false;  
   private CorpusExporter corpusExporter = null;
   
-  // TODO: 
-  // Some export formats may need to directly write each document at execute time while
-  // others first need the mallet corpus then do the export after the last document.
-  // Make it easier to include either here!
-  // Also: can we get most of what we need to do into the Exporter enum already??
-
   @Override
   public Document process(Document doc) {
     // extract the required annotation sets,
@@ -263,14 +257,16 @@ public class LF_Export extends LF_ExportBase {
 
     try {
       @SuppressWarnings("unchecked")
-      Constructor tmpc = getSeqEncoder().getEncoderClass().getDeclaredConstructor();
+      Constructor<?> tmpc = getSeqEncoder().getEncoderClass().getDeclaredConstructor();
       seqEncoder = (SeqEncoder) tmpc.newInstance();
       seqEncoder.setOptions(getSeqEncoder().getOptions());
     } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | SecurityException | InvocationTargetException ex) {
       throw new GateRuntimeException("Could not create SeqEncoder instance",ex);
     }
     
-    if(getClassAnnotationTypes() == null) setClassAnnotationTypes(new ArrayList<>());
+    if(getClassAnnotationTypes() == null) {
+      setClassAnnotationTypes(new ArrayList<>());
+    }
     if(!getClassAnnotationTypes().isEmpty()) {      
       classAnnotationTypesSet = new HashSet<>();
       classAnnotationTypesSet.addAll(classAnnotationTypes);

@@ -110,7 +110,7 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
     return targetFeature;
   }
 
-  String sequenceSpan;
+  private String sequenceSpan;
 
   @RunTime
   @Optional
@@ -137,19 +137,6 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
   public String getServerUrl() {
     return serverUrl;
   }
-
-  // TODO: we probably should not bother to allow instanceWeighgs at application time!!!
-  protected String instanceWeightFeature = "";
-  /*
-  @RunTime
-  @Optional
-  @CreoleParameter(comment = "The feature that constains the instance weight. If empty, no instance weights are used",
-          defaultValue="")
-  public void setInstanceWeightFeature(String val) {
-    instanceWeightFeature = val;
-  }
-  public String getInstanceWeightFeature() { return instanceWeightFeature; }
-   */
 
 ////////////////////////////////////////////////////////////////////////////
   private Engine engine;

@@ -19,9 +19,6 @@
  */
 package gate.plugin.learningframework;
 
-
-import org.apache.log4j.Logger;
-
 import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
@@ -29,12 +26,9 @@ import gate.creole.metadata.RunTime;
 /**
  * Base class for all LearningFramework PRs providing the shared parameters.
  */
+@SuppressWarnings("serial")
 public abstract class LearningFrameworkPRBase
         extends AbstractDocumentProcessor {
-
-  private static final long serialVersionUID = 1910596246240743484L;
-
-  private Logger logger = Logger.getLogger(LearningFrameworkPRBase.class.getCanonicalName());
 
   // =================================================================
   // Creole Parameters for all the PRs that derive from this class
@@ -74,7 +68,9 @@ public abstract class LearningFrameworkPRBase
   @CreoleParameter(comment = "Some of the learners take parameters. Parameters "
           + "can be entered here. For example, the LibSVM supports parameters.", defaultValue = "")
   public void setAlgorithmParameters(String learnerParams) {
-    if(learnerParams == null) learnerParams = "";
+    if(learnerParams == null) {
+      learnerParams = "";
+    }
     if(learnerParams.equals(this.algorithmParameters)) {
       // do nothing
     } else {

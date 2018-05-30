@@ -49,7 +49,7 @@ import gate.util.GateRuntimeException;
         name = "LF_EvaluateRegression",
         helpURL = "https://gatenlp.github.io/gateplugin-LearningFramework/LF_EvaluateRegression",
         comment = "Evaluate an algorithm and parameter settings for regression")
-public class LF_EvaluateRegression extends LF_TrainBase {
+public class LF_EvaluateRegression extends LearningFrameworkPRBase {
 
   private static final long serialVersionUID = -4216855026883354L;
 
@@ -232,7 +232,7 @@ public class LF_EvaluateRegression extends LF_TrainBase {
     engine = Engine.create(trainingAlgorithm, getAlgorithmParameters(), fi, TargetType.NUMERIC, dataDirURL);
     
     System.err.println("DEBUG: created the engine: " + engine);
-    corpusRepresentation = (CorpusRepresentationMalletTarget)engine.getCorpusRepresentation();
+    corpusRepresentation = engine.getCorpusRepresentation();
     System.err.println("DEBUG: created the corpusRepresentationMallet: " + corpusRepresentation);
 
     nrDocuments = 0;

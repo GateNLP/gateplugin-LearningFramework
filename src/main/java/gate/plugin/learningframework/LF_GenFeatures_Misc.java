@@ -123,26 +123,32 @@ public class LF_GenFeatures_Misc extends AbstractDocumentProcessor {
     AnnotationSet instanceAS = inputAS.get(getInstanceType());
     for(Annotation ann : instanceAS) {
       FeatureMap fm = ann.getFeatures();
-      String string = null;
+      String string;
       if(getStringFeature().isEmpty()) {
         string = gate.Utils.stringFor(document, ann);
       } else {
         string = (String)fm.get(getStringFeature());
       }
-      if(string == null) string = "";
+      if(string == null) {
+        string = "";
+      }
       if(getGenWordShape()) {
         char[] arr = string.toCharArray();
         char[] out = new char[arr.length];
         for(int i = 0; i<arr.length; i++) {
           char c = arr[i];
           if(Character.isLetter(c)) {
-            if(Character.isUpperCase(c))
+            if(Character.isUpperCase(c)) {
               out[i]='A';
-            else
+            } else {
               out[i]='a';
+            }
           }
-          else if(Character.isDigit(c)) out[i]='9';
-          else out[i] = c;
+          else if(Character.isDigit(c)) {
+            out[i]='9';
+          } else {
+            out[i] = c;
+          }
         }
         String shape = new String(out);
         fm.put("wordShape",shape);
@@ -152,17 +158,21 @@ public class LF_GenFeatures_Misc extends AbstractDocumentProcessor {
         int len = 0;
         char[] arr = string.toCharArray();
         char[] out = new char[arr.length];
-        char tmp = 0;
+        char tmp;
         for(int i = 0; i<arr.length; i++) {
           char c = arr[i];
           if(Character.isLetter(c)) {
-            if(Character.isUpperCase(c))
+            if(Character.isUpperCase(c)) {
               tmp='A';
-            else
+            } else {
               tmp='a';
+            }
           }
-          else if(Character.isDigit(c)) tmp='9';
-          else tmp = c;
+          else if(Character.isDigit(c)) {
+            tmp='9';
+          } else {
+            tmp = c;
+          }
           if(tmp!=last) {
             out[len++] = tmp;
             last = tmp;
