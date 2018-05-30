@@ -114,6 +114,15 @@ public class ModelApplication {
     this.seqSpanID = sequenceSpanID;
   }
   
+  public boolean isNumericTarget() {
+    return numericTarget;
+  }
+  
+  public Double getNumericTargetAssigned() {
+    return targetAssigned;
+  }
+  
+  
   /**
    * Utility function to apply a list of ModelApplication to a document.
    * This creates classification/regression output from a list of ModelApplication objects.
@@ -121,11 +130,21 @@ public class ModelApplication {
  target features and additional LearningFramework-specific features (confidence etc.).
  If outputAS is specified, new annotations which are a copy of the instance annotations
  are created in the outputAS and the target features are stored in those copies.
-   * @param doc TODO
-   * @param gcs  TODO
-   * @param targetFeature TODO
-   * @param outputAS TODO
-   * @param minConfidence TODO
+ * 
+ * If the minConfidence parameter is not null or Double.NaN and the actual classification
+ * for the instance has a non-null, non-NaN confidence, then nothing is done if 
+ * the confidence of the classification is not at least the minConfidence (no target feature
+ * is set or updated in that case, or no copy of the instance annotation with the target feature 
+ * set is created)
+ * 
+ * NOTE: if the original entity confidence is missing, the target will still be assigned
+ * a default confidence score of 0.0 to make that value always numeric. 
+ * 
+   * @param doc document where the classifications are carried out (only needed for logging)
+   * @param gcs the list of classifications
+   * @param targetFeature the name of the target feature
+   * @param outputAS the annotation set where to place copies or null for updating existing annotations
+   * @param minConfidence the minimum confidence score a classification must have
    */
   public static void applyClassification(Document doc, 
           List<ModelApplication> gcs, 
@@ -133,24 +152,30 @@ public class ModelApplication {
           AnnotationSet outputAS,
           Double minConfidence) {
     for(ModelApplication gc : gcs) {
+      Double conf = gc.getConfidenceScore();
       if (minConfidence != null && 
+          conf != null && 
+          !Double.isNaN(conf) &&
           !Double.isNaN(minConfidence) &&
-          gc.getConfidenceScore() < minConfidence) {
+          conf < minConfidence) {
         //Skip it
         continue;
-      }      
+      }    
+      if(conf==null) {
+        conf=0.0;
+      }
       FeatureMap fm;
       if(outputAS == null) {
         fm = gc.getInstance().getFeatures();
       } else {
         fm = gate.Utils.toFeatureMap(gc.getInstance().getFeatures());
       }
-      if(gc.numericTarget) {
-        fm.put(targetFeature,gc.targetAssigned);
+      if(gc.isNumericTarget()) {
+        fm.put(targetFeature, gc.getNumericTargetAssigned());
       } else {
         fm.put(targetFeature, gc.getClassAssigned());        
         fm.put(Globals.outputClassFeature, gc.getClassAssigned());
-        fm.put(Globals.outputProbFeature, gc.getConfidenceScore());
+        fm.put(Globals.outputProbFeature, conf);
         if (gc.getClassList() != null && gc.getConfidenceList() != null) {
           fm.put(Globals.outputClassFeature + "_list", gc.getClassList());
           fm.put(Globals.outputProbFeature + "_list", gc.getConfidenceList());
@@ -232,7 +257,9 @@ public class ModelApplication {
       // We could also get a sequence of different TypeX|B or TypeY|I here
       String target = (String) inst.getFeatures().get(Globals.outputClassFeature);
       String[] typesAndCodes;
-      if(target == null) target = SeqEncoder.CODE_OUTSIDE;
+      if(target == null) {
+        target = SeqEncoder.CODE_OUTSIDE;
+      }
       // now we have two cases: either we got an outside or we got one or more 
       // type/code pairs
       
@@ -327,10 +354,13 @@ public class ModelApplication {
    * @return TODO
    */
   public static Annotation addSequenceAnn(AnnToAdd annToAdd, AnnotationSet outputAS, Double minConfidence) {
-    double entityConfidence = annToAdd.conf / annToAdd.len;
+    Double entityConfidence = annToAdd.conf == null ? null : annToAdd.conf / annToAdd.len;
     if(annToAdd.thisStart != -1 && annToAdd.thisEnd != -1 && 
-            (minConfidence == null || entityConfidence >= minConfidence)) {
+            (minConfidence == null || entityConfidence == null || entityConfidence >= minConfidence)) {
       FeatureMap fm = Factory.newFeatureMap();
+      if(entityConfidence == null) {
+        entityConfidence = 0.0;
+      }
       fm.put(Globals.outputProbFeature, entityConfidence);
       // TODO: add the sequence span id? UPDATE: since we return the annotation
       // we just created, the caller can add anything to the feature map
@@ -346,7 +376,7 @@ public class ModelApplication {
       long thisStart = -1;
       long thisEnd = -1;
       int len = 0;
-      double conf = 0.0;
+      Double conf = 0.0;
       String annType = "INVALID";
     }
   

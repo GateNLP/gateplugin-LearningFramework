@@ -93,7 +93,7 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
   public Double getConfidenceThreshold() {
     return this.confidenceThreshold;
   }
-
+  
   protected String targetFeature;
 
   @RunTime
@@ -198,7 +198,7 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
       outputAS = doc.getAnnotations(getOutputASName());
     }
 
-    ModelApplication.applyClassification(doc, gcs, targetFeatureToUse, outputAS, null);
+    ModelApplication.applyClassification(doc, gcs, targetFeatureToUse, outputAS, getConfidenceThreshold());
     return doc;
   }
 
