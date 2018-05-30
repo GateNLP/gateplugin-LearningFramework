@@ -15,7 +15,7 @@ The classification training PR allows you to train a classifier suitable for pro
   * `MEANVARIANCE_ALL_FEATURES` normalize all features to have mean 0 and variance 1. [NOTE: this is not implement properly yet and may change in the future!]. See [FeatureScaling](FeatureScaling)
 * `sequenceSpan` (String, no default) this must be used for sequence tagging algorithms only! For such algorithms, it specifies the span across which to learn a sequence; for example a sentence is a meaningful sequence of words. If used like this a sequence algorithm can be used for classification, although this is not normally what one wants to do.
 * `targetFeature` (String, no default, required) the feature on the instance annotation that contains the nominal value which represents the class label. All instance annotations should have a class label.
-* `trainingAlgorithm` the classification training algorithm to use (see below). See [UsingWeka](UsingWeka) for how to use WEKA_CL_WRAPPER to train a Weka model.
+* `trainingAlgorithm` the classification training algorithm to use (see below). See [UsingWeka](UsingWeka) for how to use WekaWrapper_CL_MR to train a Weka model.
 
 ## Training a model
 
@@ -57,7 +57,7 @@ See [FeatureSpecification](FeatureSpecification) for more information on the con
 
 ## Algorithms and their Parameters
 
-### `LIBSVM_CL`
+### `LibSVM_CL_MR`
 
 This uses the LibSVM Support Vector Machine training algorithm (see https://www.csie.ntu.edu.tw/~cjlin/libsvm/).
 
@@ -67,7 +67,7 @@ The algorithm parameters which can be used are exactly identical to what can be 
 
 The following algorithms are all from the Mallet Machine Learning Toolkit (see http://mallet.cs.umass.edu/).
 
-#### `MALLET_CL_BALANCED_WINNOW`
+#### `MalletBalancedWinnow_CL_MR`
 
 This uses the algorithm `cc.mallet.classify.BalancedWinnowTrainer`, see
 http://mallet.cs.umass.edu/api/cc/mallet/classify/BalancedWinnnowTrainer.html
@@ -78,7 +78,7 @@ Parameters:
 * `-maxIter` `-i` (Integer, default: 30)
 * `-coolingRate` `-d` (Double, default: 0.5)
 
-#### `MALLET_CL_45`
+#### `MalletC45_CL_MR`
 
 This uses the algorithm `cc.mallet.classify.C45Trainer`, see http://mallet.cs.umass.edu/api/cc/mallet/classify/C45Trainer.html
 
@@ -87,7 +87,7 @@ Parameters:
 * `-prune` `-b` (Boolean) this requires an explicit parameter "true" or "false", when "false" is specified pruning is disabled (enabled is the default)
 * `-minNumInsts` `-n` (Integer) the minimum number of instances in each node (default is 2)
 
-#### `MALLET_CL_DECISION_TREE`
+#### `MalletDecisionTree_CL_MR`
 
 This uses the algorithm `cc.mallet.classify.DecisionTreeTrainer`, see
 http://mallet.cs.umass.edu/api/cc/mallet/classify/DecisionTreeTrainer.html
@@ -99,7 +99,7 @@ Parameters:
 * `-minInfoGainSplit` `-i` (Double, default 0.001)
 * `-maxDepth` `-m` (Integer, default: 5) the maximum depth to grow the decision tree to.
 
-#### `MALLET_CL_MAX_ENT` (Multivarate Logistic Regression)
+#### `MalletMexEnt_CL_MR` (Multivarate Logistic Regression)
 
 This uses the algorithm `cc.mallet.classify.MaxEntTrainer`, see
 http://mallet.cs.umass.edu/api/cc/mallet/classify/DecisionTreeTrainer.html
@@ -109,21 +109,21 @@ Parameters:
 * `-l1Weight` `-l` (Double, default 0.0): use an L1 prior
 * `-numIterations` `-n` (Integer, default unlimited) (according to javadoc, currently not functional)
 
-#### `MALLET_CL_NAIVE_BAYES_EM`
+#### `MalletNaiveBayesEM_CL_MR`
 
 This uses the algorithm `cc.mallet.classify.NaiveBayesEMTrainer`, see
 http://mallet.cs.umass.edu/api/cc/mallet/classify/NaiveBayesEMTrainer.html
 
 This algorithm does not have any parameters to set.
 
-#### `MALLET_CL_NAIVE_BAYES`
+#### `MalletNaiveBayes_CL_MR`
 
 This uses the algorithm `cc.mallet.classify.NaiveBayesTrainer`, see
 http://mallet.cs.umass.edu/api/cc/mallet/classify/NaiveBayesTrainer.html
 
 This algorithm does not have any parameters to set.
 
-#### `MALLET_CL_WINNOW`
+#### `MalletWinnow_CL_MR`
 
 This uses the algorithm `cc.mallet.classify.WinnowTrainer`, see
 http://mallet.cs.umass.edu/api/cc/mallet/classify/WinnowTrainer.html
@@ -133,15 +133,15 @@ Parameters:
 * `-beta` `-b` (Double, default: 2.0)
 * `-nfact` `-n` (Double, default: 0.5)
 
-#### `MALLET_SEQ_*`
+#### `MALLET*_SEQ_MR`
 
-The algorithms with names starting with `MALLET_SEQ_` are all sequence tagging algorithms: these algorithms can make use of the way how instances occur in
+The algorithms with names starting with `MALLET*_SEQ_MR` are all sequence tagging algorithms: these algorithms can make use of the way how instances occur in
 sequence and also of which predections were made for preceding instances.
 
 These algorithms are primarily used for chunking but are included here so
 they can be applied to classification tasks as well. The algorithms and their
 parameters are all documented in [LF_TrainChunking](LF_TrainChunking).
 
-### `WEKA_CL_WRAPPER`
+### `WekaWrapper_CL_MR`
 
 See [UsingWeka](UsingWeka) for how to use the external weka-wrapper software to train a Weka model.

@@ -84,7 +84,7 @@ the LearningFramework only provides a subset of this flexibility through the
 algorithm parameters. To take full advantage of the Malle API, it is possible
 to use it directly from Java code, e.g. by using the [Java Plugin](https://github.com/johann-petrak/gateplugin-Java). This is described in more detail in [API](API).
 
-### `MALLET_SEQ_CRF`
+### `MalletCRF_SEQ_MR`
 
 This uses the algorithm `cc.mallet.fst.CRFTrainerByThreadedLabelLikelihood` and
 `cc.mallet.fst.CRFTrainerByLabelLikelihood` see http://mallet.cs.umass.edu/api/cc/mallet/fst/CRFTrainerByLabelLikelihood.html and http://mallet.cs.umass.edu/api/cc/mallet/fst/CRFTrainerByThreadedLabelLikelihood.html and the `cc.mallet.fst.CRF` class to represent the CRF.
@@ -105,14 +105,14 @@ otherwise the CRFTrainerByLabelLikelihood is used.
 * `-useSparseWeights` `-usw`
 * `-setSomeUnsupportedTrick` `-ssut`
 
-### `MALLET_SEQ_CRF_SG`
+### `MalletCRFSG_SEQ_MR`
 
 NOTE: this does not work properly yet!
 
-### `MALLET_SEQ_CRF_VG`
+### `MalletCRFVG_SEQ_MR`
 
+NOTE: this does not work properly yet!
 
-
-### `MALLET_SEQ_MEMM`
+### `MalletMEMM_SEQ_MR`
 
 NOTE: this does not work properly yet!
