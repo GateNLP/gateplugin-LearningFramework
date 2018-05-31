@@ -7,6 +7,9 @@ pipeline {
         maven 'Maven Current' 
         jdk 'JDK1.8' 
     }
+    options {
+        disableConcurrentBuilds()
+    }
     stages {
         stage ('Build') {
             steps {
