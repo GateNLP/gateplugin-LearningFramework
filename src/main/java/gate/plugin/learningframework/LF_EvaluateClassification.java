@@ -49,7 +49,7 @@ import gate.util.GateRuntimeException;
         name = "LF_EvaluateClassification",
         helpURL = "https://gatenlp.github.io/gateplugin-LearningFramework/LF_EvaluateClassification",
         comment = "Evaluate an algorithm and parameter settings for classification")
-public class LF_EvaluateClassification extends LF_TrainBase {
+public class LF_EvaluateClassification extends LearningFrameworkPRBase {
 
   private static final long serialVersionUID = -3542195765685547360L;
 
@@ -288,7 +288,7 @@ public class LF_EvaluateClassification extends LF_TrainBase {
     
     System.err.println("DEBUG: created the engine: " + engine);
 
-    corpusRepresentation = (CorpusRepresentationMalletTarget)engine.getCorpusRepresentation();
+    corpusRepresentation = engine.getCorpusRepresentation();
     System.err.println("DEBUG: created the corpusRepresentationMallet: " + corpusRepresentation);
 
 

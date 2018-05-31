@@ -43,6 +43,7 @@ import gate.plugin.learningframework.features.SeqEncoderEnum;
 import gate.plugin.learningframework.features.TargetType;
 import gate.util.GateRuntimeException;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -55,7 +56,7 @@ import java.util.Set;
         name = "LF_TrainChunking",
         helpURL = "https://gatenlp.github.io/gateplugin-LearningFramework/LF_TrainChunking",
         comment = "Train a machine learning model for chunking")
-public class LF_TrainChunking extends LF_TrainBase {
+public class LF_TrainChunking extends LearningFrameworkPRBase {
 
   private static final long serialVersionUID = 8365342794702016408L;
 
@@ -110,8 +111,8 @@ public class LF_TrainChunking extends LF_TrainBase {
   private SeqEncoderEnum seqEncoderEnum = SeqEncoderEnum.BIO;
   private SeqEncoder seqEncoder;
   /**
-   * The sequence to classification algorithm to use.
-   * @param val TODO
+   * The algorithm to create classification labels from chunks to use.
+   * @param val One of the pre-defined enums
    */
   @RunTime
   @Optional
@@ -208,10 +209,11 @@ public class LF_TrainChunking extends LF_TrainBase {
   @Override
   protected void beforeFirstDocument(Controller controller) {
 
-    if("file".equals(dataDirectory.getProtocol()))
+    if("file".equals(dataDirectory.getProtocol())) {
       dataDirFile = gate.util.Files.fileFromURL(dataDirectory);
-    else
+    } else {
       throw new GateRuntimeException("Training is only possible if the dataDirectory URL is a file: URL");
+    }
     if(getSeqEncoder().getEncoderClass() == null) {
       throw new GateRuntimeException("SeqEncoder class not yet implemented, please choose another one: "+getSeqEncoder());
     }
@@ -219,22 +221,28 @@ public class LF_TrainChunking extends LF_TrainBase {
     try {
       System.err.println("Trying to create instance of "+getSeqEncoder().getEncoderClass());
       @SuppressWarnings("unchecked")
-      Constructor tmpc = getSeqEncoder().getEncoderClass().getDeclaredConstructor();
+      Constructor<?> tmpc = getSeqEncoder().getEncoderClass().getDeclaredConstructor();
       seqEncoder = (SeqEncoder) tmpc.newInstance();
       seqEncoder.setOptions(getSeqEncoder().getOptions());
-    } catch (Exception ex) {
+    } catch (IllegalAccessException | IllegalArgumentException | 
+            InstantiationException | NoSuchMethodException | 
+            SecurityException | InvocationTargetException ex) {
       throw new GateRuntimeException("Could not create SeqEncoder instance",ex);
     }
     
     // process the class annotation types: 
-    if(getClassAnnotationTypes() == null) setClassAnnotationTypes(new ArrayList<>());
+    if(getClassAnnotationTypes() == null) {
+      setClassAnnotationTypes(new ArrayList<>());
+    }
     if(getClassAnnotationTypes().isEmpty()) {
       throw new GateRuntimeException("Need at least one class annotation type!");
     }
     classAnnotationTypesSet = new HashSet<>();
     classAnnotationTypesSet.addAll(classAnnotationTypes);
     featureSpec = new FeatureSpecification(featureSpecURL);
-    if(!dataDirFile.exists()) throw new GateRuntimeException("Data directory not found: "+dataDirFile.getAbsolutePath());
+    if(!dataDirFile.exists()) {
+      throw new GateRuntimeException("Data directory not found: "+dataDirFile.getAbsolutePath());
+    }
 
     if (getTrainingAlgorithm() == null) {
       throw new GateRuntimeException("LearningFramework: no training algorithm specified");

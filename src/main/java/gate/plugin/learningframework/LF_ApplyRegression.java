@@ -44,7 +44,7 @@ import java.net.URL;
         comment = "Apply a trained regression model to documents")
 public class LF_ApplyRegression extends LearningFrameworkPRBase {
 
-  static final Logger logger = Logger.getLogger(LF_ApplyRegression.class.getCanonicalName());
+  static final Logger LOGGER = Logger.getLogger(LF_ApplyRegression.class.getCanonicalName());
   private static final long serialVersionUID = 5851732674711579672L;
 
   protected URL dataDirectory;
@@ -78,7 +78,6 @@ public class LF_ApplyRegression extends LearningFrameworkPRBase {
 
   protected String targetFeature;
 
-  // TODO: we want to get rid of this and read this name from the info file!!
   @RunTime
   @Optional
   @CreoleParameter(comment = "Name of class feature to add to the original "
@@ -92,7 +91,7 @@ public class LF_ApplyRegression extends LearningFrameworkPRBase {
     return targetFeature;
   }
   
-  String serverUrl;
+  private String serverUrl;
 
   @RunTime
   @Optional
@@ -106,18 +105,6 @@ public class LF_ApplyRegression extends LearningFrameworkPRBase {
   }
   
   
-  protected String instanceWeightFeature = "";
-  /*
-  @RunTime
-  @Optional
-  @CreoleParameter(comment = "The feature that constains the instance weight. If empty, no instance weights are used",
-          defaultValue="")
-  public void setInstanceWeightFeature(String val) {
-    instanceWeightFeature = val;
-  }
-  public String getInstanceWeightFeature() { return instanceWeightFeature; }
-  */
-
 ////////////////////////////////////////////////////////////////////////////
 
   private Engine engine;

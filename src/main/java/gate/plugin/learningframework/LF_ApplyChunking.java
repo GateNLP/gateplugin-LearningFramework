@@ -35,6 +35,7 @@ import gate.plugin.learningframework.engines.Engine;
 import gate.plugin.learningframework.features.SeqEncoder;
 import gate.util.GateRuntimeException;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 
 /**
@@ -85,10 +86,11 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
   private Double confidenceThreshold;
 
   @RunTime
-  @CreoleParameter(defaultValue = "0.0", comment = "The minimum "
+  @Optional
+  @CreoleParameter(comment = "The minimum "
           + "confidence/probability for including "
           + "an annotation at application time. In the case of NER, the confidence "
-          + "threshold is applied to the average for the entire entity.")
+          + "threshold is applied to the average for the entire entity. If empty, ignore.")
   public void setConfidenceThreshold(Double confidenceThreshold) {
     this.confidenceThreshold = confidenceThreshold;
   }
@@ -151,22 +153,18 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
     // since we specify the output annotation set tmpAS, new instance annotations are created there
     String featureName = engine.getInfo().targetFeature;    
     ModelApplication.applyClassification(doc, gcs, Globals.outputClassFeature, tmpAS, null);
-    // TODO: tmpAS only contains the instances we have just created, so we can probably get
-    // read of the tmpInstanceAS parameter alltogether?
     AnnotationSet tmpInstanceAS = tmpAS.get(getInstanceType());
     AnnotationSet outputAS = doc.getAnnotations(getOutputASName());
-    // TODO: maybe make confidence threshold more flexible for sequence annotations?
     String classAnnotationType = engine.getInfo().classAnnotationType;
     
     ModelApplication.addSurroundingAnnotations(tmpAS, tmpInstanceAS, outputAS, classAnnotationType, getConfidenceThreshold(), seqEncoder);
     return doc;
   }
 
-  
   @Override
   protected void beforeFirstDocument(Controller controller) {
 
-    // JP: this was moved from the dataDirectory setter to avoid problems
+    // TODO/JP: this was moved from the dataDirectory setter to avoid problems
     // but we should really make sure that the learning is reloaded only 
     // if the URL has changed since the last time (if ever) it was loaded.
     dataDir = dataDirectory;
@@ -175,15 +173,16 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
     engine = gate.plugin.learningframework.engines.Engine.load(dataDir, getAlgorithmParameters());
     System.out.println("LF-Info: model loaded is now "+engine);
 
-    // TODO: the Info file for a sequence tagger should include the SeqEncoder class and options to be used
     String secn = engine.getInfo().seqEncoderClass;
     String seco = engine.getInfo().seqEncoderOptions;
     
     try {
       @SuppressWarnings("unchecked")
-      Constructor tmpc = Class.forName(secn).getDeclaredConstructor();
+      Constructor<?> tmpc = Class.forName(secn).getDeclaredConstructor();
       seqEncoder = (SeqEncoder) tmpc.newInstance();
-    } catch (Exception ex) {
+    } catch (ClassNotFoundException | IllegalAccessException | 
+            IllegalArgumentException | InstantiationException | 
+            NoSuchMethodException | SecurityException | InvocationTargetException ex) {
       throw new GateRuntimeException("Could not create SeqEncoder instance",ex);
     }
     

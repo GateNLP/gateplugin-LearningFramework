@@ -34,16 +34,12 @@ import gate.creole.ExecutionException;
 
 /**
  * Abstract base class for all the PRs in this plugin.
- * This is very similar to what the AbstractLanguageAnalyser should have been.
+ * 
  */
+@SuppressWarnings("serial")
 public abstract class AbstractDocumentProcessor
         extends AbstractLanguageAnalyser
         implements  ControllerAwarePR {
-
-  /**
-   *
-   */
-  private final Logger logger = Logger.getLogger(AbstractDocumentProcessor.class.getCanonicalName());
 
   private int seenDocuments = 0;
 
@@ -163,11 +159,4 @@ public abstract class AbstractDocumentProcessor
    */
   protected abstract void finishedNoDocument(Controller ctrl, Throwable t);
   
-  // TODO: not yet, we will implement this once we removed the requirement to
-  // be compatible with Java 7
-  /*
-  protected Optional<Object> call(String methodName, Object... parms) {
-    return Optional.empty();
-  }
-  */
 }

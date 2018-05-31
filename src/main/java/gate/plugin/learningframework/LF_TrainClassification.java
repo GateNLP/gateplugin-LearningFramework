@@ -47,7 +47,7 @@ import java.io.File;
         name = "LF_TrainClassification",
         helpURL = "https://gatenlp.github.io/gateplugin-LearningFramework/LF_TrainClassification",
         comment = "Train a machine learning model for classification")
-public class LF_TrainClassification extends LF_TrainBase {
+public class LF_TrainClassification extends LearningFrameworkPRBase {
 
   private static final long serialVersionUID = 4218101157699142046L;
 
@@ -198,11 +198,14 @@ public class LF_TrainClassification extends LF_TrainBase {
 
   @Override
   protected void beforeFirstDocument(Controller controller) {
-    if("file".equals(dataDirectory.getProtocol()))
+    if("file".equals(dataDirectory.getProtocol())) {
       dataDirFile = gate.util.Files.fileFromURL(dataDirectory);
-    else
+    } else {
       throw new GateRuntimeException("Training is only possible if the dataDirectory URL is a file: URL");
-    if(!dataDirFile.exists()) throw new GateRuntimeException("Data directory not found: "+dataDirFile.getAbsolutePath());
+    }
+    if(!dataDirFile.exists()) {
+      throw new GateRuntimeException("Data directory not found: "+dataDirFile.getAbsolutePath());
+    }
 
     if (getTrainingAlgorithm() == null) {
       throw new GateRuntimeException("LearningFramework: no training algorithm specified");
@@ -232,7 +235,7 @@ public class LF_TrainClassification extends LF_TrainBase {
     FeatureInfo fi = featureSpec.getFeatureInfo();
     fi.setGlobalScalingMethod(scaleFeatures);
     engine = Engine.create(trainingAlgorithm, getAlgorithmParameters(), fi, TargetType.NOMINAL, dataDirectory);    
-    corpusRepresentation = (CorpusRepresentation)engine.getCorpusRepresentation();
+    corpusRepresentation = engine.getCorpusRepresentation();
     System.err.println("DEBUG: created the engine: " + engine + " with CR="+corpusRepresentation);
 
     nrDocuments = 0;

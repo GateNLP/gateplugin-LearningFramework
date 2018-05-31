@@ -83,9 +83,10 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
   private Double confidenceThreshold;
 
   @RunTime
-  @CreoleParameter(defaultValue = "0.0", comment = "The minimum "
+  @Optional
+  @CreoleParameter(comment = "The minimum "
           + "confidence/probability for including "
-          + "an annotation at application time.")
+          + "an annotation at application time. If empty, ignore.")
   public void setConfidenceThreshold(Double confidenceThreshold) {
     this.confidenceThreshold = confidenceThreshold;
   }
@@ -93,7 +94,7 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
   public Double getConfidenceThreshold() {
     return this.confidenceThreshold;
   }
-
+  
   protected String targetFeature;
 
   @RunTime
@@ -109,7 +110,7 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
     return targetFeature;
   }
 
-  String sequenceSpan;
+  private String sequenceSpan;
 
   @RunTime
   @Optional
@@ -136,19 +137,6 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
   public String getServerUrl() {
     return serverUrl;
   }
-
-  // TODO: we probably should not bother to allow instanceWeighgs at application time!!!
-  protected String instanceWeightFeature = "";
-  /*
-  @RunTime
-  @Optional
-  @CreoleParameter(comment = "The feature that constains the instance weight. If empty, no instance weights are used",
-          defaultValue="")
-  public void setInstanceWeightFeature(String val) {
-    instanceWeightFeature = val;
-  }
-  public String getInstanceWeightFeature() { return instanceWeightFeature; }
-   */
 
 ////////////////////////////////////////////////////////////////////////////
   private Engine engine;
@@ -198,7 +186,7 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
       outputAS = doc.getAnnotations(getOutputASName());
     }
 
-    ModelApplication.applyClassification(doc, gcs, targetFeatureToUse, outputAS, null);
+    ModelApplication.applyClassification(doc, gcs, targetFeatureToUse, outputAS, getConfidenceThreshold());
     return doc;
   }
 
@@ -252,11 +240,12 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
         throw new GateRuntimeException("Not targetFeature parameter specified and none available from the model info file either.");
       }
       targetFeatureToUse = targetFeatureFromModel;
-      System.err.println("Using target feature name from model: " + targetFeatureToUse);
+      LOGGER.warn("Using target feature name from model: " + targetFeatureToUse);
     } else {
       targetFeatureToUse = getTargetFeature();
-      System.err.println("Using target feature name from PR parameter: " + targetFeatureToUse);
+      LOGGER.warn("Using target feature name from PR parameter: " + targetFeatureToUse);
     }
+    LOGGER.debug("Parameter confidenceThreshold not given, not using confidence threshold");
   }
   
   @Override

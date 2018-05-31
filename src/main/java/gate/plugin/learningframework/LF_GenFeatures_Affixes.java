@@ -257,13 +257,15 @@ public class LF_GenFeatures_Affixes extends AbstractDocumentProcessor {
     AnnotationSet instanceAS = inputAS.get(getInstanceType());
     for(Annotation ann : instanceAS) {
       FeatureMap fm = ann.getFeatures();
-      String string = null;
+      String string;
       if(getStringFeature().isEmpty()) {
         string = gate.Utils.stringFor(document, ann);
       } else {
         string = (String)fm.get(getStringFeature());
       }
-      if(string == null) string = "";
+      if(string == null) {
+        string = "";
+      }
       // NOTE: the upper-case normalization can change the length of the string
       // but we are deferring this to later, assuming that the length will only
       // increase, not decrease, hoping for a little performance improvement.

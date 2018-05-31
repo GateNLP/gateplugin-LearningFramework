@@ -2,28 +2,30 @@
 <gate.util.persistence.GateApplication>
   <urlList class="gate.util.persistence.CollectionPersistence">
     <localList>
-      <gate.util.persistence.PersistenceManager-URLHolder>
-        <urlString>$relpath$../..</urlString>
-      </gate.util.persistence.PersistenceManager-URLHolder>
+      <gate.creole.Plugin-Maven>
+        <group>uk.ac.gate.plugins</group>
+        <artifact>learningframework</artifact>
+        <version>4.0-SNAPSHOT</version>
+      </gate.creole.Plugin-Maven>
       <gate.creole.Plugin-Maven>
         <group>uk.ac.gate.plugins</group>
         <artifact>format-fastinfoset</artifact>
-        <version>8.5-SNAPSHOT</version>
+        <version>8.5</version>
       </gate.creole.Plugin-Maven>
       <gate.creole.Plugin-Maven>
         <group>uk.ac.gate.plugins</group>
         <artifact>tools</artifact>
-        <version>8.5-SNAPSHOT</version>
+        <version>8.5</version>
       </gate.creole.Plugin-Maven>
       <gate.creole.Plugin-Maven>
         <group>uk.ac.gate.plugins</group>
         <artifact>annie</artifact>
-        <version>8.5-SNAPSHOT</version>
+        <version>8.5</version>
       </gate.creole.Plugin-Maven>
       <gate.creole.Plugin-Maven>
         <group>uk.ac.gate.plugins</group>
         <artifact>groovy</artifact>
-        <version>8.5-SNAPSHOT</version>
+        <version>8.5</version>
       </gate.creole.Plugin-Maven>
     </localList>
     <collectionType>java.util.ArrayList</collectionType>
