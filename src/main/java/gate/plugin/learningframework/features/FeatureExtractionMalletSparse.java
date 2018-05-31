@@ -1044,7 +1044,7 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
    * @param seqEncoder TODO
    */
   public static void extractClassForSeqTagging(Instance inst, Alphabet alph, AnnotationSet classAS, Annotation instanceAnnotation, SeqEncoder seqEncoder) {
-    String target = "";
+    String target;
     Document doc = classAS.getDocument();
     if (!(alph instanceof LabelAlphabet)) {
       throw new GateRuntimeException("LF extractClassForSeqTagging: the alphabet must be of type LabelAlphabet"
@@ -1079,9 +1079,12 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
       // subclasses. If it is an instance we could maybe also implement methods where we
       // need to remember something about the last instance for which we did it!
       target = seqEncoder.seqAnns2ClassLabel(overlappingClassAnns, instanceAnnotation, doc);
+      if(target.isEmpty()) {
+        target = SeqEncoder.CODE_OUTSIDE;
+      }
     } else {
       //No overlapping mentions so it's an outside
-      target = seqEncoder.CODE_OUTSIDE;
+      target = SeqEncoder.CODE_OUTSIDE;
     }
     // if debugging is enabled, we put the 
     // the target class on the instance annotation

@@ -67,6 +67,9 @@ public class SeqEncoder_SimpleBIO extends SeqEncoder {
     classnames.sort(Comparator.naturalOrder());
     // now create the actual class label by concatenating all the classnames 
     // into a single class label
+    if(classnames.isEmpty()) {
+      System.err.println("Warning: no label generated in "+curDoc.getName()+" for instance "+instAnn);
+    }
     return String.join(TYPESEP, classnames);
   }  
 
