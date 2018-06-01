@@ -5,6 +5,7 @@
   <description>
     A plugin for the GATE NLP framework that allows to use many different machine learning
     algorithms for a wide range of NLP-related machine learning tasks.
+
   </description>
   <url>https://github.com/GateNLP/gateplugin-LearningFramework</url>
   <organization>
