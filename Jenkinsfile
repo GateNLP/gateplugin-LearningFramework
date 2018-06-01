@@ -15,20 +15,24 @@ pipeline {
             steps {
                 sh 'mvn -e clean install' 
             }
+            post {
+                always {
+                    junit 'target/surefire-reports/**/*.xml'
+                    jacoco exclusionPattern: '**/gate/gui/**,**/gate/resources/**'
+                    findbugs canRunOnFailed: true, excludePattern: '**/gate/resources/**', failedNewAll: '0', pattern: '**/findbugsXml.xml', unstableNewAll: '0', useStableBuildAsReference: true
+                    warnings canRunOnFailed: true, canResolveRelativePaths: false, consoleParsers: [[parserName: 'Java Compiler (javac)']], defaultEncoding: 'UTF-8', excludePattern: '**/test/**', failedNewAll: '0', unstableNewAll: '0', useStableBuildAsReference: true
+                }
+            }
         }
         stage('Document') {
             when{
                 expression { currentBuild.result != "FAILED" && currentBuild.changeSets != null && currentBuild.changeSets.size() > 0 }
             }
             steps {
-                sh 'mvn -e site'
+                sh 'mvn -e -DskipTests -DskipTests site'
             }
             post {
                 always {
-                    junit 'target/surefire-reports/**/*.xml'
-                    jacoco exclusionPattern: '**/gui/**,**/gate/resources/**'
-                    findbugs canRunOnFailed: true, excludePattern: '**/gate/resources/**', failedNewAll: '0', pattern: '**/findbugsXml.xml', unstableNewAll: '0', useStableBuildAsReference: true
-                    warnings canRunOnFailed: true, consoleParsers: [[parserName: 'Java Compiler (javac)']], defaultEncoding: 'UTF-8', excludePattern: "**/test/**", failedNewAll: '0', unstableNewAll: '0', useStableBuildAsReference: true
                 }
                 success {
                     step([$class: 'JavadocArchiver', javadocDir: 'target/site/apidocs', keepAll: false])
@@ -45,4 +49,4 @@ pipeline {
             }
         }
     }
-}
+            }
