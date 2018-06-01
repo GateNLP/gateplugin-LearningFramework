@@ -32,8 +32,6 @@ pipeline {
                 sh 'mvn -e -DskipTests site'
             }
             post {
-                always {
-                }
                 success {
                     step([$class: 'JavadocArchiver', javadocDir: 'target/site/apidocs', keepAll: false])
                 }
