@@ -19,7 +19,7 @@ pipeline {
                 always {
                     junit 'target/surefire-reports/**/*.xml'
                     jacoco exclusionPattern: '**/gate/gui/**,**/gate/resources/**'
-                    warnings canRunOnFailed: true, canResolveRelativePaths: false, consoleParsers: [[parserName: 'Java Compiler (javac)']], defaultEncoding: 'UTF-8', excludePattern: '**/test/**', failedNewAll: '0', unstableNewAll: '0', usePreviousBuildAsReference: true
+                    warnings canRunOnFailed: true, canResolveRelativePaths: false, consoleParsers: [[parserName: 'Java Compiler (javac)']], defaultEncoding: 'UTF-8', excludePattern: '**/test/**', failedNewAll: '0', unstableNewAll: '0', useStableBuildAsReference: true
                 }
             }
         }
@@ -32,7 +32,7 @@ pipeline {
             }
             post {
                 always {
-                    findbugs canRunOnFailed: true, excludePattern: '**/gate/resources/**', failedNewAll: '0', pattern: '**/findbugsXml.xml', unstableNewAll: '0', usePreviousBuildAsReference: true
+                    findbugs canRunOnFailed: true, excludePattern: '**/gate/resources/**', failedNewAll: '0', pattern: '**/findbugsXml.xml', unstableNewAll: '0', useStableBuildAsReference: true
                 }
                 success {
                     step([$class: 'JavadocArchiver', javadocDir: 'target/site/apidocs', keepAll: false])
