@@ -29,7 +29,7 @@ pipeline {
                 expression { currentBuild.result != "FAILED" && currentBuild.changeSets != null && currentBuild.changeSets.size() > 0 }
             }
             steps {
-                sh 'mvn -e -DskipTests -DskipTests site'
+                sh 'mvn -e -DskipTests site'
             }
             post {
                 always {
