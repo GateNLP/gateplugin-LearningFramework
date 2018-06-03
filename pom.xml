@@ -1,28 +1,34 @@
 <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
   <name>LearningFramework</name>
   <description>
     A plugin for the GATE NLP framework that allows to use many different machine learning
     algorithms for a wide range of NLP-related machine learning tasks.
 
   </description>
-  <url>https://github.com/GateNLP/gateplugin-LearningFramework</url>
+  <url>https://gatenlp.github.io/gateplugin-LearningFramework/</url>
   <organization>
-    <name>GateNLP</name>
+    <name>GATE Team</name>
     <url>http://gate.ac.uk</url>
   </organization>
   <developers>
     <developer>
-      <id>gate-team</id>
+      <name>Johann Petrak</name>
+      <email>johann.petrak@gmail.com</email>
+      <organization>GATE Team</organization>
+      <organizationUrl>https://gate.ac.uk</organizationUrl>
+    </developer>
+    <developer>
       <name>GATE Team</name>
-      <email/>
+      <email>gate-developers@lists.sourceforge.net</email>
+      <organization>GATE Team</organization>
+      <organizationUrl>https://gate.ac.uk</organizationUrl>
     </developer>
   </developers>
   <scm>
-    <connection>scm:git:git://github.com/GateNLP/gateplugin-LearningFramework.git</connection>
-    <developerConnection>scm:git:git@github.com:GateNLP/gateplugin-LearningFramework.git</developerConnection>
-    <url>https://github.com/GateNLP/gateplugin-LearningFramework</url>
+    <connection>scm:git:git://github.com/GateNLP/gateplugin-!!!ID!!!.git</connection>
+    <developerConnection>scm:git:git@github.com:GateNLP/gateplugin-!!!ID!!!.git</developerConnection>
+    <url>https://github.com/GateNLP/gateplugin-!!!ID!!!</url>
   </scm>
   <parent>
     <groupId>uk.ac.gate</groupId>
@@ -92,4 +98,5 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+  <modelVersion>4.0.0</modelVersion>
 </project>
