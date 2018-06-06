@@ -49,7 +49,7 @@ import static gate.plugin.learningframework.LFUtils.newURL;
 
 public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
 
-  static final Logger logger = Logger.getLogger("CorpusRepresentationMalletSeq");
+  static final Logger LOGGER = Logger.getLogger("CorpusRepresentationMalletSeq");
 
   public CorpusRepresentationMalletSeq(FeatureInfo fi, ScalingMethod sm) {
     featureInfo = fi;
@@ -78,8 +78,8 @@ public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
   /**
    * Create a new instance based on the pipe stored in directory.
    *
-   * @param directory TODO
-   * @return TODO
+   * @param directory directory with the saved model
+   * @return corpus representation instance
    */
   public static CorpusRepresentationMalletSeq load(URL directory) {
     // load the pipe from a Java object serialization representation
@@ -97,7 +97,9 @@ public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
 
 
   /**
-   * Add instances. The exact way of how the target is created to the instances depends on which
+   * Add instances. 
+   * 
+   * The exact way of how the target is created to the instances depends on which
    * parameters are given and which are null. The parameter sequenceAS must always be non-null for
    * this corpus representation since this corpus representation is always used with sequence
    * tagging algorithms If the parameter classAS is non-null then instances for a sequence tagging
@@ -106,90 +108,15 @@ public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
    * and classAS must be null. if the parameter nameFeatureName is non-null, then a Mallet instance
    * name is added from the source document and annotation.
    *
-   * @param instancesAS TODO
-   * @param sequenceAS TODO
-   * @param inputAS TODO
-   * @param classAS TODO
-   * @param targetFeatureName TODO
-   * @param targetType TODO
-   * @param nameFeatureName TODO
-   * @param seqEncoder TODO
-   */
-  public void addOld(AnnotationSet instancesAS, AnnotationSet sequenceAS, AnnotationSet inputAS, AnnotationSet classAS, String targetFeatureName, TargetType targetType, String nameFeatureName, SeqEncoder seqEncoder) {
-    if (sequenceAS == null) {
-      throw new GateRuntimeException("LF invalid call to CorpusRepresentationMallet.add: sequenceAS must not be null "
-              + " for document " + inputAS.getDocument().getName());
-    }
-    // This was the old approach:
-    // First iterate through all the sequence annotations, then for each sequence annotation, get
-    // the instance annotations in order. For each of these instance annotations, create a Mallet
-    // Instance and record them all in an array, then create a featuresequence and a labelsequence
-    // from the array of instances and create a final Mallet instance with the featuresequence
-    // as data and the labelsequence as target
-    for (Annotation sequenceAnnotation : sequenceAS.inDocumentOrder()) {
-      List<Instance> instanceList = new ArrayList<>(sequenceAS.size());
-      List<Annotation> instanceAnnotations = gate.Utils.getContainedAnnotations(instancesAS, sequenceAnnotation).inDocumentOrder();
-      instanceAnnotations.stream().map((instanceAnnotation) -> {
-        Instance inst = extractIndependentFeaturesHelper(instanceAnnotation, inputAS, featureInfo, pipe);
-        if (classAS != null) {
-          // extract the target as required for sequence tagging
-          FeatureExtractionMalletSparse.extractClassForSeqTagging(inst, pipe.getTargetAlphabet(), classAS, instanceAnnotation, seqEncoder);
-        } else if (targetType == TargetType.NOMINAL) {
-          FeatureExtractionMalletSparse.extractClassTarget(inst, pipe.getTargetAlphabet(), targetFeatureName, instanceAnnotation, inputAS);
-        } else if (targetType == TargetType.NUMERIC) {
-          FeatureExtractionMalletSparse.extractNumericTarget(inst, targetFeatureName, instanceAnnotation, inputAS);
-        }
-        return inst;
-      }).filter((inst) -> (!FeatureExtractionMalletSparse.ignoreInstanceWithMV(inst))).forEachOrdered((inst) -> {
-        instanceList.add(inst);
-      });
-      // create a feature sequence from all the feature vectors in each of the instances in instanceList
-      // create a label index sequence from all the labels of the instances in instance list
-      // However, we do all this only if there is at least one instance in the first place
-      if (instanceList.size() > 0) {
-        FeatureVector[] vectors = new FeatureVector[instanceList.size()];
-        int[] labelidxs = new int[instanceList.size()];
-        for (int i = 0; i < vectors.length; i++) {
-          vectors[i] = (FeatureVector) instanceList.get(i).getData();
-        }
-        FeatureVectorSequence fvseq = new FeatureVectorSequence(vectors);
-        for (int i = 0; i < labelidxs.length; i++) {
-          labelidxs[i] = ((Label) instanceList.get(i).getTarget()).getIndex();
-        }
-        FeatureSequence fseq = new FeatureSequence(pipe.getTargetAlphabet(), labelidxs);
-        // create the final instance, if a name feature is given also add the name
-        Instance finalInst = new Instance(fvseq, fseq, null, null);
-        if (nameFeatureName != null) {
-          FeatureExtractionMalletSparse.extractName(finalInst, sequenceAnnotation, inputAS.getDocument());
-        }
-        // add the instance to the instances 
-
-        instances.add(finalInst);
-
-      }
-    }
-
-  }
-
-  /**
-   * Add instances. The exact way of how the target is created to the instances depends on which
-   * parameters are given and which are null. The parameter sequenceAS must always be non-null for
-   * this corpus representation since this corpus representation is always used with sequence
-   * tagging algorithms If the parameter classAS is non-null then instances for a sequence tagging
-   * task are created, in that case targetFeatureName must be null. If targetFeatureName is non-null
-   * then instances for a regression or classification problem are created (depending on targetType)
-   * and classAS must be null. if the parameter nameFeatureName is non-null, then a Mallet instance
-   * name is added from the source document and annotation.
-   *
-   * @param instancesAS TODO
-   * @param sequenceAS TODO
-   * @param inputAS TODO
-   * @param classAS TODO
-   * @param targetFeatureName TODO
-   * @param targetType TODO
+   * @param instancesAS instance annotation set
+   * @param sequenceAS sequence annotation set
+   * @param inputAS input annotation set
+   * @param classAS class annotation set
+   * @param targetFeatureName feature name of target
+   * @param targetType type of target
    * @param instanceWeightFeature ignored, this is only relevant for classification/regression
-   * @param nameFeatureName TODO
-   * @param seqEncoder TODO
+   * @param nameFeatureName feature for instance name, not used at the moment
+   * @param seqEncoder sequence encoder instance
    */
   @Override
   public void add(AnnotationSet instancesAS, AnnotationSet sequenceAS, AnnotationSet inputAS, AnnotationSet classAS, String targetFeatureName, TargetType targetType, String instanceWeightFeature, String nameFeatureName, SeqEncoder seqEncoder) {
@@ -205,22 +132,23 @@ public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
 
   @Override
   public void finishAdding() {  
-    if(scalingMethod != ScalingMethod.NONE)
+    if(scalingMethod != ScalingMethod.NONE) {
       throw new GateRuntimeException("Scaling not allowed/not yet implemented for sequence tagging representation");
+    }
   }
   
   /**
    * Get a single Instance for a sequence annotation. If the
    *
-   * @param instancesAS TODO
-   * @param sequenceAnnotation TODO
-   * @param inputAS TODO
-   * @param classAS TODO
-   * @param targetFeatureName TODO
-   * @param targetType TODO
-   * @param nameFeatureName TODO
-   * @param seqEncoder TODO
-   * @return TODO
+   * @param instancesAS instance annotation set
+   * @param sequenceAnnotation sequence annotation set
+   * @param inputAS input annotation set
+   * @param classAS class annotation set
+   * @param targetFeatureName name of target feature
+   * @param targetType type of target
+   * @param nameFeatureName name feature
+   * @param seqEncoder sequence encoder instance
+   * @return the Instance instance
    */
   public Instance getInstanceForSequence(
           AnnotationSet instancesAS,
@@ -274,8 +202,11 @@ public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
 
   @Override
   public int nrInstances() {
-    if(instances == null) return 0;
-    else return instances.size();
+    if(instances == null) {
+      return 0;
+    } else {
+      return instances.size();
+    }
   }
   
   

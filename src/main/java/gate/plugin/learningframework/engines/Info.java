@@ -64,15 +64,22 @@ public class Info {
   /**
    * TODO: NOTE: this is incomplete!! Should contain all fields that are also in the hashCode method!
    * For now we have only included the fields we need for the unit test.
-   * @param other TODO
-   * @return TODO
+   * 
+   * @param other instance to compare with
+   * @return equality flag
    */
   @Override 
   public boolean equals(Object other) {
-    if(other == null) return false;
+    if(other == null) {
+      return false;
+    }
     if (other instanceof Info) {
-      if(engineClass!=null && !engineClass.equals(((Info) other).engineClass)) return false;
-      if(trainerClass!=null && !trainerClass.equals(((Info) other).trainerClass)) return false;
+      if(engineClass!=null && !engineClass.equals(((Info) other).engineClass)) {
+        return false;
+      }
+      if(trainerClass!=null && !trainerClass.equals(((Info) other).trainerClass)) {
+        return false;
+      }
     }
     return true;
   }  
@@ -93,8 +100,8 @@ public class Info {
   }
   
   /**
-   * TODO
-   * @param directory TODO
+   * Save to directory.
+   * @param directory directory to save to.
    */
   public void save(File directory) {
     CustomClassLoaderConstructor constr = 
@@ -120,9 +127,9 @@ public class Info {
   }
 
   /**
-   * TODO
-   * @param directory TODO
-   * @return TODO
+   * Load from directory.
+   * @param directory directory to load from
+   * @return Info instance
    */
   public static Info load(URL directory) {
     CustomClassLoaderConstructor constr = 

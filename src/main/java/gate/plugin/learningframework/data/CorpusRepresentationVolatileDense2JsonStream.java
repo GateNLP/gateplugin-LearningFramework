@@ -19,7 +19,6 @@
  */
 package gate.plugin.learningframework.data;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import gate.Annotation;
 import gate.AnnotationSet;
 import gate.plugin.learningframework.LFUtils;
@@ -65,7 +64,7 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
   public static final String DATA_FILE_NAME = "crvd.data.json";
   public static final String META_FILE_NAME = "crvd.meta.json";
 
-  Logger logger = org.apache.log4j.Logger.getLogger(CorpusRepresentationVolatileDense2JsonStream.class);
+  private Logger LOGGER = org.apache.log4j.Logger.getLogger(CorpusRepresentationVolatileDense2JsonStream.class);
 
   private FileOutputStream outStream;
   private File outDir;
@@ -92,7 +91,7 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
   // The following flag is either unset (null) or indicates that the corpus representation
   // has received sequence representations. Once a sequence or non-sequence has been added,
   // any attempt to add the other type will lead to an exception.
-  Boolean isSequence = null;
+  protected Boolean isSequence = null;
 
   public File getDataFile() {
     return outDataFile;
@@ -118,12 +117,13 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
 
   /**
    * The constructor needs to specify the file where to save the instances to.
+   * 
    * Note: if several threads use this instance, they should all share the just
    * this one instance, and their calls to the add method will automatically get
    * synchronized.
    *
-   * @param outDir TODO
-   * @param featureInfo TODO
+   * @param outDir directory where to save the instances
+   * @param featureInfo FeatureInfo instance
    */
   public CorpusRepresentationVolatileDense2JsonStream(File outDir, FeatureInfo featureInfo) {
     this.outDir = outDir;
@@ -166,15 +166,15 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
    * !!!TODO: explain which methods are used by this to convert to dense
    * internal instance representation and then to the final output format.
    *
-   * @param instancesAS TODO
-   * @param sequenceAS TODO
-   * @param inputAS TODO
-   * @param classAS TODO
-   * @param targetFeatureName TODO
-   * @param targetType TODO
-   * @param instanceWeightFeature TODO
-   * @param nameFeatureName TODO
-   * @param seqEncoder TODO
+   * @param instancesAS instance annotation set
+   * @param sequenceAS sequence annotation set
+   * @param inputAS input annotation set
+   * @param classAS class annotation set
+   * @param targetFeatureName target feature name
+   * @param targetType type of target
+   * @param instanceWeightFeature weight feature name
+   * @param nameFeatureName name feature name
+   * @param seqEncoder sequence encoder instance
    */
   @Override
   public void add(
@@ -280,15 +280,16 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
   }
 
   /**
-   * TODO
-   * @param instanceAnnotation TODO
-   * @param inputAS TODO
-   * @param classAS TODO
-   * @param targetFeatureName TODO
-   * @param targetType TODO
-   * @param instanceWeightFeature TODO
-   * @param seqEncoder TODO
-   * @return TODO
+   * Convert a labeled instance annotation to an instance representation.
+   * 
+   * @param instanceAnnotation instance annotation
+   * @param inputAS input annotation set
+   * @param classAS class annotation set
+   * @param targetFeatureName name of target feature
+   * @param targetType type of target
+   * @param instanceWeightFeature instance weight feature, currently unused
+   * @param seqEncoder sequence encoder instance
+   * @return InstanceRepresentation
    */
   public InstanceRepresentation labeledAnnotation2Instance(Annotation instanceAnnotation,
           AnnotationSet inputAS, AnnotationSet classAS,
@@ -323,11 +324,12 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
   }
 
   /**
-   * TODO
-   * @param instanceAnnotation TODO
-   * @param inputAS TODO
-   * @param instanceWeightFeature TODO
-   * @return TODO
+   * Convert an unlabeled instance annotation to an InstanceRepresentation.
+   * 
+   * @param instanceAnnotation instance annotation 
+   * @param inputAS input annotation set
+   * @param instanceWeightFeature instance weight feature, currently unused
+   * @return InstanceRepresentation
    */
   public InstanceRepresentation unlabeledAnnotation2Instance(Annotation instanceAnnotation,
           AnnotationSet inputAS,
@@ -348,8 +350,9 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
   }
 
   /**
-   * TODO
-   * @param inst TODO
+   * Update the feature stastistics from the instance.
+   * 
+   * @param inst instance from which to update
    */
   public void addToStatsForFeatures(InstanceRepresentation inst) {
     // System.err.println("DEBUG: addToStatsForFeatures for "+inst);
@@ -364,10 +367,10 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
    * Note: this is influenced by the feature info set in the corpus
    * representation!
    *
-   * @param inst TODO
+   * @param inst instance to convert
    * @param noTarget - if true, does not include  the target(s) and does not use outermost list for 
    * indep / target pair
-   * @return TODO
+   * @return JSON string
    */
   public String internal2Json(InstanceRepresentation inst, boolean noTarget) {
     // can this be shared between multiple threads?
@@ -395,10 +398,11 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
   }
 
   /**
-   * TODO
-   * @param instseq TODO
-   * @param noTarget TODO
-   * @return TODO
+   * Convert a list of instances to json.
+   * 
+   * @param instseq list of instance representations
+   * @param noTarget whether or not to include the target
+   * @return JSON string
    */
   public String internal2Json(List<InstanceRepresentation> instseq, boolean noTarget) {
     // can this be shared between multiple threads?
@@ -411,7 +415,9 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
     for (InstanceRepresentation inst : instseq) {
       List<Object> values = internal2array(inst);
       indepList.add(values);
-      if(!noTarget) targetList.add(inst.getTargetValue());
+      if(!noTarget) {
+        targetList.add(inst.getTargetValue());
+      }
     }
     if(noTarget) {
       try {
@@ -441,7 +447,9 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
   }
 
   /**
-   * TODO
+   * Switch on adding for the corpus representation.
+   * 
+   * 
    */
   @Override
   public void startAdding() {
@@ -459,7 +467,9 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
   }
 
   /**
-   * Finish adding data to the CR. This may close or finish any channel for
+   * Finish adding data to the CR. 
+   * 
+   * This may close or finish any channel for
    * passing on the data to a file, database or other sink.
    *
    */
@@ -480,8 +490,9 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
   }
 
   /**
-   * TODO
-   * @param writer TODO
+   * Write the complete json representation for the metadata to the writer.
+   * 
+   * @param writer where to write the JSON to
    */
   public void json4metadata(Writer writer) {
     System.err.println("DEBUG: writing the metadata file!!");
@@ -537,9 +548,6 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
   /**
    * Save the current metadata.
    * 
-   * TODO: since metadata can be quite big, do not convert to String first
-   * but combine json4metadata and this to write parts directly!
-   * Size comes from the statistics for tokens/ngrams.
    */
   public void saveMetadata() {
     // System.err.println("DEBUG: SAVING METADATA");

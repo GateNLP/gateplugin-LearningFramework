@@ -52,10 +52,10 @@ public class FeatureSpecAttributeList extends FeatureSpecSimpleAttribute impleme
   
   /**
    * Create an AttributeList instance from a SimpleAttribute plus the from and to values
-   * @param att TODO
-   * @param withinType TODO
-   * @param from TODO
-   * @param to TODO
+   * @param att attribute
+   * @param withinType within type
+   * @param from from index
+   * @param to to index
    */
   public FeatureSpecAttributeList(FeatureSpecSimpleAttribute att, String withinType, int from, int to) {
     /*

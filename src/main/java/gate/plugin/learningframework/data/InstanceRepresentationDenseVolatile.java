@@ -42,7 +42,9 @@ public class InstanceRepresentationDenseVolatile implements InstanceRepresentati
 
   @Override
   public InstanceRepresentation setFeature(String name, Object value) {
-    if(!map.containsKey(name)) numFeatures += 1;
+    if(!map.containsKey(name)) {
+      numFeatures += 1;
+    }
     map.put(name, value);
     return this;
   }

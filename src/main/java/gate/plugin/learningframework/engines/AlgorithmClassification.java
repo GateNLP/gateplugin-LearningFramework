@@ -59,28 +59,28 @@ public enum AlgorithmClassification implements Algorithm {
   private AlgorithmClassification() {
     
   }
-  private AlgorithmClassification(Class engineClass, Class algorithmClass) {
+  private AlgorithmClassification(Class<?> engineClass, Class<?> algorithmClass) {
     this.engineClass = engineClass;
     this.trainerClass = algorithmClass;
     this.algorithmKind = AlgorithmKind.CLASSIFIER;
   }
-  private AlgorithmClassification(Class engineClass, Class algorithmClass, AlgorithmKind ak) {
+  private AlgorithmClassification(Class<?> engineClass, Class<?> algorithmClass, AlgorithmKind ak) {
     this.engineClass = engineClass;
     this.trainerClass = algorithmClass;
     this.algorithmKind = ak;
   }
-  private Class engineClass;
-  private Class trainerClass;
+  private Class<?> engineClass;
+  private Class<?> trainerClass;
   private AlgorithmKind algorithmKind;
   @Override
-  public Class getEngineClass() { return engineClass; }
+  public Class<?> getEngineClass() { return engineClass; }
   @Override
-  public Class getTrainerClass() { return trainerClass; }
+  public Class<?> getTrainerClass() { return trainerClass; }
   @Override 
   public AlgorithmKind getAlgorithmKind() { return algorithmKind; }
 
   @Override
-  public void setTrainerClass(Class trainerClass) {
+  public void setTrainerClass(Class<?> trainerClass) {
     this.trainerClass = trainerClass;
   }
 }

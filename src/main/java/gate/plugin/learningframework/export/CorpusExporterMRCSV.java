@@ -157,8 +157,9 @@ public class CorpusExporterMRCSV extends CorpusExporterMR {
         Object ignore = inst.getProperty(FeatureExtractionMalletSparse.PROP_IGNORE_HAS_MV);    
         // If the flag says the instance should get ignored, return null
         // to indicate to the caller that this is an ignored instance.
-        if(ignore != null && ignore.equals(true)) 
-          continue;        
+        if(ignore != null && ignore.equals(true)) {
+          continue;
+        }        
       } // filterMV
       
       /////////////////////////////////////////////////////
@@ -171,10 +172,11 @@ public class CorpusExporterMRCSV extends CorpusExporterMR {
         for(int i=0; i<nrFeatures; i++) {
           double value = vector.value(i);
           Attribute attr = attrs.getAttribute(i);
-          if(first) 
+          if(first) { 
             first = false;
-          else 
-            dataOut.print(separator); 
+          } else {
+            dataOut.print(separator);
+          } 
           // TODO: depending on MV processing!!
           if(Double.isNaN(value)) {
             dataOut.print(0.0);
@@ -226,8 +228,9 @@ public class CorpusExporterMRCSV extends CorpusExporterMR {
           throw new GateRuntimeException("No target Alphabet and odd target class: "+target.getClass());
         }
       }
-      if(twofiles)
+      if(twofiles) {
         dataOut.println();
+      }
       targetOut.println();
       
       ////////////////////////////////////////////////////
@@ -260,8 +263,12 @@ public class CorpusExporterMRCSV extends CorpusExporterMR {
    * @return  TODO
    */
   public String escape4CSV(String what) {
-    if(what==null) what = "";
-    if(what.trim().isEmpty()) return "'" + what + "'";
+    if(what==null) {
+      what = "";
+    }
+    if(what.trim().isEmpty()) {
+      return "'" + what + "'";
+    }
     int len = what.length();
     what = what.replaceAll("([\"'%\\n\\r \\t\\\\])", "\\\\$1");
     if(what.length()!=len || what.contains("{") || what.contains("}")) {
@@ -274,9 +281,9 @@ public class CorpusExporterMRCSV extends CorpusExporterMR {
   // a newline. For now, we replace those with spaces
 
   /**
-   * TODO
-   * @param what TODO
-   * @return TODO
+   * Change tabs and newline characters to spaces.
+   * @param what original string
+   * @return changed string 
    */
   public String prepare4TSV(String what) {
     what = what.replaceAll("[\\n\\t]"," ");

@@ -31,7 +31,7 @@ public class CorpusExporterDRJson extends CorpusExporter {
   
   @Override
   public void initWhenCreating() {
-    corpusRepresentation = (CorpusRepresentationVolatileDense2JsonStream)new CorpusRepresentationVolatileDense2JsonStream(dataDirFile, featureInfo);
+    corpusRepresentation = new CorpusRepresentationVolatileDense2JsonStream(dataDirFile, featureInfo);
     corpusRepresentation.startAdding();
   }
   

@@ -63,7 +63,7 @@ public abstract class FeatureSpecAttribute implements Serializable, Cloneable {
   
   /**
    * Return the code used to identify the attribute type in a feature name.
-   * @return  TODO
+   * @return  code
    */
   public String getCode() {
     return featureCode;
@@ -73,7 +73,7 @@ public abstract class FeatureSpecAttribute implements Serializable, Cloneable {
   /**
    * Returns the missing value as the proper data type for this attribute.
    * For example returns a String for nominal or a Float for numeric. 
-   * @return  TODO
+   * @return  missing value for the data type
    */
   public Object missingValue() {
     Object ret = null;
@@ -96,8 +96,8 @@ public abstract class FeatureSpecAttribute implements Serializable, Cloneable {
   /**
    * Returns either a String, Double or Boolean for the given Object.
    * 
-   * @param val TODO
-   * @return  TODO
+   * @param val object 
+   * @return converted object
    */
   public Object toValue(Object val) {
     Object ret = null;

@@ -125,7 +125,7 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
     return sequenceSpan;
   }
 
-  String serverUrl;
+  protected String serverUrl;
 
   @RunTime
   @Optional

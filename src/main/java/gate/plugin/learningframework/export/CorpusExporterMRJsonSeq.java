@@ -37,6 +37,7 @@ import gate.plugin.learningframework.engines.Parms;
 import gate.plugin.learningframework.features.FeatureExtractionMalletSparse;
 import gate.util.GateRuntimeException;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 
@@ -97,7 +98,7 @@ public class CorpusExporterMRJsonSeq extends CorpusExporterMRJsonBase {
       String basename = Globals.dataBasename;
       dataFile = new File(dataDirFile, basename + ".py.json");
       dataOut = new PrintStream(new FileOutputStream(dataFile));
-    } catch (Exception ex) {
+    } catch (FileNotFoundException ex) {
       throw new RuntimeException("Could not open " + dataFile.getAbsolutePath(), ex);
     }
 
@@ -117,14 +118,14 @@ public class CorpusExporterMRJsonSeq extends CorpusExporterMRJsonBase {
   } // export
 
   /**
-   * TODO
-   * @param inst TODO
-   * @param targetAlphabet TODO
-   * @param attrs TODO
-   * @param nrFeatures TODO
-   * @param asString TODO
-   * @param filterMV TODO
-   * @return TODO
+   * Convert instance to string representation.
+   * @param inst instance 
+   * @param targetAlphabet target alphabet
+   * @param attrs attributes
+   * @param nrFeatures number of features
+   * @param asString represent as quoted string
+   * @param filterMV filter missing values
+   * @return string representation
    */
   public String instance2String(
           Instance inst,
@@ -192,7 +193,7 @@ public class CorpusExporterMRJsonSeq extends CorpusExporterMRJsonBase {
 
   @Override
   public void initWhenCreating() {
-    corpusRepresentation = (CorpusRepresentationMalletSeq)new CorpusRepresentationMalletSeq(featureInfo, ScalingMethod.NONE);
+    corpusRepresentation = new CorpusRepresentationMalletSeq(featureInfo, ScalingMethod.NONE);
   }
   
 }

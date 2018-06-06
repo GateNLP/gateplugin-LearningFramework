@@ -48,20 +48,20 @@ public class LFPipe extends SerialPipes implements Serializable {
   protected FeatureInfo featureInfo;
 
   /**
-   * TODO
-   * @param info TODO
+   * Set the feature info.
+   * @param info feature info
    */
   public void setFeatureInfo(FeatureInfo info) { featureInfo = info; }
 
   /**
-   * TODO
-   * @return TODO
+   * Get the feature info.
+   * @return feature info
    */
   public FeatureInfo getFeatureInfo() { return featureInfo; }
   
   /**
    * Add another pipe at the end of this SerialPipes.
-   * @param pipe  TODO
+   * @param pipe pipe to add
    */
   public void addPipe(Pipe pipe) {
     super.pipes().add(pipe);

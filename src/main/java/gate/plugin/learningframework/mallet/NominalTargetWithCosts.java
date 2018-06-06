@@ -53,7 +53,9 @@ public class NominalTargetWithCosts implements Serializable {
   private double[] costs = null;
   public NominalTargetWithCosts(List<Double> costs) {
     this.costs = new double[costs.size()];
-    for(int i=0;i<costs.size();i++) this.costs[i] = costs.get(i);
+    for(int i=0;i<costs.size();i++) {
+      this.costs[i] = costs.get(i);
+    }
     storeLabel();
   }
   public NominalTargetWithCosts(String l, List<Double> costs) {

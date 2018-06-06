@@ -48,7 +48,7 @@ public abstract class EngineMB extends Engine {
     }
     info.nrTrainingInstances = corpusRepresentation.getRepresentationMallet().size();
     info.nrTrainingDimensions = corpusRepresentation.getRepresentationMallet().getDataAlphabet().size();    
-    LFPipe pipe = (LFPipe)corpusRepresentation.getPipe();
+    LFPipe pipe = corpusRepresentation.getPipe();
     Alphabet targetAlph = pipe.getTargetAlphabet();
     if(targetAlph == null) {
       info.nrTargetValues = 0;
@@ -71,20 +71,28 @@ public abstract class EngineMB extends Engine {
   
   @Override
   protected void loadAndSetCorpusRepresentation(URL directory) {
-    if(corpusRepresentation==null)
+    if(corpusRepresentation==null) {
       corpusRepresentation = CorpusRepresentationMalletTarget.load(directory);
+    }
   }
   
   
   @Override
   protected void initWhenCreating(URL directory, Algorithm algorithm, String parameters, FeatureInfo fi, TargetType tt) {    
-    if(algorithm.getAlgorithmKind() == AlgorithmKind.SEQUENCE_TAGGER) {
-      corpusRepresentation = new CorpusRepresentationMalletSeq(fi, fi.getGlobalScalingMethod());
-    } else if(algorithm.getAlgorithmKind() == AlgorithmKind.REGRESSOR || 
-              algorithm.getAlgorithmKind() == AlgorithmKind.CLASSIFIER) {
-      corpusRepresentation = new CorpusRepresentationMalletTarget(fi, fi.getGlobalScalingMethod(), tt);
-    } else {
+    if(null == algorithm.getAlgorithmKind()) {
       throw new GateRuntimeException("Not a usable algorithm kind for now with Mallet based engines: "+algorithm);
+    } else {
+      switch (algorithm.getAlgorithmKind()) {
+        case SEQUENCE_TAGGER:
+          corpusRepresentation = new CorpusRepresentationMalletSeq(fi, fi.getGlobalScalingMethod());
+          break;
+        case REGRESSOR:
+        case CLASSIFIER:
+          corpusRepresentation = new CorpusRepresentationMalletTarget(fi, fi.getGlobalScalingMethod(), tt);
+          break;
+        default:
+          throw new GateRuntimeException("Not a usable algorithm kind for now with Mallet based engines: "+algorithm);
+      }
     }
     corpusRepresentation.startAdding();
   }

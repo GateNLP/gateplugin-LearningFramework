@@ -17,15 +17,15 @@ import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
  * @author Johann Petrak 
  */
 public class Stats {
-  SummaryStatistics numStats;
-  Map<String,Long> stringStats;
-  long n = 0;
+  protected SummaryStatistics numStats;
+  protected Map<String,Long> stringStats;
+  protected long n = 0;
   public Stats(Object firstValue) {
     if(firstValue instanceof String) {
-      stringStats = new HashMap<String,Long>();
+      stringStats = new HashMap<>();
     } else if(firstValue instanceof String[]) {
       numStats = new SummaryStatistics();
-      stringStats = new HashMap<String,Long>();
+      stringStats = new HashMap<>();
     } else {
       numStats = new SummaryStatistics();
     }
@@ -41,15 +41,19 @@ public class Stats {
   }
   
   /**
-   * TODO 
-   * @param value TODO
+   * Add a value to the stats object.
+   * @param value value to add
    */
   public void addValue(Object value) {
       if(value instanceof String) {
-        if(stringStats == null) throw new GateRuntimeException("Stats object did not expect a String");
+        if(stringStats == null) {
+          throw new GateRuntimeException("Stats object did not expect a String");
+        }
         addStringValue(value);
       } else {
-        if(numStats == null) throw new GateRuntimeException("Stats object did not expect a non-String");
+        if(numStats == null) {
+          throw new GateRuntimeException("Stats object did not expect a non-String");
+        }
       if(value instanceof Double) {
         numStats.addValue((Double)value);
       } else if(value instanceof Number) {
@@ -62,7 +66,9 @@ public class Stats {
         @SuppressWarnings("unchecked")
         List<Object> l =  (List<Object>)value;
         if(l.size()>0 && (l.get(0) instanceof String)) {
-          if(stringStats==null) stringStats = new HashMap<>();
+          if(stringStats==null) {
+            stringStats = new HashMap<>();
+          }
           l.forEach((o) -> {
             addStringValue(o);
           });
@@ -84,24 +90,24 @@ public class Stats {
   }
   
   /**
-   * TODO 
-   * @return TODO
+   * Get number of values added to the stats object.
+   * @return number of values
    */ 
   public long getN() {
     return n;
   }
   
   /**
-   * TODO
-   * @return TODO
+   * Get indicator if we have a string stats object.
+   * @return flag
    */
   public boolean isString() {
     return stringStats != null;
   }
   
   /**
-   * TODO
-   * @return TODO
+   * Get indicator if we have a stats object over numeric values
+   * @return flag
    */
   public boolean isNum() {
     return numStats != null;
@@ -109,7 +115,7 @@ public class Stats {
   
   /**
    * Number of different values, only if isString() is true, exception otherwise.
-   * @return  TODO
+   * @return  number of different values
    */
   public int nrValues() {
     if(stringStats==null) throw new GateRuntimeException("Cannot use nrValues for non-String statistics");
@@ -117,8 +123,8 @@ public class Stats {
   }
   
   /**
-   * TODO
-   * @return TODO
+   * List of possible string values.
+   * @return string values
    */
   public List<String> stringValues() {
     if(stringStats==null) throw new GateRuntimeException("Cannot use stringValues for non-String statistics");
@@ -126,29 +132,39 @@ public class Stats {
   }
   
   /**
-   * TODO
-   * @return TODO
+   * Map of string counts.
+   * @return string frequencies
    */
   public Map<String,Long> stringCounts() {
-    if(stringStats==null) throw new GateRuntimeException("Cannot use stringCounts for non-String statistics");
+    if(stringStats==null) {
+      throw new GateRuntimeException("Cannot use stringCounts for non-String statistics");
+    }
     return new HashMap<>(stringStats);
   }
   
   // wrapped SummaryStatistics methods as we need them
   public double getMin() {
-    if(numStats==null) throw new GateRuntimeException("Cannot use getMin for String statistics");
+    if(numStats==null) {
+      throw new GateRuntimeException("Cannot use getMin for String statistics");
+    }
     return numStats.getMin();
   }
   public double getMax() {
-    if(numStats==null) throw new GateRuntimeException("Cannot use getMax for String statistics");
+    if(numStats==null) {
+      throw new GateRuntimeException("Cannot use getMax for String statistics");
+    }
     return numStats.getMax();
   }
   public double getMean() {
-    if(numStats==null) throw new GateRuntimeException("Cannot use getMean for String statistics");
+    if(numStats==null) {
+      throw new GateRuntimeException("Cannot use getMean for String statistics");
+    }
     return numStats.getMean();
   }
   public double getVariance() {
-    if(numStats==null) throw new GateRuntimeException("Cannot use getVariance for String statistics");
+    if(numStats==null) {
+      throw new GateRuntimeException("Cannot use getVariance for String statistics");
+    }
     return numStats.getVariance();
   }
   
@@ -160,7 +176,7 @@ public class Stats {
       ret.stringCounts = stringCounts();
     } else {
       // create an empty one because having that in JSON is easier to handle than "null"
-      ret.stringCounts = new HashMap<String,Long>(); 
+      ret.stringCounts = new HashMap<>(); 
       ret.min = getMin();
       ret.max = getMax();
       ret.mean = getMean();
@@ -170,6 +186,8 @@ public class Stats {
   }
   
   public static class StatsObject implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     public boolean isString = false;
     public Map<String,Long> stringCounts;
     public double min;

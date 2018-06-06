@@ -98,6 +98,7 @@ public abstract class EngineMBSklearnBase extends EngineMB {
   
   /**
    * Try to find the script running the sklearn-Wrapper command.
+   * 
    * If apply is true, the executable for application is searched,
    * otherwise the one for training.
    * This checks the following settings (increasing priority): 
@@ -107,14 +108,17 @@ public abstract class EngineMBSklearnBase extends EngineMB {
    * if it exists. 
    * The setting for the sklearn wrapper home can be relative in which case it
    * will be resolved relative to the dataDirectory
-   * @param dataDirectory TODO
-   * @param apply TODO
-   * @return  TODO
+   * 
+   * @param dataDirectory data/model directory file
+   * @param apply true for application, false for training
+   * @return command path file
    */
   protected File findWrapperCommand(File dataDirectory, boolean apply) {
     String homeDir = System.getenv(ENV_WRAPPER_HOME);
     String tmp = System.getProperty(PROP_WRAPPER_HOME);
-    if(tmp!=null) homeDir = tmp;
+    if(tmp!=null) {
+      homeDir = tmp;
+    }
     File sklearnInfoFile = new File(dataDirectory,YAML_FILE);
     if(sklearnInfoFile.exists()) {
       Yaml yaml = new Yaml();
@@ -160,15 +164,17 @@ public abstract class EngineMBSklearnBase extends EngineMB {
     boolean linuxLike = System.getProperty("file.separator").equals("/");
     boolean windowsLike = System.getProperty("file.separator").equals("\\");
     if(linuxLike) {
-      if(apply) 
+      if(apply) { 
         commandFile = new File(new File(wrapperHome,"bin"),SCRIPT_APPLY_BASENAME+".sh");
-      else
+      } else {
         commandFile = new File(new File(wrapperHome,"bin"),SCRIPT_TRAIN_BASENAME+".sh");
+      }
     } else if(windowsLike) {
-      if(apply) 
+      if(apply) { 
         commandFile = new File(new File(wrapperHome,"bin"),SCRIPT_APPLY_BASENAME+".cmd");
-      else
-        commandFile = new File(new File(wrapperHome,"bin"),SCRIPT_TRAIN_BASENAME+".cmd");      
+      } else {
+        commandFile = new File(new File(wrapperHome,"bin"),SCRIPT_TRAIN_BASENAME+".cmd");
+      }      
     } else {
       throw new GateRuntimeException("It appears this OS is not supported");
     }
@@ -184,11 +190,12 @@ public abstract class EngineMBSklearnBase extends EngineMB {
   
   @Override
   protected void loadModel(URL directoryURL, String parms) {
-    ArrayList<String> finalCommand = new ArrayList<String>();
+    ArrayList<String> finalCommand = new ArrayList<>();
     // Instead of loading a model, this establishes a connection with the 
     // external sklearn process. 
-    if(!"file".equals(directoryURL.getProtocol())) 
+    if(!"file".equals(directoryURL.getProtocol())) {
       throw new GateRuntimeException("The dataDirectory URL must be a file: URL for sklearn");
+    }
     File directory = Files.fileFromURL(directoryURL);
     File commandFile = findWrapperCommand(directory, true);
     String modelFileName = new File(directory,MODEL_BASENAME).getAbsolutePath();
@@ -227,7 +234,7 @@ public abstract class EngineMBSklearnBase extends EngineMB {
     if(parms == null || parms.trim().isEmpty()) {
       throw new GateRuntimeException(WRAPPER_NAME+": Cannot train, algorithmParameter must contain full algorithm class name as first word");
     }
-    String sklearnClass = null;
+    String sklearnClass;
     String sklearnParms = "";
     parms = parms.trim();
     int spaceIdx = parms.indexOf(" ");
@@ -292,12 +299,12 @@ public abstract class EngineMBSklearnBase extends EngineMB {
     data.stopGrowth();
     int nrCols = data.getPipe().getDataAlphabet().size();
     //System.err.println("Running EngineSklearn.applyModel on document "+instanceAS.getDocument().getName());
-    List<ModelApplication> gcs = new ArrayList<ModelApplication>();
+    List<ModelApplication> gcs = new ArrayList<>();
     LFPipe pipe = (LFPipe)data.getRepresentationMallet().getPipe();
     ArrayList<String> classList = null;
     // If we have a classification problem, pre-calculate the class label list
     if(pipe.getTargetAlphabet() != null) {
-      classList = new ArrayList<String>();
+      classList = new ArrayList<>();
       for(int i = 0; i<pipe.getTargetAlphabet().size(); i++) {
         String labelstr = pipe.getTargetAlphabet().lookupObject(i).toString();
         classList.add(labelstr);
@@ -313,9 +320,9 @@ public abstract class EngineMBSklearnBase extends EngineMB {
     // - shapecols: maximum number of cols in a vector
     Map map = new HashMap<String,Object>();
     map.put("cmd", "CSR1");
-    ArrayList<Double> values = new ArrayList<Double>();
-    ArrayList<Integer> rowinds = new ArrayList<Integer>();
-    ArrayList<Integer> colinds = new ArrayList<Integer>();
+    ArrayList<Double> values = new ArrayList<>();
+    ArrayList<Integer> rowinds = new ArrayList<>();
+    ArrayList<Integer> colinds = new ArrayList<>();
     int rowIndex = 0;
     List<Annotation> instances = instanceAS.inDocumentOrder();
     for(Annotation instAnn : instances) {
@@ -371,7 +378,7 @@ public abstract class EngineMBSklearnBase extends EngineMB {
     @SuppressWarnings("unchecked")
     ArrayList<ArrayList<Double>> probas = (ArrayList<ArrayList<Double>>)response.get("probas");
     
-    ModelApplication gc = null;
+    ModelApplication gc;
     
     // now check if the mallet representation and the weka process agree 
     // on if we have regression or classification

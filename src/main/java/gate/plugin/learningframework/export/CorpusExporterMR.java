@@ -53,14 +53,14 @@ public abstract class CorpusExporterMR extends CorpusExporter {
     // always also export the pipe and a template info file!
     info.classAnnotationType = "null";
     CorpusRepresentationMallet crm = (CorpusRepresentationMallet)corpusRepresentation;
-    LFPipe lfpipe = (LFPipe) crm.getPipe();
+    LFPipe lfpipe = crm.getPipe();
     if (lfpipe.getTargetAlphabet() == null) {
       info.classLabels = null;
     } else {
       //info.classLabels = lfpipe.getTargetAlphabet().toArray();
       Object[] objs = lfpipe.getTargetAlphabet().toArray();
       info.nrTargetValues = objs.length;
-      ArrayList<String> labels = new ArrayList<String>();
+      ArrayList<String> labels = new ArrayList<>();
       for (Object obj : objs) {
         labels.add(obj.toString());
       }

@@ -59,10 +59,7 @@ public class Attribute {
     if (!Objects.equals(this.name, other.name)) {
       return false;
     }
-    if (this.index != other.index) {
-      return false;
-    }
-    return true;
+    return this.index == other.index;
   }
 
   public Attribute(String name, int index, Datatype datatype, CodeAs codeAs, MissingValueTreatment mvt, Alphabet alphabet) {

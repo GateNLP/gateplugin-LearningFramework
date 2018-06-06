@@ -45,7 +45,7 @@ public abstract class Engine {
   public static final String FILENAME_MODEL = "lf.model";
   public static final String FILENAME_PIPE = "lf.pipe";
   
-  private static Logger logger = Logger.getLogger(Engine.class);
+  private static Logger LOGGER = Logger.getLogger(Engine.class);
   
   // =============================================================
   // FIELDS shared by all subclasses and their setters/getters 
@@ -65,7 +65,8 @@ public abstract class Engine {
 
   /**
    * Return the info instance for this Engine. 
-   * @return TODO
+   * 
+   * @return Info instance
    */
   public Info getInfo() { return info; }
   
@@ -75,7 +76,8 @@ public abstract class Engine {
    * Get the corpus representation for the engine. This will return the specific subclass of 
    * CorpusRepresentation used for the specific subclass of the Engine. Engine subclasses 
    * define their own field for storing the CorpusRepresentation.
-   * @return  TODO
+   * 
+   * @return  CorpusRepresentation instance
    */
   public abstract CorpusRepresentation getCorpusRepresentation();
   
@@ -112,6 +114,7 @@ public abstract class Engine {
   
   /** 
    * A factory method to create a new instance of an engine with the given backend algorithm.
+   * 
    * This works in two steps: first the instance of the engine is created, then that instance's
    * method for initializing the algorithm is called (initializeAlgorithm) with the given parameters.
    * However, some training algorithms cannot be instantiated until all the training data is
@@ -120,24 +123,19 @@ public abstract class Engine {
    * The engine also stores a reference to the Mallet corpus representation (and thus, the Pipe),
    * which enables the Engine to know about the fields and other meta-information.
    * <p>
-   * The creation of a specific Engine subclass is influenced by its implementation of the following
-   * methods:
-   * <ul>
-   * <li>
-   * </ul>
-   * @param algorithm TODO
-   * @param parms TODO
-   * @param featureInfo TODO
-   * @param targetType TODO
-   * @param directory TODO
-   * @return  TODO
+   * @param algorithm algorithm to use
+   * @param parms algorithm parameters
+   * @param featureInfo feature info instance
+   * @param targetType type of target
+   * @param directory data/model directory URL
+   * @return  Engine instance
    */
   public static Engine create(Algorithm algorithm, String parms, FeatureInfo featureInfo, TargetType targetType, URL directory) {
     Engine eng;
     try {
       System.err.println("CREATE ENGINE: trying to create for class "+algorithm.getEngineClass());
       @SuppressWarnings("unchecked")
-      Constructor tmpc = algorithm.getEngineClass().getDeclaredConstructor();
+      Constructor<?> tmpc = algorithm.getEngineClass().getDeclaredConstructor();
       eng = (Engine)tmpc.newInstance();
     } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | SecurityException | InvocationTargetException ex) {
       throw new GateRuntimeException("Could not create the Engine "+algorithm.getEngineClass(),ex);
@@ -174,15 +172,9 @@ public abstract class Engine {
    * an info.yaml file manually. This file must contain the Engine class,
    * all other entries can be missing.
    * <p>
-   * The loading and creation of a specific Engine subclass is influenced by its implementation of the following
-   * methods:
-   * <ul>
-   * <li>
-   * </ul>
-   * 
-   * @param directory TODO
-   * @param parms TODO
-   * @return  TODO
+   * @param directory data/model directory URL
+   * @param parms algorithm parameters
+   * @return Engine instance
    */
   public static Engine load(URL directory, String parms) {
     // 1) read the info file
@@ -199,7 +191,10 @@ public abstract class Engine {
       //System.err.println("Trying fomr var: >"+info.engineClass+"<");      
       //eng = (Engine)info.getClass().getClassLoader().loadClass(info.engineClass.trim()).newInstance();
       eng = (Engine)Class.forName(info.engineClass).getDeclaredConstructor().newInstance();
-    } catch (Exception ex) {
+    } catch (ClassNotFoundException | IllegalAccessException | 
+            IllegalArgumentException | InstantiationException | 
+            NoSuchMethodException | SecurityException | 
+            InvocationTargetException ex) {
       throw new GateRuntimeException("Error creating engine class when loading: "+info.engineClass,ex);
     }
     // store the info we have just obtained in the new engine instance
@@ -240,7 +235,9 @@ public abstract class Engine {
       info.save(directory);
     }   
     // not all models use this (YET!) so need a NPE guard
-    if (featureInfo!=null) featureInfo.save(directory);
+    if (featureInfo!=null) {
+      featureInfo.save(directory);
+    }
     // Then delegate to the engine to save the model
     saveModel(directory);
     // finally save the corpus representation
@@ -258,15 +255,15 @@ public abstract class Engine {
   // DETAILS OF HOW TO LOAD
   
   /**
-   * The details of how to initialise a specific instance of an Engine subclass from 
-   * 
+   * The details of how to initialise a specific instance of an Engine subclass.
    * 
    * The Engine class implements a default implementation which can be overridden and called 
    * by subclasses. The default implementation does the following: 1) call the instance specific
    * loadModel method, 2) call the instance specific loadCorpusRepresentation method, 3) set the
    * Algorithm according to what is in the info.
-   * @param directory TODO
-   * @param parms TODO
+   * 
+   * @param directory model/data directory URL
+   * @param parms algorithm parameters
    */
   protected void initWhenLoading(URL directory, String parms) {
     // now use the specific engine's loadModel method to complete the loading: each engine
@@ -283,29 +280,30 @@ public abstract class Engine {
     // at the end. 
     // eng.corpusRepresentationMallet.stopGrowth();
     
-    Algorithm algorithm = null;
+    // TODO: check why we cannot use the algorithm field?
+    Algorithm tmp_algorithm = null;
     if(info.algorithmClass != null && !info.algorithmClass.isEmpty()) {
       if(info.algorithmClass.equals(AlgorithmClassification.class.getName())) {
-        algorithm = AlgorithmClassification.valueOf(info.algorithmName);      
+        tmp_algorithm = AlgorithmClassification.valueOf(info.algorithmName);      
       } else if(info.algorithmClass.equals(AlgorithmRegression.class.getName())) {
-        algorithm = AlgorithmRegression.valueOf(info.algorithmName);      
+        tmp_algorithm = AlgorithmRegression.valueOf(info.algorithmName);      
       } else {
         throw new GateRuntimeException("Not a known algorithm enumeration class "+info.algorithmClass);
       }
-      if(algorithm.getTrainerClass()==null) {
+      if(tmp_algorithm.getTrainerClass()==null) {
         try {
           // NOTE: in case we do not know a trainer class and we also do not have one stored in 
           // the info file, do not create it - sometimes this is simply not necessary for 
           // classification!
           if(info.trainerClass!=null) {
-            algorithm.setTrainerClass(Class.forName(info.trainerClass));
+            tmp_algorithm.setTrainerClass(Class.forName(info.trainerClass));
           }
-        } catch (Exception ex) {
+        } catch (ClassNotFoundException ex) {
           throw new GateRuntimeException("Could not find the trainer class "+info.trainerClass);
         }
       }    
-      this.initializeAlgorithm(algorithm,parms);
-      this.algorithm = algorithm;
+      this.initializeAlgorithm(tmp_algorithm,parms);
+      this.algorithm = tmp_algorithm;
     } // if we have an algorithm class in the info file
     
   }
@@ -319,7 +317,7 @@ public abstract class Engine {
    * This method may use data stored in the directory or the info metadata which already must
    * be set in the engine to figure out what and how to re-create.
    * 
-   * @param directory  TODO
+   * @param directory  model/data directory URL
    */
   protected abstract void loadAndSetCorpusRepresentation(URL directory);
   
@@ -327,12 +325,14 @@ public abstract class Engine {
   
   /**
    * Load a stored model into the engine.
+   * 
    * NOTE: this also loads and sets the Mallet corpus representation needed for the engine
    * and creates any internal corpus representation from the mallet representation. Since 
    * loading of a model is done for subsequent classification, the internal representaiton
    * may be one where the class attribute is deliberately left away.
-   * @param directory TODO
-   * @param parms TODO
+   * 
+   * @param directory model/data/ directory URL
+   * @param parms parameters
    */
   protected abstract void loadModel(URL directory, String parms);
   
@@ -345,7 +345,7 @@ public abstract class Engine {
    * 
    * For some representations this may be a null action.
    * 
-   * @param directory  TODO
+   * @param directory model/data directory URL
    */
   protected abstract void saveCorpusRepresentation(File directory);
   
@@ -356,12 +356,14 @@ public abstract class Engine {
   
   /**
    * Train a model from the instances.
+   * 
    * This always takes our own representation of instances (which is a Mallet InstanceList ATM).
    * The Engine instance should know best how to use or convert that representation to its own
    * format, using one of the CorpusRepresentationXXX classes.
-   * @param dataDirectory TODO
-   * @param instanceType TODO
-   * @param parms TODO
+   * 
+   * @param dataDirectory model/data directory URL
+   * @param instanceType instance annotation type
+   * @param parms parameters
    */
    public abstract void trainModel(File dataDirectory, String instanceType, String parms);
   
@@ -370,13 +372,15 @@ public abstract class Engine {
   
   /**
    * Classify all instance annotations.
+   * 
    * If the algorithm is a sequence tagger, the sequence annotations must be given, otherwise
    * they must not be given. 
-   * @param instanceAS TODO
-   * @param inputAS TODO
-   * @param sequenceAS TODO
-   * @param parms TODO
-   * @return  TODO
+   * 
+   * @param instanceAS instance annotation set
+   * @param inputAS input annotation set
+   * @param sequenceAS sequence annotation set
+   * @param parms parameters
+   * @return list of actions to carry out on the document
    */
   public abstract List<ModelApplication> applyModel(
           AnnotationSet instanceAS, AnnotationSet inputAS,
@@ -404,9 +408,8 @@ public abstract class Engine {
   /**
    * Re-create and return the corpus representation that was stored for this engine.
    * 
-   *
-   * @param dir TODO
-   * @return  TODO
+   * @param dir data/mdoel directory URL
+   * @return corpus representation
    */
   protected CorpusRepresentation recreateCorpusRepresentation(File dir) {
     throw new RuntimeException("Method recreateCorpusRepresentation not yet implemented for "+this.getClass().getName());

@@ -29,7 +29,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 /**
- *
+ * Various utility functions.
+ * 
  * @author Johann Petrak
  */
 public class LFUtils {
@@ -68,7 +69,7 @@ public class LFUtils {
       Double tmp = null;
       try {
         tmp = Double.parseDouble((String) any);
-      } catch (Exception ex) {
+      } catch (NumberFormatException ex) {
         // do not do anything, we just are happy to find tmp=null in this case
       }
       if (tmp == null) {
@@ -131,7 +132,7 @@ public class LFUtils {
         str = "file://"+str;
       }
       return new URL(str);
-    } catch (Exception ex) {
+    } catch (MalformedURLException | URISyntaxException ex) {
       throw new GateRuntimeException("Cannot create URL from string "+str,ex);
     }
   }
@@ -164,7 +165,9 @@ public class LFUtils {
     // trailing slash.
     // /*
     String path = dirURI.getPath();
-    if(!path.endsWith("/")) path = path+"/";
+    if(!path.endsWith("/")) {
+      path += "/";
+    }
     try {
       dirURI = new URI(
               dirURI.getScheme(),

@@ -100,7 +100,7 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
   }
 
 
-  String sequenceSpan;
+  protected String sequenceSpan;
   
   @RunTime
   @Optional

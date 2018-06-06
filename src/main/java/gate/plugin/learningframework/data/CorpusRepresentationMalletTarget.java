@@ -60,14 +60,15 @@ import static gate.plugin.learningframework.LFUtils.newURL;
  */
 public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet {
 
-  static final Logger logger = Logger.getLogger("CorpusRepresentationMallet");
+  static final Logger LOGGER = Logger.getLogger("CorpusRepresentationMallet");
 
 
   /**
    * Constructor for creating a new CorpusRepresentation from a FeatureInfo. 
-   * @param fi TODO
-   * @param sm  TODO
-   * @param targetType TODO
+   * 
+   * @param fi FeatureInfo instance
+   * @param sm  ScalingMethod instance
+   * @param targetType type of target
    */
   public CorpusRepresentationMalletTarget(FeatureInfo fi, ScalingMethod sm, TargetType targetType) {
     featureInfo = fi;
@@ -84,7 +85,8 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
   
   /**
    * Non-public constructor for use when creating from a serialized pipe.
-   * @param fi 
+   * 
+   * @param pipe LFPipe pipe instance to use
    */
   CorpusRepresentationMalletTarget(LFPipe pipe) {
     this.pipe = pipe;
@@ -95,8 +97,9 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
 
   /**
    * Create a new CRMT instance based on the pipe stored in directory.
-   * @param directory TODO
-   * @return  TODO
+   * 
+   * @param directory directory URL 
+   * @return  corpus representation
    */
   public static CorpusRepresentationMalletTarget load(URL directory) {
     // load the pipe
@@ -112,7 +115,7 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
       try {
         if(ois!=null) ois.close();
       } catch (IOException ex) {
-        logger.error("Error closing stream after loading pipe "+inFile, ex);
+        LOGGER.error("Error closing stream after loading pipe "+inFile, ex);
       }
     }
     CorpusRepresentationMalletTarget crmc = new CorpusRepresentationMalletTarget(lfpipe);
@@ -132,10 +135,11 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
   // to get the instances.
 
   /**
-   * TODO
-   * @param instanceAnnotation TODO
-   * @param inputAS TODO
-   * @return TODO 
+   * Get an Instance with the independent features only.
+   * 
+   * @param instanceAnnotation instance annotation
+   * @param inputAS input annotation set
+   * @return Instance
    */
 
 
@@ -143,25 +147,29 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
           Annotation instanceAnnotation,
           AnnotationSet inputAS)
   {
-    LFPipe pipe = (LFPipe)instances.getPipe();
-    FeatureInfo featureInfo = pipe.getFeatureInfo();
+    // TODO: check if we can use the pipe/featureInfo fields here!
+    LFPipe tmp_pipe = (LFPipe)instances.getPipe();
+    FeatureInfo tmp_featureInfo = tmp_pipe.getFeatureInfo();
     return extractIndependentFeaturesHelper(instanceAnnotation, inputAS,
-            featureInfo, pipe);
+            tmp_featureInfo, tmp_pipe);
   }
   
   /**
    * Extract the independent features for a single instance annotation.
+   * 
    * Extract the independent features for a single annotation according to the information
    * in the featureInfo object. The information in the featureInfo instance gets updated 
    * by this. 
+   * 
    * NOTE: this method is static so that it can be used in the CorpusRepresentationMalletSeq class too.
-   * @param instanceAnnotation TODO
-   * @param inputAS TODO
-   * @param targetFeatureName TODO
-   * @param featureInfo TODO
-   * @param pipe TODO
-   * @param nameFeature TODO
-   * @return  TODO
+   * 
+   * @param instanceAnnotation instance annotation
+   * @param inputAS input annotation set
+   * @param targetFeatureName feature name of target
+   * @param featureInfo feature info instance
+   * @param pipe mallet pipe
+   * @param nameFeature name feature
+   * @return  Instance
    */
   static Instance extractIndependentFeaturesHelper(
           Annotation instanceAnnotation,
@@ -182,7 +190,9 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
   }
 
   /**
-   * Add instances. The exact way of how the target is created to the instances depends on which
+   * Add instances. 
+   * 
+   * The exact way of how the target is created to the instances depends on which
    * parameters are given and which are null. The parameter sequenceAS must always be null for this
    * corpus representation since this corpus representation is not usable for sequence tagging
    * algorithms If the parameter classAS is non-null then instances for a sequence tagging task are
@@ -191,15 +201,15 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
    * classAS must be null. if the parameter nameFeatureName is non-null, then a Mallet instance name
    * is added from the source document and annotation.
    *
-   * @param instancesAS TODO
-   * @param sequenceAS TODO
-   * @param inputAS TODO
-   * @param classAS TODO
-   * @param targetFeatureName TODO
-   * @param targetType TODO
-   * @param instanceWeightFeature TODO
-   * @param nameFeatureName TODO
-   * @param seqEncoder TODO
+   * @param instancesAS instance annotation set
+   * @param sequenceAS sequence annotation set
+   * @param inputAS input annotation set
+   * @param classAS class annotation set
+   * @param targetFeatureName target feature name
+   * @param targetType type of target
+   * @param instanceWeightFeature feature for the instance weight or null
+   * @param nameFeatureName feature for the instance name or null
+   * @param seqEncoder sequence encoder instance
    */
   @Override
   public void add(AnnotationSet instancesAS, AnnotationSet sequenceAS, AnnotationSet inputAS, AnnotationSet classAS, String targetFeatureName, TargetType targetType, String instanceWeightFeature, String nameFeatureName, SeqEncoder seqEncoder) {
@@ -242,18 +252,29 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
    */
   @Override
   public void finishAdding() {    
-    if(scalingMethod == ScalingMethod.NONE) return;
+    if(scalingMethod == ScalingMethod.NONE) {
+      return;
+    }
     Pipe normalizer = null;
-    if(scalingMethod == ScalingMethod.MEANVARIANCE_ALL_FEATURES) {
-      FVStatsMeanVarAll stats = new FVStatsMeanVarAll(instances);
-      //System.err.println("DEBUG: got stats:\n"+stats);
-      normalizer = new PipeScaleMeanVarAll(instances.getDataAlphabet(), stats);
-    } else if(scalingMethod == ScalingMethod.MINMAX_ALL_FEATURES) {
-      FVStatsMeanVarAll stats = new FVStatsMeanVarAll(instances);
-      //System.err.println("DEBUG: got stats:\n"+stats);
-      normalizer = new PipeScaleMinMaxAll(instances.getDataAlphabet(), stats);      
-    } else {
+    if(null == scalingMethod) {
       throw new GateRuntimeException("Internal error: unexpected scaling method");
+    } else switch (scalingMethod) {
+      case MEANVARIANCE_ALL_FEATURES:
+        {
+          FVStatsMeanVarAll stats = new FVStatsMeanVarAll(instances);
+          //System.err.println("DEBUG: got stats:\n"+stats);
+          normalizer = new PipeScaleMeanVarAll(instances.getDataAlphabet(), stats);
+          break;
+        }
+      case MINMAX_ALL_FEATURES:
+        {
+          FVStatsMeanVarAll stats = new FVStatsMeanVarAll(instances);
+          //System.err.println("DEBUG: got stats:\n"+stats);
+          normalizer = new PipeScaleMinMaxAll(instances.getDataAlphabet(), stats);
+          break;
+        }
+      default:
+        throw new GateRuntimeException("Internal error: unexpected scaling method");
     }
     //System.err.println("DEBUG: re-normalizing instances");
     for(Instance inst : instances) {
@@ -267,8 +288,11 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
   
   @Override
   public int nrInstances() {
-    if(instances == null) return 0;
-    else return instances.size();
+    if(instances == null) {
+      return 0;
+    } else {
+      return instances.size();
+    }
   }
 
 }

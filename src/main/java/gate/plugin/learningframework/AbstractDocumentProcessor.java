@@ -19,9 +19,6 @@
  */
 package gate.plugin.learningframework;
 
-import java.io.Serializable;
-
-import org.apache.log4j.Logger;
 
 import gate.Controller;
 import gate.Document;

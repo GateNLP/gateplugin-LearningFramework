@@ -45,8 +45,9 @@ public class CorpusRepresentationLibSVM extends CorpusRepresentationMalletRelate
   }
 
   /**
-   * TODO
-   * @return TODO
+   * Return the libsvm internal representation of the corpus.
+   * 
+   * @return libsvm representation
    */
   public svm_problem getRepresentationLibSVM() {
     return data;
@@ -80,8 +81,8 @@ public class CorpusRepresentationLibSVM extends CorpusRepresentationMalletRelate
   /**
    * Create libsvm representation from Mallet.
    *
-   * @param crm TODO
-   * @return TODO
+   * @param crm mallet representation
+   * @return libsvm representation
    */
   public static svm_problem getFromMallet(CorpusRepresentationMallet crm) {
     InstanceList instances = crm.getRepresentationMallet();

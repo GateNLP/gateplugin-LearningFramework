@@ -28,7 +28,6 @@ import gate.plugin.learningframework.mbstats.FVStatsMeanVarAll;
 import gate.plugin.learningframework.mbstats.PerFeatureStats;
 import gate.util.GateRuntimeException;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -37,14 +36,14 @@ import java.util.List;
  */
 public class PipeScaleMeanVarAll extends Pipe implements Serializable {
 
-  double means[];
-  double variances[];
-  boolean normalize[];
+  protected double means[];
+  protected double variances[];
+  protected boolean normalize[];
   
   /**
-   * TODO 
-   * @param alphabet TODO
-   * @param stats TODO
+   * Constructor from alphabet and stats.
+   * @param alphabet alphabet
+   * @param stats feature stats
    */
   public PipeScaleMeanVarAll(Alphabet alphabet, FVStatsMeanVarAll stats) {
     super(alphabet, null);
@@ -71,6 +70,7 @@ public class PipeScaleMeanVarAll extends Pipe implements Serializable {
     //        ",variances="+Arrays.toString(variances)+",flags="+Arrays.toString(normalize));
   }
 
+  @Override
   public Instance pipe(Instance carrier) {
     if (!(carrier.getData() instanceof FeatureVector)) {
       System.out.println(carrier.getData().getClass());

@@ -39,7 +39,7 @@ import org.apache.log4j.Logger;
  */
 public abstract class EngineMBMallet extends EngineMB {
   
-  private static Logger logger = Logger.getLogger(EngineMBMallet.class);
+  private static Logger LOGGER = Logger.getLogger(EngineMBMallet.class);
   
   public CorpusRepresentationMallet getCorpusRepresentationMallet() {
     return corpusRepresentation;
@@ -56,14 +56,14 @@ public abstract class EngineMBMallet extends EngineMB {
     try {
       oos = new ObjectOutputStream(new FileOutputStream(new File(directory, FILENAME_MODEL)));
       oos.writeObject(model);
-    } catch (Exception e) {
+    } catch (IOException e) {
       throw new GateRuntimeException("Could not store Mallet model", e);
     } finally {
       if (oos != null) {
         try {
           oos.close();
         } catch (IOException ex) {
-          logger.error("Could not close object output stream", ex);
+          LOGGER.error("Could not close object output stream", ex);
         }
       }
     }

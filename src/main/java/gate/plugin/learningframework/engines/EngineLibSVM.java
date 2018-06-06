@@ -54,14 +54,15 @@ public class EngineLibSVM extends EngineMB {
 
   @Override
   public void loadModel(URL directory, String parms) {
-    if(!"file".equals(directory.getProtocol())) 
+    if(!"file".equals(directory.getProtocol())) {
       throw new GateRuntimeException("The dataDirectory URL must be a file: URL for LibSVM");
+    }
     try {      
       File directoryFile = Files.fileFromURL(directory);
       svm_model svmModel = svm.svm_load_model(new File(directoryFile, FILENAME_MODEL).getAbsolutePath());
       System.out.println("Loaded LIBSVM model, nrclasses=" + svmModel.nr_class);
       model = svmModel;
-    } catch (Exception ex) {
+    } catch (IOException | IllegalArgumentException ex) {
       throw new GateRuntimeException("Error loading the LIBSVM model from directory "+directory, ex);
     }
   }
@@ -83,7 +84,9 @@ public class EngineLibSVM extends EngineMB {
     if(algorithm instanceof AlgorithmRegression) {
       Integer algType = (Integer)ps.getValue("svm_type");
       // if the parameter is not given at all, we use 3 as the default for regression
-      if(algType == null) svmparms.svm_type = 3;
+      if(algType == null) {
+        svmparms.svm_type = 3;
+      }
       if(svmparms.svm_type != 3 && svmparms.svm_type != 4) {
         throw new GateRuntimeException("SvmLib: only -s 3 or -s 4 allowed for regression");
       }
@@ -188,7 +191,7 @@ public class EngineLibSVM extends EngineMB {
     CorpusRepresentationMalletTarget data = (CorpusRepresentationMalletTarget) corpusRepresentation;
     data.stopGrowth();
     // try to figure out if we have regression or classification:
-    LFPipe pipe = (LFPipe) data.getPipe();
+    LFPipe pipe = data.getPipe();
     Alphabet talph = pipe.getTargetAlphabet();
     int numberOfLabels = 0;
     if (talph == null) {
@@ -285,16 +288,22 @@ public class EngineLibSVM extends EngineMB {
     sb.append(",svm_type=");
     sb.append(parms.svm_type);
     sb.append(",weight=");
-    if(parms.weight!=null)
+    if(parms.weight!=null) {
       for(int i = 0; i<parms.weight.length; i++) {
-        if(i!=0) sb.append(",");
+        if(i!=0) {
+          sb.append(",");
+        }
         sb.append(parms.weight[i]);
       }
+    }
     sb.append(",weight_label=");
-    if(parms.weight_label != null)
-    for(int i = 0; i<parms.weight_label.length; i++) {
-      if(i!=0) sb.append(",");
-      sb.append(parms.weight_label[i]);
+    if(parms.weight_label != null) {
+      for(int i = 0; i<parms.weight_label.length; i++) {
+        if(i!=0) {
+          sb.append(",");
+        }
+        sb.append(parms.weight_label[i]);
+      }
     }
     sb.append("}");
     return sb.toString();
@@ -303,13 +312,12 @@ public class EngineLibSVM extends EngineMB {
   /**
    * Perform an evaluation.
    * 
-   * 
-   * @param algorithmParameters TODO
-   * @param evaluationMethod TODO
-   * @param numberOfFolds TODO
-   * @param trainingFraction TODO
-   * @param numberOfRepeats TODO
-   * @return  TODO
+   * @param algorithmParameters algorithm parameters
+   * @param evaluationMethod evaluation method
+   * @param numberOfFolds number of folds, if relevant
+   * @param trainingFraction training fraction, if relevant
+   * @param numberOfRepeats number of repetitions
+   * @return  EvaluationResult instance
    */
   @Override
   @SuppressWarnings("unchecked")
@@ -392,6 +400,7 @@ public class EngineLibSVM extends EngineMB {
           // the training and application problem
           split(svmprob,svm_train,svm_test,idx);
           
+          // TODO: check shadowed field!
           svm_model model = libsvm.svm.svm_train(svm_train, svmparms);
           //TODO: actually implement the accuracy estimate calculation!
           int nrCorrect = 0;
@@ -412,7 +421,9 @@ public class EngineLibSVM extends EngineMB {
           nrIncorrectAll += nrIncorrect;
           nrTotalAll += nrTotal;
           System.err.println("Accuracy for holdout repetition "+(repeat+1)+" is "+(((double)nrCorrect)/nrTotal));
-          if(repeat != (numberOfRepeats-1)) shuffle(idx,rgen);
+          if(repeat != (numberOfRepeats-1)) {
+            shuffle(idx,rgen);
+          }
         }          
         double sumAccs = 0.0;
         for(Double acc : accs) { sumAccs += acc; }        
@@ -497,6 +508,7 @@ public class EngineLibSVM extends EngineMB {
           // the training and application problem
           split(svmprob,svm_train,svm_test,idx);
           
+          // check shadowed field
           svm_model model = libsvm.svm.svm_train(svm_train, svmparms);
           double sumSqared = 0.0;
           double sumAbsolute = 0.0;
@@ -513,7 +525,9 @@ public class EngineLibSVM extends EngineMB {
           sumAbsoluteAll+=sumAbsolute;
           sumSquaredAll+=sumSqared;
           System.err.println("RMSE for holdout repetition "+(repeat+1)+" is "+Math.sqrt(sumSqared/nrTotal));
-          if(repeat != (numberOfRepeats-1)) shuffle(idx,rgen);
+          if(repeat != (numberOfRepeats-1)) {
+            shuffle(idx,rgen);
+          }
         }
         resultRgHO.nrRepeats = numberOfRepeats;
         resultRgHO.nrTotal = nrTotalAll;
@@ -530,9 +544,9 @@ public class EngineLibSVM extends EngineMB {
   // lets have full control here and do it ourselves, using Fisher-Yates
 
   /**
-   * TODO
-   * @param idx TODO
-   * @param rgen TODO
+   * Shuffle array of indices in place.
+   * @param idx array of indices
+   * @param rgen random generator instance
    */
   public static void shuffle(int[] idx, Random rgen) {
         for(int i = 0; i<idx.length; i++) { idx[i] = i; }
@@ -554,11 +568,12 @@ public class EngineLibSVM extends EngineMB {
   }
 
   /**
-   * TODO
-   * @param all TODO
-   * @param train TODO
-   * @param test TODO
-   * @param idx TODO
+   * Fill training and test instances arrays from the full corpus representation.
+   * 
+   * @param all full corpus svm representation
+   * @param train training set svm representation
+   * @param test test set svm representation 
+   * @param idx indices of instances for the sets
    */
   public void split(svm_problem all, svm_problem train, svm_problem test, int idx[]) {
     // this assumes that train and test already have the correct sizes and that

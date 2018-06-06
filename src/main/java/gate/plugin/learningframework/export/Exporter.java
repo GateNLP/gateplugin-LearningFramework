@@ -40,15 +40,15 @@ public enum Exporter {
   );
 
   
-  private Exporter(Class corpusExporterClass, TargetType ttype, AlgorithmKind algkind) {
+  private Exporter(Class<?> corpusExporterClass, TargetType ttype, AlgorithmKind algkind) {
     this.corpusExporterClass = corpusExporterClass;
     this.ttype = ttype;
     this.algkind = algkind;
   }
-  private Class corpusExporterClass = null;
+  private Class<?> corpusExporterClass = null;
   private TargetType ttype = TargetType.NOMINAL;
   private AlgorithmKind algkind = AlgorithmKind.CLASSIFIER;
-  public Class getCorpusExporterClass() { return corpusExporterClass; }
+  public Class<?> getCorpusExporterClass() { return corpusExporterClass; }
   public TargetType getTargetType() { return ttype; }
   public AlgorithmKind getAlgorithmKind() {return algkind; }
 }

@@ -32,7 +32,6 @@ import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
 import gate.plugin.learningframework.data.CorpusRepresentation;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
-import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
 import gate.plugin.learningframework.engines.AlgorithmClassification;
 import gate.plugin.learningframework.engines.Engine;
 import gate.plugin.learningframework.engines.EvaluationResult;

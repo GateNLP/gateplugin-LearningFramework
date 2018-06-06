@@ -55,16 +55,16 @@ public class FeatureInfo implements Serializable {
    * Create an instance with an empty list of featureSpecs.
    */
   public FeatureInfo() {
-    featureSpecs = new ArrayList<FeatureSpecAttribute>();
+    featureSpecs = new ArrayList<>();
   }
 
   /**
    * Create an FeatureInfo instance that is a deep copy of another one.
-   * @param other TODO
+   * @param other instance to copy from
    */
   public FeatureInfo(FeatureInfo other) {
     this.growthStopped = other.growthStopped;
-    featureSpecs = new ArrayList<FeatureSpecAttribute>();
+    featureSpecs = new ArrayList<>();
     for(FeatureSpecAttribute attr : other.getAttributes()) {
       featureSpecs.add(attr.clone());
     }
@@ -72,7 +72,7 @@ public class FeatureInfo implements Serializable {
   
   /**
    * Add a new FeatureSpecAttribut and assign its id.
-   * @param attr TODO
+   * @param attr feature spec attribute
    */
   public void add(FeatureSpecAttribute attr) {    
     featureSpecs.add(attr);
@@ -80,7 +80,7 @@ public class FeatureInfo implements Serializable {
   }
   
   /**
-   * TODO
+   * Stop growth.
    */
   public void stopGrowth() {
     // make sure that all alphabets we have stored with some of the featureSpecs are
@@ -92,15 +92,15 @@ public class FeatureInfo implements Serializable {
   }
 
   /**
-   * TODO
+   * Start growth.
    */
   public void startGrowth() {
     growthStopped = false;
   }
 
   /**
-   * TODO
-   * @return TODO
+   * Get flag if growth is currently stopped.
+   * @return flag
    */
   public boolean growthStopped() {
     return growthStopped;
@@ -112,30 +112,30 @@ public class FeatureInfo implements Serializable {
   protected ScalingMethod globalScalingMethod = ScalingMethod.NONE;
   
   /**
-   * TODO
-   * @param sm TODO
+   * Set the global scaling method.
+   * @param sm scaling method
    */
   public void setGlobalScalingMethod(ScalingMethod sm) {
     globalScalingMethod = sm;
   }
   
   /**
-   * TODO
-   * @return TODO
+   * Get the global scaling method.
+   * @return scaling method
    */
   public ScalingMethod getGlobalScalingMethod() {
     return globalScalingMethod;
   }
   
   /**
-   * TODO
-   * @return TODO
+   * Get list of attributes/
+   * @return attribute list
    */
   public List<FeatureSpecAttribute> getAttributes() { return featureSpecs; }
   
   /**
-   * TODO
-   * @param dirFile TODO
+   * Save instance to the directory.
+   * @param dirFile directory to save to
    */
   public void save(File dirFile) {
     try (OutputStream os = new FileOutputStream(new File(dirFile,FILENAME_FEATUREINFO));
@@ -148,9 +148,9 @@ public class FeatureInfo implements Serializable {
   }
   
   /**
-   * TODO
-   * @param dirURL TODO
-   * @return TODO
+   * Load feature info from directory.
+   * @param dirURL directory to load from
+   * @return new FeatuereInfo instance
    */
   public static FeatureInfo load(URL dirURL) {    
     URL infoFile = newURL(dirURL,FILENAME_FEATUREINFO);

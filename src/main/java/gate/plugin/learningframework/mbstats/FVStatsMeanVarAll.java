@@ -35,8 +35,8 @@ import java.util.List;
 public class FVStatsMeanVarAll implements FeatureVectorStats {
 
   /**
-   * TODO 
-   * @param instances TODO
+   * Constructor from instance list.
+   * @param instances instances
    */
   public FVStatsMeanVarAll(InstanceList instances) {
     for(Instance instance : instances) {
@@ -46,9 +46,9 @@ public class FVStatsMeanVarAll implements FeatureVectorStats {
     finish();
   }
   
-  List<PerFeatureStats> pfs = new ArrayList<PerFeatureStats>();
-  int nrInstances = 0;
-  boolean immutable = false;
+  protected List<PerFeatureStats> pfs = new ArrayList<PerFeatureStats>();
+  protected int nrInstances = 0;
+  protected boolean immutable = false;
   
   @Override
   public void addFeatureVector(FeatureVector fv) {
@@ -93,11 +93,13 @@ public class FVStatsMeanVarAll implements FeatureVectorStats {
         pf.sumOfSquares = value*value;
         pf.min = value;
         pf.max = value;
-        if(value == 0.0 || value == 1.0) pf.binary = true; else pf.binary = false;
+        pf.binary = value == 0.0 || value == 1.0;
       } else {
         pf.sum += value;
         pf.sumOfSquares += value*value;
-        if(pf.binary == true && value != 0.0 && value != 1.0) pf.binary = false;
+        if(pf.binary == true && value != 0.0 && value != 1.0) {
+          pf.binary = false;
+        }
       }
       // we re-calculate mean and variance immediately
       pf.mean = pf.sum / nrInstances;
@@ -118,6 +120,7 @@ public class FVStatsMeanVarAll implements FeatureVectorStats {
   }
 
   
+  @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("FVStatsMeanVarAll{");
@@ -125,7 +128,9 @@ public class FVStatsMeanVarAll implements FeatureVectorStats {
     sb.append(",");
     int i = 0;
     for(PerFeatureStats pf : pfs) {
-      if(i!=0) sb.append(",");
+      if(i!=0) {
+        sb.append(",");
+      }
       sb.append(i++);
       sb.append("=");
       if(pf==null) {

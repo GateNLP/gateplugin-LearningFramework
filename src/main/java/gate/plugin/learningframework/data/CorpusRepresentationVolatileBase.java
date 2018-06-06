@@ -35,7 +35,7 @@ import org.apache.log4j.Logger;
  */
 public abstract class CorpusRepresentationVolatileBase extends CorpusRepresentation {
 
-  Logger logger = org.apache.log4j.Logger.getLogger(CorpusRepresentationVolatileBase.class);
+  private Logger LOGGER = org.apache.log4j.Logger.getLogger(CorpusRepresentationVolatileBase.class);
 
   
   

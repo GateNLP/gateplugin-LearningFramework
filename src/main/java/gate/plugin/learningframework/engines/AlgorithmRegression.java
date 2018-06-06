@@ -38,23 +38,23 @@ public enum AlgorithmRegression implements Algorithm {
   private AlgorithmRegression() {
     
   }
-  private AlgorithmRegression(Class engineClass, Class algorithmClass) {
+  private AlgorithmRegression(Class<?> engineClass, Class<?> algorithmClass) {
     this.engineClass = engineClass;
     this.trainerClass = algorithmClass;
     this.algorithmKind = AlgorithmKind.REGRESSOR;
   }
-  private Class engineClass;
-  private Class trainerClass;
+  private Class<?> engineClass;
+  private Class<?> trainerClass;
   private AlgorithmKind algorithmKind;
   @Override
-  public Class getEngineClass() { return engineClass; }
+  public Class<?> getEngineClass() { return engineClass; }
   @Override
-  public Class getTrainerClass() { return trainerClass; }
+  public Class<?> getTrainerClass() { return trainerClass; }
   @Override 
   public AlgorithmKind getAlgorithmKind() { return algorithmKind; }
 
   @Override
-  public void setTrainerClass(Class trainerClass) {
+  public void setTrainerClass(Class<?> trainerClass) {
     this.trainerClass = trainerClass;
   }
 }

@@ -155,10 +155,10 @@ public class FeatureExtractionBase {
     String internalFeatureName;
     String attrKind = attr.getCode();
     if(attrKind.equals("L")) {
-      attrKind = attrKind + listEl;
+      attrKind += listEl;
     }
     if(attrKind.equals("N")) {
-      attrKind = attrKind + ((FeatureSpecNgram)attr).number;
+      attrKind += ((FeatureSpecNgram)attr).number;
     }
     if (attr.name == null || attr.name.isEmpty()) {
       internalFeatureName = attr.annType + TYPESEP + attr.feature + NAMESEP + attrKind;
@@ -174,8 +174,8 @@ public class FeatureExtractionBase {
    * This generates the prefix up to and including the NAMESEP, but 
    * not including the actual indicator for the attribute type (A/N/L).
    * 
-   * @param attr TODO
-   * @return  TODO
+   * @param attr the feature spec attribute instance
+   * @return feature name prefix string
    */
   public static String featureNamePrefix(FeatureSpecAttribute attr) {
     String internalFeatureName;
@@ -217,14 +217,19 @@ public class FeatureExtractionBase {
   }
   
   /**
-   * This creates, for every named feature, a map String to Object which 
-   * contains the following entries:
-   * - name: the name of the feature
-   * - attrid: the id/index of the attribute
-   * - kind: the "kind", one of N, A or L
+   * Create an info map for all named features.
    * 
-   * @param attrs TODO
-   * @return  TODO
+   * This creates, for every named feature, a map String to Object which 
+   *  contains the following entries:
+   * 
+   * name: the name of the feature
+   * 
+   * attrid: the id/index of the attribute
+   * 
+   * kind: the "kind", one of N, A or L
+   * 
+   * @param attrs list of feature spec attribute instance
+   * @return info map
    */
   public static List<Map<String,Object>> featureSpecAttributes2FeatureInfos(List<FeatureSpecAttribute> attrs) {
     List<Map<String,Object>> fnames = new ArrayList<>();    

@@ -71,7 +71,7 @@ public class CorpusExporterMRARFF extends CorpusExporterMR {
     PrintStream headerOut = null;
     try {
       headerOut = new PrintStream(new FileOutputStream(headerOnlyFile));
-    } catch (Exception ex) {
+    } catch (FileNotFoundException ex) {
       throw new RuntimeException("Could not open "+headerOnlyFile.getAbsolutePath(),ex);
     }
     PrintStream dataOut = null;
@@ -161,11 +161,14 @@ public class CorpusExporterMRARFF extends CorpusExporterMR {
    * Also, a backslash is escaped with a backslash.
    * If any character needed to be escaped, the whole string is quoted. 
    * The string is also quoted if it contains curly braces.
-   * @param what TODO
-   * @return  TODO
+   * 
+   * @param what the string to escape
+   * @return  escaped string
    */
   public static String escape4Arff(String what) {
-  	if(what == null) what = "";
+  	if(what == null) {
+          what = "";
+          }
   	if(what.trim().isEmpty()) {
   		return "'" + what + "'";
   	}
@@ -178,10 +181,10 @@ public class CorpusExporterMRARFF extends CorpusExporterMR {
   }
   
   /**
-   * TODO
-   * @param alph TODO
-   * @param mvt TODO
-   * @return TODO
+   * Convert alphabet to ARFF declaration string.
+   * @param alph Mallet alphabet
+   * @param mvt missing value treatment setting
+   * @return ARFF declaration
    */
   public String alphabet2Arff(Alphabet alph, MissingValueTreatment mvt) {
     // NOTE: mvt can be null, if this is used for a target!!
@@ -200,12 +203,14 @@ public class CorpusExporterMRARFF extends CorpusExporterMR {
   
   /**
    * Convert an instance to the ARFF representation.
+   * 
    * This does not include a final new-line character!
    * NOTE: this returns null if the instance is flagged that it should
    * be ignored because it contains a missing value. 
-   * @param inst TODO
-   * @param attrs TODO
-   * @return  TODO
+   * 
+   * @param inst instance
+   * @param attrs attributes
+   * @return  arff data line
    */
   public String instance2WekaArffLine(Instance inst, Attributes attrs) {
     return instance2WekaArffLine(inst,attrs,true);
@@ -218,8 +223,9 @@ public class CorpusExporterMRARFF extends CorpusExporterMR {
       Object ignore = inst.getProperty(FeatureExtractionMalletSparse.PROP_IGNORE_HAS_MV);    
       // If the flag says the instance should get ignored, return null
       // to indicate to the caller that this is an ignored instance.
-      if(ignore != null && ignore.equals(true)) 
+      if(ignore != null && ignore.equals(true)) {
         return null;
+      }
     }
     Double instanceWeight = (Double)inst.getProperty("instanceWeight");
     Object data = inst.getData();
@@ -231,10 +237,11 @@ public class CorpusExporterMRARFF extends CorpusExporterMR {
       // for(int idx : vector.getIndices) 
       for(int i=0; i<vector.numLocations(); i++) {   
         int idx = vector.indexAtLocation(i);
-        if(first) 
+        if(first) { 
           first = false;
-        else 
-          sb.append(", "); 
+        } else {
+          sb.append(", ");
+        } 
         sb.append(idx);
         sb.append(" ");
         double value = vector.valueAtLocation(i);

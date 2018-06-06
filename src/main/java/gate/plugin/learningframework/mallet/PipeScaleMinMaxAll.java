@@ -37,14 +37,14 @@ import java.util.List;
  */
 public class PipeScaleMinMaxAll extends Pipe implements Serializable {
 
-  double min[];
-  double max[];
-  boolean normalize[];
+  protected double min[];
+  protected double max[];
+  protected boolean normalize[];
   
   /**
-   * TODO
-   * @param alphabet TODO
-   * @param stats TODO
+   * Constructor from alphabet and feature stats.
+   * @param alphabet alphabet
+   * @param stats feature stats
    */
   public PipeScaleMinMaxAll(Alphabet alphabet, FVStatsMeanVarAll stats) {
     super(alphabet, null);

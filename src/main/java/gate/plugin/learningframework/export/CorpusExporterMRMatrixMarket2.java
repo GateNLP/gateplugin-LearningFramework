@@ -30,6 +30,7 @@ import gate.plugin.learningframework.features.FeatureExtractionMalletSparse;
 import gate.plugin.learningframework.mallet.NominalTargetWithCosts;
 import gate.util.GateRuntimeException;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.text.DecimalFormat;
 
@@ -67,7 +68,7 @@ public class CorpusExporterMRMatrixMarket2 extends CorpusExporterMR {
     try {
       outDep = new PrintStream(outFileDep);
       outIndep = new PrintStream(outFileIndep);
-    } catch (Exception ex) {
+    } catch (FileNotFoundException ex) {
       throw new GateRuntimeException("Could not open output file ",ex);
     }
     // NOTE: the following code is based on simple reverse engineering of the format
@@ -121,7 +122,9 @@ public class CorpusExporterMRMatrixMarket2 extends CorpusExporterMR {
     for(Instance instance : instances) {
       rowNr++;
       Boolean ignoreInstance = (Boolean)instance.getProperty(FeatureExtractionMalletSparse.PROP_IGNORE_HAS_MV);
-      if(ignoreInstance != null && ignoreInstance) continue;
+      if(ignoreInstance != null && ignoreInstance) {
+        continue;
+      }
       // to export instance weights, we check the first instance if a weight is set: 
       // if yes, then a third file is created which will contain the weights for each instance
       Object instanceWeightObject = instance.getProperty("instanceWeight");
@@ -129,7 +132,7 @@ public class CorpusExporterMRMatrixMarket2 extends CorpusExporterMR {
         if(instanceWeightObject !=null) {
           try {
             outInstWeights = new PrintStream(outFileInstWeights);
-          } catch (Exception ex) {
+          } catch (FileNotFoundException ex) {
             throw new GateRuntimeException("Could not open output file "+outFileInstWeights,ex);
           }        
           outInstWeights.println("%%MatrixMarket matrix coordinate real general\n%");
@@ -171,7 +174,7 @@ public class CorpusExporterMRMatrixMarket2 extends CorpusExporterMR {
             NominalTargetWithCosts lwc = (NominalTargetWithCosts)label.getEntry();
             try {
               outCosts = new PrintStream(outFileCosts);
-            } catch (Exception ex) {
+            } catch (FileNotFoundException ex) {
               throw new GateRuntimeException("Could not open output file "+outFileCosts,ex);
             }        
             outCosts.println("%%MatrixMarket matrix coordinate real general\n%");

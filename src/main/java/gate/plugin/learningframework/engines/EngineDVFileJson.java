@@ -93,8 +93,9 @@ public abstract class EngineDVFileJson extends EngineDV {
   }
   
   /**
-   * TODO
-   * @return TODO
+   * Get the command path to run for training.
+   * 
+   * @return the training command path
    */
   protected String getCommandPathTrain()  {
     File wrapperRoot = new File(dataDir, WRAPPER_NAME);
@@ -104,8 +105,9 @@ public abstract class EngineDVFileJson extends EngineDV {
   }
 
   /**
-   * TODO
-   * @return TODO
+   * Get the command path to run for application.
+   * 
+   * @return application command path
    */
   protected String getCommandPathApply() {
     File wrapperRoot = new File(dataDir, WRAPPER_NAME);
@@ -115,8 +117,8 @@ public abstract class EngineDVFileJson extends EngineDV {
   }
   
   /**
-   * TODO
-   * @return TODO
+   * Get the shell extensions for the operating system.
+   * @return shell extension, including the dot
    */
   protected String getShellExtension() {
     return getOsType() == OsType.LINUXLIKE ? ".sh" : ".cmd";
@@ -125,7 +127,7 @@ public abstract class EngineDVFileJson extends EngineDV {
   /**
    * Return LINUXLIKE, WINDOWSLIKE, or throw an exception for anything else
    * 
-   * @return  TODO
+   * @return  OS type
    */
   protected OsType getOsType() {
     boolean linuxLike = System.getProperty("file.separator").equals("/");
@@ -141,7 +143,7 @@ public abstract class EngineDVFileJson extends EngineDV {
   }
   
   /**
-   * TODO
+   * Known OS types.
    */
   public enum OsType {
     WINDOWSLIKE,
@@ -150,7 +152,7 @@ public abstract class EngineDVFileJson extends EngineDV {
   
   /**
    * Read a WRAPPERNAME.yaml file from the data dir, if it exists.
-   * @return  TODO
+   * @return the map of settings 
    */
   @SuppressWarnings("unchecked")
   public Map<String,String> getWrapperConfig() {
@@ -163,7 +165,7 @@ public abstract class EngineDVFileJson extends EngineDV {
       } catch (FileNotFoundException | UnsupportedEncodingException ex) {
         throw new GateRuntimeException("Could not load yaml file "+wrapperInfoFile,ex);
       }    
-      Map map = null;
+      Map<String,String> map = null;
       if(obj instanceof Map) {
         map = (Map<String,String>)obj;
       } else {
@@ -187,14 +189,6 @@ public abstract class EngineDVFileJson extends EngineDV {
     return corpusRepresentation; 
   }
   
-  /**
-   * TODO
-   * @param directory TODO
-   * @param algorithm TODO
-   * @param parms TODO
-   * @param featureInfo TODO
-   * @param targetType TODO
-   */
   @Override
   protected void initWhenCreating(URL directory, Algorithm algorithm, String parms, FeatureInfo featureInfo, TargetType targetType) {
     dataDir = Files.fileFromURL(directory);
@@ -237,7 +231,7 @@ public abstract class EngineDVFileJson extends EngineDV {
 
     
     // Start the process
-    ArrayList<String> finalCommand = new ArrayList<String>();
+    ArrayList<String> finalCommand = new ArrayList<>();
     String modelBaseName = new File(dataDir, WRAPPER_NAME+".model").getAbsolutePath();
     finalCommand.add(getCommandPathApply());
     finalCommand.add(modelBaseName);
@@ -293,7 +287,7 @@ public abstract class EngineDVFileJson extends EngineDV {
     // first of all copy the wrapper files into the data directory if needed
     Utils4Engines.copyWrapper(WRAPPER_NAME, dataDir);
     
-    ArrayList<String> finalCommand = new ArrayList<String>();
+    ArrayList<String> finalCommand = new ArrayList<>();
     String dataFileName = dataDir.getAbsolutePath()+File.separator;
     String modelBaseName = new File(dataDir, WRAPPER_NAME+".model").getAbsolutePath();
     finalCommand.add(getCommandPathTrain());
@@ -320,7 +314,7 @@ public abstract class EngineDVFileJson extends EngineDV {
     }
     // Create a fake Model jsut to make LF_Apply... happy which checks if this is null
     model = new Object();
-    Map<String,String> env = new HashMap<String,String>();
+    Map<String,String> env = new HashMap<>();
     env.put("WRAPPER_HOME",getWrapperHome());
     process = ProcessSimple.create(dataDir,env,finalCommand);
     process.waitFor();
@@ -342,7 +336,7 @@ public abstract class EngineDVFileJson extends EngineDV {
   public List<ModelApplication> applyModel(AnnotationSet instancesAS, AnnotationSet inputAS, AnnotationSet sequenceAS, String parms) {
     System.err.println("DEBUG: running applyModel");
     ObjectMapper mapper = new ObjectMapper();
-    List<ModelApplication> modelapps = new ArrayList<ModelApplication>();
+    List<ModelApplication> modelapps = new ArrayList<>();
     if(sequenceAS==null) {
       // non-sequences
       List<Annotation> instanceAnnotations = instancesAS.inDocumentOrder();
@@ -370,7 +364,9 @@ public abstract class EngineDVFileJson extends EngineDV {
         Map<String,Object>retMap = (Map<String,Object>)obj;
         // we always expect these keys, having these types!
         String status = (String)retMap.get("status");
-        if(status==null) status = "";
+        if(status==null) {
+          status = "";
+        }
         if(!"ok".equals(status.toLowerCase())) {
           throw new GateRuntimeException("Something went wrong applying the model, got status: "+status);
         }
@@ -379,7 +375,9 @@ public abstract class EngineDVFileJson extends EngineDV {
         ModelApplication ma = null;
         if(info.task.equals(AlgorithmKind.REGRESSOR.toString())) {
           Double output = (Double)retMap.get("output");
-          if(output==null) throw new GateRuntimeException("Did not get a regression result from model");
+          if(output==null) {
+            throw new GateRuntimeException("Did not get a regression result from model");
+          }
           // NOTE: eventually we may get variance or confidence interval boundaries here: "ci_upper"/"ci_lower"/"ci_p"
           // Double variance = (Double)retMap.get("variance");
           ma = new ModelApplication(instanceAnnotation,output); 
@@ -387,7 +385,9 @@ public abstract class EngineDVFileJson extends EngineDV {
           throw new GateRuntimeException("Not implemented yet: task CLUSTERING");
         } else if(info.task.equals(AlgorithmKind.CLASSIFIER.toString())) {
           String output = (String)retMap.get("output");
-          if(output==null) throw new GateRuntimeException("Did not get a classification result from model");
+          if(output==null) {
+            throw new GateRuntimeException("Did not get a classification result from model");
+          }
           // note: the confidence actually may be null (missing in the map) meaning we do not have it
           Double confidence = (Double)retMap.get("confidence");
           // NOTE/TODO: currently the model application can only take lists of confidences, where 
@@ -432,26 +432,32 @@ public abstract class EngineDVFileJson extends EngineDV {
         Map<String,Object>retMap = (Map<String,Object>)obj;
         // we always expect these keys, having these types!
         String status = (String)retMap.get("status");
-        if(status==null) status = "";
+        if(status==null) {
+          status = "";
+        }
         if(!"ok".equals(status.toLowerCase())) {
           throw new GateRuntimeException("Something went wrong applying the model, got status: "+status);
         }
         
         // we expect output to be a list of string and if confidence exists, a list of double
         List<String> output = (List<String>)retMap.get("output");
-        if(output==null) throw new GateRuntimeException("Did not get a classification result from model");
+        if(output==null) {
+          throw new GateRuntimeException("Did not get a classification result from model");
+        }
         // note: the confidence actually may be null (missing in the map) meaning we do not have it
         List<Double>confidence = (List<Double>)retMap.get("confidence");
         
         
-        ModelApplication ma = null;
+        ModelApplication ma;
         if(info.task.equals(AlgorithmKind.SEQUENCE_TAGGER.toString())) {
           // we need to get back as many labels as there are instances in the insts4seq list
           int i = 0;
           for(Annotation ann : instanceAnnotations) {
             // expects class, confidence, sequence span id
             Double conf = null;
-            if(confidence!=null) conf=confidence.get(i);
+            if(confidence!=null) {
+              conf=confidence.get(i);
+            }
             ma = new ModelApplication(ann, output.get(i), conf, seq_id);
             modelapps.add(ma);
             i++;

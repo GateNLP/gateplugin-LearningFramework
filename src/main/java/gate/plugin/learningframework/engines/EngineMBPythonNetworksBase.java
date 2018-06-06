@@ -42,7 +42,9 @@ import gate.util.Files;
 import gate.util.GateRuntimeException;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.AbstractMap;
 import java.util.AbstractMap.SimpleEntry;
@@ -103,28 +105,32 @@ public abstract class EngineMBPythonNetworksBase extends EngineMB {
    * if it exists. 
    * The setting for the [wrappername] wrapper home can be relative in which case it
    * will be resolved relative to the dataDirectory
-   * @param dataDirectory TODO
-   * @param apply TODO
-   * @return  TODO
+   * 
+   * @param dataDirectory model/data directory
+   * @param apply true if apply, otherwise train
+   * @return the file object for the command path
    */
+  @SuppressWarnings("unchecked")
   protected File findWrapperCommand(File dataDirectory, boolean apply) {
     String homeDir = System.getenv(ENV_WRAPPER_HOME);
     String tmp = System.getProperty(PROP_WRAPPER_HOME);
-    if(tmp!=null) homeDir = tmp;
+    if(tmp!=null) {
+      homeDir = tmp;
+    }
     File wrapperInfoFile = new File(dataDirectory,YAML_FILE);
     if(wrapperInfoFile.exists()) {
       Yaml yaml = new Yaml();
       Object obj;
       try {
         obj = yaml.load(new InputStreamReader(new FileInputStream(wrapperInfoFile),"UTF-8"));
-      } catch (Exception ex) {
+      } catch (FileNotFoundException | UnsupportedEncodingException ex) {
         throw new GateRuntimeException("Could not load yaml file "+wrapperInfoFile,ex);
       }    
       tmp = null;
-      Map map = null;
+      Map<String,String> map = null;
       if(obj instanceof Map) {
-        map = (Map)obj;
-        tmp = (String)map.get(YAML_SETTING_WRAPPER_HOME);      
+        map = (Map<String,String>)obj;
+        tmp = map.get(YAML_SETTING_WRAPPER_HOME);      
       } else {
         throw new GateRuntimeException("Info file has strange format: "+wrapperInfoFile.getAbsolutePath());
       }
@@ -133,8 +139,8 @@ public abstract class EngineMBPythonNetworksBase extends EngineMB {
       }      
       // Also get any other settings that may be present:
       // shell command
-      shellcmd = (String)map.get("shellcmd");
-      shellparms = (String)map.get("shellparms");
+      shellcmd = map.get("shellcmd");
+      shellparms = map.get("shellparms");
     }
     if(homeDir == null) {
       throw new GateRuntimeException(WRAPPER_NAME+" home not set, please see https://github.com/GateNLP/gateplugin-LearningFramework/wiki/UsingSklearn");
@@ -156,15 +162,17 @@ public abstract class EngineMBPythonNetworksBase extends EngineMB {
     boolean linuxLike = System.getProperty("file.separator").equals("/");
     boolean windowsLike = System.getProperty("file.separator").equals("\\");
     if(linuxLike) {
-      if(apply) 
+      if(apply) { 
         commandFile = new File(new File(wrapperHome,"bin"),SCRIPT_APPLY_BASENAME+".sh");
-      else
+      } else {
         commandFile = new File(new File(wrapperHome,"bin"),SCRIPT_TRAIN_BASENAME+".sh");
+      }
     } else if(windowsLike) {
-      if(apply) 
+      if(apply) { 
         commandFile = new File(new File(wrapperHome,"bin"),SCRIPT_APPLY_BASENAME+".cmd");
-      else
-        commandFile = new File(new File(wrapperHome,"bin"),SCRIPT_TRAIN_BASENAME+".cmd");      
+      } else {
+        commandFile = new File(new File(wrapperHome,"bin"),SCRIPT_TRAIN_BASENAME+".cmd");
+      }      
     } else {
       throw new GateRuntimeException("It appears this OS is not supported");
     }
@@ -183,9 +191,12 @@ public abstract class EngineMBPythonNetworksBase extends EngineMB {
   @Override
   protected void loadModel(URL directoryURL, String parms) {
     File directory = null;
-    if("file".equals(directoryURL.getProtocol())) directory = Files.fileFromURL(directoryURL);
-    else throw new GateRuntimeException("The dataDirectory for WekaWrapper must be a file: URL not "+directoryURL);
-    ArrayList<String> finalCommand = new ArrayList<String>();
+    if("file".equals(directoryURL.getProtocol())) {
+      directory = Files.fileFromURL(directoryURL);
+    } else {
+      throw new GateRuntimeException("The dataDirectory for WekaWrapper must be a file: URL not "+directoryURL);
+    }
+    ArrayList<String> finalCommand = new ArrayList<>();
     // we need the corpus representation here! Normally this is done from loadEngine and after
     // load model, but we do it here. The load crm method only loads anything if it is still
     // null, so we will do this only once anyway.
@@ -230,7 +241,7 @@ public abstract class EngineMBPythonNetworksBase extends EngineMB {
 
   @Override
   public void trainModel(File dataDirectory, String instanceType, String parms) {
-    ArrayList<String> finalCommand = new ArrayList<String>();
+    ArrayList<String> finalCommand = new ArrayList<>();
     CorpusRepresentationMalletTarget data = (CorpusRepresentationMalletTarget)corpusRepresentation;
     SimpleEntry<String,Integer> modeAndNrC = findOutMode(data);
     String mode = modeAndNrC.getKey();
@@ -277,7 +288,7 @@ public abstract class EngineMBPythonNetworksBase extends EngineMB {
     //}
     // Create a fake Model jsut to make LF_Apply... happy which checks if this is null
     model = MODEL_INSTANCE;
-    Map<String,String> env = new HashMap<String,String>();
+    Map<String,String> env = new HashMap<>();
     env.put(ENV_WRAPPER_HOME,wrapperhome);
     process = ProcessSimple.create(dataDirectory,env,finalCommand);
     process.waitFor();
@@ -296,12 +307,12 @@ public abstract class EngineMBPythonNetworksBase extends EngineMB {
     data.stopGrowth();
     int nrCols = data.getPipe().getDataAlphabet().size();
     //System.err.println("Running EngineSklearn.applyModel on document "+instanceAS.getDocument().getName());
-    List<ModelApplication> gcs = new ArrayList<ModelApplication>();
+    List<ModelApplication> gcs = new ArrayList<>();
     LFPipe pipe = (LFPipe)data.getRepresentationMallet().getPipe();
     ArrayList<String> classList = null;
     // If we have a classification problem, pre-calculate the class label list
     if(pipe.getTargetAlphabet() != null) {
-      classList = new ArrayList<String>();
+      classList = new ArrayList<>();
       for(int i = 0; i<pipe.getTargetAlphabet().size(); i++) {
         String labelstr = pipe.getTargetAlphabet().lookupObject(i).toString();
         classList.add(labelstr);
@@ -315,12 +326,13 @@ public abstract class EngineMBPythonNetworksBase extends EngineMB {
     // - colinds: for the k-th value which column number (location index) it is in
     // - shaperows: number of rows in total
     // - shapecols: maximum number of cols in a vector
-    Map map = new HashMap<String,Object>();
-    if(classList==null)
+    Map<String,Object> map = new HashMap<>();
+    if(classList==null) {
       map.put("cmd", "AR");
-    else 
+    } else {
       map.put("cmd","AC");
-    ArrayList<double[]> rows = new ArrayList<double[]>();
+    }
+    ArrayList<double[]> rows = new ArrayList<>();
     int rowIndex = 0;
     List<Annotation> instances = instanceAS.inDocumentOrder();
     for(Annotation instAnn : instances) {
@@ -369,7 +381,7 @@ public abstract class EngineMBPythonNetworksBase extends EngineMB {
     @SuppressWarnings("unchecked")
     ArrayList<ArrayList<Double>> probas = (ArrayList<ArrayList<Double>>)response.get("probas");
     
-    ModelApplication gc = null;
+    ModelApplication gc;
     
     // now check if the mallet representation and the weka process agree 
     // on if we have regression or classification
@@ -443,7 +455,7 @@ public abstract class EngineMBPythonNetworksBase extends EngineMB {
         }
       }
     } 
-    AbstractMap.SimpleEntry<String,Integer> ret = new AbstractMap.SimpleEntry<String, Integer>(mode,nrClasses);
+    AbstractMap.SimpleEntry<String,Integer> ret = new AbstractMap.SimpleEntry<>(mode,nrClasses);
     return ret;
   }
   

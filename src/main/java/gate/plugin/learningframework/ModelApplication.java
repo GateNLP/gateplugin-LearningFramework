@@ -204,12 +204,12 @@ public class ModelApplication {
    * NOTE: originally, this was just using B/I/O, we now changed to using Type|B
    * Type|I and O. However, this should really get moved to the corresponding SeqEncode subclass.
    * 
-   * @param unused TODO
-   * @param instanceAS TODO
-   * @param outputAS TODO
-   * @param outputAnnType TODO
-   * @param minConfidence  TODO
-   * @param seqEncoder  TODO
+   * @param unused currently unused, API will change
+   * @param instanceAS instance annotation set
+   * @param outputAS output annotation set
+   * @param outputAnnType output annotation type
+   * @param minConfidence minimum confidence for making prediction, if null always
+   * @param seqEncoder sequence encoder instance 
    */
   public static void addSurroundingAnnotations( 
           AnnotationSet unused, 
@@ -354,10 +354,10 @@ public class ModelApplication {
    * If confidence constraint is satisfied, add Annotation and return it, otherwise
    * add nothing and return null.
    * 
-   * @param annToAdd TODO
-   * @param outputAS TODO
-   * @param minConfidence TODO
-   * @return TODO
+   * @param annToAdd AnnToAdd instance
+   * @param outputAS output annotation set
+   * @param minConfidence minimum confidence for prediction, if null always predict
+   * @return newly created annotation or null if no annotation should get added
    */
   private static Annotation addSequenceAnn(AnnToAdd annToAdd, AnnotationSet outputAS, Double minConfidence) {
     Double entityConfidence = annToAdd.conf == null ? null : annToAdd.conf / annToAdd.len;

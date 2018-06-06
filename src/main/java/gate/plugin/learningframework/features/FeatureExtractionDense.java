@@ -57,11 +57,11 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
   
   /**
    * Dispatch to the proper helper method for extracting a feature of that type.
-   * @param inst TODO
-   * @param att TODO
-   * @param inputAS TPDP
-   * @param instanceAnnotation TODO 
-   * @return   TODO
+   * @param inst instance representation
+   * @param att attribute
+   * @param inputAS input annotation set
+   * @param instanceAnnotation instance annotation
+   * @return  updated instance representation
    */
   public static InstanceRepresentation extractFeature(
           InstanceRepresentation inst,
@@ -113,11 +113,11 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
    * value or the backend is able to handle data where the value is sometimes a list
    * and sometimes not.
    * 
-   * @param inst TODO
-   * @param att TODO
-   * @param inputASname TODO
-   * @param instanceAnnotation TODO
-   * @param doc TODO
+   * @param inst instance representation
+   * @param att attribute
+   * @param inputAS input annotation set
+   * @param instanceAnnotation instance anntoation
+   * @return modified instance representation
    */
   private static InstanceRepresentation extractFeatureHelper(
           InstanceRepresentation inst,
@@ -204,6 +204,7 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
    * @param al the feature specification
    * @param inputAS the annotation set that contains all relevant annotations
    * @param instanceAnnotation the actual instance annotation
+   * @return modified instance representation
    */
   private static InstanceRepresentation extractFeatureHelper(
           InstanceRepresentation inst,
@@ -276,7 +277,7 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
       if (withins.size() != 1) {
         LOGGER.warn("More than one covering WITHIN annotation for " + instanceAnnotation + " in document " + doc.getName());
       }
-      if (withins.size() == 0) {
+      if (withins.isEmpty()) {
         LOGGER.warn("No covering WITHIN annotation for " + instanceAnnotation + " in document " + doc.getName());
         for (int i=from; i <= to; i++) {
           inst = inst.setFeature(featureName(al,i), al.missingValue());
@@ -317,7 +318,7 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
             sourceAnnotation = ann;
           }
         }
-      } else if (overlappings.size() == 0) {
+      } else if (overlappings.isEmpty()) {
         // there is no overlappign annotation 
         // For lists we do not treat this as a missing value and instead 
         // just do not create anything for this instance annotation
@@ -426,7 +427,7 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
     // leave the featureName vector untouched.
     if (al.size() < number) {
       // return an empty list, we alway need the feature to be there!
-      inst = inst.setFeature(featureName(ng,0), new ArrayList<String>());
+      inst = inst.setFeature(featureName(ng,0), new ArrayList<>());
       return inst;
     }
     // this will hold the actual token strings to use for creating the n-grams
@@ -501,7 +502,7 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
           sb.append(NGRAMSEP);
         }
         sb.append(strings.get(i + j));
-        score = score * scores.get(i + j);
+        score *= scores.get(i + j);
       }
       String ngram = sb.toString();
             ngramlist.add(ngram);
@@ -516,24 +517,6 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
    * Do the actual hard work of extracting a feature and adding it to the Mallet feature vector.
    * This is used to do the actual extraction for simple attributes and attribute lists.
    *
-   * @param name the name of the feature as defined in the attribute specification or an empty
-   * string
-   * @param internalFeatureIndicator the part of the feature name that indicates the type of
-   * attribute specification, e.g. "A" for attribute or something like "L-3" for attribute list
-   * @param inst the mallet instance
-   * @param sourceAnnotation the annotation from which to extract the feature value
-   * @param doc TODO
-   * @param annType the annotation type as defined in the attribute specification. This can be empty
-   * if the original instance annotation is used.
-   * @param featureName the feature name as defined in the attribute specification.
-   * @param alphabet TODO
-   * @param dt TODO
-   * @param mvt TODO
-   * @param codeas TODO
-   * @param listsep TODO
-   * @param specialsymbol: if this is non-null, then an attribute is generated
-   * for some special symbol (e.g. start/stop indicator). In this case, some other parameters 
-   * are usually ignored.
    */
   private static InstanceRepresentation extractFeatureWorker(
           FeatureSpecAttribute attr,
@@ -592,12 +575,12 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
   // *****************************************************************************
 
   /**
-   * TODO
-   * @param inst TODO 
-   * @param targetFeature TODO
-   * @param instanceAnnotation TODO
-   * @param inputAS TODO
-   * @return TODO
+   * Extract a numeric target and update instance representation.
+   * @param inst instance representation
+   * @param targetFeature target feature
+   * @param instanceAnnotation instance annotation
+   * @param inputAS input annotation set
+   * @return updated instance representation
    */
   public static InstanceRepresentation extractNumericTarget(InstanceRepresentation inst, String targetFeature, Annotation instanceAnnotation, AnnotationSet inputAS) {
     Document doc = inputAS.getDocument();
@@ -614,7 +597,7 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
       String asString = obj.toString();
       try {
         value = Double.parseDouble(asString);
-      } catch (Exception ex) {
+      } catch (NumberFormatException ex) {
         throw new GateRuntimeException("Could not convert target value to a double for feature " + targetFeature
                 + " for instance at offset " + gate.Utils.start(instanceAnnotation) + " in document " + doc.getName());
       }
@@ -731,12 +714,12 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
   /**
    * Try and find the attribute that corresponds to the ML featureName.
    *
-   * This requries the instance annotation type because the way how the ML feature is generated
+   * This requires the instance annotation type because the way how the ML feature is generated
    * depends on the instance annotation type.
    *
    * @param attributes the attributes 
-   * @param mlFeatureName  TODO
-   * @param instanceType  TODO
+   * @param mlFeatureName  ML feature name
+   * @param instanceType  instance type
    * @return the attribute
    */
   public static FeatureSpecAttribute lookupAttributeForFeatureName(List<FeatureSpecAttribute> attributes,

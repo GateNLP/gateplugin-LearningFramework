@@ -59,10 +59,11 @@ import org.apache.log4j.Logger;
  * @author Johann Petrak
  */
 public class Parms {
-  private static Logger logger = Logger.getLogger(Parms.class.getName());
-  Map<String,Object> parmValues = new HashMap<String,Object>();
+  private static final Logger LOGGER = Logger.getLogger(Parms.class.getName());
+  private Map<String,Object> parmValues = new HashMap<>();
   /**
    * Create a Parms object that contains the parsed values from the parmString.
+   * 
    * The names are strings which consist of three parts, separated by colons: a short name,
    * a long name, and one of 
    * b if the parameter is boolean and does not have a value, 
@@ -70,12 +71,15 @@ public class Parms {
    * d if the parameter has a double value or i if the parameter has an integer value.
    * B is used for a parameter with an excplicit boolean value.
    * If the value cannot be parsed to the given type, it is equivalent to the parameter missing.
-   * @param names TODO
-   * @param parmString TODO
+   * 
+   * @param names strings indicating short/long name and type of parameter to find 
+   * @param parmString string with the parameters
    */
   public Parms(String parmString, String... names) {
     // just treat a parmString of null equal to the empty string: do nothing
-    if(parmString == null || parmString.isEmpty()) return;
+    if(parmString == null || parmString.isEmpty()) {
+      return;
+    }
     List<String> longNames = new ArrayList<>();
     List<String> types = new ArrayList<>();
     Options options = new Options();
@@ -83,7 +87,7 @@ public class Parms {
       String[] info = name.split(":");
       longNames.add(info[1]);
       types.add(info[2]);
-      options.addOption(info[0], info[1], info[2].equals("b") ? false : true, "");
+      options.addOption(info[0], info[1], !info[2].equals("b"), "");
     }
     DefaultParser parser = new DefaultParser();
     parser.setIgnoreUnknownOptions(true);
@@ -93,7 +97,7 @@ public class Parms {
     } catch (ParseException ex) {
       //System.err.println("Parsing error");
       //ex.printStackTrace(System.err);
-      logger.error("Could not parse parameters: "+parmString,ex);
+      LOGGER.error("Could not parse parameters: "+parmString,ex);
     }
     if(cli != null) {
       for(int i = 0; i<longNames.size(); i++) {
@@ -111,13 +115,13 @@ public class Parms {
         } else if(type.equals("d")) {
           try {
             value = Double.parseDouble(optVal);
-          } catch(Exception ex) {
+          } catch(NumberFormatException ex) {
             System.err.println("Parms: cannot parse value as double, setting to null: "+optVal);
           }
         } else if(type.equals("i")) {
           try {
             value = Integer.parseInt(optVal);
-          } catch(Exception ex) {
+          } catch(NumberFormatException ex) {
             System.err.println("Parms: cannot parse value as int, setting to null: "+optVal);
           }
         } else if(type.equals("B")) {
@@ -132,19 +136,19 @@ public class Parms {
   }
   
   /**
-   * TODO
-   * @param name TODO
-   * @return TODO
+   * Get the value of the parameter.
+   * @param name parameter name
+   * @return value
    */
   public Object getValue(String name) {
     return parmValues.get(name);
   }
   
   /**
-   * TODO
-   * @param name TODO
-   * @param elseValue TODO
-   * @return TODO
+   * Get the value of the parameter or some default value/
+   * @param name parameter name
+   * @param elseValue default value
+   * @return value 
    */
   public Object getValueOrElse(String name, Object elseValue) {
     Object tmp = parmValues.get(name);
@@ -156,8 +160,8 @@ public class Parms {
   }
   
   /**
-   * TODO 
-   * @return TODO
+   * Get number of values.
+   * @return number of values
    */
   public int size() { return parmValues.size(); }
   

@@ -41,7 +41,9 @@ import gate.util.Files;
 import gate.util.GateRuntimeException;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,7 +71,7 @@ import org.yaml.snakeyaml.Yaml;
  */
 public class EngineMBWekaWrapper extends EngineMB {
 
-  ProcessBase process;
+  protected ProcessBase process;
   
   // These variables get set from the wrapper-specific config file, java properties or
   // environment variables.
@@ -108,14 +110,16 @@ public class EngineMBWekaWrapper extends EngineMB {
   private File findWrapperCommand(File dataDirectory, boolean apply) {
     String homeDir = System.getenv(ENV_WRAPPER_HOME);
     String tmp = System.getProperty("gate.plugin.learningframework.wekawrapper.home");
-    if(tmp!=null) homeDir = tmp;
+    if(tmp!=null) {
+      homeDir = tmp;
+    }
     File wekaInfoFile = new File(dataDirectory,"weka.yaml");
     if(wekaInfoFile.exists()) {
       Yaml yaml = new Yaml();
       Object obj;
       try {
         obj = yaml.load(new InputStreamReader(new FileInputStream(wekaInfoFile),"UTF-8"));
-      } catch (Exception ex) {
+      } catch (FileNotFoundException | UnsupportedEncodingException ex) {
         throw new GateRuntimeException("Could not load yaml file "+wekaInfoFile,ex);
       }    
       tmp = null;
@@ -154,15 +158,17 @@ public class EngineMBWekaWrapper extends EngineMB {
     linuxLike = System.getProperty("file.separator").equals("/");
     windowsLike = System.getProperty("file.separator").equals("\\");
     if(linuxLike) {
-      if(apply) 
+      if(apply) { 
         commandFile = new File(new File(wrapperHome,"bin"),"wekaWrapperApply.sh");
-      else
+      } else {
         commandFile = new File(new File(wrapperHome,"bin"),"wekaWrapperTrain.sh");
+      }
     } else if(windowsLike) {
-      if(apply) 
+      if(apply) { 
         commandFile = new File(new File(wrapperHome,"bin"),"wekaWrapperApply.cmd");
-      else
-        commandFile = new File(new File(wrapperHome,"bin"),"wekaWrapperTrain.cmd");      
+      } else {
+        commandFile = new File(new File(wrapperHome,"bin"),"wekaWrapperTrain.cmd");
+      }      
     } else {
       throw new GateRuntimeException("It appears this OS is not supported");
     }
@@ -178,7 +184,7 @@ public class EngineMBWekaWrapper extends EngineMB {
   
   @Override
   protected void loadModel(URL directoryURL, String parms) {
-    ArrayList<String> finalCommand = new ArrayList<String>();
+    ArrayList<String> finalCommand = new ArrayList<>();
     // TODO: for now, we only allow URLs which are file: URLs here.
     // This is because the script wrapping Weka is currently not able to access 
     // the model from any other location. Also, we need to export the 
@@ -187,8 +193,11 @@ public class EngineMBWekaWrapper extends EngineMB {
     // a temporary directory and use the demporary directory also to store 
     // the data! 
     File directoryFile = null;
-    if("file".equals(directoryURL.getProtocol())) directoryFile = Files.fileFromURL(directoryURL);
-    else throw new GateRuntimeException("The dataDirectory for WekaWrapper must be a file: URL");
+    if("file".equals(directoryURL.getProtocol())) {
+      directoryFile = Files.fileFromURL(directoryURL);
+    } else {
+      throw new GateRuntimeException("The dataDirectory for WekaWrapper must be a file: URL");
+    }
     
     // Instead of loading a model, this establishes a connection with the 
     // external weka process. For this, we expect an additional file in the 
@@ -236,13 +245,13 @@ public class EngineMBWekaWrapper extends EngineMB {
 
   @Override
   public void trainModel(File dataDirectory, String instanceType, String parms) {
-    ArrayList<String> finalCommand = new ArrayList<String>();
+    ArrayList<String> finalCommand = new ArrayList<>();
     // TODO: invoke the weka wrapper
     // NOTE: for this the first word in parms must be the full weka class name, the rest are parms
     if(parms == null || parms.trim().isEmpty()) {
       throw new GateRuntimeException("Cannot train using WekaWrapper, algorithmParameter must contain Weka algorithm class as first word");
     }
-    String wekaClass = null;
+    String wekaClass;
     String wekaParms = "";
     parms = parms.trim();
     int spaceIdx = parms.indexOf(" ");
@@ -303,7 +312,7 @@ public class EngineMBWekaWrapper extends EngineMB {
     CorpusRepresentationMalletTarget data = (CorpusRepresentationMalletTarget)corpusRepresentation;
     data.stopGrowth();
     //System.err.println("Running EngineWeka.applyModel on document "+instanceAS.getDocument().getName());
-    List<ModelApplication> gcs = new ArrayList<ModelApplication>();
+    List<ModelApplication> gcs = new ArrayList<>();
     LFPipe pipe = (LFPipe)data.getRepresentationMallet().getPipe();
     for(Annotation instAnn : instanceAS.inDocumentOrder()) {
       Instance inst = data.extractIndependentFeatures(instAnn, inputAS);
@@ -370,8 +379,8 @@ public class EngineMBWekaWrapper extends EngineMB {
         }
         System.err.println();
          */
-        List<String> classList = new ArrayList<String>();
-        List<Double> confidenceList = new ArrayList<Double>();
+        List<String> classList = new ArrayList<>();
+        List<Double> confidenceList = new ArrayList<>();
         for (int i = 0; i < ret.length; i++) {
           int thislabel = i;
           double thisprob = ret[i];

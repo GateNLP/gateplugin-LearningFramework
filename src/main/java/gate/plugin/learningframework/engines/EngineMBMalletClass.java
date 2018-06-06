@@ -59,7 +59,7 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class EngineMBMalletClass extends EngineMBMallet {
 
-  private static Logger logger = Logger.getLogger(EngineMBMalletClass.class);
+  private static Logger LOGGER = Logger.getLogger(EngineMBMalletClass.class);
 
   public EngineMBMalletClass() { }
 
@@ -81,7 +81,7 @@ public class EngineMBMalletClass extends EngineMBMallet {
     }
     CorpusRepresentationMalletTarget data = (CorpusRepresentationMalletTarget)corpusRepresentation;
     data.stopGrowth();
-    List<ModelApplication> gcs = new ArrayList<ModelApplication>();
+    List<ModelApplication> gcs = new ArrayList<>();
     LFPipe pipe = (LFPipe)data.getRepresentationMallet().getPipe();
     Classifier classifier = (Classifier)model;
     // iterate over the instance annotations and create mallet instances 
@@ -91,8 +91,8 @@ public class EngineMBMalletClass extends EngineMBMallet {
       Classification classification = classifier.classify(inst);
       Labeling labeling = classification.getLabeling();
       LabelVector labelvec = labeling.toLabelVector();
-      List<String> classes = new ArrayList<String>(labelvec.numLocations());
-      List<Double> confidences = new ArrayList<Double>(labelvec.numLocations());
+      List<String> classes = new ArrayList<>(labelvec.numLocations());
+      List<Double> confidences = new ArrayList<>(labelvec.numLocations());
       for(int i=0; i<labelvec.numLocations(); i++) {
         classes.add(labelvec.getLabelAtRank(i).toString());
         confidences.add(labelvec.getValueAtRank(i));
@@ -115,12 +115,14 @@ public class EngineMBMalletClass extends EngineMBMallet {
     // But only bother if we have a parameter at all
     if (parms == null || parms.trim().isEmpty()) {
       // no parameters, just instantiate the class
-      Class trainerClass = algorithm.getTrainerClass();
+      Class<?> trainerClass = algorithm.getTrainerClass();
       try {
         @SuppressWarnings("unchecked")
-        Constructor tmpc = trainerClass.getDeclaredConstructor();
-        trainer = (ClassifierTrainer) tmpc.newInstance();
-      } catch (Exception ex) {
+        Constructor<?> tmpc = trainerClass.getDeclaredConstructor();
+        trainer = tmpc.newInstance();
+      } catch (IllegalAccessException | IllegalArgumentException | 
+              InstantiationException | NoSuchMethodException | 
+              SecurityException | InvocationTargetException ex) {
         throw new GateRuntimeException("Could not create trainer instance for " + trainerClass, ex);
       }
     } else {      
@@ -131,12 +133,13 @@ public class EngineMBMalletClass extends EngineMBMallet {
         int maxDepth = (int)ps.getValueOrElse("maxDepth", 0);
         int minNumInsts = (int)ps.getValueOrElse("minNumInsts", 2);
         boolean prune = (boolean)ps.getValueOrElse("prune",true);
-        C45Trainer c45trainer = null;
+        C45Trainer c45trainer;
         if(maxDepth > 0) {
-          if(!prune) 
+          if(!prune) { 
             c45trainer = new C45Trainer(maxDepth,false);
-          else 
-            c45trainer = new C45Trainer(maxDepth,true);          
+          } else {
+            c45trainer = new C45Trainer(maxDepth,true);
+          }          
         } else {
           c45trainer = new C45Trainer(prune);
         }
@@ -188,12 +191,12 @@ public class EngineMBMalletClass extends EngineMBMallet {
       } else {
         // all other algorithms are still just instantiated from the class name, we ignore
         // the parameters
-        logger.warn("IMPORTANT: parameters ignored when creating Mallet trainer " + algorithm.getTrainerClass());
+        LOGGER.warn("IMPORTANT: parameters ignored when creating Mallet trainer " + algorithm.getTrainerClass());
         Class<?> trainerClass = algorithm.getTrainerClass();
         try {
           @SuppressWarnings("unchecked")
           Constructor<?> tmpc = trainerClass.getDeclaredConstructor();
-          trainer = (ClassifierTrainer) tmpc.newInstance();
+          trainer = tmpc.newInstance();
         } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | SecurityException | InvocationTargetException ex) {
           throw new GateRuntimeException("Could not create trainer instance for " + trainerClass, ex);
         }
@@ -206,7 +209,7 @@ public class EngineMBMalletClass extends EngineMBMallet {
   protected void loadModel(URL directory, String parms) {
     URL modelFile = newURL(directory, FILENAME_MODEL);
     Classifier classifier;
-    ObjectInputStream ois = null;
+    ObjectInputStream ois;
     try (InputStream is = modelFile.openStream()) {
       ois = new ObjectInputStream(is);
       classifier = (Classifier) ois.readObject();

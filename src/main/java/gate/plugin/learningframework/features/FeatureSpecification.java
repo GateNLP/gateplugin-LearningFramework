@@ -56,8 +56,8 @@ public class FeatureSpecification {
   private Map<String,String> embeddingId2train = new HashMap<>();
 
   /**
-   * TODO 
-   * @param configFileURL TODO
+   * Constructor from URL
+   * @param configFileURL URL of feature config XML file
    */
   public FeatureSpecification(URL configFileURL) {
     url = configFileURL;
@@ -76,8 +76,8 @@ public class FeatureSpecification {
   }
 
   /**
-   * TODO 
-   * @param configString TODO
+   * Constructor from String
+   * @param configString XML string
    */
   public FeatureSpecification(String configString) {
     SAXBuilder saxBuilder = new SAXBuilder(false);
@@ -94,8 +94,8 @@ public class FeatureSpecification {
   }
 
   /**
-   * TODO
-   * @param configFile TODO
+   * Constructor from File
+   * @param configFile File for feature config XML file
    */
   public FeatureSpecification(File configFile) {
     SAXBuilder saxBuilder = new SAXBuilder(false);
@@ -120,7 +120,7 @@ public class FeatureSpecification {
     Element rootElement = jdomDocConf.getRootElement();
 
     @SuppressWarnings("unchecked")
-    List<Element> elements = (List<Element>)rootElement.getChildren();
+    List<Element> elements = rootElement.getChildren();
     
     int n = 0;
     for (Element element : elements) {
@@ -150,20 +150,29 @@ public class FeatureSpecification {
       if(fs.datatype == Datatype.nominal) {
         if(fs.emb_file.isEmpty()) {
           String tmp_emb_file = embeddingId2file.get(fs.emb_id);
-          if(tmp_emb_file != null) fs.emb_file = tmp_emb_file;
+          if(tmp_emb_file != null) {
+            fs.emb_file = tmp_emb_file;
+          }
         }
         if(fs.emb_dims == 0) {
           Integer tmp_emb_dims = embeddingId2dims.get(fs.emb_id);
-          if(tmp_emb_dims != null) fs.emb_dims = tmp_emb_dims;
+          if(tmp_emb_dims != null) {
+            fs.emb_dims = tmp_emb_dims;
+          }
         }
         if(fs.emb_train.isEmpty()) {
           String tmp_emb_train = embeddingId2train.get(fs.emb_id);
-          if(tmp_emb_train != null) fs.emb_train = tmp_emb_train;
+          if(tmp_emb_train != null) {
+            fs.emb_train = tmp_emb_train;
+          }
         }
         if(fs.emb_minfreq == 0) {
           Integer tmp_emb_minfreq = embeddingId2minfreq.get(fs.emb_id);
-          if(tmp_emb_minfreq != null) fs.emb_minfreq = tmp_emb_minfreq;
-          else fs.emb_minfreq = 1;
+          if(tmp_emb_minfreq != null) {
+            fs.emb_minfreq = tmp_emb_minfreq;
+          } else {
+            fs.emb_minfreq = 1;
+          }
         }
       }
     }
@@ -176,7 +185,9 @@ public class FeatureSpecification {
     
     // the element is the parent, so lets first get the embedding child, if any
     Element emb = getChildOrNull(element, "EMBEDDINGS");
-    if(emb==null) return spec;  // nothing there, nothing to do
+    if(emb==null) {
+      return spec;  // nothing there, nothing to do
+    }
     // get all the possible settings for the embedding
     String emb_id = getChildTextOrElse(emb, "ID", "");
     String emb_file = getChildTextOrElse(emb, "FILE", "");
@@ -202,7 +213,9 @@ public class FeatureSpecification {
       // otherwise the default value in the specification object is unchanged
       // (empty string)
       String have_file = embeddingId2file.get(emb_id);
-      if(have_file != null) spec.emb_file = have_file;
+      if(have_file != null) {
+        spec.emb_file = have_file;
+      }
     }
     if(!emb_train.isEmpty()) {
       if(!emb_train.equals("yes") && !emb_train.equals("no") && !emb_train.equals("mapping") && 
@@ -221,7 +234,9 @@ public class FeatureSpecification {
       }
     } else {
       String have_train = embeddingId2train.get(emb_id);
-      if(have_train != null) spec.emb_train = have_train;
+      if(have_train != null) {
+        spec.emb_train = have_train;
+      }
     }
     if(!emb_dims_str.isEmpty()) {
       Integer have_dims = embeddingId2dims.get(emb_id);
@@ -237,7 +252,9 @@ public class FeatureSpecification {
       }
     } else {
       Integer have_dims = embeddingId2dims.get(emb_id);
-      if(have_dims != null) spec.emb_dims = have_dims;
+      if(have_dims != null) {
+        spec.emb_dims = have_dims;
+      }
     }
     if(!emb_minfreq_str.isEmpty()) {
       Integer have_minfreq = embeddingId2minfreq.get(emb_id);
@@ -253,7 +270,9 @@ public class FeatureSpecification {
       }
     } else {
       Integer have_minfreq = embeddingId2minfreq.get(emb_id);
-      if(have_minfreq != null) spec.emb_minfreq = have_minfreq;
+      if(have_minfreq != null) {
+        spec.emb_minfreq = have_minfreq;
+      }
     }
     spec.emb_id = emb_id;
     return spec;
@@ -268,12 +287,15 @@ public class FeatureSpecification {
       throw new GateRuntimeException("DATATYPE not specified for ATTRIBUTE " + i);
     }
     if(feat.isEmpty()) {
-      if(dtstr == null) dtstr = "bool";
-      else if(!dtstr.equals("bool") && !dtstr.equals("boolean")) {
+      if(dtstr == null) {
+        dtstr = "bool";
+      } else if(!dtstr.equals("bool") && !dtstr.equals("boolean")) {
         throw new GateRuntimeException("DATATYPE must be bool or not specified if no feature given in ATTRIBUTE "+i);
       }
     }
-    if(dtstr.equals("boolean")) dtstr = "bool"; // allow both but internally we use bool to avoid keyword clash.
+    if(dtstr.equals("boolean")) {
+      dtstr = "bool"; // allow both but internally we use bool to avoid keyword clash.
+    }
     Datatype dt = Datatype.valueOf(dtstr);
     // TODO: this should be named ANNOTATIONTYPE or ANNTYPE to avoid confusion
     // with the datatype
@@ -304,7 +326,7 @@ public class FeatureSpecification {
     // the default for missingvaluetreatment is special_value for numeric and 
     // number-coded nominal, but for one-of-k coded values, we use "zero_value"
     // because this is usually how the absence of such values is coded!
-    String missingValueTreatmentStr = "";
+    String missingValueTreatmentStr;
     String featureName4Value = "";
     if(dt==Datatype.nominal && codeas==CodeAs.one_of_k) {
       missingValueTreatmentStr = getChildTextOrElse(attributeElement, "MISSINGVALUETREATMENT", "keep");
@@ -325,8 +347,11 @@ public class FeatureSpecification {
     }
     String withinType = getChildTextOrElse(attributeElement, "WITHIN", null); 
     String defaultMissingValue = "";
-    if(dt == Datatype.bool) defaultMissingValue = "false";
-    else if(dt == Datatype.numeric) defaultMissingValue = "0.0";
+    if(dt == Datatype.bool) {
+      defaultMissingValue = "false";
+    } else if(dt == Datatype.numeric) {
+      defaultMissingValue = "0.0";
+    }
     String missingValueValue = getChildTextOrElse(attributeElement, "MISSINGVALUE", defaultMissingValue);
     
     // TODO: not implemented yet, but we should add this!!
@@ -385,10 +410,11 @@ public class FeatureSpecification {
   
   /**
    * Return the FeatureInfo object for this specification.
+   * 
    * This will always return a new deep copy of the FeatureInfo that corresponds
    * to the information inf the FeatureSepcification. 
    * 
-   * @return  TODO
+   * @return FeatureInfo instance
    */
   public FeatureInfo getFeatureInfo() {
     return new FeatureInfo(featureInfo); // this returns a cloned copy of the original
@@ -408,7 +434,9 @@ public class FeatureSpecification {
     if (children.size() > 1) {
       throw new GateRuntimeException("Element " + parent.getName() + " has more than one nested " + name + " element");
     }
-    if(children.size() == 0) return elseVal;
+    if(children.isEmpty()) {
+      return elseVal;
+    }
     String tmp = parent.getChildTextTrim(name.toUpperCase());
     if(tmp == null) {
       tmp = parent.getChildText(name.toLowerCase());
@@ -425,7 +453,7 @@ public class FeatureSpecification {
     List<Element> children = parent.getChildren(name);
     if (children.size() > 1) {
       throw new GateRuntimeException("Element " + parent.getName() + " has more than one nested " + name + " element");
-    } else if (children.size() == 0) {
+    } else if (children.isEmpty()) {
       return null;
     } else {
       return children.get(0);

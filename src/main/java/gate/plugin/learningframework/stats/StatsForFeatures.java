@@ -47,9 +47,9 @@ public class StatsForFeatures {
   public static final String KEY_FOR_TARGET = "╳TARGET╳";
   
   /**
-   * TODO 
-   * @param featureName TODO
-   * @param value TODO
+   * Add a value to the stats object
+   * @param featureName feature name
+   * @param value value to add
    */
   public void addValue(String featureName, Object value) {
     synchronized(lockingObject) {
@@ -65,9 +65,9 @@ public class StatsForFeatures {
   } // addValue(...)
   
   /**
-   * TODO
-   * @param featureName TODO 
-   * @return TODO
+   * Get the statistics object for the feature.
+   * @param featureName feature
+   * @return stats object
    */
   public Stats getStatistics(String featureName) {
     synchronized(lockingObject) {

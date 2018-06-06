@@ -36,7 +36,7 @@ import org.apache.log4j.Logger;
  */
 public abstract class CorpusRepresentationMallet extends CorpusRepresentationMalletRelated {
 
-  Logger logger = org.apache.log4j.Logger.getLogger(CorpusRepresentationMallet.class);
+  private final Logger logger = org.apache.log4j.Logger.getLogger(CorpusRepresentationMallet.class);
 
   protected InstanceList instances;
 
@@ -47,7 +47,9 @@ public abstract class CorpusRepresentationMallet extends CorpusRepresentationMal
   public Object getRepresentation() { return instances; }
   
   public LFPipe getPipe() {
-    if(instances == null) return null;
+    if(instances == null) {
+      return null;
+    }
     if(instances.getPipe() == null) {
       return null;
     } else {
@@ -59,11 +61,13 @@ public abstract class CorpusRepresentationMallet extends CorpusRepresentationMal
    * Prevent the addition of new features or feature values when instances are added.
    */
   public void stopGrowth() {
-    LFPipe pipe = (LFPipe)instances.getPipe();
-    pipe.getDataAlphabet().stopGrowth();
-    Alphabet ta = pipe.getTargetAlphabet();
-    if(ta != null) ta.stopGrowth();
-    FeatureInfo fi = pipe.getFeatureInfo();
+    LFPipe tmp_pipe = (LFPipe)instances.getPipe();
+    tmp_pipe.getDataAlphabet().stopGrowth();
+    Alphabet ta = tmp_pipe.getTargetAlphabet();
+    if(ta != null) {
+      ta.stopGrowth();
+    }
+    FeatureInfo fi = tmp_pipe.getFeatureInfo();
     fi.stopGrowth();
   }
   
@@ -72,11 +76,13 @@ public abstract class CorpusRepresentationMallet extends CorpusRepresentationMal
    * After a CorpusRepresentationMallet instance is created, growth is enabled by default.
    */
   public void startGrowth() {
-    LFPipe pipe = (LFPipe)instances.getPipe();
-    pipe.getDataAlphabet().startGrowth();
-    Alphabet ta = pipe.getTargetAlphabet();
-    if(ta != null) ta.startGrowth();
-    FeatureInfo fi = pipe.getFeatureInfo();
+    LFPipe tmp_pipe = (LFPipe)instances.getPipe();
+    tmp_pipe.getDataAlphabet().startGrowth();
+    Alphabet ta = tmp_pipe.getTargetAlphabet();
+    if(ta != null) {
+      ta.startGrowth();
+    }
+    FeatureInfo fi = tmp_pipe.getFeatureInfo();
     fi.startGrowth();    
   }
     
@@ -89,10 +95,12 @@ public abstract class CorpusRepresentationMallet extends CorpusRepresentationMal
     } catch (IOException ex) {
       throw new GateRuntimeException("Could not save LFPipe for CorpusRepresentationMallet to "+outFile,ex);
     } finally {
-      if(oos!=null) try {
-        oos.close();
-      } catch (IOException ex) {
-        logger.error("Could not close stream after saving LFPipe to "+outFile, ex);
+      if(oos!=null) {
+        try {
+          oos.close();
+        } catch (IOException ex) {
+          logger.error("Could not close stream after saving LFPipe to "+outFile, ex);
+        }
       }        
     }
   }

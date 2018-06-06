@@ -33,8 +33,11 @@ public abstract class SeqEncoder {
   }
 
   /**
-   * TODO
-   * @return TODO
+   * Return options.
+   * 
+   * TODO: this still needs to get implemented.
+   * 
+   * @return Option settings.
    */
   public Map<String,String> getOptions() { return options; }
   // TODO: not sure yet what the best way is to implement the conversion back from

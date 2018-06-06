@@ -47,8 +47,9 @@ public class Attributes implements Iterable<Attribute> {
    * Generate the attributes object from the information in the pipe.
    * The pipe should be a LFPipe, but we also try to come up with something
    * if it is an ordinary pipe. 
-   * @param pipe  TODO
-   * @param instanceType TODO 
+   * 
+   * @param pipe  mallet pipe
+   * @param instanceType instance type
    */
   public Attributes(Pipe pipe, String instanceType) {
     // first create the attributes (independent vars)    
@@ -93,8 +94,9 @@ public class Attributes implements Iterable<Attribute> {
           if(fsAttrList.datatype == Datatype.bool) {
             attr.alphabet = booleanAlph;
           } else if(fsAttrList.datatype == Datatype.nominal) {
-            if(fsAttrList.codeas == CodeAs.number)
+            if(fsAttrList.codeas == CodeAs.number) {
               attr.alphabet = fsAttrList.alphabet;
+            }
           } 
         } else if(fsAttr instanceof FeatureSpecSimpleAttribute) {
           FeatureSpecSimpleAttribute fsAttrSimple = (FeatureSpecSimpleAttribute)fsAttr;
@@ -104,8 +106,9 @@ public class Attributes implements Iterable<Attribute> {
           if(fsAttrSimple.datatype == Datatype.bool) {
             attr.alphabet = booleanAlph;
           } else if(fsAttrSimple.datatype == Datatype.nominal) {
-            if(fsAttrSimple.codeas == CodeAs.number)
+            if(fsAttrSimple.codeas == CodeAs.number) {
               attr.alphabet = fsAttrSimple.alphabet;
+            }
           }           
         } else if(fsAttr instanceof FeatureSpecNgram) {
           // nothing to do here
@@ -141,8 +144,9 @@ public class Attributes implements Iterable<Attribute> {
    * Get the independent Attribute object for the attribute with that name.
    * If no such attribute exists, return null. The target attribute cannot
    * be retrieved that way, use getTargetAttribute() instead.
-   * @param name TODO
-   * @return  TODO
+   * 
+   * @param name name of attribute to retrieve
+   * @return  the attribute intance
    */
   public Attribute getAttribute(String name) {
     Integer idx = name2index.get(name);
@@ -153,8 +157,8 @@ public class Attributes implements Iterable<Attribute> {
    * Return the independent attribute with the given index.
    * The target attribute cannot be retrieved that way, use getTargetAttribute()
    * instead.
-   * @param index TODO
-   * @return TODO
+   * @param index index of attribute to retrieve
+   * @return the attribute instance
    */
   public Attribute getAttribute(int index) {
     if(index>=attributes.size()) {
@@ -165,15 +169,16 @@ public class Attributes implements Iterable<Attribute> {
   public int nAttributes() {
     return attributes.size();
   }
-  protected Map<String,Integer> name2index = new HashMap<String,Integer>();
-  protected List<Attribute> attributes = new ArrayList<Attribute>();
+  protected Map<String,Integer> name2index = new HashMap<>();
+  protected List<Attribute> attributes = new ArrayList<>();
 
   /**
    * Get the target Attribute.
    * NOTE: the target attribute has index one larger than the highest
    * index of the independent attributes, but this index cannot be used
    * to retrieve it! 
-   * @return TODO
+   * 
+   * @return target attribute instance
    */
   public Attribute getTargetAttribute() {
     return targetAttribute;

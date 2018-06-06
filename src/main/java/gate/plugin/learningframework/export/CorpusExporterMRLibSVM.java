@@ -29,6 +29,7 @@ import gate.plugin.learningframework.engines.Info;
 import gate.plugin.learningframework.features.FeatureExtractionMalletSparse;
 import gate.util.GateRuntimeException;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.text.DecimalFormat;
 
@@ -57,7 +58,7 @@ public class CorpusExporterMRLibSVM extends CorpusExporterMR {
     File outFile = new File(dataDirFile, "data.libsvm");
     try {
       out = new PrintStream(outFile);
-    } catch (Exception ex) {
+    } catch (FileNotFoundException ex) {
       throw new GateRuntimeException("Could not open output file "+outFile,ex);
     }
     // For libSVM format, the all features and the target are always represented 
@@ -76,7 +77,9 @@ public class CorpusExporterMRLibSVM extends CorpusExporterMR {
     DecimalFormat DFf = new DecimalFormat("#.##########");
     for(Instance instance : instances) {
       Boolean ignoreInstance = (Boolean)instance.getProperty(FeatureExtractionMalletSparse.PROP_IGNORE_HAS_MV);
-      if(ignoreInstance) continue;
+      if(ignoreInstance) {
+        continue;
+      }
       Boolean haveMV = (Boolean)instance.getProperty(FeatureExtractionMalletSparse.PROP_HAVE_MV);      
       Object targetObj = instance.getTarget();
       double target = 0.0;

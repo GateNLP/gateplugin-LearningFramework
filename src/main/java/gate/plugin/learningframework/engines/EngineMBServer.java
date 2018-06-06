@@ -114,12 +114,12 @@ public class EngineMBServer extends EngineMB {
     data.stopGrowth();
     int nrCols = data.getPipe().getDataAlphabet().size();
     //System.err.println("Running EngineSklearn.applyModel on document "+instanceAS.getDocument().getName());
-    List<ModelApplication> gcs = new ArrayList<ModelApplication>();
+    List<ModelApplication> gcs = new ArrayList<>();
     LFPipe pipe = (LFPipe)data.getRepresentationMallet().getPipe();
     ArrayList<String> classList = null;
     // If we have a classification problem, pre-calculate the class label list
     if(pipe.getTargetAlphabet() != null) {
-      classList = new ArrayList<String>();
+      classList = new ArrayList<>();
       for(int i = 0; i<pipe.getTargetAlphabet().size(); i++) {
         String labelstr = pipe.getTargetAlphabet().lookupObject(i).toString();
         classList.add(labelstr);
@@ -130,9 +130,9 @@ public class EngineMBServer extends EngineMB {
     // instances per request.
 
     List<Annotation> instances = instanceAS.inDocumentOrder();
-    List<double[]> valuesvec = new ArrayList<double[]>();
-    List<int[]> indicesvec = new ArrayList<int[]>();
-    List<Double> weights = new ArrayList<Double>();
+    List<double[]> valuesvec = new ArrayList<>();
+    List<int[]> indicesvec = new ArrayList<>();
+    List<Double> weights = new ArrayList<>();
     ObjectMapper mapper = new ObjectMapper();
     boolean haveWeights = false;
     for(Annotation instAnn : instances) {
@@ -172,12 +172,15 @@ public class EngineMBServer extends EngineMB {
       weights.add(weight);
     }
     // create the JSON for the request
-    Map<String,Object> data4json = new HashMap<String,Object>();
-    if(!dense)
+    Map<String,Object> data4json = new HashMap<>();
+    if(!dense) {
       data4json.put("indices",indicesvec);
+    }
     data4json.put("values",valuesvec);
     data4json.put("n",nrCols);
-    if(haveWeights) data4json.put("weights",weights);
+    if(haveWeights) {
+      data4json.put("weights",weights);
+    }
     String json = null;
     try {
       json = mapper.writeValueAsString(data4json);
@@ -219,7 +222,7 @@ public class EngineMBServer extends EngineMB {
     @SuppressWarnings("unchecked")
     ArrayList<ArrayList<Number>> targets = (ArrayList<ArrayList<Number>>)responseMap.get("preds");
     
-    ModelApplication gc = null;
+    ModelApplication gc;
     
     // now go through all the instances again and do the target assignment from the vector(s) we got
     int instNr = 0;
@@ -228,8 +231,10 @@ public class EngineMBServer extends EngineMB {
         gc = new ModelApplication(instAnn, (double)targets.get(instNr).get(0));
       } else {
         ArrayList<Number> valsN = targets.get(instNr);
-        ArrayList<Double> vals = new ArrayList<Double>(valsN.size());
-        for(Number valN : valsN) vals.add(valN.doubleValue());
+        ArrayList<Double> vals = new ArrayList<>(valsN.size());
+        for(Number valN : valsN) {
+          vals.add(valN.doubleValue());
+        }
         double target = vals.get(0); // if vals contains just one value, this will be what to use
         if(vals.size()>1) {
           // find the maximum probability and use the index as target
@@ -239,7 +244,7 @@ public class EngineMBServer extends EngineMB {
           for(double val : vals) {
             if(val > maxProb) {
               maxProb = val;
-              bestIndex = (double)curIdx;
+              bestIndex = curIdx;
             }
             curIdx++;
           } // for
@@ -255,10 +260,13 @@ public class EngineMBServer extends EngineMB {
                 instAnn, cl, bestprob, classList, vals);
         } else {
           // create a fake probability distribution with 1.0/0.0 probabilities
-          ArrayList<Double> probs = new ArrayList<Double>(classList.size());
+          ArrayList<Double> probs = new ArrayList<>(classList.size());
           for(int i=0;i<classList.size();i++) {
-            if(i==bestlabel) probs.add(1.0);
-            else probs.add(0.0);
+            if(i==bestlabel) {
+              probs.add(1.0);
+            } else {
+              probs.add(0.0);
+            }
           }
           gc = new ModelApplication(            
                 instAnn, cl, bestprob, classList, probs);

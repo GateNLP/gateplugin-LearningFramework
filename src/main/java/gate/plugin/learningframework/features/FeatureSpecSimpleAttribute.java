@@ -32,19 +32,19 @@ public class FeatureSpecSimpleAttribute extends FeatureSpecAttribute implements 
   private static final long serialVersionUID = -2346560362547132478L;
 
   /**
-   * TODO
-   * @param aname TODO
-   * @param type TODO
-   * @param feature TODO
-   * @param datatype TODO
-   * @param codeas TODO
-   * @param missingValueTreatment TODO
-   * @param missingValueValue TODO
-   * @param scalingMethod TODO
-   * @param transformMethod TODO
-   * @param withinType TODO
-   * @param listsep TODO
-   * @param featureName4Value TODO
+   * Constructor
+   * @param aname attribute name 
+   * @param type attribute type
+   * @param feature feature name
+   * @param datatype datatype
+   * @param codeas code as setting
+   * @param missingValueTreatment missing value treatment
+   * @param missingValueValue missing value 
+   * @param scalingMethod scalign method
+   * @param transformMethod transformation method
+   * @param withinType withing which sequence type
+   * @param listsep list separator string
+   * @param featureName4Value which feature to get the value from
    */
   public FeatureSpecSimpleAttribute(
           String aname, 

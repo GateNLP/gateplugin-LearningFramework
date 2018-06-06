@@ -25,9 +25,9 @@ import java.util.HashMap;
 public class Utils4Engines {
 
   /**
-   * TODO
-   * @param wrapperName TODO
-   * @param targetDirectory TODO
+   * Copy wrapper from plugin JAR to directory.
+   * @param wrapperName name of the wrapper
+   * @param targetDirectory target directory
    */
   public static void copyWrapper(String wrapperName, File targetDirectory) {
     // First of all, check if the target directory already has the directory expected.
@@ -40,9 +40,9 @@ public class Utils4Engines {
   }
 
   /**
-   * TODO
-   * @param targetDir TODO
-   * @param root TODO
+   * Copy resources from plugin jar to target directory.
+   * @param targetDir target directory
+   * @param root root location of resources to copy
    */
   public static void copyResources(File targetDir, String root) {
 

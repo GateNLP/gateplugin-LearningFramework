@@ -43,12 +43,12 @@ public abstract class CorpusExporterMRJsonBase extends CorpusExporterMR {
   // This returns the string representation of the feature vector
 
   /**
-   * TODO
-   * @param fv TODO
-   * @param nrFeatures TODO
-   * @param attrs TODO
-   * @param asString TODO
-   * @return TODO
+   * Return String representation of the feature vector.
+   * @param fv feature vector
+   * @param nrFeatures number of features
+   * @param attrs attributes
+   * @param asString value should be represented as a quoted string
+   * @return the string representation
    */
   public static String featureVector2String(FeatureVector fv, int nrFeatures, Attributes attrs, boolean asString) {
     StringBuilder sb = new StringBuilder();
@@ -101,16 +101,16 @@ public abstract class CorpusExporterMRJsonBase extends CorpusExporterMR {
   }
 
   /**
-   * TODO
-   * @param target TODO
-   * @param targetAlphabet TODO
-   * @param asString TODO
-   * @return TODO
+   * Convert a target to String representation.
+   * @param target the target
+   * @param targetAlphabet target alphabet
+   * @param asString value should get represented as quoted string
+   * @return string representation
    */
   public static String target2String(Object target, LabelAlphabet targetAlphabet, boolean asString) {
     StringBuilder sb = new StringBuilder();
     if (targetAlphabet != null) {
-      Label tl = null;
+      Label tl;
       if (target instanceof Label) {
         tl = (Label) target;
       } else {
