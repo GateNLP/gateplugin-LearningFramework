@@ -318,7 +318,7 @@ public abstract class EngineMBSklearnBase extends EngineMB {
     // - colinds: for the k-th value which column number (location index) it is in
     // - shaperows: number of rows in total
     // - shapecols: maximum number of cols in a vector
-    Map map = new HashMap<String,Object>();
+    Map<String,Object> map = new HashMap<>();
     map.put("cmd", "CSR1");
     ArrayList<Double> values = new ArrayList<>();
     ArrayList<Integer> rowinds = new ArrayList<>();
