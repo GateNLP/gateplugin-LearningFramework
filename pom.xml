@@ -1,9 +1,13 @@
 <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <groupId>uk.ac.gate.plugins</groupId>
+  <artifactId>learningframework</artifactId>
+  <version>4.0-SNAPSHOT</version>
   <name>Learning Framework</name>
   <description>
-    A plugin for the GATE NLP framework that allows to use many different machine learning
-    algorithms for a wide range of NLP-related machine learning tasks.
+    A GATE plugin that provides many different machine learning
+    algorithms for a wide range of NLP-related machine learning tasks like
+    text classification, tagging, or chunking.
   </description>
   <url>https://gatenlp.github.io/gateplugin-LearningFramework/</url>
   <organization>
@@ -25,9 +29,9 @@
     </developer>
   </developers>
   <scm>
-    <connection>scm:git:git://github.com/GateNLP/gateplugin-!!!ID!!!.git</connection>
-    <developerConnection>scm:git:git@github.com:GateNLP/gateplugin-!!!ID!!!.git</developerConnection>
-    <url>https://github.com/GateNLP/gateplugin-!!!ID!!!</url>
+    <connection>scm:git:git://github.com/GateNLP/gateplugin-LearningFramework.git</connection>
+    <developerConnection>scm:git:git@github.com:GateNLP/gateplugin-LearningFramework.git</developerConnection>
+    <url>https://github.com/GateNLP/gateplugin-LearningFramework</url>
   </scm>
   <parent>
     <groupId>uk.ac.gate</groupId>
@@ -35,10 +39,6 @@
     <version>8.5-SNAPSHOT</version>
     <relativePath/>
   </parent>
-  <!-- this is the description of this plugin -->
-  <groupId>uk.ac.gate.plugins</groupId>
-  <artifactId>learningframework</artifactId>
-  <version>4.0-SNAPSHOT</version>
   <licenses>
     <license>
       <name>GNU Lesser General Public License (LGPL), Version 3</name>
