@@ -100,161 +100,160 @@ public class EngineMBMalletSeq extends EngineMBMallet {
     // 
     AlgorithmClassification alg = AlgorithmClassification.valueOf(info.algorithmName);
     System.err.println("DEBUG: our algorithm name is "+alg);
-    if(null == alg) {
-      // Nothing else supported!
-      throw new GateRuntimeException("EngineMalletSeq: unknown/unsupported algorithm: "+alg);
-    } else {
-      switch (alg) {
-        case MalletCRF_SEQ_MR:
-        case MalletCRFSG_SEQ_MR:
-        case MalletCRFVG_SEQ_MR:
-          CRF crf = new CRF(trainingData.getPipe(), null);
-          Parms parms = new Parms(options,
-                  "S:states:s",
-                  "o:orders:s",
-                  "f:ofully:b",
-                  "a:addstart:b",
-                  "v:logViterbiPaths:i",
-                  "t:threads:i",
-                  "sg:stochasticGradient:b",
-                  "wdd:weightDimDensely:b",
-                  "usw:useSparseWeights:b",
-                  "ssut:setSomeUnsupportedTrick:b");
-          String states = (String)parms.getValueOrElse("states", "fully-connected");
-          switch (states) {
-            case "fully-connected":
-              crf.addFullyConnectedStatesForLabels();
-              break;
-            case "as-in":
-              crf.addStatesForLabelsConnectedAsIn(trainingData);
-              break;
-            case "fully-threequarter":
-              crf.addFullyConnectedStatesForThreeQuarterLabels(trainingData);
-              break;
-            case "half":
-              crf.addStatesForHalfLabelsConnectedAsIn(trainingData);
-              break;
-            case "order-n":
-              int[] orders = new int[]{1};
-              String ordersparm = (String)parms.getValueOrElse("orders", "0:1");
-              if(ordersparm.equals("1")) {
-                orders = new int[]{1};
-              } else if(ordersparm.equals("0:1")) {
-                orders = new int[]{0,1};
-              } else if(ordersparm.equals("0:1:2")) {
-                orders = new int[]{0,1,2};
-              } else if(ordersparm.equals("0")) {
-                orders = new int[]{0};
-              } else if(ordersparm.equals("1:2")) {
-                orders = new int[]{1,2};
-              } else if(ordersparm.equals("2")) {
-                orders = new int[]{2};
-              } else {
-                throw new GateRuntimeException("Invalid value for parameter orders: "+ordersparm);
+
+    switch (alg) {
+      case MalletCRF_SEQ_MR:
+      case MalletCRFSG_SEQ_MR:
+      case MalletCRFVG_SEQ_MR:
+        CRF crf = new CRF(trainingData.getPipe(), null);
+        Parms parms = new Parms(options,
+                "S:states:s",
+                "o:orders:s",
+                "f:ofully:b",
+                "a:addstart:b",
+                "v:logViterbiPaths:i",
+                "t:threads:i",
+                "sg:stochasticGradient:b",
+                "wdd:weightDimDensely:b",
+                "usw:useSparseWeights:b",
+                "ssut:setSomeUnsupportedTrick:b");
+        String states = (String) parms.getValueOrElse("states", "fully-connected");
+        switch (states) {
+          case "fully-connected":
+            crf.addFullyConnectedStatesForLabels();
+            break;
+          case "as-in":
+            crf.addStatesForLabelsConnectedAsIn(trainingData);
+            break;
+          case "fully-threequarter":
+            crf.addFullyConnectedStatesForThreeQuarterLabels(trainingData);
+            break;
+          case "half":
+            crf.addStatesForHalfLabelsConnectedAsIn(trainingData);
+            break;
+          case "order-n":
+            int[] orders = new int[]{1};
+            String ordersparm = (String) parms.getValueOrElse("orders", "0:1");
+            if (ordersparm.equals("1")) {
+              orders = new int[]{1};
+            } else if (ordersparm.equals("0:1")) {
+              orders = new int[]{0, 1};
+            } else if (ordersparm.equals("0:1:2")) {
+              orders = new int[]{0, 1, 2};
+            } else if (ordersparm.equals("0")) {
+              orders = new int[]{0};
+            } else if (ordersparm.equals("1:2")) {
+              orders = new int[]{1, 2};
+            } else if (ordersparm.equals("2")) {
+              orders = new int[]{2};
+            } else {
+              throw new GateRuntimeException("Invalid value for parameter orders: " + ordersparm);
+            }
+            boolean ofully = (Boolean) parms.getValueOrElse("ofully", false);
+            crf.addOrderNStates(trainingData, orders, null, null, null, null, ofully);
+            break;
+          default:
+            throw new GateRuntimeException("Unknown value for parameter states: " + states);
+        }
+        boolean addStart = (boolean) parms.getValueOrElse("addstart", true);
+        if (addStart) {
+          crf.addStartState();
+        }
+        boolean wdd = (boolean) parms.getValueOrElse("weightDimDensely", false);
+        if (wdd) {
+          crf.setWeightsDimensionDensely();
+        }
+        // initialize model's weights
+        // TODO: make this conditional on a parm, how does this relate to
+        // weightDimDensely??
+        // !!! This should probably be the same parameter!!!
+        // TODO: second parm should depend on the unsupported trick option!
+        crf.setWeightsDimensionAsIn(trainingData, false);
+        // now depending on which trainer we want we need to do slightly different
+        // things
+        switch (alg) {
+          case MalletCRF_SEQ_MR:
+            // By[Thread]LabelLikelihood
+            // if threads parameter is specified and >0, we use ByThreadLabelLikelihood
+            int threads = (int) parms.getValueOrElse("threads", 0);
+            boolean usw = (boolean) parms.getValueOrElse("useSparseWeights", false);
+            boolean ssut = (boolean) parms.getValueOrElse("setSomeUnsupportedTrick", false);
+            if (threads <= 0) {
+              CRFTrainerByLabelLikelihood tr = new CRFTrainerByLabelLikelihood(crf);
+              if (usw) {
+                tr.setUseSparseWeights(true);
               }
-              boolean ofully = (Boolean)parms.getValueOrElse("ofully", false);
-              crf.addOrderNStates(trainingData, orders, null, null, null, null, ofully);
-              break;
-            default:
-              throw new GateRuntimeException("Unknown value for parameter states: "+states);
-          } boolean addStart = (boolean) parms.getValueOrElse("addstart", true);
-          if(addStart) {
-            crf.addStartState();
-      }
-          boolean wdd = (boolean) parms.getValueOrElse("weightDimDensely", false);
-          if(wdd) {
-            crf.setWeightsDimensionDensely();
-      }
-          // initialize model's weights
-          // TODO: make this conditional on a parm, how does this relate to
-          // weightDimDensely??
-          // !!! This should probably be the same parameter!!!
-          // TODO: second parm should depend on the unsupported trick option!
-          crf.setWeightsDimensionAsIn(trainingData, false);
-      // now depending on which trainer we want we need to do slightly different
-      // things
-      switch (alg) {
-        case MalletCRF_SEQ_MR:
-          // By[Thread]LabelLikelihood
-          // if threads parameter is specified and >0, we use ByThreadLabelLikelihood
-          int threads = (int) parms.getValueOrElse("threads", 0);
-          boolean usw = (boolean) parms.getValueOrElse("useSparseWeights", false);
-          boolean ssut = (boolean) parms.getValueOrElse("setSomeUnsupportedTrick", false);
-          if(threads<=0) {
-            CRFTrainerByLabelLikelihood tr = new CRFTrainerByLabelLikelihood(crf);
-            if(usw) {
-              tr.setUseSparseWeights(true);
+              if (ssut) {
+                tr.setUseSomeUnsupportedTrick(true);
+              }
+              transtrainer = tr;
+            } else {
+              CRFTrainerByThreadedLabelLikelihood tr
+                      = new CRFTrainerByThreadedLabelLikelihood(crf, threads);
+              if (usw) {
+                tr.setUseSparseWeights(true);
+              }
+              if (ssut) {
+                tr.setUseSomeUnsupportedTrick(true);
+              }
+              transtrainer = tr;
             }
-            if(ssut) {
-              tr.setUseSomeUnsupportedTrick(true);
-            }
-            transtrainer = tr;
-          } else {
-            CRFTrainerByThreadedLabelLikelihood tr =
-                    new CRFTrainerByThreadedLabelLikelihood(crf, threads);
-            if(usw) {
-              tr.setUseSparseWeights(true);
-            }
-            if(ssut) {
-              tr.setUseSomeUnsupportedTrick(true);
-            }
-            transtrainer = tr;
+            break;
+          case MalletCRFSG_SEQ_MR:
+            // TODO: instead of all trainingData, use sample?
+            // TODO: allow to use training rate instead of trainingData?
+            CRFTrainerByStochasticGradient crft
+                    = new CRFTrainerByStochasticGradient(crf, trainingData);
+            // TODO: allow to set various parameters of this trainer from algorithm parameters!
+            transtrainer = crft;
+            break;
+          case MalletCRFVG_SEQ_MR:
+            //  CRFOptimizableBy* objects (terms in the objective function)
+            // objective 1: label likelihood objective
+            CRFOptimizableByLabelLikelihood optLabel
+                    = new CRFOptimizableByLabelLikelihood(crf, trainingData);
+            Optimizable.ByGradientValue[] opts
+                    = new Optimizable.ByGradientValue[]{optLabel};
+            // by default, use L-BFGS as the optimizer
+            CRFTrainerByValueGradients crfTrainer = new CRFTrainerByValueGradients(crf, opts);
+            crfTrainer.setMaxResets(0);
+            transtrainer = crfTrainer;
+            break;
+          default:
+            throw new GateRuntimeException("Not yet supported: " + alg); // TODO: if we want to output the viterbi paths:
+        }
+        int logVit = (int) parms.getValueOrElse("logViterbiPaths", 0);
+        if (logVit == 0) {
+          logVit = Integer.MAX_VALUE;
+        }
+        final int lv = logVit;
+        ViterbiWriter viterbiWriter = new ViterbiWriter(
+                "LF_debug", // output file prefix
+                new InstanceList[]{trainingData},
+                new String[]{"train"}) {
+          @Override
+          public boolean precondition(TransducerTrainer tt) {
+            return tt.getIteration() % lv == 0;
           }
-          break;
-        case MalletCRFSG_SEQ_MR:
-          // TODO: instead of all trainingData, use sample?
-          // TODO: allow to use training rate instead of trainingData?
-          CRFTrainerByStochasticGradient crft =
-                  new CRFTrainerByStochasticGradient(crf, trainingData);
-          break;
-        case MalletCRFVG_SEQ_MR:
-          //  CRFOptimizableBy* objects (terms in the objective function)
-          // objective 1: label likelihood objective
-          CRFOptimizableByLabelLikelihood optLabel
-                  = new CRFOptimizableByLabelLikelihood(crf, trainingData);
-          Optimizable.ByGradientValue[] opts
-                  = new Optimizable.ByGradientValue[]{optLabel};
-          // by default, use L-BFGS as the optimizer
-          CRFTrainerByValueGradients crfTrainer = new CRFTrainerByValueGradients(crf, opts);
-          crfTrainer.setMaxResets(0);
-          transtrainer = crfTrainer;
-          break;
-        default:
-          throw new GateRuntimeException("Not yet supported: "+alg); // TODO: if we want to output the viterbi paths:
-      }
-          int logVit = (int) parms.getValueOrElse("logViterbiPaths", 0);
-          if(logVit==0) {
-            logVit=Integer.MAX_VALUE;
-      }
-          final int lv = logVit;
-          ViterbiWriter viterbiWriter = new ViterbiWriter(
-                  "LF_debug", // output file prefix
-                  new InstanceList[] { trainingData },
-                  new String[] { "train" }) {
-                    @Override
-                    public boolean precondition (TransducerTrainer tt) {
-                      return tt.getIteration() % lv == 0;
-                    }
-                  };transtrainer.addEvaluator(viterbiWriter);
-                  break;
-        case MalletMEMM_SEQ_MR:
-          // TODO:
-          MEMM memm = new MEMM(trainingData.getDataAlphabet(),trainingData.getTargetAlphabet());
-          // check what this would do:
-          //memm.addOrderNStates(trainingData, new int[]{1}, new boolean[]{false}, "START", null, null, false);
-          memm.addFullyConnectedStatesForLabels();
-          // optional:
-          //memm.addStartState();
-          // second parameter: unsupported trick
-          memm.setWeightsDimensionAsIn(trainingData, false);
-          transtrainer = new MEMMTrainer(memm);
-          break;
-        default:
-          // Nothing else supported!
-          throw new GateRuntimeException("EngineMalletSeq: unknown/unsupported algorithm: "+alg);
-      }
+        };
+        transtrainer.addEvaluator(viterbiWriter);
+        break;
+      case MalletMEMM_SEQ_MR:
+        // TODO:
+        MEMM memm = new MEMM(trainingData.getDataAlphabet(), trainingData.getTargetAlphabet());
+        // check what this would do:
+        //memm.addOrderNStates(trainingData, new int[]{1}, new boolean[]{false}, "START", null, null, false);
+        memm.addFullyConnectedStatesForLabels();
+        // optional:
+        //memm.addStartState();
+        // second parameter: unsupported trick
+        memm.setWeightsDimensionAsIn(trainingData, false);
+        transtrainer = new MEMMTrainer(memm);
+        break;
+      default:
+        // Nothing else supported!
+        throw new GateRuntimeException("EngineMalletSeq: unknown/unsupported algorithm: " + alg);
     }
-    
     return transtrainer;
   }
   
@@ -399,7 +398,7 @@ public class EngineMBMalletSeq extends EngineMBMallet {
           sumOfAccs += crf.averageTokenAccuracy(testSet);
         }
         EvaluationResultClXval e = new EvaluationResultClXval();
-        e.internalEvaluationResult = null;
+        // e.internalEvaluationResult = null;
         e.accuracyEstimate = sumOfAccs/numberOfFolds; 
         e.nrFolds = numberOfFolds;   
         ret = e;
@@ -417,7 +416,7 @@ public class EngineMBMalletSeq extends EngineMBMallet {
           sumOfAccs += crf.averageTokenAccuracy(sets[1]);
         }
         EvaluationResultClHO e = new EvaluationResultClHO();
-        e.internalEvaluationResult = null;
+        // e.internalEvaluationResult = null;
         e.accuracyEstimate = sumOfAccs/numberOfRepeats;
         e.trainingFraction = trainingFraction;
         e.nrRepeats = numberOfRepeats;

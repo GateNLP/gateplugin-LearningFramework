@@ -236,7 +236,7 @@ public class EngineMBMalletClass extends EngineMBMallet {
           sumOfAccs += cl.getAccuracy(testSet);
         }
         EvaluationResultClXval e = new EvaluationResultClXval();
-        e.internalEvaluationResult = null;
+        //e.internalEvaluationResult = null;
         e.accuracyEstimate = sumOfAccs/numberOfFolds; 
         e.nrFolds = numberOfFolds;   
         ret = e;
@@ -254,7 +254,7 @@ public class EngineMBMalletClass extends EngineMBMallet {
           sumOfAccs += cl.getAccuracy(sets[1]);
         }
         EvaluationResultClHO e = new EvaluationResultClHO();
-        e.internalEvaluationResult = null;
+        //e.internalEvaluationResult = null;
         e.accuracyEstimate = sumOfAccs/numberOfRepeats;
         e.trainingFraction = trainingFraction;
         e.nrRepeats = numberOfRepeats;

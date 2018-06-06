@@ -26,5 +26,6 @@ package gate.plugin.learningframework.engines;
  * @author Johann Petrak
  */
 public class EvaluationResult {
-  public Object internalEvaluationResult; // the library-specific evaluation result
+  // This is not used at the moment, but maybe later ...
+  // private Object internalEvaluationResult; // the library-specific evaluation result
 }
