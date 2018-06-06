@@ -2,7 +2,6 @@
 /gateplugin-LearningFramework-*.zip
 /gateplugin-LearningFramework.jar
 /classes
-/build.properties
 *~
 *.bak
 #*#
@@ -59,7 +58,4 @@ hs_err_*.log
 /tests/dense-pos-seq-2/model-dense-pytorch1/
 !/tests/dense-pos-seq-2/model-dense-pytorch1/.keepme
 
-/nbproject/private/
-/build/
-/dist/
 /target/
