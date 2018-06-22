@@ -314,7 +314,14 @@ public class LF_Export extends LF_ExportBase {
     haveSequenceAlg = (algkind == AlgorithmKind.SEQUENCE_TAGGER);
 
     // create the corpus exporter
-    corpusExporter = CorpusExporter.create(exporter, getAlgorithmParameters(), featureSpec.getFeatureInfo(), getInstanceType(), dataDirectory);
+    URL effectiveDataDirectory;
+    if(dataDirectory==null || dataDirectory.toExternalForm().isEmpty()) {
+      effectiveDataDirectory = new File(".").getCanonicalFile().toURI().toURL();
+    } else {
+      effectiveDataDirectory = dataDirectory;
+    }
+    corpusExporter = CorpusExporter.create(exporter, getAlgorithmParameters(), featureSpec.getFeatureInfo(), 
+            getInstanceType(), effectiveDataDirectory);
     
     corpusRepresentation = corpusExporter.getCorpusRepresentation();
 
