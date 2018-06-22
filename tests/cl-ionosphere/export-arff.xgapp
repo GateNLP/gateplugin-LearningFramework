@@ -1,19 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <gate.util.persistence.GateApplication>
   <urlList class="gate.util.persistence.CollectionPersistence">
     <localList>
       <gate.creole.Plugin-Maven>
         <group>uk.ac.gate.plugins</group>
         <artifact>annie</artifact>
-        <version>8.5</version>
+        <version>8.6-SNAPSHOT</version>
       </gate.creole.Plugin-Maven>
       <gate.creole.Plugin-Maven>
         <group>uk.ac.gate.plugins</group>
         <artifact>learningframework</artifact>
-        <version>4.0-SNAPSHOT</version>
+        <version>4.1-SNAPSHOT</version>
       </gate.creole.Plugin-Maven>
     </localList>
-    <collectionType>java.util.ArrayList</collectionType>
+    <collectionType>java.util.Collections$UnmodifiableSet</collectionType>
   </urlList>
   <application class="gate.util.persistence.ConditionalSerialAnalyserControllerPersistence">
     <corpus class="gate.util.persistence.CorpusPersistence">
@@ -25,42 +24,18 @@
             <mapType>gate.util.SimpleFeatureMapImpl</mapType>
             <localMap>
               <entry>
+                <string>encoding</string>
+                <string>UTF-8</string>
+              </entry>
+              <entry>
                 <string>sourceUrl</string>
                 <gate.util.persistence.PersistenceManager-URLHolder>
                   <urlString>$relpath$ionosphere_gate.xml</urlString>
                 </gate.util.persistence.PersistenceManager-URLHolder>
               </entry>
               <entry>
-                <string>preserveOriginalContent</string>
-                <boolean>false</boolean>
-              </entry>
-              <entry>
-                <string>collectRepositioningInfo</string>
-                <boolean>false</boolean>
-              </entry>
-              <entry>
-                <string>markupAware</string>
-                <boolean>true</boolean>
-              </entry>
-              <entry>
-                <string>sourceUrlEndOffset</string>
-                <null />
-              </entry>
-              <entry>
                 <string>stringContent</string>
-                <string />
-              </entry>
-              <entry>
-                <string>mimeType</string>
-                <null />
-              </entry>
-              <entry>
-                <string>encoding</string>
-                <string>UTF-8</string>
-              </entry>
-              <entry>
-                <string>sourceUrlStartOffset</string>
-                <null />
+                <string></string>
               </entry>
             </localMap>
           </initParams>
@@ -70,21 +45,16 @@
       <resourceName>Corpus for ionosphere_gate.xml_00011</resourceName>
       <initParams class="gate.util.persistence.MapPersistence">
         <mapType>gate.util.SimpleFeatureMapImpl</mapType>
-        <localMap>
-          <entry>
-            <string>documentsList</string>
-            <null />
-          </entry>
-        </localMap>
+        <localMap/>
       </initParams>
     </corpus>
     <strategiesList class="gate.util.persistence.CollectionPersistence">
       <localList>
         <gate.util.persistence.AnalyserRunningStrategyPersistence>
           <runMode>1</runMode>
-          <featureName />
-          <featureValue />
-          <pr class="gate.util.persistence.PRPersistence">
+          <featureName></featureName>
+          <featureValue></featureValue>
+          <pr class="gate.util.persistence.LanguageAnalyserPersistence">
             <runtimeParams class="gate.util.persistence.MapPersistence">
               <mapType>gate.util.SimpleFeatureMapImpl</mapType>
               <localMap>
@@ -93,18 +63,10 @@
                   <gate.util.persistence.CollectionPersistence>
                     <localList>
                       <string>Key</string>
-                      <null />
+                      <null/>
                     </localList>
                     <collectionType>java.util.ArrayList</collectionType>
                   </gate.util.persistence.CollectionPersistence>
-                </entry>
-                <entry>
-                  <string>keepOriginalMarkupsAS</string>
-                  <boolean>true</boolean>
-                </entry>
-                <entry>
-                  <string>corpus</string>
-                  <null />
                 </entry>
                 <entry>
                   <string>setsToRemove</string>
@@ -115,81 +77,43 @@
                     <collectionType>java.util.ArrayList</collectionType>
                   </gate.util.persistence.CollectionPersistence>
                 </entry>
-                <entry>
-                  <string>annotationTypes</string>
-                  <null />
-                </entry>
-                <entry>
-                  <string>document</string>
-                  <null />
-                </entry>
               </localMap>
             </runtimeParams>
             <resourceType>gate.creole.annotdelete.AnnotationDeletePR</resourceType>
             <resourceName>Reset:LearningFramework</resourceName>
             <initParams class="gate.util.persistence.MapPersistence">
               <mapType>gate.util.SimpleFeatureMapImpl</mapType>
-              <localMap />
+              <localMap/>
             </initParams>
             <features class="gate.util.persistence.MapPersistence">
               <mapType>gate.util.SimpleFeatureMapImpl</mapType>
-              <localMap />
+              <localMap/>
             </features>
           </pr>
         </gate.util.persistence.AnalyserRunningStrategyPersistence>
         <gate.util.persistence.AnalyserRunningStrategyPersistence>
           <runMode>1</runMode>
-          <featureName />
-          <featureValue />
+          <featureName></featureName>
+          <featureValue></featureValue>
           <pr class="gate.util.persistence.LanguageAnalyserPersistence">
             <runtimeParams class="gate.util.persistence.MapPersistence">
               <mapType>gate.util.SimpleFeatureMapImpl</mapType>
               <localMap>
                 <entry>
-                  <string>dataDirectory</string>
-                  <gate.util.persistence.PersistenceManager-URLHolder>
-                    <urlString>$relpath$export</urlString>
-                  </gate.util.persistence.PersistenceManager-URLHolder>
-                </entry>
-                <entry>
-                  <string>instanceType</string>
-                  <string>Mention</string>
-                </entry>
-                <entry>
-                  <string>document</string>
-                  <null />
-                </entry>
-                <entry>
-                  <string>corpus</string>
-                  <null />
-                </entry>
-                <entry>
-                  <string>classAnnotationTypes</string>
-                  <null />
-                </entry>
-                <entry>
-                  <string>targetType</string>
-                  <gate.plugin.learningframework.features.TargetType>NOMINAL</gate.plugin.learningframework.features.TargetType>
-                </entry>
-                <entry>
-                  <string>algorithmParameters</string>
-                  <null />
-                </entry>
-                <entry>
-                  <string>inputASName</string>
-                  <string />
-                </entry>
-                <entry>
-                  <string>sequenceSpan</string>
-                  <string />
-                </entry>
-                <entry>
                   <string>targetFeature</string>
                   <string>class</string>
                 </entry>
                 <entry>
+                  <string>seqEncoder</string>
+                  <gate.plugin.learningframework.features.SeqEncoderEnum>BIO</gate.plugin.learningframework.features.SeqEncoderEnum>
+                </entry>
+                <entry>
                   <string>exporter</string>
                   <gate.plugin.learningframework.export.Exporter>ARFF_CL_MR</gate.plugin.learningframework.export.Exporter>
+                </entry>
+                <entry>
+                  <string>instanceType</string>
+                  <string>Mention</string>
                 </entry>
                 <entry>
                   <string>featureSpecURL</string>
@@ -198,8 +122,12 @@
                   </gate.util.persistence.PersistenceManager-URLHolder>
                 </entry>
                 <entry>
-                  <string>scaleFeatures</string>
-                  <gate.plugin.learningframework.ScalingMethod>NONE</gate.plugin.learningframework.ScalingMethod>
+                  <string>inputASName</string>
+                  <string></string>
+                </entry>
+                <entry>
+                  <string>sequenceSpan</string>
+                  <string></string>
                 </entry>
               </localMap>
             </runtimeParams>
@@ -207,11 +135,11 @@
             <resourceName>LF_Export</resourceName>
             <initParams class="gate.util.persistence.MapPersistence">
               <mapType>gate.util.SimpleFeatureMapImpl</mapType>
-              <localMap />
+              <localMap/>
             </initParams>
             <features class="gate.util.persistence.MapPersistence">
               <mapType>gate.util.SimpleFeatureMapImpl</mapType>
-              <localMap />
+              <localMap/>
             </features>
           </pr>
         </gate.util.persistence.AnalyserRunningStrategyPersistence>
@@ -220,8 +148,8 @@
     </strategiesList>
     <prList class="gate.util.persistence.CollectionPersistence">
       <localList>
-        <gate.util.persistence.PRPersistence reference="../../../strategiesList/localList/gate.util.persistence.AnalyserRunningStrategyPersistence/pr" />
-        <gate.util.persistence.LanguageAnalyserPersistence reference="../../../strategiesList/localList/gate.util.persistence.AnalyserRunningStrategyPersistence[2]/pr" />
+        <gate.util.persistence.LanguageAnalyserPersistence reference="../../../strategiesList/localList/gate.util.persistence.AnalyserRunningStrategyPersistence/pr"/>
+        <gate.util.persistence.LanguageAnalyserPersistence reference="../../../strategiesList/localList/gate.util.persistence.AnalyserRunningStrategyPersistence[2]/pr"/>
       </localList>
       <collectionType>java.util.ArrayList</collectionType>
     </prList>
@@ -229,12 +157,11 @@
     <resourceName>export-arff</resourceName>
     <initParams class="gate.util.persistence.MapPersistence">
       <mapType>gate.util.SimpleFeatureMapImpl</mapType>
-      <localMap />
+      <localMap/>
     </initParams>
     <features class="gate.util.persistence.MapPersistence">
       <mapType>gate.util.SimpleFeatureMapImpl</mapType>
-      <localMap />
+      <localMap/>
     </features>
   </application>
 </gate.util.persistence.GateApplication>
-

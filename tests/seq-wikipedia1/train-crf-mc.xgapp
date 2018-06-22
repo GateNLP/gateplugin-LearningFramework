@@ -5,7 +5,7 @@
       <gate.creole.Plugin-Maven>
         <group>uk.ac.gate.plugins</group>
         <artifact>learningframework</artifact>
-        <version>4.0-SNAPSHOT</version>
+        <version>4.1-SNAPSHOT</version>
       </gate.creole.Plugin-Maven>
       <gate.creole.Plugin-Maven>
         <group>uk.ac.gate.plugins</group>
@@ -15,12 +15,12 @@
       <gate.creole.Plugin-Maven>
         <group>uk.ac.gate.plugins</group>
         <artifact>tools</artifact>
-        <version>8.5</version>
+        <version>8.6-SNAPSHOT</version>
       </gate.creole.Plugin-Maven>
       <gate.creole.Plugin-Maven>
         <group>uk.ac.gate.plugins</group>
         <artifact>annie</artifact>
-        <version>8.5</version>
+        <version>8.6-SNAPSHOT</version>
       </gate.creole.Plugin-Maven>
       <gate.creole.Plugin-Maven>
         <group>uk.ac.gate.plugins</group>

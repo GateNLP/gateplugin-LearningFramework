@@ -5,7 +5,7 @@
       <gate.creole.Plugin-Maven>
         <group>uk.ac.gate.plugins</group>
         <artifact>learningframework</artifact>
-        <version>4.0-SNAPSHOT</version>
+        <version>4.1-SNAPSHOT</version>
       </gate.creole.Plugin-Maven>
       <gate.creole.Plugin-Maven>
         <group>uk.ac.gate.plugins</group>
@@ -15,12 +15,12 @@
       <gate.creole.Plugin-Maven>
         <group>uk.ac.gate.plugins</group>
         <artifact>tools</artifact>
-        <version>8.5</version>
+        <version>8.6-SNAPSHOT</version>
       </gate.creole.Plugin-Maven>
       <gate.creole.Plugin-Maven>
         <group>uk.ac.gate.plugins</group>
         <artifact>annie</artifact>
-        <version>8.5</version>
+        <version>8.6-SNAPSHOT</version>
       </gate.creole.Plugin-Maven>
       <gate.creole.Plugin-Maven>
         <group>uk.ac.gate.plugins</group>
@@ -1210,7 +1210,7 @@
                 <entry>
                   <string>tokeniserRulesURL</string>
                   <gate.util.persistence.PersistenceManager-RRPersistence>
-                    <uriString>creole://uk.ac.gate.plugins;annie;8.5/resources/tokeniser/DefaultTokeniser.rules</uriString>
+                    <uriString>creole://uk.ac.gate.plugins;annie;8.6-SNAPSHOT/resources/tokeniser/DefaultTokeniser.rules</uriString>
                   </gate.util.persistence.PersistenceManager-RRPersistence>
                 </entry>
                 <entry>
@@ -1220,7 +1220,7 @@
                 <entry>
                   <string>transducerGrammarURL</string>
                   <gate.util.persistence.PersistenceManager-RRPersistence>
-                    <uriString>creole://uk.ac.gate.plugins;annie;8.5/resources/tokeniser/postprocess.jape</uriString>
+                    <uriString>creole://uk.ac.gate.plugins;annie;8.6-SNAPSHOT/resources/tokeniser/postprocess.jape</uriString>
                   </gate.util.persistence.PersistenceManager-RRPersistence>
                 </entry>
               </localMap>
@@ -1265,7 +1265,7 @@
                 <entry>
                   <string>gazetteerListsURL</string>
                   <gate.util.persistence.PersistenceManager-RRPersistence>
-                    <uriString>creole://uk.ac.gate.plugins;annie;8.5/resources/sentenceSplitter/gazetteer/lists.def</uriString>
+                    <uriString>creole://uk.ac.gate.plugins;annie;8.6-SNAPSHOT/resources/sentenceSplitter/gazetteer/lists.def</uriString>
                   </gate.util.persistence.PersistenceManager-RRPersistence>
                 </entry>
                 <entry>
@@ -1275,7 +1275,7 @@
                 <entry>
                   <string>transducerURL</string>
                   <gate.util.persistence.PersistenceManager-RRPersistence>
-                    <uriString>creole://uk.ac.gate.plugins;annie;8.5/resources/sentenceSplitter/grammar/main-single-nl.jape</uriString>
+                    <uriString>creole://uk.ac.gate.plugins;annie;8.6-SNAPSHOT/resources/sentenceSplitter/grammar/main-single-nl.jape</uriString>
                   </gate.util.persistence.PersistenceManager-RRPersistence>
                 </entry>
               </localMap>
@@ -1344,13 +1344,13 @@
                 <entry>
                   <string>lexiconURL</string>
                   <gate.util.persistence.PersistenceManager-RRPersistence>
-                    <uriString>creole://uk.ac.gate.plugins;annie;8.5/resources/heptag/lexicon</uriString>
+                    <uriString>creole://uk.ac.gate.plugins;annie;8.6-SNAPSHOT/resources/heptag/lexicon</uriString>
                   </gate.util.persistence.PersistenceManager-RRPersistence>
                 </entry>
                 <entry>
                   <string>rulesURL</string>
                   <gate.util.persistence.PersistenceManager-RRPersistence>
-                    <uriString>creole://uk.ac.gate.plugins;annie;8.5/resources/heptag/ruleset</uriString>
+                    <uriString>creole://uk.ac.gate.plugins;annie;8.6-SNAPSHOT/resources/heptag/ruleset</uriString>
                   </gate.util.persistence.PersistenceManager-RRPersistence>
                 </entry>
               </localMap>
@@ -1403,7 +1403,7 @@
                 <entry>
                   <string>grammarURL</string>
                   <gate.util.persistence.PersistenceManager-RRPersistence>
-                    <uriString>creole://uk.ac.gate.plugins;annie;8.5/resources/NE/main.jape</uriString>
+                    <uriString>creole://uk.ac.gate.plugins;annie;8.6-SNAPSHOT/resources/NE/main.jape</uriString>
                   </gate.util.persistence.PersistenceManager-RRPersistence>
                 </entry>
                 <entry>
@@ -1476,7 +1476,7 @@
                 <entry>
                   <string>definitionFileURL</string>
                   <gate.util.persistence.PersistenceManager-RRPersistence>
-                    <uriString>creole://uk.ac.gate.plugins;annie;8.5/resources/othomatcher/listsNM.def</uriString>
+                    <uriString>creole://uk.ac.gate.plugins;annie;8.6-SNAPSHOT/resources/othomatcher/listsNM.def</uriString>
                   </gate.util.persistence.PersistenceManager-RRPersistence>
                 </entry>
                 <entry>

@@ -5,7 +5,7 @@
       <gate.creole.Plugin-Maven>
         <group>uk.ac.gate.plugins</group>
         <artifact>learningframework</artifact>
-        <version>4.0-SNAPSHOT</version>
+        <version>4.1-SNAPSHOT</version>
       </gate.creole.Plugin-Maven>
       <gate.creole.Plugin-Maven>
         <group>uk.ac.gate.plugins</group>
@@ -15,7 +15,7 @@
       <gate.creole.Plugin-Maven>
         <group>uk.ac.gate.plugins</group>
         <artifact>annie</artifact>
-        <version>8.5</version>
+        <version>8.6-SNAPSHOT</version>
       </gate.creole.Plugin-Maven>
     </localList>
     <collectionType>java.util.ArrayList</collectionType>
@@ -168,7 +168,7 @@
                 <entry>
                   <string>rulesURL</string>
                   <gate.util.persistence.PersistenceManager-RRPersistence>
-                    <uriString>creole://uk.ac.gate.plugins;annie;8.5/resources/tokeniser/DefaultTokeniser.rules</uriString>
+                    <uriString>creole://uk.ac.gate.plugins;annie;8.6-SNAPSHOT/resources/tokeniser/DefaultTokeniser.rules</uriString>
                   </gate.util.persistence.PersistenceManager-RRPersistence>
                 </entry>
               </localMap>
