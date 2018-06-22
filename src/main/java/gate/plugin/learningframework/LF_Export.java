@@ -316,10 +316,15 @@ public class LF_Export extends LF_ExportBase {
     // create the corpus exporter
     URL effectiveDataDirectory;
     if(dataDirectory==null || dataDirectory.toExternalForm().isEmpty()) {
-      effectiveDataDirectory = new File(".").getCanonicalFile().toURI().toURL();
+      try {
+        effectiveDataDirectory = new File(".").getCanonicalFile().toURI().toURL();
+      } catch(Exception ex) {
+        throw new GateRuntimeException("Cannot use current running directory", ex);
+      }
     } else {
       effectiveDataDirectory = dataDirectory;
     }
+    System.err.println("DEBUG: using data directory:"+effectiveDataDirectory);
     corpusExporter = CorpusExporter.create(exporter, getAlgorithmParameters(), featureSpec.getFeatureInfo(), 
             getInstanceType(), effectiveDataDirectory);
     
@@ -331,7 +336,6 @@ public class LF_Export extends LF_ExportBase {
 
   @Override
   public void afterLastDocument(Controller arg0, Throwable t) {
-    File outDir = Files.fileFromURL(getDataDirectory());
     
     corpusRepresentation.finishAdding();
     corpusExporter.export();
