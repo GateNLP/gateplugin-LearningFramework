@@ -114,7 +114,7 @@ public class LF_GenFeatures_Misc extends AbstractDocumentProcessor {
   
   
   @Override
-  public Document process(Document doc) {
+  public void process(Document doc) {
     if(isInterrupted()) {
       interrupted = false;
       throw new GateRuntimeException("Execution was requested to be interrupted");
@@ -184,7 +184,6 @@ public class LF_GenFeatures_Misc extends AbstractDocumentProcessor {
       } // if genWordShapeShort
       
     }
-    return doc;
   }
 
   

@@ -219,7 +219,7 @@ public class LF_EvaluateClassification extends LearningFrameworkPRBase {
   private URL dataDirURL;
 
   @Override
-  public Document process(Document doc) {
+  public void process(Document doc) {
     if(isInterrupted()) {
       interrupted = false;
       throw new GateRuntimeException("Execution was requested to be interrupted");
@@ -252,7 +252,6 @@ public class LF_EvaluateClassification extends LearningFrameworkPRBase {
     String nameFeatureName = null;
     corpusRepresentation.add(instanceAS, sequenceAS, inputAS, classAS, tfName, TargetType.NOMINAL, instanceWeightFeature, nameFeatureName, null);
     nrDocuments++;
-    return doc;
   }
 
   @Override

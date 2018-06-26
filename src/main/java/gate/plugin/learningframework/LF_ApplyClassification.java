@@ -146,7 +146,7 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
   private String targetFeatureToUse;
 
   @Override
-  public Document process(Document doc) {
+  public void process(Document doc) {
     if (isInterrupted()) {
       interrupted = false;
       throw new GateRuntimeException("Execution was requested to be interrupted");
@@ -187,7 +187,6 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
     }
 
     ModelApplication.applyClassification(doc, gcs, targetFeatureToUse, outputAS, getConfidenceThreshold());
-    return doc;
   }
 
   @Override

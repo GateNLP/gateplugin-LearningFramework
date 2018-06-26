@@ -178,7 +178,7 @@ public class LF_TrainChunking extends LearningFrameworkPRBase {
   private CorpusRepresentation corpusRepresentation;
   
   @Override
-  public Document process(Document doc) {
+  public void process(Document doc) {
     if(isInterrupted()) {
       interrupted = false;
       throw new GateRuntimeException("Execution was requested to be interrupted");
@@ -202,7 +202,6 @@ public class LF_TrainChunking extends LearningFrameworkPRBase {
       corpusRepresentation.add(instanceAS, null, inputAS, classAS, null, TargetType.NOMINAL, "", nameFeatureName, seqEncoder);
     }
     nrDocuments++;
-    return doc;
   }
 
 

@@ -19,6 +19,7 @@
  */
 package org.jpetrak.gate8.api.plugins;
 
+import org.apache.log4j.Logger;
 
 import gate.Controller;
 import gate.Document;
@@ -27,61 +28,227 @@ import gate.creole.ControllerAwarePR;
 import gate.creole.ResourceInstantiationException;
 import gate.creole.AbstractLanguageAnalyser;
 import gate.creole.ExecutionException;
+import gate.creole.metadata.Sharable;
+import gate.util.Benchmark;
+import gate.util.Benchmarkable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+//import java.util.Optional;
 
 /**
  * Abstract base class for all the PRs in this plugin.
- * 
  */
-// the inheriting class must declare a serialVersionUID
-@SuppressWarnings("serial") 
+// The inheriting class should define a serverVersionUID
+@SuppressWarnings("serial")
 public abstract class AbstractDocumentProcessor
         extends AbstractLanguageAnalyser
-        implements  ControllerAwarePR {
+        implements ControllerAwarePR, Benchmarkable {
 
-  private int seenDocuments = 0;
+  /**
+   *
+   */
+  private final Logger LOGGER = 
+          Logger.getLogger(AbstractDocumentProcessor.class.getCanonicalName());
 
+  
+  // This will be shared between all duplicates
+  protected AtomicInteger seenDocuments = null;
+
+  @Sharable
+  public void setSeenDocuments(AtomicInteger n) {
+    seenDocuments = n;
+  }
+  
+  public AtomicInteger getSeenDocuments() {
+    return seenDocuments;
+  }
+  
   protected Controller controller;
-
-  protected Throwable throwable;
+  
+  protected static final Object SYNC_OBJECT = new Object();
+  
+  // because the setter for this is marked @Sharable, all duplicates will hold 
+  // the same reference after initialisation. This is updated in init() and remains 
+  // forever. This is the actual number of duplicates (1-based, not 0-based)
+  protected AtomicInteger nDuplicates = null;
+  
+  @Sharable
+  public void setNDuplicates(AtomicInteger n) {
+    nDuplicates = n;
+  }
+  
+  public AtomicInteger getNDuplicates() {
+    return nDuplicates;
+  }
+  
+  
+  // the following shared counter is used when processing starts to find out which invocation 
+  // of the controller started method is the last one, and when processing finishes to figure out which
+  // invocation of controller finished/aborted is the last one. The counter gets incremented
+  // for each controller started and decremented for each finished/aborted.
+  // During execution the counter should hold the actual number of running duplicates and should
+  // be equal to nDuplicates
+  protected AtomicInteger remainingDuplicates = null;
+  
+  @Sharable
+  public void setRemainingDuplicates(AtomicInteger n) {
+    remainingDuplicates = n;
+  }
+  
+  public AtomicInteger getRemainingDuplicates() {
+    return remainingDuplicates;
+  }
+  
+  protected Throwable lastError = null;
+  
+  @Sharable
+  public void setLastError(Throwable x) {
+    lastError = x;
+  }
+  
+  public Throwable getLastError() {
+    return lastError;
+  }
+      
+  protected ConcurrentHashMap<String,Object> sharedData = null;
+  
+  @Sharable
+  public void setSharedData(ConcurrentHashMap<String,Object> v) {
+    sharedData = v;
+  }
+  public ConcurrentHashMap<String,Object> getSharedData() {
+    return sharedData;
+  }
+  
+  protected Object syncObject = null;
+         
+  @Sharable
+  public void setSyncObject(Object val) {
+    syncObject = val;
+  }
+  public Object getSyncObject() {
+    return syncObject;
+  }
+  
+  
+         
+  
+  // Each duplicate holds its own duplicate id after initialisation.
+  // The duplicate id is 0-based, not 1-based, so the first duplicate has id 0 and 
+  // the last nDuplicates-1
+  protected int duplicateId = 0;
+  public int getDuplicateId() {
+    return duplicateId;
+  }
 
   //===============================================================================
   // Implementation of the relevant API methods for DocumentProcessors. These
   // get inherited by the implementing class. This also defines abstract methods 
   // that make it easier to handle the control flow:
-  // void process(Document doc) - replaces void execute()
+  // void process(Document doc) - replaces void execute(): process the Document
+  // void controllerStarted(Controller) - called for each duplicate when the 
+  //     controller starts processing a corpus of documents. This gets invoked
+  //     before the beforeFirstDocument method is invoked, if at all.
+  // void controllerFinished(Controller, Throwable) - called for each duplicate when
+  //     then controller finishes processing, if the throwable is non-null, 
+  //     when the controller aborts processing. All invocations happen before
+  //     the afterLastDocument or finishedNoDocument invocation. 
   // void beforeFirstDocument(Controller) - called before the first document is processed
   //     (not called if there were no documents in the corpus, for example)
-  // void afterLastDocument(Controller, Throwable) - called after the last document was processed
+  //     This gets called exactly once, even if there are duplicates of the PR
+  //     and no process or other callback can be expected to run concurrently.
+  // void afterLastDocument(Controller, Throwable) - called after the last 
+  //     document was processed
   //     (not called if there were no documents in the corpus). If Throwable is
-  //     not null, processing stopped because of an exception.
+  //     not null, processing stopped because of an exception. This only 
+  //     gets invoked once
   // void finishedNoDocument(Controller, Throwable) - called when processing 
   //     finishes and no documents were processed. If Throwable is not null,
-  //     processing finished because of an error.
+  //     processing finished because of an error. This only gets invoked once.
+  // int getSeenDocuments().get() - returns the current number of documents
+  //     for which processing has been started
+  // int getDuplicateId() - returns the duplicate number for the current duplicate.
+  //     this returns 0 for the instance for which init() was invoked first, 
+  //     usually the template other duplicates where cloned from.
+  // int getNDuplicates().get() - returns the current number of duplicates 
+  //     that exist. 
   //================================================================================
   @Override
   public Resource init() throws ResourceInstantiationException {
+    // we always provide the following shared fields to all PRs which are used for duplicated PRs:
+    // nDuplicates is an AtomicInt which gets incremented whenever a resource
+    // gets duplicated. seenDocuments is an AtomicInt that contains the number
+    // of documents for which processing was started already. 
+    // syncObject is an Object used for synchronizing between threads 
+    // that run duplicates.
+    // sharedData is a ConcurrentHashMap that contains any
+    // other shared data.
+    
+    // NOTE: this piece of code does not need to get synchronized since we 
+    // always expect duplication to happen in a single thread, one after the
+    // other. Usuall, all duplicates will get created from the same first
+    // created instance, but we do not rely on that.
+    if(getNDuplicates() == null || getNDuplicates().get() == 0) {        
+      LOGGER.debug("DEBUG: creating first instance of PR "+this.getName());
+      setNDuplicates(new AtomicInteger(1));
+      duplicateId = 0;
+      setSharedData(new ConcurrentHashMap<>());
+      setSeenDocuments(new AtomicInteger(0));
+      setRemainingDuplicates(new AtomicInteger(0));
+      setSyncObject(new Object());
+      LOGGER.debug("DEBUG: "+this.getName()+" created duplicate "+duplicateId);
+    } else {
+      int thisn = getNDuplicates().getAndAdd(1);
+      duplicateId = thisn;
+      LOGGER.debug("DEBUG: created duplicate "+duplicateId+" of PR "+this.getName());
+    }
     return this;
   }
 
   @Override
   public void execute() throws ExecutionException {
-    if (seenDocuments == 0) {
-      beforeFirstDocument(controller);
+    // The document counting happens in this synchronized code block.
+    // We could probably also use volatile Integer for the counting.
+    synchronized (getSyncObject()) {
+      if(getSeenDocuments().compareAndSet(0, 1)) {
+        System.err.println("DEBUG "+this.getName()+" Have 0 set 1, beforeFirstDocument, id="+duplicateId);
+        beforeFirstDocument(controller);
+      } else {
+        //System.err.println("DEBUG "+this.getName()+" incrementing, id="+duplicateId);
+        getSeenDocuments().incrementAndGet();
+      }
     }
-    seenDocuments += 1;
+    // actual processing happens in parallel if there are duplicates
     process(getDocument());
   }
-
+  
+  /**
+   * Handle the controller execution aborted callback.
+   * 
+   * This does very much the same as the controller execution finished callback
+   * but also stores the last Throwable so it can be inspected by the PR.
+   * @param arg0 controller invoking the callback
+   * @param arg1 throwable representing the error that was encountered
+   * @throws ExecutionException 
+   */
   @Override
   public void controllerExecutionAborted(Controller arg0, Throwable arg1)
           throws ExecutionException {
     // reset the flags for the next time the controller is run
     controller = arg0;
-    throwable = arg1;
-    if (seenDocuments > 0) {
-      afterLastDocument(arg0, arg1);
-    } else {
-      finishedNoDocument(arg0, arg1);
+    setLastError(arg1);
+    controllerFinished(arg0, arg1);
+    LOGGER.error("Controller ended with error "+arg1.getMessage());
+    int tmp = getRemainingDuplicates().getAndDecrement();
+    LOGGER.debug("DEBUG "+this.getName()+" controllerExecutionAborted invocation "+tmp+" for duplicate "+duplicateId);
+    if(tmp==1) {      
+      if (getSeenDocuments().get() > 0) {
+        LOGGER.debug("DEBUG "+this.getName()+" last controller-aborted, invoking afterLastDocument");
+        afterLastDocument(arg0, getLastError());
+      } else {
+        LOGGER.debug("DEBUG "+this.getName()+" last controller-aborted, invoking finishedNoDocument");
+        finishedNoDocument(arg0, getLastError());
+      }
     }
   }
 
@@ -89,10 +256,17 @@ public abstract class AbstractDocumentProcessor
   public void controllerExecutionFinished(Controller arg0)
           throws ExecutionException {
     controller = arg0;
-    if (seenDocuments > 0) {
-      afterLastDocument(arg0, null);
-    } else {
-      finishedNoDocument(arg0, null);
+    controllerFinished(arg0, null);
+    int tmp = getRemainingDuplicates().getAndDecrement();
+    LOGGER.debug(this.getName()+": controllerExecutionFinished invocation "+tmp+" for duplicate "+duplicateId);
+    if(tmp==1) {      
+      if (getSeenDocuments().get() > 0) {
+        LOGGER.debug("DEBUG "+this.getName()+": Last controller-finished, invoking afterLastDocument");
+        afterLastDocument(arg0, getLastError());
+      } else {
+        LOGGER.debug("DEBUG "+this.getName()+": Last controller-finished, invoking finishedNoDocument");
+        finishedNoDocument(arg0, getLastError());
+      }
     }
   }
 
@@ -100,8 +274,20 @@ public abstract class AbstractDocumentProcessor
   public void controllerExecutionStarted(Controller arg0)
           throws ExecutionException {
     controller = arg0;
-    seenDocuments = 0;
+    controllerStarted(arg0);
+    // we count up to the number of duplicates we have. The first invocation of this is also
+    // responsible for resetting the document counter (it needs to be the first because 
+    // at any later time, another duplicate could already have their execute method invoked 
+    int tmp = getRemainingDuplicates().incrementAndGet();
+    if(tmp==1) {
+      LOGGER.debug(this.getName()+": First controllerExecutionStarted invocation, resetting error and doc count in duplicate "+duplicateId);
+      setLastError(null);
+      getSeenDocuments().set(0);
+    } else {
+      LOGGER.debug(this.getName()+": controllerExecutionStarted invocation number "+tmp+" in duplicate "+duplicateId);
+    }
   }
+  
 
   //=====================================================================
   // New simplified API for the child classes 
@@ -113,47 +299,67 @@ public abstract class AbstractDocumentProcessor
   
   /**
    * The new method to implement by PRs which derive from this class.
-   * This must return a document which will usually be the same object
-   * as it was passed.
-   * NOTE: in the future the better option here may be to return 
-   * Optional of Document or even List of Document. That way downstream
-   * PRs could be made to not process filtered documents and to process
-   * additional generated documents. 
    * 
-   * @param document  the document
-   * @return document
+   * @param document  the document to get processed
+   * 
    */
-  protected abstract Document process(Document document);
+  protected abstract void process(Document document);
 
+  public abstract void controllerStarted(Controller ctrl);
+
+  
   /**
-   * This can be overridden in PRs and will be run once before
-   * the first document seen. 
+   * Method that runs before the first document is being processed by a controller.
+   * 
    * This method is not called if no documents are processed at all. 
-   * @param ctrl  controller
+   * This method only gets invoked once, even if there are duplicates of the PR.
+   * 
+   * @param ctrl  the controller that is going to be run on the documents
    */
   protected abstract void beforeFirstDocument(Controller ctrl);
 
-  /**
-   * This can be overridden in PRs and will be run after processing has started.
-   * This will run once before any document is processed and before the method
-   * beforeFirstDocument is invoked, even if no document is being processed at all.
-   * 
-   * @param ctrl the controller
-   */
-  protected void processingStarted(Controller ctrl) { };
+  
+  public abstract void controllerFinished(Controller ctrl, Throwable thrw);
+
   
   /**
-   * Handler for processing after last document
-   * @param ctrl the controller
-   * @param t any throwable 
+   * Method that runs after the last Document is run by that controller. 
+   * 
+   * This method is not called if there are no documents. This method is only
+   * invoked once even if there are duplicates of the PR.
+   * 
+   * @param ctrl the controller that has been run
+   * @param t any throwable if an error occurred, otherwise null
    */
   protected abstract void afterLastDocument(Controller ctrl, Throwable t);
 
   /**
-   * Handler for processing after finishing without any document
+   * Method that runs when a controller finishes but no documents were processed.
+   * This method gets only invoked once even if there are duplicates of the PR.
+   * 
    * @param ctrl the controller
-   * @param t any throwable
+   * @param t any throwable if an error occurred, otherwise null
    */
   protected abstract void finishedNoDocument(Controller ctrl, Throwable t);
   
+  protected void benchmarkCheckpoint(long startTime, String name) {
+    if (Benchmark.isBenchmarkingEnabled()) {
+      Benchmark.checkPointWithDuration(
+              Benchmark.startPoint() - startTime,
+              Benchmark.createBenchmarkId(name, this.getBenchmarkId()),
+              this, null);
+    }
+  }
+
+  @Override
+  public String getBenchmarkId() {
+    return benchmarkId;
+  }
+
+  @Override
+  public void setBenchmarkId(String string) {
+    benchmarkId = string;
+  }
+  private String benchmarkId = this.getName();
+
 }

@@ -216,7 +216,7 @@ public class LF_Export extends LF_ExportBase {
   private CorpusExporter corpusExporter = null;
   
   @Override
-  public Document process(Document doc) {
+  public void process(Document doc) {
     // extract the required annotation sets,
     AnnotationSet inputAS = doc.getAnnotations(getInputASName());
     AnnotationSet instanceAS = inputAS.get(getInstanceType());
@@ -236,7 +236,6 @@ public class LF_Export extends LF_ExportBase {
         corpusRepresentation.add(instanceAS, null, inputAS, null, getTargetFeature(), targetType, instanceWeightFeature, nameFeatureName, seqEncoder);
       }
     }
-    return doc;
   }
 
   @Override
