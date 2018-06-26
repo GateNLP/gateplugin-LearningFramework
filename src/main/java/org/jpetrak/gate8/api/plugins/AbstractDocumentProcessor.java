@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this software. If not, see <http://www.gnu.org/licenses/>.
  */
-package gate.plugin.learningframework;
+package org.jpetrak.gate8.api.plugins;
 
 
 import gate.Controller;
@@ -27,13 +27,13 @@ import gate.creole.ControllerAwarePR;
 import gate.creole.ResourceInstantiationException;
 import gate.creole.AbstractLanguageAnalyser;
 import gate.creole.ExecutionException;
-//import java.util.Optional;
 
 /**
  * Abstract base class for all the PRs in this plugin.
  * 
  */
-@SuppressWarnings("serial")
+// the inheriting class must declare a serialVersionUID
+@SuppressWarnings("serial") 
 public abstract class AbstractDocumentProcessor
         extends AbstractLanguageAnalyser
         implements  ControllerAwarePR {

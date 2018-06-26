@@ -173,7 +173,6 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
      * Fix it up front by wiping out annType if it's the same as the instance.
      */
     
-    AugmentableFeatureVector fv = (AugmentableFeatureVector) inst.getData();
     String annType = att.annType;
     String featureName = att.feature;
     MissingValueTreatment mvt = att.missingValueTreatment;
@@ -297,7 +296,6 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
 
 
     Document doc = inputAS.getDocument();
-    AugmentableFeatureVector fv = (AugmentableFeatureVector) inst.getData();
 
     Datatype dt = al.datatype;        // feature data type
     String featureName = al.feature;  // feature name, if empty use the document text

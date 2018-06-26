@@ -249,7 +249,7 @@ public class LF_TrainChunking extends LearningFrameworkPRBase {
     }
     if (getTrainingAlgorithm().getAlgorithmKind() == AlgorithmKind.SEQUENCE_TAGGER) {
       if (getSequenceSpan() == null || getSequenceSpan().isEmpty()) {
-        throw new GateRuntimeException("SequenceSpan parameter is required for Sequence Taggers");
+        throw new GateRuntimeException("SequenceSpan parameter is required for sequence tagging algorithms");
       }
       haveSequenceTagger = true;
     } else {
