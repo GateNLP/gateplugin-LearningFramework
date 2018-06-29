@@ -33,6 +33,7 @@ import gate.util.Benchmark;
 import gate.util.Benchmarkable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import junit.framework.Assert;
 //import java.util.Optional;
 
 /**
@@ -62,6 +63,9 @@ public abstract class AbstractDocumentProcessor
   public AtomicInteger getSeenDocuments() {
     return seenDocuments;
   }
+  
+  
+  public volatile int seenDocumentsThisDuplicate = 0;
   
   protected Controller controller;
   
@@ -210,6 +214,10 @@ public abstract class AbstractDocumentProcessor
     // The document counting happens in this synchronized code block.
     // We could probably also use volatile Integer for the counting.
     synchronized (getSyncObject()) {
+      if(seenDocumentsThisDuplicate == 0) {
+        beforeProcessing(controller);
+      }
+      seenDocumentsThisDuplicate += 1;
       if(getSeenDocuments().compareAndSet(0, 1)) {
         System.err.println("DEBUG "+this.getName()+" Have 0 set 1, beforeFirstDocument, id="+duplicateId);
         beforeFirstDocument(controller);
@@ -237,11 +245,10 @@ public abstract class AbstractDocumentProcessor
     // reset the flags for the next time the controller is run
     controller = arg0;
     setLastError(arg1);
-    controllerFinished(arg0, arg1);
     LOGGER.error("Controller ended with error "+arg1.getMessage());
-    int tmp = getRemainingDuplicates().getAndDecrement();
+    int tmp = getRemainingDuplicates().decrementAndGet();
     LOGGER.debug("DEBUG "+this.getName()+" controllerExecutionAborted invocation "+tmp+" for duplicate "+duplicateId);
-    if(tmp==1) {      
+    if(tmp==0) {      
       if (getSeenDocuments().get() > 0) {
         LOGGER.debug("DEBUG "+this.getName()+" last controller-aborted, invoking afterLastDocument");
         afterLastDocument(arg0, getLastError());
@@ -250,16 +257,18 @@ public abstract class AbstractDocumentProcessor
         finishedNoDocument(arg0, getLastError());
       }
     }
+    Assert.assertEquals(tmp, duplicateId);
+    
+    controllerFinished(arg0, arg1);
   }
 
   @Override
   public void controllerExecutionFinished(Controller arg0)
           throws ExecutionException {
     controller = arg0;
-    controllerFinished(arg0, null);
-    int tmp = getRemainingDuplicates().getAndDecrement();
+    int tmp = getRemainingDuplicates().decrementAndGet();
     LOGGER.debug(this.getName()+": controllerExecutionFinished invocation "+tmp+" for duplicate "+duplicateId);
-    if(tmp==1) {      
+    if(tmp==0) {      
       if (getSeenDocuments().get() > 0) {
         LOGGER.debug("DEBUG "+this.getName()+": Last controller-finished, invoking afterLastDocument");
         afterLastDocument(arg0, getLastError());
@@ -268,24 +277,32 @@ public abstract class AbstractDocumentProcessor
         finishedNoDocument(arg0, getLastError());
       }
     }
+    Assert.assertEquals(tmp, duplicateId);
+    
+    controllerFinished(arg0, null);
   }
 
   @Override
   public void controllerExecutionStarted(Controller arg0)
           throws ExecutionException {
     controller = arg0;
-    controllerStarted(arg0);
+    seenDocumentsThisDuplicate = 0;
     // we count up to the number of duplicates we have. The first invocation of this is also
     // responsible for resetting the document counter (it needs to be the first because 
     // at any later time, another duplicate could already have their execute method invoked 
-    int tmp = getRemainingDuplicates().incrementAndGet();
-    if(tmp==1) {
+    int tmp = getRemainingDuplicates().getAndIncrement();
+    if(tmp==0) {
       LOGGER.debug(this.getName()+": First controllerExecutionStarted invocation, resetting error and doc count in duplicate "+duplicateId);
       setLastError(null);
       getSeenDocuments().set(0);
     } else {
       LOGGER.debug(this.getName()+": controllerExecutionStarted invocation number "+tmp+" in duplicate "+duplicateId);
     }
+    // just for checking that our assumption is right that invocation happens
+    // in the order the duplicate was originally created in GCP.
+    Assert.assertEquals(tmp, duplicateId);
+    
+    controllerStarted(arg0);
   }
   
 
@@ -305,20 +322,60 @@ public abstract class AbstractDocumentProcessor
    */
   protected abstract void process(Document document);
 
+  /**
+   * Callback for when each controller gets started on a corpus.
+   * This method gets called once when processing starts for a controller.
+   * This happens before it is known if there is any document to process and
+   * hence before the beforeFirstDocument method gets invoked, if at all.
+   * If a pipeline has been duplicated, then this gets invoked for each 
+   * duplicate. Note that controllerStarted gets invoked for each duplicate
+   * in sequence, without any concurrency and that (in the case of GCP at least)
+   * the order of invocation should agree with the order of creation, so it
+   * should match the duplicateId assigned to each instance.
+   * <p>
+   * Note: if used with modular pipelines and parametrizable pipelines,
+   * the settings override from a config may not have happened at the time
+   * this gets called. 
+   * 
+   * @param ctrl the controller instance
+   */
   public abstract void controllerStarted(Controller ctrl);
 
+  
+  /**
+   * A callback that gets invoked before processing starts.
+   * This gets invoked for each duplicate that processes at least one 
+   * document, before the first document gets processed. The code is 
+   * running synchronized between all duplicates. 
+   * This gets run before the beforeFirstDocument callback for the controller
+   * that processes the very first document. 
+   * 
+   * @param ctrl The controller instance
+   */
+  public abstract void beforeProcessing(Controller ctrl);
   
   /**
    * Method that runs before the first document is being processed by a controller.
    * 
    * This method is not called if no documents are processed at all. 
    * This method only gets invoked once, even if there are duplicates of the PR.
+   * Note that in case of duplication, this happens once concurrent processing
+   * has been started, so the duplicationId of the PR for which this is invoked
+   * can be completely random.
    * 
    * @param ctrl  the controller that is going to be run on the documents
    */
   protected abstract void beforeFirstDocument(Controller ctrl);
 
-  
+  /**
+   * Callback for when processing has ended for a controller.
+   * This gets called when processing has finished for a controller.
+   * In case of duplication, this gets called for each duplicate separately,
+   * in sequence and in the order the duplicates were originally created.
+   * 
+   * @param ctrl
+   * @param thrw
+   */
   public abstract void controllerFinished(Controller ctrl, Throwable thrw);
 
   
