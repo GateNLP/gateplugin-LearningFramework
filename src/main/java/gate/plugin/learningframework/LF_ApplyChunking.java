@@ -51,7 +51,7 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
   static final Logger LOGGER = Logger.getLogger(LF_ApplyClassification.class.getCanonicalName());
   private static final long serialVersionUID = -5955373184542660323L;
 
-  protected URL dataDirectory;
+  protected URL dataDirectory = null;
 
   @RunTime
   @CreoleParameter(comment = "The directory where all data will be stored and read from")
@@ -166,6 +166,9 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
     // Shared data gets initialized only once for the initial instance,
     // non-shared data gets initialized for each duplicate separately
     if(getDuplicateId()==0) {
+      if(dataDirectory==null) {
+        throw new GateRuntimeException("Parameter dataDirectory not set!");
+      }
       if(dataDir==null || !dataDir.toExternalForm().equals(dataDirectory.toExternalForm())) {
        dataDir = dataDirectory;
        // Restore the Engine
@@ -181,7 +184,9 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
     }
 
     String secn = engine.getInfo().seqEncoderClass;
-    String seco = engine.getInfo().seqEncoderOptions;
+    //TODO: once we have a proper seqEncoder impl, set its options from 
+    // what has been saved
+    //String seco = engine.getInfo().seqEncoderOptions;
     
     try {
       @SuppressWarnings("unchecked")

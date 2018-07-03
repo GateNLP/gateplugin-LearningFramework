@@ -65,7 +65,7 @@ public abstract class AbstractDocumentProcessor
   }
   
   
-  public volatile int seenDocumentsThisDuplicate = 0;
+  public AtomicInteger seenDocumentsThisDuplicate;
   
   protected Controller controller;
   
@@ -155,6 +155,7 @@ public abstract class AbstractDocumentProcessor
   //     controllerExecutionFinished and controllerExecutionAborted
   // int getSeenDocuments().get() - returns the current number of documents
   //     for which processing has been started
+  // int seenDocumentsThisDuplicate.get() - the documents seen by only this duplicate
   // int getDuplicateId() - returns the duplicate number for the current duplicate.
   //     this returns 0 for the instance for which init() was invoked first, 
   //     usually the template other duplicates where cloned from.
@@ -198,7 +199,7 @@ public abstract class AbstractDocumentProcessor
     // The document counting happens in this synchronized code block.
     // We could probably also use volatile Integer for the counting.
     synchronized (getSyncObject()) {
-      seenDocumentsThisDuplicate += 1;
+      seenDocumentsThisDuplicate.incrementAndGet();
       getSeenDocuments().incrementAndGet();
     }
     // actual processing happens in parallel if there are duplicates
@@ -243,7 +244,7 @@ public abstract class AbstractDocumentProcessor
   public void controllerExecutionStarted(Controller arg0)
           throws ExecutionException {
     controller = arg0;
-    seenDocumentsThisDuplicate = 0;
+    seenDocumentsThisDuplicate.set(0);
     // we count up to the number of duplicates we have. The first invocation of this is also
     // responsible for resetting the document counter (it needs to be the first because 
     // at any later time, another duplicate could already have their execute method invoked 
