@@ -39,7 +39,6 @@ import gate.plugin.learningframework.features.FeatureSpecification;
 import gate.plugin.learningframework.features.SeqEncoder;
 import gate.plugin.learningframework.features.SeqEncoderEnum;
 import gate.plugin.learningframework.features.TargetType;
-import gate.util.Files;
 import gate.util.GateRuntimeException;
 import java.io.File;
 import java.io.IOException;
@@ -239,7 +238,7 @@ public class LF_Export extends LF_ExportBase {
   }
 
   @Override
-  protected void beforeFirstDocument(Controller controller) {
+  public void controllerStarted(Controller controller) {
 
     if(getExporter() == null) {
       throw new GateRuntimeException("Exporter parameter is null");
@@ -250,10 +249,6 @@ public class LF_Export extends LF_ExportBase {
       throw new GateRuntimeException("SeqEncoder class not yet implemented, please choose another one: "+getSeqEncoder());
     }
     
-    // Read and parse the feature specification
-    featureSpec = new FeatureSpecification(featureSpecURL);
-    System.err.println("DEBUG Read the feature specification: "+featureSpec);
-
     try {
       @SuppressWarnings("unchecked")
       Constructor<?> tmpc = getSeqEncoder().getEncoderClass().getDeclaredConstructor();
@@ -312,43 +307,47 @@ public class LF_Export extends LF_ExportBase {
     }
     haveSequenceAlg = (algkind == AlgorithmKind.SEQUENCE_TAGGER);
 
-    // create the corpus exporter
-    URL effectiveDataDirectory;
-    if(dataDirectory==null || dataDirectory.toExternalForm().isEmpty()) {
-      try {
-        effectiveDataDirectory = new File(".").getCanonicalFile().toURI().toURL();
-      } catch(Exception ex) {
-        throw new GateRuntimeException("Cannot use current running directory", ex);
+
+    if (getDuplicateId() == 0) {
+      // Read and parse the feature specification
+      featureSpec = new FeatureSpecification(featureSpecURL);
+      System.err.println("DEBUG Read the feature specification: " + featureSpec);
+
+      // create the corpus exporter
+      URL effectiveDataDirectory;
+      if (dataDirectory == null || dataDirectory.toExternalForm().isEmpty()) {
+        try {
+          effectiveDataDirectory = new File(".").getCanonicalFile().toURI().toURL();
+        } catch (IOException ex) {
+          throw new GateRuntimeException("Cannot use current running directory", ex);
+        }
+      } else {
+        effectiveDataDirectory = dataDirectory;
       }
+      System.err.println("DEBUG: using data directory:" + effectiveDataDirectory);
+      corpusExporter = CorpusExporter.create(exporter, getAlgorithmParameters(), featureSpec.getFeatureInfo(),
+              getInstanceType(), effectiveDataDirectory);
+
+      corpusRepresentation = corpusExporter.getCorpusRepresentation();
+      getSharedData().put("corpusEporter", corpusExporter);
+      getSharedData().put("featureSpec", featureSpec);
+      getSharedData().put("corpusRepresentation", corpusRepresentation);
     } else {
-      effectiveDataDirectory = dataDirectory;
+      // duplicateId > 0
+      corpusExporter = (CorpusExporter) getSharedData().get("corpusExporter");
+      featureSpec = (FeatureSpecification) getSharedData().get("featureSpec");
+      corpusRepresentation = (CorpusRepresentation) getSharedData().get("corpusRepresentation");
     }
-    System.err.println("DEBUG: using data directory:"+effectiveDataDirectory);
-    corpusExporter = CorpusExporter.create(exporter, getAlgorithmParameters(), featureSpec.getFeatureInfo(), 
-            getInstanceType(), effectiveDataDirectory);
     
-    corpusRepresentation = corpusExporter.getCorpusRepresentation();
-
-    
-    System.err.println("DEBUG: setup of the export PR complete");
   }
 
   @Override
-  public void afterLastDocument(Controller arg0, Throwable t) {
-    
-    corpusRepresentation.finishAdding();
-    corpusExporter.export();
+  public void controllerFinished(Controller arg0, Throwable t) {
+    if (getDuplicateId() == 0) {
+      corpusRepresentation.finishAdding();
+      corpusExporter.export();
+    }
   }
 
-  @Override
-  protected void finishedNoDocument(Controller c, Throwable t) {
-    logger.error("Processing finished, but got an error or no documents seen, cannot export!");
-  }
-
-
-  
-  private Exception GateRuntimeException(String exporter_parameter_is_null) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
 
 }

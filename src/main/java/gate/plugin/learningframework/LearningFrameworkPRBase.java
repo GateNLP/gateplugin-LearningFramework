@@ -90,13 +90,7 @@ public abstract class LearningFrameworkPRBase
     algorithmParamtersChanged = false;
     return tmp;
   }
-  
-  @Override
-  public void controllerStarted(Controller ctrl) {
-    // TODO: use logger
-    System.err.println("DEBUG: running controller started for duplicateId="+duplicateId);
-  }
-  
+    
   @Override 
   public void controllerFinished(Controller ctrl, Throwable thrw) {
     System.err.println("DEBUG: running controller finished for duplicateId="+duplicateId);

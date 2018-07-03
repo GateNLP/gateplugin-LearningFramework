@@ -136,9 +136,6 @@ public class LF_TrainRegression extends LearningFrameworkPRBase {
 
   private Engine engine = null;
 
-  
-  private int nrDocuments;
-  
   private File dataDirFile;
 
   @Override
@@ -147,7 +144,6 @@ public class LF_TrainRegression extends LearningFrameworkPRBase {
       interrupted = false;
       throw new GateRuntimeException("Execution was requested to be interrupted");
     }
-    nrDocuments += 1;
     // extract the required annotation sets,
     AnnotationSet inputAS = doc.getAnnotations(getInputASName());
     AnnotationSet instanceAS = inputAS.get(getInstanceType());
@@ -167,7 +163,7 @@ public class LF_TrainRegression extends LearningFrameworkPRBase {
   }
   
   @Override
-  protected void beforeFirstDocument(Controller controller) {
+  public void controllerStarted(Controller controller) {
     if("file".equals(dataDirectory.getProtocol())) {
       dataDirFile = gate.util.Files.fileFromURL(dataDirectory);
     } else {
@@ -186,58 +182,63 @@ public class LF_TrainRegression extends LearningFrameworkPRBase {
     System.err.println("  Training algorithm engine class is " + alg.getEngineClass());
     System.err.println("  Training algorithm algor class is " + alg.getTrainerClass());
 
-    // Read and parse the feature specification
-    featureSpec = new FeatureSpecification(featureSpecURL);
-    System.err.println("DEBUG Read the feature specification: " + featureSpec);
-
-    // Create the engine from the Algorithm parameter
-    FeatureInfo fi = featureSpec.getFeatureInfo();
-    fi.setGlobalScalingMethod(scaleFeatures);
-    engine = Engine.create(trainingAlgorithm, getAlgorithmParameters(), fi, TargetType.NUMERIC, dataDirectory);
-    corpusRepresentation = engine.getCorpusRepresentation();
-    System.err.println("DEBUG: created the engine: " + engine);
-
-    nrDocuments = 0;
-    
-    System.err.println("DEBUG: setup of the training PR complete");    
+    if (getDuplicateId() == 0) {
+      // Read and parse the feature specification
+      featureSpec = new FeatureSpecification(featureSpecURL);
+      System.err.println("DEBUG Read the feature specification: " + featureSpec);
+      // Create the engine from the Algorithm parameter
+      FeatureInfo fi = featureSpec.getFeatureInfo();
+      fi.setGlobalScalingMethod(scaleFeatures);
+      engine = Engine.create(trainingAlgorithm, getAlgorithmParameters(), fi, TargetType.NUMERIC, dataDirectory);
+      corpusRepresentation = engine.getCorpusRepresentation();
+      System.err.println("DEBUG: created the engine: " + engine);
+      getSharedData().put("engine", engine);
+      getSharedData().put("featureSpec", featureSpec);
+      getSharedData().put("corpusRepresentation", corpusRepresentation);
+    } else {
+      // duplicateId > 0
+      engine = (Engine) getSharedData().get("engine");
+      featureSpec = (FeatureSpecification) getSharedData().get("featureSpec");
+      corpusRepresentation = (CorpusRepresentation) getSharedData().get("corpusRepresentation");
+    }
   }
   
 
   @Override
-  public void afterLastDocument(Controller arg0, Throwable t) {
+  public void controllerFinished(Controller arg0, Throwable t) {
     if(t!=null) {
       System.err.println("An exception occurred during processing of documents, no training will be done");
       System.err.println("Exception was "+t.getClass()+": "+t.getMessage());
       return;
     }
-    System.out.println("LearningFramework: Starting training engine " + engine);
-    if(corpusRepresentation instanceof CorpusRepresentationMallet) {
-      CorpusRepresentationMallet crm = (CorpusRepresentationMallet)corpusRepresentation;
-      System.out.println("Training set size: " + crm.getRepresentationMallet().size());
-      if (crm.getRepresentationMallet().getDataAlphabet().size() > 20) {
-        System.out.println("LearningFramework: Attributes " + crm.getRepresentationMallet().getDataAlphabet().size());
-      } else {
-        System.out.println("LearningFramework: Attributes " + crm.getRepresentationMallet().getDataAlphabet().toString().replaceAll("\\n", " "));
-      }
+    if(getSeenDocuments().get()==0) {
+      throw new GateRuntimeException("No documents seen, cannot train");
     }
-    engine.getInfo().nrTrainingInstances = corpusRepresentation.nrInstances();
+    if (getDuplicateId() == 0) {
+      System.out.println("LearningFramework: Starting training engine " + engine);
+      if (corpusRepresentation instanceof CorpusRepresentationMallet) {
+        CorpusRepresentationMallet crm = (CorpusRepresentationMallet) corpusRepresentation;
+        System.out.println("Training set size: " + crm.getRepresentationMallet().size());
+        if (crm.getRepresentationMallet().getDataAlphabet().size() > 20) {
+          System.out.println("LearningFramework: Attributes " + crm.getRepresentationMallet().getDataAlphabet().size());
+        } else {
+          System.out.println("LearningFramework: Attributes " + crm.getRepresentationMallet().getDataAlphabet().toString().replaceAll("\\n", " "));
+        }
+      }
 
-    // Store some additional information in the info datastructure which will be saved with the model
-    engine.getInfo().nrTrainingDocuments = nrDocuments;
-    engine.getInfo().targetFeature = getTargetFeature();
-    engine.getInfo().trainingCorpusName = corpus.getName();
-    
-    engine.trainModel(gate.util.Files.fileFromURL(dataDirectory),
-            getInstanceType(),
-            getAlgorithmParameters());
-    logger.info("LearningFramework: Training complete!");
-    engine.saveEngine(dataDirFile);
+      engine.getInfo().nrTrainingInstances = corpusRepresentation.nrInstances();
+
+      // Store some additional information in the info datastructure which will be saved with the model
+      engine.getInfo().nrTrainingDocuments = getSeenDocuments().get();
+      engine.getInfo().targetFeature = getTargetFeature();
+      engine.getInfo().trainingCorpusName = corpus.getName();
+
+      engine.trainModel(gate.util.Files.fileFromURL(dataDirectory),
+              getInstanceType(),
+              getAlgorithmParameters());
+      logger.info("LearningFramework: Training complete!");
+      engine.saveEngine(dataDirFile);
+    }
   }
-
-  @Override
-  protected void finishedNoDocument(Controller c, Throwable t) {
-    logger.error("Processing finished, but no documents seen, got an error, or the PR was disabled in the pipeline - cannot train!");
-  }
-
 
 }

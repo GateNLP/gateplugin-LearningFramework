@@ -147,57 +147,53 @@ public class LF_ApplyRegression extends LearningFrameworkPRBase {
 
 
   @Override
-  protected void beforeFirstDocument(Controller controller) {
+  public void controllerStarted(Controller controller) {
 
-    // JP: this was moved from the dataDirectory setter to avoid problems
-    // but we should really make sure that the learning is reloaded only 
-    // if the URL has changed since the last time (if ever) it was loaded.
-    savedModelDirectoryURL = dataDirectory;
+    if (getDuplicateId() == 0) {
+      // JP: this was moved from the dataDirectory setter to avoid problems
+      // but we should really make sure that the learning is reloaded only 
+      // if the URL has changed since the last time (if ever) it was loaded.
+      savedModelDirectoryURL = dataDirectory;
 
-    if (serverUrl != null && !serverUrl.isEmpty()) {
-      engine = new EngineMBServer(dataDirectory,serverUrl);      
-    } else {
-
-      // Restore the Engine
-      engine = Engine.load(savedModelDirectoryURL, getAlgorithmParameters());
-      System.out.println("LF-Info: model loaded is now " + engine);
-
-      if (engine.getModel() == null) {
-        // This is really only an error if we do not have some kind of wrapped algorithm
-        // where the model is handled externally.
-        // For now, we just show a warning.
-        // throw new GateRuntimeException("Do not have a model, something went wrong.");
-        System.err.println("WARNING: no internal model to apply, this is ok if an external model is used");
-        //throw new GateRuntimeException("Do not have a model, something went wrong.");
+      if (serverUrl != null && !serverUrl.isEmpty()) {
+        engine = new EngineMBServer(dataDirectory, serverUrl);
       } else {
-        System.out.println("LearningFramework: Applying model "
-                + engine.getModel().getClass() + " ...");
-      }
 
+        // Restore the Engine
+        engine = Engine.load(savedModelDirectoryURL, getAlgorithmParameters());
+        System.out.println("LF-Info: model loaded is now " + engine);
+
+        if (engine.getModel() == null) {
+          // This is really only an error if we do not have some kind of wrapped algorithm
+          // where the model is handled externally.
+          // For now, we just show a warning.
+          // throw new GateRuntimeException("Do not have a model, something went wrong.");
+          System.err.println("WARNING: no internal model to apply, this is ok if an external model is used");
+          //throw new GateRuntimeException("Do not have a model, something went wrong.");
+        } else {
+          System.out.println("LearningFramework: Applying model "
+                  + engine.getModel().getClass() + " ...");
+        }
+
+      }
+      getSharedData().put("engine", engine);
+    } else {
+      engine = (Engine) getSharedData().get("engine");
     }
-    
-    if(getTargetFeature()==null || getTargetFeature().isEmpty()) {
+
+    if (getTargetFeature() == null || getTargetFeature().isEmpty()) {
       // try to get the target feature from the model instead
       String targetFeatureFromModel = engine.getInfo().targetFeature;
-      if(targetFeatureFromModel == null || targetFeatureFromModel.isEmpty()) {
+      if (targetFeatureFromModel == null || targetFeatureFromModel.isEmpty()) {
         throw new GateRuntimeException("Not targetFeature parameter specified and none available from the model info file either.");
       }
       targetFeatureToUse = targetFeatureFromModel;
-      System.err.println("Using target feature name from model: "+targetFeatureToUse);
+      System.err.println("Using target feature name from model: " + targetFeatureToUse);
     } else {
       targetFeatureToUse = getTargetFeature();
-      System.err.println("Using target feature name from PR parameter: "+targetFeatureToUse);
+      System.err.println("Using target feature name from PR parameter: " + targetFeatureToUse);
     }
   }
 
-  @Override
-  public void afterLastDocument(Controller arg0, Throwable throwable) {
-    // No need to do anything, empty implementation!
-  }
-
-  @Override
-  public void finishedNoDocument(Controller arg0, Throwable throwable) {
-    // no need to do anything
-  }
 
 }

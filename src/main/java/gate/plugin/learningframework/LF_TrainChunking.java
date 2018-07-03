@@ -173,8 +173,6 @@ public class LF_TrainChunking extends LearningFrameworkPRBase {
 
   private Engine engine;
   
-  private int nrDocuments;
-  
   private CorpusRepresentation corpusRepresentation;
   
   @Override
@@ -201,12 +199,11 @@ public class LF_TrainChunking extends LearningFrameworkPRBase {
     } else {
       corpusRepresentation.add(instanceAS, null, inputAS, classAS, null, TargetType.NOMINAL, "", nameFeatureName, seqEncoder);
     }
-    nrDocuments++;
   }
 
 
   @Override
-  protected void beforeFirstDocument(Controller controller) {
+  public void controllerStarted(Controller controller) {
 
     if("file".equals(dataDirectory.getProtocol())) {
       dataDirFile = gate.util.Files.fileFromURL(dataDirectory);
@@ -238,7 +235,6 @@ public class LF_TrainChunking extends LearningFrameworkPRBase {
     }
     classAnnotationTypesSet = new HashSet<>();
     classAnnotationTypesSet.addAll(classAnnotationTypes);
-    featureSpec = new FeatureSpecification(featureSpecURL);
     if(!dataDirFile.exists()) {
       throw new GateRuntimeException("Data directory not found: "+dataDirFile.getAbsolutePath());
     }
@@ -258,64 +254,75 @@ public class LF_TrainChunking extends LearningFrameworkPRBase {
       haveSequenceTagger = false;
     }
     
-    
-    FeatureInfo fi = featureSpec.getFeatureInfo();
-    fi.setGlobalScalingMethod(scaleFeatures);
-    engine = Engine.create(trainingAlgorithm, getAlgorithmParameters(), fi, TargetType.NOMINAL, dataDirectory);
-    corpusRepresentation = engine.getCorpusRepresentation();
-    System.err.println("DEBUG: created the engine: " + engine + " with CR="+engine.getCorpusRepresentation());  
-    nrDocuments = 0;
+    if (getDuplicateId() == 0) {
+      featureSpec = new FeatureSpecification(featureSpecURL);
+      FeatureInfo fi = featureSpec.getFeatureInfo();
+      fi.setGlobalScalingMethod(scaleFeatures);
+      engine = Engine.create(trainingAlgorithm, getAlgorithmParameters(), fi, TargetType.NOMINAL, dataDirectory);
+      corpusRepresentation = engine.getCorpusRepresentation();
+      System.err.println("DEBUG: created the engine: " + engine + " with CR=" + engine.getCorpusRepresentation());
+      getSharedData().put("engine", engine);
+      getSharedData().put("featureSpec", featureSpec);
+      getSharedData().put("corpusRepresentation", corpusRepresentation);
+    } else {
+      // duplicateId > 0
+      engine = (Engine) getSharedData().get("engine");
+      featureSpec = (FeatureSpecification) getSharedData().get("featureSpec");
+      corpusRepresentation = (CorpusRepresentation) getSharedData().get("corpusRepresentation");
+    }
   }
   
   
   @Override
-  public void afterLastDocument(Controller arg0, Throwable t) {
+  public void controllerFinished(Controller arg0, Throwable t) {
+    // TODO: check for number of documents > 0!    
     if(t!=null) {
       System.err.println("An exception occurred during processing of documents, no training will be done");
       System.err.println("Exception was "+t.getClass()+": "+t.getMessage());
       return;
     }
-    System.out.println("LearningFramework: Starting training engine " + engine);
-    if(corpusRepresentation instanceof CorpusRepresentationMallet) {
-      CorpusRepresentationMallet crm = (CorpusRepresentationMallet)corpusRepresentation;
-      System.out.println("Training set classes: "
-              + crm.getRepresentationMallet().getPipe().getTargetAlphabet().toString().replaceAll("\\n", " "));
-      System.out.println("Training set size: " + crm.getRepresentationMallet().size());
-      if (crm.getRepresentationMallet().getDataAlphabet().size() > 20) {
-        System.out.println("LearningFramework: Attributes " + crm.getRepresentationMallet().getDataAlphabet().size());
-      } else {
-        System.out.println("LearningFramework: Attributes " + crm.getRepresentationMallet().getDataAlphabet().toString().replaceAll("\\n", " "));
-      }
+    if(getSeenDocuments().get()==0) {
+      throw new GateRuntimeException("No documents seen, cannot train");
     }
-    // NOTE: some parts of the info instance should/could get updated inside the
-    // engine as part of the trainModel() method (the EngineMB engines delegate
-    // this into their own updateInfo() method). 
-    engine.getInfo().nrTrainingInstances = corpusRepresentation.nrInstances();
-    engine.getInfo().classAnnotationTypes = getClassAnnotationTypes();
-    // engine.getInfo().classLabels = corpusRepresentation.classLabels();
-    // Store some additional information in the info datastructure which will be saved with the model
-    engine.getInfo().nrTrainingDocuments = nrDocuments;
-    
-    // TODO: what if we do sequence tagging by classification???
-    engine.getInfo().targetFeature = "LF_class";
-    engine.getInfo().trainingCorpusName = corpus.getName();
-    engine.getInfo().classAnnotationTypes = getClassAnnotationTypes();
-    
-    if(seqEncoder!=null) { 
-      engine.getInfo().seqEncoderClass = seqEncoder.getClass().getName();
-      engine.getInfo().seqEncoderOptions = seqEncoder.getOptions().toString();
-    }   
-    
-    engine.trainModel(gate.util.Files.fileFromURL(dataDirectory),
-            getInstanceType(),
-            getAlgorithmParameters());
-    LOGGER.info("LearningFramework: Training complete!");
-    engine.saveEngine(dataDirFile);
+    if (getDuplicateId() == 0) {
+      System.out.println("LearningFramework: Starting training engine " + engine);
+      if (corpusRepresentation instanceof CorpusRepresentationMallet) {
+        CorpusRepresentationMallet crm = (CorpusRepresentationMallet) corpusRepresentation;
+        System.out.println("Training set classes: "
+                + crm.getRepresentationMallet().getPipe().getTargetAlphabet().toString().replaceAll("\\n", " "));
+        System.out.println("Training set size: " + crm.getRepresentationMallet().size());
+        if (crm.getRepresentationMallet().getDataAlphabet().size() > 20) {
+          System.out.println("LearningFramework: Attributes " + crm.getRepresentationMallet().getDataAlphabet().size());
+        } else {
+          System.out.println("LearningFramework: Attributes " + crm.getRepresentationMallet().getDataAlphabet().toString().replaceAll("\\n", " "));
+        }
+      }
+      // NOTE: some parts of the info instance should/could get updated inside the
+      // engine as part of the trainModel() method (the EngineMB engines delegate
+      // this into their own updateInfo() method). 
+      engine.getInfo().nrTrainingInstances = corpusRepresentation.nrInstances();
+      engine.getInfo().classAnnotationTypes = getClassAnnotationTypes();
+      // engine.getInfo().classLabels = corpusRepresentation.classLabels();
+      // Store some additional information in the info datastructure which will be saved with the model
+      engine.getInfo().nrTrainingDocuments = getSeenDocuments().get();
+
+      // TODO: what if we do sequence tagging by classification???
+      engine.getInfo().targetFeature = "LF_class";
+      engine.getInfo().trainingCorpusName = corpus.getName();
+      engine.getInfo().classAnnotationTypes = getClassAnnotationTypes();
+
+      if (seqEncoder != null) {
+        engine.getInfo().seqEncoderClass = seqEncoder.getClass().getName();
+        engine.getInfo().seqEncoderOptions = seqEncoder.getOptions().toString();
+      }
+
+      engine.trainModel(gate.util.Files.fileFromURL(dataDirectory),
+              getInstanceType(),
+              getAlgorithmParameters());
+      LOGGER.info("LearningFramework: Training complete!");
+      engine.saveEngine(dataDirFile);
+    } // duplicateId == 0
   }
 
-  @Override
-  protected void finishedNoDocument(Controller c, Throwable t) {
-    LOGGER.error("Processing finished, but got an error, no documents seen, or the PR was disabled in the pipeline - cannot train!");
-  }
 
 }

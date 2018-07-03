@@ -188,16 +188,11 @@ public class LF_GenFeatures_Misc extends AbstractDocumentProcessor {
 
   
   @Override
-  public void afterLastDocument(Controller arg0, Throwable t) {
+  public void controllerFinished(Controller arg0, Throwable t) {
   }
 
   @Override
-  protected void finishedNoDocument(Controller c, Throwable t) {
-    logger.error("Processing finished, but got an error, no documents seen, or the PR was disabled in the pipeline - cannot train!");
-  }
-
-  @Override
-  protected void beforeFirstDocument(Controller controller) {
+  public void controllerStarted(Controller controller) {
     if(!getGenWordShape() && !getGenWordShapeShort()) {
       throw new GateRuntimeException("Should generate something!");
     }

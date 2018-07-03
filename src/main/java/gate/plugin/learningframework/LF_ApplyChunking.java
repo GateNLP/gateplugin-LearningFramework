@@ -161,16 +161,24 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
   }
 
   @Override
-  protected void beforeFirstDocument(Controller controller) {
+  public void controllerStarted(Controller controller) {
 
-    // TODO/JP: this was moved from the dataDirectory setter to avoid problems
-    // but we should really make sure that the learning is reloaded only 
-    // if the URL has changed since the last time (if ever) it was loaded.
-    dataDir = dataDirectory;
-
-    // Restore the Engine
-    engine = gate.plugin.learningframework.engines.Engine.load(dataDir, getAlgorithmParameters());
-    System.out.println("LF-Info: model loaded is now "+engine);
+    // Shared data gets initialized only once for the initial instance,
+    // non-shared data gets initialized for each duplicate separately
+    if(getDuplicateId()==0) {
+      if(dataDir==null || !dataDir.toExternalForm().equals(dataDirectory.toExternalForm())) {
+       dataDir = dataDirectory;
+       // Restore the Engine
+       engine = gate.plugin.learningframework.engines.Engine.load(dataDir, getAlgorithmParameters());
+       System.out.println("LF-Info: model loaded is now: "+engine);
+     } else {
+       System.out.println("LF-Info: re-using already loaded model: "+engine);
+     }    
+     // TODO: store the reference to the engine in the shared data map
+     getSharedData().put("engine", engine);
+    } else {
+      engine = (Engine)getSharedData().get("engine");
+    }
 
     String secn = engine.getInfo().seqEncoderClass;
     String seco = engine.getInfo().seqEncoderOptions;
@@ -204,16 +212,5 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
     }
   }
   
-
-  @Override
-  public void afterLastDocument(Controller arg0, Throwable throwable) {
-    // No need to do anything, empty implementation!
-  }
-
-  @Override
-  public void finishedNoDocument(Controller arg0, Throwable throwable) {
-    // no need to do anything
-  }
-
 
 }

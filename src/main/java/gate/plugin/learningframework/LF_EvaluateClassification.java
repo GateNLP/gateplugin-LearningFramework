@@ -208,14 +208,7 @@ public class LF_EvaluateClassification extends LearningFrameworkPRBase {
     instanceWeightFeature = val;
   }
   public String getInstanceWeightFeature() { return instanceWeightFeature; }
-  
-
-  
-  
-  
-  
-  private int nrDocuments;
-  
+    
   private URL dataDirURL;
 
   @Override
@@ -251,78 +244,79 @@ public class LF_EvaluateClassification extends LearningFrameworkPRBase {
     inputAS.get(getClassAnnotationType());
     String nameFeatureName = null;
     corpusRepresentation.add(instanceAS, sequenceAS, inputAS, classAS, tfName, TargetType.NOMINAL, instanceWeightFeature, nameFeatureName, null);
-    nrDocuments++;
   }
 
   @Override
-  protected void beforeFirstDocument(Controller controller) {
-    if (getTrainingAlgorithm() == null) {
-      throw new GateRuntimeException("LearningFramework: no training algorithm specified");
-    }
-    if (getTrainingAlgorithm() == AlgorithmClassification.MalletCRF_SEQ_MR) {
-      if (getSequenceSpan() == null || getSequenceSpan().isEmpty()) {
-        throw new GateRuntimeException("SequenceSpan parameter is required for "+getTrainingAlgorithm());
+  public void controllerStarted(Controller controller) {
+    if (getDuplicateId() == 0) {
+      if (getTrainingAlgorithm() == null) {
+        throw new GateRuntimeException("LearningFramework: no training algorithm specified");
       }
-    } else {
-      if (getSequenceSpan() != null && !getSequenceSpan().isEmpty()) {
-        throw new GateRuntimeException("SequenceSpan parameter must not be specified with non-sequence tagging algorithm");
-      }
-    }
-
-    AlgorithmClassification alg = getTrainingAlgorithm();
-
-    System.err.println("DEBUG: Before Document.");
-    System.err.println("  Training algorithm engine class is " + alg.getEngineClass());
-    System.err.println("  Training algorithm algor class is " + alg.getTrainerClass());
-
-    // Read and parse the feature specification
-    featureSpec = new FeatureSpecification(featureSpecURL);
-    System.err.println("DEBUG Read the feature specification: " + featureSpec);
-
-    // Create the engine from the Algorithm parameter
-    FeatureInfo fi = featureSpec.getFeatureInfo();
-    fi.setGlobalScalingMethod(scaleFeatures);
-    engine = Engine.create(trainingAlgorithm, getAlgorithmParameters(), fi, TargetType.NOMINAL, dataDirURL);
-    
-    System.err.println("DEBUG: created the engine: " + engine);
-
-    corpusRepresentation = engine.getCorpusRepresentation();
-    System.err.println("DEBUG: created the corpusRepresentationMallet: " + corpusRepresentation);
-
-
-    nrDocuments = 0;
-    
-    System.err.println("DEBUG: setup of the training PR complete");    
-  }
-  
-  
-  @Override
-  public void afterLastDocument(Controller arg0, Throwable t) {
-    System.out.println("LearningFramework: Starting evaluating engine " + engine);
-    if(corpusRepresentation instanceof CorpusRepresentationMallet) {
-      CorpusRepresentationMallet crm = (CorpusRepresentationMallet)corpusRepresentation;
-      System.out.println("Training set classes: "
-              + crm.getRepresentationMallet().getPipe().getTargetAlphabet().toString().replaceAll("\\n", " "));
-      System.out.println("Training set size: " + crm.getRepresentationMallet().size());
-      if (crm.getRepresentationMallet().getDataAlphabet().size() > 20) {
-        System.out.println("LearningFramework: Attributes " + crm.getRepresentationMallet().getDataAlphabet().size());
+      if (getTrainingAlgorithm() == AlgorithmClassification.MalletCRF_SEQ_MR) {
+        if (getSequenceSpan() == null || getSequenceSpan().isEmpty()) {
+          throw new GateRuntimeException("SequenceSpan parameter is required for " + getTrainingAlgorithm());
+        }
       } else {
-        System.out.println("LearningFramework: Attributes " + crm.getRepresentationMallet().getDataAlphabet().toString().replaceAll("\\n", " "));
+        if (getSequenceSpan() != null && !getSequenceSpan().isEmpty()) {
+          throw new GateRuntimeException("SequenceSpan parameter must not be specified with non-sequence tagging algorithm");
+        }
       }
-      //System.out.println("DEBUG: instances are "+corpusRepresentation.getRepresentationMallet());
-    }
-    
-    EvaluationResult er = engine.evaluate(getAlgorithmParameters(),evaluationMethod,numberOfFolds,trainingFraction,numberOfRepeats);
-    logger.info("LearningFramework: Evaluation complete!");
-    logger.info(er);
-    if(getCorpus() != null && er instanceof EvaluationResultClassification) {
-      getCorpus().getFeatures().put("LearningFramework.accuracyEstimate", ((EvaluationResultClassification)er).accuracyEstimate);
+
+      AlgorithmClassification alg = getTrainingAlgorithm();
+
+      System.err.println("DEBUG: Before Document.");
+      System.err.println("  Training algorithm engine class is " + alg.getEngineClass());
+      System.err.println("  Training algorithm algor class is " + alg.getTrainerClass());
+
+      // Read and parse the feature specification
+      featureSpec = new FeatureSpecification(featureSpecURL);
+      System.err.println("DEBUG Read the feature specification: " + featureSpec);
+
+      // Create the engine from the Algorithm parameter
+      FeatureInfo fi = featureSpec.getFeatureInfo();
+      fi.setGlobalScalingMethod(scaleFeatures);
+      engine = Engine.create(trainingAlgorithm, getAlgorithmParameters(), fi, TargetType.NOMINAL, dataDirURL);
+
+      System.err.println("DEBUG: created the engine: " + engine);
+
+      corpusRepresentation = engine.getCorpusRepresentation();
+      System.err.println("DEBUG: created the corpusRepresentationMallet: " + corpusRepresentation);
+
+      getSharedData().put("engine", engine);
+      getSharedData().put("featureSpec", featureSpec);
+      getSharedData().put("corpusRepresentation", corpusRepresentation);
+    } else {
+      // duplicateId > 0
+      engine = (Engine) getSharedData().get("engine");
+      featureSpec = (FeatureSpecification) getSharedData().get("featureSpec");
+      corpusRepresentation = (CorpusRepresentation) getSharedData().get("corpusRepresentation");
     }
   }
 
   @Override
-  protected void finishedNoDocument(Controller c, Throwable t) {
-    logger.error("Processing finished, but no documents seen, cannot train!");
+  public void controllerFinished(Controller arg0, Throwable t) {
+    if (getDuplicateId() == 0) {
+      System.out.println("LearningFramework: Starting evaluating engine " + engine);
+      if (corpusRepresentation instanceof CorpusRepresentationMallet) {
+        CorpusRepresentationMallet crm = (CorpusRepresentationMallet) corpusRepresentation;
+        System.out.println("Training set classes: "
+                + crm.getRepresentationMallet().getPipe().getTargetAlphabet().toString().replaceAll("\\n", " "));
+        System.out.println("Training set size: " + crm.getRepresentationMallet().size());
+        if (crm.getRepresentationMallet().getDataAlphabet().size() > 20) {
+          System.out.println("LearningFramework: Attributes " + crm.getRepresentationMallet().getDataAlphabet().size());
+        } else {
+          System.out.println("LearningFramework: Attributes " + crm.getRepresentationMallet().getDataAlphabet().toString().replaceAll("\\n", " "));
+        }
+        //System.out.println("DEBUG: instances are "+corpusRepresentation.getRepresentationMallet());
+      }
+
+      EvaluationResult er = engine.evaluate(getAlgorithmParameters(), evaluationMethod, numberOfFolds, trainingFraction, numberOfRepeats);
+      logger.info("LearningFramework: Evaluation complete!");
+      logger.info(er);
+      if (getCorpus() != null && er instanceof EvaluationResultClassification) {
+        getCorpus().getFeatures().put("LearningFramework.accuracyEstimate", ((EvaluationResultClassification) er).accuracyEstimate);
+      }
+    }
   }
 
 

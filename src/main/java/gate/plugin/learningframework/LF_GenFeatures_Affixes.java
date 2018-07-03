@@ -296,21 +296,16 @@ public class LF_GenFeatures_Affixes extends AbstractDocumentProcessor {
     }
   }
 
-  
   @Override
-  public void afterLastDocument(Controller arg0, Throwable t) {
-  }
-
-  @Override
-  protected void finishedNoDocument(Controller c, Throwable t) {
-    logger.error("Processing finished, but got an error, no documents seen, or the PR was disabled in the pipeline - cannot train!");
-  }
-
-  @Override
-  protected void beforeFirstDocument(Controller controller) {
+  public void controllerStarted(Controller controller) {
     if(!getGenPrefixes() && !getGenSuffixes()) {
       throw new GateRuntimeException("Should generate something!");
     }
+  }
+
+  @Override
+  public void controllerFinished(Controller ctrl, Throwable thrw) {
+    
   }
 
 }
