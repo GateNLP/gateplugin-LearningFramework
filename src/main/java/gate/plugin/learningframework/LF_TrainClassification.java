@@ -202,6 +202,8 @@ public class LF_TrainClassification extends LearningFrameworkPRBase {
     if(!dataDirFile.exists()) {
       throw new GateRuntimeException("Data directory not found: "+dataDirFile.getAbsolutePath());
     }
+    System.err.println("DEBUG: data directory is " + dataDirectory);
+    System.err.println("DEBUG: feature specification is " + featureSpecURL);
 
     if (getTrainingAlgorithm() == null) {
       throw new GateRuntimeException("LearningFramework: no training algorithm specified");
@@ -218,9 +220,8 @@ public class LF_TrainClassification extends LearningFrameworkPRBase {
 
     AlgorithmClassification alg = getTrainingAlgorithm();
 
-    System.err.println("DEBUG: Before Document.");
-    System.err.println("  Training algorithm engine class is " + alg.getEngineClass());
-    System.err.println("  Training algorithm algor class is " + alg.getTrainerClass());
+    System.err.println("DEBUG: Training algorithm engine class is " + alg.getEngineClass());
+    System.err.println("DEBUG: Training algorithm algor class is " + alg.getTrainerClass());
 
     if (getDuplicateId() == 0) {
       // Read and parse the feature specification
