@@ -59,7 +59,7 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class EngineMBMalletClass extends EngineMBMallet {
 
-  private static Logger LOGGER = Logger.getLogger(EngineMBMalletClass.class);
+  private static final Logger LOGGER = Logger.getLogger(EngineMBMalletClass.class);
 
   public EngineMBMalletClass() { }
 
@@ -153,7 +153,7 @@ public class EngineMBMalletClass extends EngineMBMallet {
         dtTrainer.setMaxDepth(maxDepth);
         dtTrainer.setMinInfoGainSplit(minIGS);
         trainer = dtTrainer;
-      } else if(algorithm.equals(AlgorithmClassification.MalletMexEnt_CL_MR)) {
+      } else if(algorithm.equals(AlgorithmClassification.MalletMaxEnt_CL_MR)) {
         MaxEntTrainer tr = new MaxEntTrainer();
         Parms ps = new Parms(parms, "v:gaussianPriorVariance:d",
                 "l:l1Weight:d", "i:numIterations:i");
