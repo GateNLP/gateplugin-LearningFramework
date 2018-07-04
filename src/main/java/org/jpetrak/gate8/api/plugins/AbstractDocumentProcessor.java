@@ -183,6 +183,7 @@ public abstract class AbstractDocumentProcessor
       duplicateId = 0;
       setSharedData(new ConcurrentHashMap<>());
       setSeenDocuments(new AtomicInteger(0));
+      seenDocumentsThisDuplicate = new AtomicInteger(0);
       setRemainingDuplicates(new AtomicInteger(0));
       setSyncObject(new Object());
       LOGGER.debug("DEBUG: "+this.getName()+" created duplicate "+duplicateId);
