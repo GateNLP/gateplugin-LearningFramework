@@ -192,49 +192,44 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
   @Override
   public void controllerStarted(Controller controller) {
 
-    if (getDuplicateId() == 0) {
-      // If a server URL is specified, use the server engine. In that case the 
-      // data directory only needs to contain an info file, but most of the information
-      // in the info file is ignored. 
-      // For now, only the target feature is used if it is not specified as a runtime parameter.
-      // For now, the server does not support sequence taggers, so the sequence annotation must
-      // be empty 
-      if (serverUrl != null && !serverUrl.isEmpty()) {
-        if (getSequenceSpan() != null && !getSequenceSpan().isEmpty()) {
-          throw new GateRuntimeException("Sequence span not supported for server");
-        }
-        engine = new EngineMBServer(dataDirectory, serverUrl);
+    // If a server URL is specified, use the server engine. In that case the 
+    // data directory only needs to contain an info file, but most of the information
+    // in the info file is ignored. 
+    // For now, only the target feature is used if it is not specified as a runtime parameter.
+    // For now, the server does not support sequence taggers, so the sequence annotation must
+    // be empty 
+    if (serverUrl != null && !serverUrl.isEmpty()) {
+      if (getSequenceSpan() != null && !getSequenceSpan().isEmpty()) {
+        throw new GateRuntimeException("Sequence span not supported for server");
+      }
+      engine = new EngineMBServer(dataDirectory, serverUrl);
+    } else {
+
+      // if the engine is still null, or the dataDirectory has changed since 
+      // we last loaded the engine, or the algorithmParameters were changed,
+      // reload the engine.
+      if (engine == null || !dataDirectory.toString().equals(oldDataDirectory.toString()) || getAlgorithmParametersIsChanged()) {
+        oldDataDirectory = dataDirectory;
+        engine = Engine.load(dataDirectory, getAlgorithmParameters());
+      }
+      System.out.println("LF-Info: loaded model is " + engine);
+
+      if (engine.getModel() == null) {
+        // This is really only an error if we do not have some kind of wrapped algorithm
+        // where the model is handled externally.
+        // For now, we just show a warning.
+        // throw new GateRuntimeException("Do not have a model, something went wrong.");
+        System.err.println("WARNING: no internal model to apply, this is ok if an external model is used");
       } else {
+        System.out.println("LearningFramework: Applying model "
+                + engine.getModel().getClass() + " ...");
+      }
 
-        // if the engine is still null, or the dataDirectory has changed since 
-        // we last loaded the engine, or the algorithmParameters were changed,
-        // reload the engine.
-        if (engine == null || !dataDirectory.toString().equals(oldDataDirectory.toString()) || getAlgorithmParametersIsChanged()) {
-          oldDataDirectory = dataDirectory;
-          engine = Engine.load(dataDirectory, getAlgorithmParameters());
-        }
-        System.out.println("LF-Info: loaded model is " + engine);
-
-        if (engine.getModel() == null) {
-          // This is really only an error if we do not have some kind of wrapped algorithm
-          // where the model is handled externally.
-          // For now, we just show a warning.
-          // throw new GateRuntimeException("Do not have a model, something went wrong.");
-          System.err.println("WARNING: no internal model to apply, this is ok if an external model is used");
-        } else {
-          System.out.println("LearningFramework: Applying model "
-                  + engine.getModel().getClass() + " ...");
-        }
-
-        if (engine.getAlgorithm().getAlgorithmKind() == AlgorithmKind.SEQUENCE_TAGGER) {
-          if (getSequenceSpan() == null || getSequenceSpan().isEmpty()) {
-            throw new GateRuntimeException("sequenceSpan parameter must not be empty when a sequence tagging algorithm is used for classification");
-          }
+      if (engine.getAlgorithm().getAlgorithmKind() == AlgorithmKind.SEQUENCE_TAGGER) {
+        if (getSequenceSpan() == null || getSequenceSpan().isEmpty()) {
+          throw new GateRuntimeException("sequenceSpan parameter must not be empty when a sequence tagging algorithm is used for classification");
         }
       }
-      getSharedData().put("engine", engine);
-    } else {
-      engine = (Engine) getSharedData().get("engine");
     }
 
     if (getTargetFeature() == null || getTargetFeature().isEmpty()) {

@@ -148,37 +148,31 @@ public class LF_ApplyRegression extends LearningFrameworkPRBase {
 
   @Override
   public void controllerStarted(Controller controller) {
-
-    if (getDuplicateId() == 0) {
-      // JP: this was moved from the dataDirectory setter to avoid problems
-      // but we should really make sure that the learning is reloaded only 
-      // if the URL has changed since the last time (if ever) it was loaded.
+    if (dataDirectory == null) {
+      throw new GateRuntimeException("Parameter dataDirectory not set!");
+    }
+    if (savedModelDirectoryURL == null || !savedModelDirectoryURL.toExternalForm().equals(dataDirectory.toExternalForm())) {
       savedModelDirectoryURL = dataDirectory;
-
-      if (serverUrl != null && !serverUrl.isEmpty()) {
-        engine = new EngineMBServer(dataDirectory, serverUrl);
-      } else {
-
-        // Restore the Engine
-        engine = Engine.load(savedModelDirectoryURL, getAlgorithmParameters());
-        System.out.println("LF-Info: model loaded is now " + engine);
-
-        if (engine.getModel() == null) {
-          // This is really only an error if we do not have some kind of wrapped algorithm
-          // where the model is handled externally.
-          // For now, we just show a warning.
-          // throw new GateRuntimeException("Do not have a model, something went wrong.");
-          System.err.println("WARNING: no internal model to apply, this is ok if an external model is used");
-          //throw new GateRuntimeException("Do not have a model, something went wrong.");
-        } else {
-          System.out.println("LearningFramework: Applying model "
-                  + engine.getModel().getClass() + " ...");
-        }
-
-      }
-      getSharedData().put("engine", engine);
+    }
+    if (serverUrl != null && !serverUrl.isEmpty()) {
+      engine = new EngineMBServer(dataDirectory, serverUrl);
     } else {
-      engine = (Engine) getSharedData().get("engine");
+      // Restore the Engine
+      engine = Engine.load(savedModelDirectoryURL, getAlgorithmParameters());
+      System.out.println("LF-Info: model loaded is now " + engine);
+
+      if (engine.getModel() == null) {
+        // This is really only an error if we do not have some kind of wrapped algorithm
+        // where the model is handled externally.
+        // For now, we just show a warning.
+        // throw new GateRuntimeException("Do not have a model, something went wrong.");
+        System.err.println("WARNING: no internal model to apply, this is ok if an external model is used");
+        //throw new GateRuntimeException("Do not have a model, something went wrong.");
+      } else {
+        System.out.println("LearningFramework: Applying model "
+                + engine.getModel().getClass() + " ...");
+      }
+
     }
 
     if (getTargetFeature() == null || getTargetFeature().isEmpty()) {
