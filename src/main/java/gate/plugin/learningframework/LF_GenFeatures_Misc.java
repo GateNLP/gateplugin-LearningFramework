@@ -19,7 +19,6 @@
  */
 package gate.plugin.learningframework;
 
-import org.jpetrak.gate8.api.plugins.AbstractDocumentProcessor;
 import gate.Annotation;
 import gate.AnnotationSet;
 

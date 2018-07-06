@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this software. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jpetrak.gate8.api.plugins;
+package gate.plugin.learningframework;
 
 import org.apache.log4j.Logger;
 
@@ -177,19 +177,21 @@ public abstract class AbstractDocumentProcessor
     // always expect duplication to happen in a single thread, one after the
     // other. Usuall, all duplicates will get created from the same first
     // created instance, but we do not rely on that.
-    if(getNDuplicates() == null || getNDuplicates().get() == 0) {        
+    seenDocumentsThisDuplicate = new AtomicInteger(0);
+    if(getNDuplicates() == null || getNDuplicates().get() == 0) {    
       LOGGER.debug("DEBUG: creating first instance of PR "+this.getName());
       setNDuplicates(new AtomicInteger(1));
       duplicateId = 0;
+      System.err.println("DEBUG: "+this.getName()+" init() for first instance, duplicateId="+duplicateId);
       setSharedData(new ConcurrentHashMap<>());
       setSeenDocuments(new AtomicInteger(0));
-      seenDocumentsThisDuplicate = new AtomicInteger(0);
       setRemainingDuplicates(new AtomicInteger(0));
       setSyncObject(new Object());
       LOGGER.debug("DEBUG: "+this.getName()+" created duplicate "+duplicateId);
     } else {
       int thisn = getNDuplicates().getAndAdd(1);
       duplicateId = thisn;
+      System.err.println("DEBUG: "+this.getName()+" init() for non-first instance, duplicateId="+duplicateId);
       LOGGER.debug("DEBUG: created duplicate "+duplicateId+" of PR "+this.getName());
     }
     return this;
@@ -225,7 +227,8 @@ public abstract class AbstractDocumentProcessor
     LOGGER.error("Controller ended with error "+arg1.getMessage());
     int tmp = getRemainingDuplicates().decrementAndGet();
     LOGGER.debug("DEBUG "+this.getName()+" controllerExecutionAborted invocation "+tmp+" for duplicate "+duplicateId);
-    Assert.assertEquals(tmp, duplicateId);
+    System.err.println("DEBUG: "+this.getName()+" controllerExecutionAborted, duplicateId="+duplicateId+" remaining="+tmp);
+    // Assert.assertEquals(tmp, duplicateId);
     
     controllerFinished(arg0, arg1);
   }
@@ -236,7 +239,8 @@ public abstract class AbstractDocumentProcessor
     controller = arg0;
     int tmp = getRemainingDuplicates().decrementAndGet();
     LOGGER.debug(this.getName()+": controllerExecutionFinished invocation "+tmp+" for duplicate "+duplicateId);
-    Assert.assertEquals(tmp, duplicateId);
+    System.err.println("DEBUG: "+this.getName()+" controllerExecutionFinished, duplicateId="+duplicateId+" remaining="+tmp);
+    // Assert.assertEquals(tmp, duplicateId);
     
     controllerFinished(arg0, null);
   }
@@ -259,7 +263,8 @@ public abstract class AbstractDocumentProcessor
     }
     // just for checking that our assumption is right that invocation happens
     // in the order the duplicate was originally created in GCP.
-    Assert.assertEquals(tmp, duplicateId);
+    System.err.println("DEBUG: "+this.getName()+" controllerExecutionStarted, duplicateId="+duplicateId+" remaining="+tmp);
+    // Assert.assertEquals(tmp, duplicateId);
     
     controllerStarted(arg0);
   }

@@ -20,7 +20,6 @@
 package gate.plugin.learningframework;
 
 import gate.Controller;
-import org.jpetrak.gate8.api.plugins.AbstractDocumentProcessor;
 import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
