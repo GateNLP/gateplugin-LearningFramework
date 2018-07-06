@@ -28,6 +28,8 @@ import gate.AnnotationSet;
 import gate.Document;
 import gate.Utils;
 import gate.plugin.learningframework.LFUtils;
+import gate.plugin.learningframework.mallet.LFAlphabet;
+import gate.plugin.learningframework.mallet.LFLabelAlphabet;
 import gate.plugin.learningframework.mallet.NominalTargetWithCosts;
 import gate.util.GateRuntimeException;
 import java.util.ArrayList;
@@ -178,7 +180,7 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
     MissingValueTreatment mvt = att.missingValueTreatment;
     CodeAs codeas = att.codeas;
     Datatype dt = att.datatype;
-    Alphabet alphabet = att.alphabet;
+    LFAlphabet alphabet = att.alphabet;
     String listsep = att.listsep;
     String featureName4Value = att.featureName4Value;
     String withinType = att.withinType;
@@ -304,7 +306,7 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
     String withinType = al.withinType; 
     int from = al.from;  // list element from
     int to = al.to;      // list element to
-    Alphabet alphabet = al.alphabet;
+    LFAlphabet alphabet = al.alphabet;
     MissingValueTreatment mvt = al.missingValueTreatment;
     CodeAs codeas = al.codeas;
     String listsep = al.listsep; 
@@ -634,7 +636,7 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
           String annType,
           String featureName,
           String featureName4Value,
-          Alphabet alphabet,
+          LFAlphabet alphabet,
           Datatype dt,
           MissingValueTreatment mvt,
           CodeAs codeas,
@@ -982,7 +984,7 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
    * @param inputAS input annotation set
    */
   public static void extractClassTarget(Instance inst, Alphabet alphabet, String targetFeature, Annotation instanceAnnotation, AnnotationSet inputAS) {
-    LabelAlphabet labelalphabet = (LabelAlphabet) alphabet;
+    LFLabelAlphabet labelalphabet = (LFLabelAlphabet) alphabet;
     Document doc = inputAS.getDocument();
     Object obj = instanceAnnotation.getFeatures().get(targetFeature);
     // Brilliant, we have a missing target, WTF? Throw an exception
@@ -1026,7 +1028,7 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
               + " for instance annotation at offset " + gate.Utils.start(instanceAnnotation)
               + " in document " + doc.getName());
     }
-    LabelAlphabet labelalph = (LabelAlphabet) alph;
+    LFLabelAlphabet labelalph = (LFLabelAlphabet) alph;
     AnnotationSet overlappingClassAnns = Utils.getOverlappingAnnotations(classAS, instanceAnnotation);
     // NOTE: previously we only allowed at most one class annotation, but now we are as flexible
     // as possible here: any number of class annotations of any number of types can overlap.
@@ -1209,7 +1211,9 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
    * @param val
    */
   private static void setInFeatureVector(AugmentableFeatureVector fv, Object key, double val) {
-    Alphabet a = fv.getAlphabet();
+    // NOTE: we should always have a LFAlphabet here because the fv should have 
+    // been created with one!
+    LFAlphabet a = (LFAlphabet)fv.getAlphabet();
     if (!a.contains(key) && a.growthStopped()) {
       //System.err.println("DEBUG: GROWTH STOPPED! key="+key+",a="+a);
       return;
@@ -1223,7 +1227,7 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
   }
 
   private static void accumulateInFeatureVector(AugmentableFeatureVector fv, Object key, double val) {
-    Alphabet a = fv.getAlphabet();
+    LFAlphabet a = (LFAlphabet)fv.getAlphabet();
     if (!a.contains(key) && a.growthStopped()) {
       return;
     }

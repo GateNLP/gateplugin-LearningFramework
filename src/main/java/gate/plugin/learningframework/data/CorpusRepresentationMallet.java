@@ -19,9 +19,10 @@
  */
 package gate.plugin.learningframework.data;
 
-import cc.mallet.types.Alphabet;
 import cc.mallet.types.InstanceList;
 import gate.plugin.learningframework.features.FeatureInfo;
+import gate.plugin.learningframework.mallet.LFAlphabet;
+import gate.plugin.learningframework.mallet.LFLabelAlphabet;
 import gate.plugin.learningframework.mallet.LFPipe;
 import gate.util.GateRuntimeException;
 import java.io.File;
@@ -63,7 +64,7 @@ public abstract class CorpusRepresentationMallet extends CorpusRepresentationMal
   public void stopGrowth() {
     LFPipe tmp_pipe = (LFPipe)instances.getPipe();
     tmp_pipe.getDataAlphabet().stopGrowth();
-    Alphabet ta = tmp_pipe.getTargetAlphabet();
+    LFLabelAlphabet ta = (LFLabelAlphabet)tmp_pipe.getTargetAlphabet();
     if(ta != null) {
       ta.stopGrowth();
     }
@@ -78,7 +79,7 @@ public abstract class CorpusRepresentationMallet extends CorpusRepresentationMal
   public void startGrowth() {
     LFPipe tmp_pipe = (LFPipe)instances.getPipe();
     tmp_pipe.getDataAlphabet().startGrowth();
-    Alphabet ta = tmp_pipe.getTargetAlphabet();
+    LFAlphabet ta = (LFAlphabet)tmp_pipe.getTargetAlphabet();
     if(ta != null) {
       ta.startGrowth();
     }

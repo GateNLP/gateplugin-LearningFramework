@@ -24,10 +24,8 @@ import gate.AnnotationSet;
 import java.util.List;
 import cc.mallet.pipe.Noop;
 import cc.mallet.pipe.Pipe;
-import cc.mallet.types.Alphabet;
 import cc.mallet.types.AugmentableFeatureVector;
 import cc.mallet.types.Instance;
-import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelAlphabet;
 import gate.plugin.learningframework.ScalingMethod;
 import gate.plugin.learningframework.LFUtils;
@@ -48,6 +46,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import org.apache.log4j.Logger;
 import static gate.plugin.learningframework.LFUtils.newURL;
+import gate.plugin.learningframework.mallet.LFAlphabet;
+import gate.plugin.learningframework.mallet.LFInstanceList;
+import gate.plugin.learningframework.mallet.LFLabelAlphabet;
 
 /**
  * This represents a corpus in Mallet format where we have a single feature vector and single
@@ -74,13 +75,13 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
     featureInfo = fi;
     scalingMethod = sm;
 
-    LabelAlphabet targetAlphabet = (targetType == TargetType.NOMINAL) ? new LabelAlphabet() : null;
-    Pipe innerPipe = new Noop(new Alphabet(), targetAlphabet);
+    LabelAlphabet targetAlphabet = (targetType == TargetType.NOMINAL) ? new LFLabelAlphabet() : null;
+    Pipe innerPipe = new Noop(new LFAlphabet(), targetAlphabet);
     List<Pipe> pipes = new ArrayList<>();
     pipes.add(innerPipe);
     pipe = new LFPipe(pipes);
     pipe.setFeatureInfo(fi);
-    instances = new InstanceList(pipe);
+    instances = new LFInstanceList(pipe);
   }
   
   /**
@@ -92,7 +93,7 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
     this.pipe = pipe;
     this.featureInfo = pipe.getFeatureInfo();
     this.scalingMethod = null;
-    this.instances = new InstanceList(pipe);
+    this.instances = new LFInstanceList(pipe);
   }
 
   /**
@@ -241,7 +242,9 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
         inst.setProperty("instanceWeight", score);
       }
       if(!FeatureExtractionMalletSparse.ignoreInstanceWithMV(inst)) {
-        instances.add(inst);
+        synchronized(this) { // we can synchronize on this because this is a singleton
+          instances.add(inst);
+        }
       }
     }
   }

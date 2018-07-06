@@ -20,13 +20,11 @@
 package gate.plugin.learningframework.export;
 
 import cc.mallet.pipe.Pipe;
-import cc.mallet.types.Alphabet;
 import cc.mallet.types.FeatureSequence;
 import cc.mallet.types.FeatureVector;
 import cc.mallet.types.FeatureVectorSequence;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
-import cc.mallet.types.LabelAlphabet;
 import gate.plugin.learningframework.Globals;
 import gate.plugin.learningframework.ScalingMethod;
 import gate.plugin.learningframework.data.Attributes;
@@ -35,6 +33,8 @@ import gate.plugin.learningframework.data.CorpusRepresentationMalletSeq;
 import gate.plugin.learningframework.engines.Info;
 import gate.plugin.learningframework.engines.Parms;
 import gate.plugin.learningframework.features.FeatureExtractionMalletSparse;
+import gate.plugin.learningframework.mallet.LFAlphabet;
+import gate.plugin.learningframework.mallet.LFLabelAlphabet;
 import gate.util.GateRuntimeException;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -103,8 +103,8 @@ public class CorpusExporterMRJsonSeq extends CorpusExporterMRJsonBase {
     }
 
     // get the alphabets
-    Alphabet dataAlphabet = malletInstances.getPipe().getDataAlphabet();
-    LabelAlphabet targetAlphabet = (LabelAlphabet) malletInstances.getPipe().getTargetAlphabet();
+    LFAlphabet dataAlphabet = (LFAlphabet)malletInstances.getPipe().getDataAlphabet();
+    LFLabelAlphabet targetAlphabet = (LFLabelAlphabet) malletInstances.getPipe().getTargetAlphabet();
     int nrFeatures = pipe.getDataAlphabet().size();
     for (Instance inst : malletInstances) {
       dataOut.print(instance2String(inst, targetAlphabet, attrs, nrFeatures, asString, filterMV));
@@ -129,7 +129,7 @@ public class CorpusExporterMRJsonSeq extends CorpusExporterMRJsonBase {
    */
   public String instance2String(
           Instance inst,
-          LabelAlphabet targetAlphabet,
+          LFLabelAlphabet targetAlphabet,
           Attributes attrs,
           int nrFeatures,
           boolean asString,

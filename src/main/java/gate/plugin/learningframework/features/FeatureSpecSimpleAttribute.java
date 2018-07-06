@@ -21,6 +21,7 @@
 package gate.plugin.learningframework.features;
 
 import cc.mallet.types.Alphabet;
+import gate.plugin.learningframework.mallet.LFAlphabet;
 import java.io.Serializable;
 
 /**
@@ -66,7 +67,7 @@ public class FeatureSpecSimpleAttribute extends FeatureSpecAttribute implements 
     this.codeas = codeas;
     this.missingValueTreatment = missingValueTreatment;
     if (datatype == Datatype.nominal && codeas == CodeAs.number) {
-      alphabet = new Alphabet();
+      alphabet = new LFAlphabet();
     }
     this.withinType = withinType;
     this.listsep = listsep;
@@ -76,7 +77,7 @@ public class FeatureSpecSimpleAttribute extends FeatureSpecAttribute implements 
   }
   public CodeAs codeas = CodeAs.one_of_k;
   public MissingValueTreatment missingValueTreatment = MissingValueTreatment.zero_value;
-  public Alphabet alphabet;
+  public LFAlphabet alphabet;
   public String withinType;
   public String featureName4Value;
 

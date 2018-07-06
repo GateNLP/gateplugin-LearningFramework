@@ -20,10 +20,10 @@
 
 package gate.plugin.learningframework.data;
 
-import cc.mallet.types.Alphabet;
 import gate.plugin.learningframework.features.CodeAs;
 import gate.plugin.learningframework.features.Datatype;
 import gate.plugin.learningframework.features.MissingValueTreatment;
+import gate.plugin.learningframework.mallet.LFAlphabet;
 import java.util.Objects;
 import org.apache.log4j.Logger;
 
@@ -62,7 +62,7 @@ public class Attribute {
     return this.index == other.index;
   }
 
-  public Attribute(String name, int index, Datatype datatype, CodeAs codeAs, MissingValueTreatment mvt, Alphabet alphabet) {
+  public Attribute(String name, int index, Datatype datatype, CodeAs codeAs, MissingValueTreatment mvt, LFAlphabet alphabet) {
     this.name = name;
     this.index = index;
     this.datatype = datatype;
@@ -93,5 +93,5 @@ public class Attribute {
    * Dictionary of possible values and their codes if the attribute/feature 
    * is nominal and coded as number
    */
-  public Alphabet alphabet;
+  public LFAlphabet alphabet;
 }

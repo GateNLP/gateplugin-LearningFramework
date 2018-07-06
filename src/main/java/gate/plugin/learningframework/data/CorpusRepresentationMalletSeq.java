@@ -25,14 +25,11 @@ import java.util.ArrayList;
 import java.util.List;
 import cc.mallet.pipe.Noop;
 import cc.mallet.pipe.Pipe;
-import cc.mallet.types.Alphabet;
 import cc.mallet.types.FeatureSequence;
 import cc.mallet.types.FeatureVector;
 import cc.mallet.types.FeatureVectorSequence;
 import cc.mallet.types.Instance;
-import cc.mallet.types.InstanceList;
 import cc.mallet.types.Label;
-import cc.mallet.types.LabelAlphabet;
 import gate.plugin.learningframework.ScalingMethod;
 import gate.plugin.learningframework.features.FeatureExtractionMalletSparse;
 import gate.plugin.learningframework.features.FeatureInfo;
@@ -46,6 +43,9 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.net.URL;
 import static gate.plugin.learningframework.LFUtils.newURL;
+import gate.plugin.learningframework.mallet.LFAlphabet;
+import gate.plugin.learningframework.mallet.LFInstanceList;
+import gate.plugin.learningframework.mallet.LFLabelAlphabet;
 
 public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
 
@@ -55,12 +55,12 @@ public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
     featureInfo = fi;
     scalingMethod = sm;
 
-    Pipe innerPipe = new Noop(new Alphabet(), new LabelAlphabet());
+    Pipe innerPipe = new Noop(new LFAlphabet(), new LFLabelAlphabet());
     List<Pipe> pipes = new ArrayList<>();
     pipes.add(innerPipe);
     pipe = new LFPipe(pipes);
     pipe.setFeatureInfo(fi);
-    instances = new InstanceList(pipe);
+    instances = new LFInstanceList(pipe);
   }
 
   /**
@@ -72,7 +72,7 @@ public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
     this.pipe = pipe;
     this.featureInfo = pipe.getFeatureInfo();
     this.scalingMethod = null;
-    this.instances = new InstanceList(pipe);
+    this.instances = new LFInstanceList(pipe);
   }
 
   /**

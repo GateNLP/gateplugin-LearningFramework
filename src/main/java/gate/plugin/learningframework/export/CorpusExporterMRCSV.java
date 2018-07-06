@@ -25,7 +25,6 @@ import cc.mallet.types.FeatureVector;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.Label;
-import cc.mallet.types.LabelAlphabet;
 import gate.plugin.learningframework.Globals;
 import gate.plugin.learningframework.data.Attribute;
 import gate.plugin.learningframework.data.Attributes;
@@ -35,6 +34,7 @@ import gate.plugin.learningframework.engines.Parms;
 import gate.plugin.learningframework.features.CodeAs;
 import gate.plugin.learningframework.features.Datatype;
 import gate.plugin.learningframework.features.FeatureExtractionMalletSparse;
+import gate.plugin.learningframework.mallet.LFLabelAlphabet;
 import gate.plugin.learningframework.mallet.NominalTargetWithCosts;
 import gate.util.GateRuntimeException;
 import gate.util.Strings;
@@ -202,7 +202,7 @@ public class CorpusExporterMRCSV extends CorpusExporterMR {
         targetOut.print(separator);
       } 
       Object target = inst.getTarget();
-      LabelAlphabet targetAlphabet = (LabelAlphabet)inst.getTargetAlphabet();
+      LFLabelAlphabet targetAlphabet = (LFLabelAlphabet)inst.getTargetAlphabet();
       if(targetAlphabet != null) {
         Label tl;
         if(target instanceof Label) {

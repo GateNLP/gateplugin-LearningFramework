@@ -29,6 +29,7 @@ import gate.plugin.learningframework.features.FeatureSpecAttribute;
 import gate.plugin.learningframework.features.FeatureSpecAttributeList;
 import gate.plugin.learningframework.features.FeatureSpecNgram;
 import gate.plugin.learningframework.features.FeatureSpecSimpleAttribute;
+import gate.plugin.learningframework.mallet.LFAlphabet;
 import gate.plugin.learningframework.mallet.LFPipe;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,7 +63,7 @@ public class Attributes implements Iterable<Attribute> {
       featureInfo = lfPipe.getFeatureInfo();
     }
     // the alphabet we use if we have a boolean variable
-    Alphabet booleanAlph = new Alphabet();
+    LFAlphabet booleanAlph = new LFAlphabet();
     booleanAlph.lookupIndex("false");
     booleanAlph.lookupIndex("true");    
     for(int i =0; i<dataAlphabet.size(); i++) {
@@ -130,7 +131,7 @@ public class Attributes implements Iterable<Attribute> {
         }
       }
     }
-    Alphabet targetAlphabet = pipe.getTargetAlphabet();
+    LFAlphabet targetAlphabet = (LFAlphabet)pipe.getTargetAlphabet();
     // if the target alphabet exists, we assume a nominal target
     // The target index is the next index after the last independent attribute
     // index. This is convenient for Weka.
