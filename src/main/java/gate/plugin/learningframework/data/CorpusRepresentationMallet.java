@@ -22,7 +22,6 @@ package gate.plugin.learningframework.data;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelAlphabet;
 import gate.plugin.learningframework.features.FeatureInfo;
-import gate.plugin.learningframework.mallet.LFAlphabet;
 import gate.plugin.learningframework.mallet.LFPipe;
 import gate.util.GateRuntimeException;
 import java.io.File;
