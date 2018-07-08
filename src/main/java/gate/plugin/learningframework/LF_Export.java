@@ -345,6 +345,7 @@ public class LF_Export extends LF_ExportBase {
   public void controllerFinished(Controller arg0, Throwable t) {
     if (getDuplicateId() == 0) {
       corpusRepresentation.finishAdding();
+      System.err.println("DEBUG LF_Export exporting data to "+getDataDirectory());
       corpusExporter.export();
     }
   }

@@ -65,7 +65,7 @@ public abstract class CorpusExporterMRJsonBase extends CorpusExporterMR {
         sb.append(", ");
       }
       if (asString && (attr.datatype == Datatype.nominal && attr.codeAs == CodeAs.number)) {
-        LFAlphabet attralph = attr.alphabet;
+        LFAlphabet attralph = (LFAlphabet)attr.alphabet;
         int attrvals = attralph.size();
         String str = "";   // the default value is used if we have -1, which means the feature was missing
         if ((int) value >= attrvals) {

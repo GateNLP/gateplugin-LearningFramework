@@ -21,6 +21,7 @@ package gate.plugin.learningframework.data;
 
 import cc.mallet.pipe.Pipe;
 import cc.mallet.types.Alphabet;
+import cc.mallet.types.LabelAlphabet;
 import gate.plugin.learningframework.features.CodeAs;
 import gate.plugin.learningframework.features.Datatype;
 import gate.plugin.learningframework.features.FeatureExtractionMalletSparse;
@@ -131,7 +132,7 @@ public class Attributes implements Iterable<Attribute> {
         }
       }
     }
-    LFAlphabet targetAlphabet = (LFAlphabet)pipe.getTargetAlphabet();
+    LabelAlphabet targetAlphabet = (LabelAlphabet)pipe.getTargetAlphabet();
     // if the target alphabet exists, we assume a nominal target
     // The target index is the next index after the last independent attribute
     // index. This is convenient for Weka.

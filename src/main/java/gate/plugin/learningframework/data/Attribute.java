@@ -20,6 +20,7 @@
 
 package gate.plugin.learningframework.data;
 
+import cc.mallet.types.Alphabet;
 import gate.plugin.learningframework.features.CodeAs;
 import gate.plugin.learningframework.features.Datatype;
 import gate.plugin.learningframework.features.MissingValueTreatment;
@@ -93,5 +94,5 @@ public class Attribute {
    * Dictionary of possible values and their codes if the attribute/feature 
    * is nominal and coded as number
    */
-  public LFAlphabet alphabet;
+  public Alphabet alphabet;
 }
