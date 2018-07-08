@@ -34,6 +34,7 @@ import gate.plugin.learningframework.features.FeatureExtractionMalletSparse;
 import gate.plugin.learningframework.features.FeatureInfo;
 import gate.plugin.learningframework.features.FeatureSpecification;
 import gate.plugin.learningframework.features.FeatureSpecSimpleAttribute;
+import gate.plugin.learningframework.mallet.LFAlphabet;
 import static gate.plugin.learningframework.tests.Utils.*;
 import gate.util.GateException;
 import java.util.HashSet;
@@ -102,7 +103,7 @@ public class TestFeatureExtraction extends GATEPluginTests {
     assertNotNull(as);
     assertEquals(11,as.size());
 
-    Alphabet a = new Alphabet();
+    Alphabet a = new LFAlphabet();
     AugmentableFeatureVector afv = new AugmentableFeatureVector(a);
     Instance inst = new Instance(afv,null,null,null);
     
@@ -327,7 +328,7 @@ public class TestFeatureExtraction extends GATEPluginTests {
     FeatureInfo fi = new FeatureSpecification(spec).getFeatureInfo();
     List<FeatureSpecAttribute> as = fi.getAttributes();
 
-    Alphabet a = new Alphabet();
+    Alphabet a = new LFAlphabet();
     AugmentableFeatureVector afv = new AugmentableFeatureVector(a);
     Instance inst = new Instance(afv,null,null,null);
     
@@ -398,7 +399,7 @@ public class TestFeatureExtraction extends GATEPluginTests {
     FeatureInfo fi = new FeatureSpecification(spec).getFeatureInfo();
     List<FeatureSpecAttribute> as = fi.getAttributes();
     System.err.println("NGRAMS with explicitly specified name!!");
-    Alphabet a = new Alphabet();
+    Alphabet a = new LFAlphabet();
     AugmentableFeatureVector afv = new AugmentableFeatureVector(a);
     Instance inst = new Instance(afv,null,null,null);
     

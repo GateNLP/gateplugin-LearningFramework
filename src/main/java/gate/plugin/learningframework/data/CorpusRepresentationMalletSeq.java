@@ -30,6 +30,7 @@ import cc.mallet.types.FeatureVector;
 import cc.mallet.types.FeatureVectorSequence;
 import cc.mallet.types.Instance;
 import cc.mallet.types.Label;
+import cc.mallet.types.LabelAlphabet;
 import gate.plugin.learningframework.ScalingMethod;
 import gate.plugin.learningframework.features.FeatureExtractionMalletSparse;
 import gate.plugin.learningframework.features.FeatureInfo;
@@ -45,7 +46,6 @@ import java.net.URL;
 import static gate.plugin.learningframework.LFUtils.newURL;
 import gate.plugin.learningframework.mallet.LFAlphabet;
 import gate.plugin.learningframework.mallet.LFInstanceList;
-import gate.plugin.learningframework.mallet.LFLabelAlphabet;
 
 public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
 
@@ -55,7 +55,7 @@ public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
     featureInfo = fi;
     scalingMethod = sm;
 
-    Pipe innerPipe = new Noop(new LFAlphabet(), new LFLabelAlphabet());
+    Pipe innerPipe = new Noop(new LFAlphabet(), new LabelAlphabet());
     List<Pipe> pipes = new ArrayList<>();
     pipes.add(innerPipe);
     pipe = new LFPipe(pipes);

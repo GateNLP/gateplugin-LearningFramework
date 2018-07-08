@@ -48,7 +48,6 @@ import org.apache.log4j.Logger;
 import static gate.plugin.learningframework.LFUtils.newURL;
 import gate.plugin.learningframework.mallet.LFAlphabet;
 import gate.plugin.learningframework.mallet.LFInstanceList;
-import gate.plugin.learningframework.mallet.LFLabelAlphabet;
 
 /**
  * This represents a corpus in Mallet format where we have a single feature vector and single
@@ -75,7 +74,7 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
     featureInfo = fi;
     scalingMethod = sm;
 
-    LabelAlphabet targetAlphabet = (targetType == TargetType.NOMINAL) ? new LFLabelAlphabet() : null;
+    LabelAlphabet targetAlphabet = (targetType == TargetType.NOMINAL) ? new LabelAlphabet() : null;
     Pipe innerPipe = new Noop(new LFAlphabet(), targetAlphabet);
     List<Pipe> pipes = new ArrayList<>();
     pipes.add(innerPipe);

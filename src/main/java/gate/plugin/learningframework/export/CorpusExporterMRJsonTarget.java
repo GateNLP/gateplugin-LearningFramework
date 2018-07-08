@@ -23,6 +23,7 @@ import cc.mallet.pipe.Pipe;
 import cc.mallet.types.FeatureVector;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
+import cc.mallet.types.LabelAlphabet;
 import gate.plugin.learningframework.Globals;
 import gate.plugin.learningframework.data.Attributes;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
@@ -30,7 +31,6 @@ import gate.plugin.learningframework.engines.Info;
 import gate.plugin.learningframework.engines.Parms;
 import gate.plugin.learningframework.features.FeatureExtractionMalletSparse;
 import gate.plugin.learningframework.mallet.LFAlphabet;
-import gate.plugin.learningframework.mallet.LFLabelAlphabet;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -98,7 +98,7 @@ public class CorpusExporterMRJsonTarget extends CorpusExporterMRJsonBase {
 
     // get the alphabets
     LFAlphabet dataAlphabet = (LFAlphabet)malletInstances.getPipe().getDataAlphabet();
-    LFLabelAlphabet targetAlphabet = (LFLabelAlphabet) malletInstances.getPipe().getTargetAlphabet();
+    LabelAlphabet targetAlphabet = (LabelAlphabet) malletInstances.getPipe().getTargetAlphabet();
     int nrFeatures = pipe.getDataAlphabet().size();
     for (Instance inst : malletInstances) {
       dataOut.print(instance2String(inst, targetAlphabet, attrs, nrFeatures, asString, filterMV));
@@ -124,7 +124,7 @@ public class CorpusExporterMRJsonTarget extends CorpusExporterMRJsonBase {
    */
   public String instance2String(
           Instance inst,
-          LFLabelAlphabet targetAlphabet,
+          LabelAlphabet targetAlphabet,
           Attributes attrs,
           int nrFeatures,
           boolean asString,

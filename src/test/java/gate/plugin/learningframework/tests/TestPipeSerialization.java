@@ -34,6 +34,7 @@ import gate.plugin.learningframework.features.FeatureExtractionMalletSparse;
 import gate.plugin.learningframework.features.FeatureInfo;
 import gate.plugin.learningframework.features.FeatureSpecification;
 import gate.plugin.learningframework.features.FeatureSpecSimpleAttribute;
+import gate.plugin.learningframework.mallet.LFAlphabet;
 import gate.plugin.learningframework.mallet.LFPipe;
 import org.junit.Test;
 import static gate.plugin.learningframework.tests.Utils.newDocument;
@@ -62,7 +63,7 @@ public class TestPipeSerialization extends GATEPluginTests {
             "</ROOT>";    
     FeatureInfo fi = new FeatureSpecification(spec).getFeatureInfo();
     // Create a pipe with a data and target alphabet
-    Pipe tmppipe = new Noop(new Alphabet(),new LabelAlphabet());
+    Pipe tmppipe = new Noop(new LFAlphabet(),new LabelAlphabet());
     List<Pipe> pipes = new ArrayList<>();
     pipes.add(tmppipe);
     LFPipe pipe = new LFPipe(pipes);

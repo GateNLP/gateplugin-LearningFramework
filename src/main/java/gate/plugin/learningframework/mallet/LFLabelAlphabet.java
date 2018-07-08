@@ -10,6 +10,12 @@ import cc.mallet.types.LabelAlphabet;
 
 /**
  * Attempt to make LabelAlphabet more synchronized.
+ * 
+ * !!NOTE: currently, this is not used as Mallet Classifier requires the 
+ * target alphabet to be LabelAlphabet or a superclasse (???) instead of 
+ * LabelAlphabet or a subclass. 
+ * See https://github.com/mimno/Mallet/issues/132
+ * 
  * @author Johann Petrak
  */
 public class LFLabelAlphabet extends LabelAlphabet {

@@ -29,6 +29,7 @@ import gate.Document;
 import gate.Factory;
 import gate.FeatureMap;
 import gate.creole.ResourceInstantiationException;
+import gate.plugin.learningframework.mallet.LFAlphabet;
 import java.io.File;
 import java.net.MalformedURLException;
 
@@ -72,7 +73,7 @@ public class Utils {
   }
   
   public static Instance newInstance() {
-    return new Instance(new AugmentableFeatureVector(new Alphabet()),null,null,null);    
+    return new Instance(new AugmentableFeatureVector(new LFAlphabet()),null,null,null);    
   }
   public static Instance newInstance(Alphabet alph) {
     return new Instance(new AugmentableFeatureVector(alph),null,null,null);    

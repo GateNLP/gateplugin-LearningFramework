@@ -29,7 +29,6 @@ import gate.Document;
 import gate.Utils;
 import gate.plugin.learningframework.LFUtils;
 import gate.plugin.learningframework.mallet.LFAlphabet;
-import gate.plugin.learningframework.mallet.LFLabelAlphabet;
 import gate.plugin.learningframework.mallet.NominalTargetWithCosts;
 import gate.util.GateRuntimeException;
 import java.util.ArrayList;
@@ -984,7 +983,7 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
    * @param inputAS input annotation set
    */
   public static void extractClassTarget(Instance inst, Alphabet alphabet, String targetFeature, Annotation instanceAnnotation, AnnotationSet inputAS) {
-    LFLabelAlphabet labelalphabet = (LFLabelAlphabet) alphabet;
+    LabelAlphabet labelalphabet = (LabelAlphabet) alphabet;
     Document doc = inputAS.getDocument();
     Object obj = instanceAnnotation.getFeatures().get(targetFeature);
     // Brilliant, we have a missing target, WTF? Throw an exception
@@ -994,15 +993,21 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
     } else if (obj instanceof List) {
       @SuppressWarnings("unchecked")
       NominalTargetWithCosts lwc = new NominalTargetWithCosts((List<Double>) obj);
-      inst.setTarget(labelalphabet.lookupLabel(lwc));
+      synchronized (labelalphabet) {
+        inst.setTarget(labelalphabet.lookupLabel(lwc));
+      }
     } else if (obj instanceof double[]) {
       @SuppressWarnings("unchecked")
       NominalTargetWithCosts lwc = new NominalTargetWithCosts((double[]) obj);
-      inst.setTarget(labelalphabet.lookupLabel(lwc));
+      synchronized(labelalphabet) {
+        inst.setTarget(labelalphabet.lookupLabel(lwc));
+      }
     } else {
       // all other things are treated as a string 
       String value = obj.toString();
-      inst.setTarget(labelalphabet.lookupLabel(value));
+      synchronized(labelalphabet) {
+        inst.setTarget(labelalphabet.lookupLabel(value));
+      }
     }
   }
 
@@ -1028,7 +1033,7 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
               + " for instance annotation at offset " + gate.Utils.start(instanceAnnotation)
               + " in document " + doc.getName());
     }
-    LFLabelAlphabet labelalph = (LFLabelAlphabet) alph;
+    LabelAlphabet labelalph = (LabelAlphabet) alph;
     AnnotationSet overlappingClassAnns = Utils.getOverlappingAnnotations(classAS, instanceAnnotation);
     // NOTE: previously we only allowed at most one class annotation, but now we are as flexible
     // as possible here: any number of class annotations of any number of types can overlap.
@@ -1071,7 +1076,9 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
     // we now have the target label as a string, now set the target of the instance to 
     // to the actual label
     // NOTE: the target alphabet for such an instance MUST be a LabelAlphabet!
-    inst.setTarget(labelalph.lookupLabel(target));
+    synchronized(labelalph) {
+      inst.setTarget(labelalph.lookupLabel(target));
+    }
   }
 
   /**
