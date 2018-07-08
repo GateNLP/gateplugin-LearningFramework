@@ -19,7 +19,6 @@
  */
 package gate.plugin.learningframework.export;
 
-import cc.mallet.types.Alphabet;
 import cc.mallet.types.FeatureVector;
 import cc.mallet.types.Label;
 import cc.mallet.types.LabelAlphabet;
@@ -65,6 +64,7 @@ public abstract class CorpusExporterMRJsonBase extends CorpusExporterMR {
         sb.append(", ");
       }
       if (asString && (attr.datatype == Datatype.nominal && attr.codeAs == CodeAs.number)) {
+        @SuppressWarnings("unchecked")
         LFAlphabet attralph = (LFAlphabet)attr.alphabet;
         int attrvals = attralph.size();
         String str = "";   // the default value is used if we have -1, which means the feature was missing
