@@ -19,6 +19,8 @@ import cc.mallet.types.LabelAlphabet;
  * @author Johann Petrak
  */
 public class LFLabelAlphabet extends LabelAlphabet {
+
+  private static final long serialVersionUID = -5084491342253339406L;
   
   @Override
   public synchronized int lookupIndex(Object entry) {
