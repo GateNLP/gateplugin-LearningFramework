@@ -132,6 +132,7 @@ public class Attributes implements Iterable<Attribute> {
         }
       }
     }
+    @SuppressWarnings("unchecked")
     LabelAlphabet targetAlphabet = (LabelAlphabet)pipe.getTargetAlphabet();
     // if the target alphabet exists, we assume a nominal target
     // The target index is the next index after the last independent attribute

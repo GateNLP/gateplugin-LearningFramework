@@ -97,6 +97,7 @@ public class CorpusExporterMRJsonTarget extends CorpusExporterMRJsonBase {
     }
 
     // get the alphabets
+    @SuppressWarnings("unchecked")
     LFAlphabet dataAlphabet = (LFAlphabet)malletInstances.getPipe().getDataAlphabet();
     LabelAlphabet targetAlphabet = (LabelAlphabet) malletInstances.getPipe().getTargetAlphabet();
     int nrFeatures = pipe.getDataAlphabet().size();

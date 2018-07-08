@@ -34,6 +34,7 @@ import gate.util.GateRuntimeException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
 
@@ -653,7 +654,6 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
     }
     // If we have a special symbol, then the boolean special symbol indicator attribute is generated
     if (specialSymbol != null && !specialSymbol.isEmpty()) {
-      String fname = internalFeatureNamePrefix;
       setInFeatureVector(fv, internalFeatureNamePrefix + VALSEP + specialSymbol, 1.0);    
     // inputAS a boolean. No matter what the datatype is, this is always indicated by setting the
     // featureName to 1.0 (while for all instances, where the annotation is missing, the value will
@@ -697,9 +697,9 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
               }
             } else if (valObj instanceof Map) {
               Map<?,?> map = (Map) valObj;
-              for (Object key : map.keySet()) {
-                Object mapval = map.get(key);
-                String val = key.toString() + "=" + mapval.toString();
+              for (Map.Entry<?, ?> entry : map.entrySet()) {
+                Object mapval = entry.getValue();
+                String val = entry.getKey().toString() + "=" + mapval.toString();
                 setInFeatureVector(fv, internalFeatureNamePrefix + VALSEP + val, 1.0);
               }
             } else if (valObj instanceof Object[]) {
@@ -1220,6 +1220,7 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
   private static void setInFeatureVector(AugmentableFeatureVector fv, Object key, double val) {
     // NOTE: we should always have a LFAlphabet here because the fv should have 
     // been created with one!
+    @SuppressWarnings("unchecked")
     LFAlphabet a = (LFAlphabet)fv.getAlphabet();
     if (!a.contains(key) && a.growthStopped()) {
       //System.err.println("DEBUG: GROWTH STOPPED! key="+key+",a="+a);
@@ -1234,6 +1235,7 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
   }
 
   private static void accumulateInFeatureVector(AugmentableFeatureVector fv, Object key, double val) {
+    @SuppressWarnings("unchecked")
     LFAlphabet a = (LFAlphabet)fv.getAlphabet();
     if (!a.contains(key) && a.growthStopped()) {
       return;

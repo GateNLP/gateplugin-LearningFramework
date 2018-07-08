@@ -63,6 +63,7 @@ public abstract class CorpusRepresentationMallet extends CorpusRepresentationMal
   public void stopGrowth() {
     LFPipe tmp_pipe = (LFPipe)instances.getPipe();
     tmp_pipe.getDataAlphabet().stopGrowth();
+    @SuppressWarnings("unchecked")
     LabelAlphabet ta = (LabelAlphabet)tmp_pipe.getTargetAlphabet();
     if(ta != null) {
       synchronized(ta) {
@@ -80,6 +81,7 @@ public abstract class CorpusRepresentationMallet extends CorpusRepresentationMal
   public void startGrowth() {
     LFPipe tmp_pipe = (LFPipe)instances.getPipe();
     tmp_pipe.getDataAlphabet().startGrowth();
+    @SuppressWarnings("unchecked")
     LabelAlphabet ta = (LabelAlphabet)tmp_pipe.getTargetAlphabet();
     if(ta != null) {
       ta.startGrowth();
