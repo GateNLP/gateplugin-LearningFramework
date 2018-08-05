@@ -47,6 +47,9 @@ public abstract class CorpusRepresentation {
   
   //public abstract InstanceList getRepresentationMallet();
   
+  // NOTE: if the target type is NONE and the corpus representation is one to be used for clustering/LDA,
+  // then the instanceAS is either an annotation covering the "document" or null, in which case the whole 
+  // document is used. The inputAS is the set of token annotations for the whole document.
   public abstract void add(AnnotationSet instancesAS, AnnotationSet sequenceAS, AnnotationSet inputAS, AnnotationSet classAS, String targetFeatureName, TargetType targetType, String instanceWeightFeature, String nameFeatureName, SeqEncoder seqEncoder);
   
   public abstract void finishAdding();

@@ -50,8 +50,9 @@ public abstract class LearningFrameworkPRBase
   protected String instanceType;
 
   @RunTime
+  @Optional
   @CreoleParameter(defaultValue = "Token", comment = "The annotation type to "
-          + "be treated as instance.")
+          + "be treated as instance. This is required for some algorithms.")
   public void setInstanceType(String inst) {
     this.instanceType = inst;
   }

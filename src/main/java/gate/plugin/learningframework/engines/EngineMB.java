@@ -11,6 +11,7 @@ package gate.plugin.learningframework.engines;
 import cc.mallet.types.Alphabet;
 import gate.plugin.learningframework.data.CorpusRepresentation;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
+import gate.plugin.learningframework.data.CorpusRepresentationMalletLDA;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletSeq;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletTarget;
 import gate.plugin.learningframework.features.FeatureInfo;
@@ -71,6 +72,8 @@ public abstract class EngineMB extends Engine {
   
   @Override
   protected void loadAndSetCorpusRepresentation(URL directory) {
+    // TODO: Special case if the corpus representaiton is for clustering or we 
+    // override in the Engine!!
     if(corpusRepresentation==null) {
       corpusRepresentation = CorpusRepresentationMalletTarget.load(directory);
     }
@@ -89,6 +92,9 @@ public abstract class EngineMB extends Engine {
         case REGRESSOR:
         case CLASSIFIER:
           corpusRepresentation = new CorpusRepresentationMalletTarget(fi, fi.getGlobalScalingMethod(), tt);
+          break;
+        case CLUSTERING:
+          corpusRepresentation = new CorpusRepresentationMalletLDA(null, null);
           break;
         default:
           throw new GateRuntimeException("Not a usable algorithm kind for now with Mallet based engines: "+algorithm);
