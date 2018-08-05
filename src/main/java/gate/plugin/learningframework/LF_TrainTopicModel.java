@@ -22,7 +22,6 @@ package gate.plugin.learningframework;
 import gate.AnnotationSet;
 import java.net.URL;
 
-import org.apache.log4j.Logger;
 
 import gate.Controller;
 import gate.Document;
@@ -131,6 +130,9 @@ public class LF_TrainTopicModel extends LearningFrameworkPRBase {
   
   @Override
   public void controllerStarted(Controller controller) {
+    if(dataDirectory==null) {
+      throw new GateRuntimeException("dataDirectory parameter must not be null");
+    }
     if("file".equals(dataDirectory.getProtocol())) {
       dataDirFile = gate.util.Files.fileFromURL(dataDirectory);
     } else {
