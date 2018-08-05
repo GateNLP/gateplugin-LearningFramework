@@ -50,11 +50,11 @@ public class CorpusRepresentationMalletLDA extends CorpusRepresentationMallet {
 
   public CorpusRepresentationMalletLDA(FeatureInfo fi, ScalingMethod sm) {
     featureInfo = fi;  // always null
-    scalingMethod = sm; // always null
+    scalingMethod = ScalingMethod.NONE;
 
     // TODO: we really do not need any of this, figure out if we can simplify,
     // but keeping this should not really do any harm!
-    Pipe innerPipe = new Noop(new LFAlphabet(), new LabelAlphabet());
+    Pipe innerPipe = new Noop(new LFAlphabet(), null);
     List<Pipe> pipes = new ArrayList<>();
     pipes.add(innerPipe);
     pipe = new LFPipe(pipes);
@@ -70,7 +70,7 @@ public class CorpusRepresentationMalletLDA extends CorpusRepresentationMallet {
   CorpusRepresentationMalletLDA(LFPipe pipe) {
     this.pipe = pipe;
     this.featureInfo = pipe.getFeatureInfo();
-    this.scalingMethod = null;
+    this.scalingMethod = ScalingMethod.NONE;
     this.instances = new LFInstanceList(pipe);
   }
 
@@ -118,6 +118,7 @@ public class CorpusRepresentationMalletLDA extends CorpusRepresentationMallet {
       // create one mallet instance for the whole document
       Document doc = inputAS.getDocument();
       Instance inst = getInstanceFor(0L, doc.getContent().size(),inputAS, tokenFeatureName);
+      instances.add(inst);
     } else {
       // create one mallet instance for each instance annotation
       for (Annotation instanceAnnotation : instancesAS.inDocumentOrder()) {
@@ -160,7 +161,7 @@ public class CorpusRepresentationMalletLDA extends CorpusRepresentationMallet {
       }
     }
     TokenSequence tokenSeq = new TokenSequence(tokenList.toArray());
-    FeatureSequence featSeq = tokenSeq.toFeatureSequence(pipe.getAlphabet());
+    FeatureSequence featSeq = tokenSeq.toFeatureSequence(instances.getAlphabet());
     return new Instance(featSeq, null, null, null);
 
   }

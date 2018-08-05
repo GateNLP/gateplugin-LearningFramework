@@ -36,7 +36,7 @@ public enum AlgorithmClustering implements Algorithm {
   private AlgorithmClustering(Class<?> engineClass, Class<?> algorithmClass) {
     this.engineClass = engineClass;
     this.trainerClass = algorithmClass;
-    this.algorithmKind = AlgorithmKind.REGRESSOR;
+    this.algorithmKind = AlgorithmKind.CLUSTERING;
   }
   private Class<?> engineClass;
   private Class<?> trainerClass;
