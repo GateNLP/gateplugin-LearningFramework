@@ -89,7 +89,7 @@ public class LF_ApplyTopicModel extends LearningFrameworkPRBase {
   
 ////////////////////////////////////////////////////////////////////////////
 
-  private Engine engine;
+  private transient Engine engine;
 
   private URL savedModelDirectoryURL;
 

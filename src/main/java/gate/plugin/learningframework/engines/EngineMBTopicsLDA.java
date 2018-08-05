@@ -39,10 +39,11 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import static gate.plugin.learningframework.LFUtils.newURL;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletLDA;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
-import java.util.logging.Level;
 
 /**
  *
@@ -50,7 +51,8 @@ import java.util.logging.Level;
  */
 public class EngineMBTopicsLDA extends EngineMBMallet {
 
-  private static final Logger LOGGER = Logger.getLogger(EngineMBTopicsLDA.class);
+  // not used for now
+  // private static final Logger LOGGER = Logger.getLogger(EngineMBTopicsLDA.class);
 
   protected TopicModelDiagnostics tmd;
   
@@ -105,7 +107,7 @@ public class EngineMBTopicsLDA extends EngineMBMallet {
         )
     {
       pw.print(tmd.toXML());
-    } catch (Exception ex)  {
+    } catch (FileNotFoundException | UnsupportedEncodingException ex)  {
       throw new GateRuntimeException("Exception when writing diagnostics.xml",ex);
     }
   }  
