@@ -36,7 +36,6 @@ import java.io.ObjectInputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.log4j.Logger;
 import static gate.plugin.learningframework.LFUtils.newURL;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletLDA;
 import java.io.FileNotFoundException;
