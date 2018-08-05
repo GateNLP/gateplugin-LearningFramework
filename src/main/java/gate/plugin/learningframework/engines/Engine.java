@@ -287,6 +287,8 @@ public abstract class Engine {
         tmp_algorithm = AlgorithmClassification.valueOf(info.algorithmName);      
       } else if(info.algorithmClass.equals(AlgorithmRegression.class.getName())) {
         tmp_algorithm = AlgorithmRegression.valueOf(info.algorithmName);      
+      } else if(info.algorithmClass.equals(AlgorithmClustering.class.getName())) {
+        tmp_algorithm = AlgorithmClustering.valueOf(info.algorithmName);      
       } else {
         throw new GateRuntimeException("Not a known algorithm enumeration class "+info.algorithmClass);
       }

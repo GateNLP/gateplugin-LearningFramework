@@ -123,7 +123,7 @@ public class LF_TrainTopicModel extends LearningFrameworkPRBase {
     }
     AnnotationSet instanceAS = null;
     if (getInstanceType()!=null && !getInstanceType().isEmpty()) {
-      inputAS = inputAS.get(getInstanceType());
+      instanceAS = inputAS.get(getInstanceType());
     }
     corpusRepresentation.add(instanceAS, null, inputAS, null, getTokenFeature(), TargetType.NONE, null, null, null);
   }

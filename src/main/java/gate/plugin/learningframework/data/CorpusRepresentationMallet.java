@@ -71,7 +71,11 @@ public abstract class CorpusRepresentationMallet extends CorpusRepresentationMal
       }
     }
     FeatureInfo fi = tmp_pipe.getFeatureInfo();
-    fi.stopGrowth();
+    // For some algorithms, e.g. Topic Models / LDA, we have no FeatureInfo
+    // and this could be null
+    if(fi!=null) {
+      fi.stopGrowth();
+    }
   }
   
   /**

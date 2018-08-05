@@ -58,4 +58,6 @@ hs_err_*.log
 /tests/dense-pos-seq-2/model-dense-pytorch1/
 !/tests/dense-pos-seq-2/model-dense-pytorch1/.keepme
 
+/tests/dense-pos-seq-2/model-malletLDA/diagnostics.xml
+
 /target/

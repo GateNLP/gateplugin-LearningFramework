@@ -27,7 +27,6 @@ import cc.mallet.pipe.Noop;
 import cc.mallet.pipe.Pipe;
 import cc.mallet.types.FeatureSequence;
 import cc.mallet.types.Instance;
-import cc.mallet.types.LabelAlphabet;
 import cc.mallet.types.TokenSequence;
 import gate.Document;
 import gate.plugin.learningframework.ScalingMethod;
@@ -117,14 +116,12 @@ public class CorpusRepresentationMalletLDA extends CorpusRepresentationMallet {
     if (instancesAS == null) {
       // create one mallet instance for the whole document
       Document doc = inputAS.getDocument();
-      Instance inst = getInstanceFor(0L, doc.getContent().size(),inputAS, tokenFeatureName);
-      instances.add(inst);
+      instances.add(getInstanceFor(0L, doc.getContent().size(),inputAS, tokenFeatureName));
     } else {
       // create one mallet instance for each instance annotation
       for (Annotation instanceAnnotation : instancesAS.inDocumentOrder()) {
-        Instance inst = getInstanceFor(gate.Utils.start(instanceAnnotation),gate.Utils.end(instanceAnnotation),
-                inputAS, tokenFeatureName);
-        instances.add(inst);
+        instances.add(getInstanceFor(gate.Utils.start(instanceAnnotation),gate.Utils.end(instanceAnnotation),
+                inputAS, tokenFeatureName));
       }
     }
   }
@@ -136,7 +133,16 @@ public class CorpusRepresentationMalletLDA extends CorpusRepresentationMallet {
     }
   }
   
-  protected Instance getInstanceFor(
+  /**
+   * Get a Mallet FeatureSequence Instance for the tokens in the span.
+   * The span is what is covered by the original instance annotation.
+   * @param from start offset
+   * @param to end offset 
+   * @param inputAS  annotation set containing the token-like annotations
+   * @param tokenFeatureName feature in the token-like annotations to use or empty for document text
+   * @return  mallet instance containing a feature sequence 
+   */
+  public Instance getInstanceFor(
           long from,
           long to,
           AnnotationSet inputAS,
