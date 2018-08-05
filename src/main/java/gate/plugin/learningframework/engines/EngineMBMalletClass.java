@@ -209,9 +209,9 @@ public class EngineMBMalletClass extends EngineMBMallet {
   protected void loadModel(URL directory, String parms) {
     URL modelFile = newURL(directory, FILENAME_MODEL);
     Classifier classifier;
-    ObjectInputStream ois;
-    try (InputStream is = modelFile.openStream()) {
-      ois = new ObjectInputStream(is);
+    
+    try (InputStream is = modelFile.openStream();
+         ObjectInputStream ois = new ObjectInputStream(is)) {
       classifier = (Classifier) ois.readObject();
       model=classifier;
     } catch (Exception ex) {

@@ -46,7 +46,7 @@ public class LF_TrainTopicModel extends LearningFrameworkPRBase {
 
   private static final long serialVersionUID = 3354214456596583124L;
 
-  private final Logger logger = Logger.getLogger(LF_TrainTopicModel.class.getCanonicalName());
+  private transient final Logger logger = Logger.getLogger(LF_TrainTopicModel.class.getCanonicalName());
 
   protected URL dataDirectory;
 
@@ -102,9 +102,9 @@ public class LF_TrainTopicModel extends LearningFrameworkPRBase {
   }
 
 
-  private CorpusRepresentation corpusRepresentation = null;
+  private transient CorpusRepresentation corpusRepresentation = null;
 
-  private Engine engine = null;
+  private transient Engine engine = null;
 
   private File dataDirFile;
 

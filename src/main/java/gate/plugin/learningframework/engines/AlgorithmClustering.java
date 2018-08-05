@@ -20,6 +20,8 @@
 
 package gate.plugin.learningframework.engines;
 
+import gate.util.GateRuntimeException;
+
 
 /**
  *
@@ -50,6 +52,8 @@ public enum AlgorithmClustering implements Algorithm {
 
   @Override
   public void setTrainerClass(Class<?> trainerClass) {
-    this.trainerClass = trainerClass;
+    // not used for now, we avoid setting anything here because
+    // findBugs warns about this and is a PITA
+    throw new GateRuntimeException("setTrainerClass not implemented for now for AlgorithmClustering");
   }
 }

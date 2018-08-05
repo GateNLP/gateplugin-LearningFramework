@@ -42,6 +42,7 @@ import gate.plugin.learningframework.data.CorpusRepresentationMalletLDA;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.logging.Level;
 
 /**
  *
@@ -122,12 +123,11 @@ public class EngineMBTopicsLDA extends EngineMBMallet {
   protected void loadModel(URL directory, String parms) {
     URL modelFile = newURL(directory, FILENAME_MODEL);
     Classifier classifier;
-    ObjectInputStream ois;
-    try (InputStream is = modelFile.openStream()) {
-      ois = new ObjectInputStream(is);
+    try (InputStream is = modelFile.openStream();
+         ObjectInputStream ois = new ObjectInputStream(is)) {
       ParallelTopicModel ptm = (ParallelTopicModel) ois.readObject();
       model=ptm;
-    } catch (Exception ex) {
+    } catch (IOException | ClassNotFoundException ex) {
       throw new GateRuntimeException("Could not load Mallet model", ex);
     }
   }

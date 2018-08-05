@@ -42,6 +42,8 @@ import java.net.URL;
 import static gate.plugin.learningframework.LFUtils.newURL;
 import gate.plugin.learningframework.mallet.LFAlphabet;
 import gate.plugin.learningframework.mallet.LFInstanceList;
+import java.io.IOException;
+import java.util.logging.Level;
 
 public class CorpusRepresentationMalletLDA extends CorpusRepresentationMallet {
 
@@ -86,7 +88,7 @@ public class CorpusRepresentationMalletLDA extends CorpusRepresentationMallet {
     try (InputStream bom = inFile.openStream();
          ObjectInputStream ois = new ObjectInputStream(bom)) {
       lfpipe = (LFPipe) ois.readObject();      
-    } catch (Exception ex) { 
+    } catch (ClassNotFoundException | IOException ex) { 
       throw new GateRuntimeException("Could not read pipe from "+inFile,ex);
     }
     CorpusRepresentationMalletLDA crms = new CorpusRepresentationMalletLDA(lfpipe);
