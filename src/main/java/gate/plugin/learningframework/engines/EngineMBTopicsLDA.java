@@ -79,7 +79,10 @@ public class EngineMBTopicsLDA extends EngineMBMallet {
     double beta = 0.01;
     int showNrTopWords = 20;
     int showNrDocs = 5;
-    int numThreads = 4;
+    int numThreads = Runtime.getRuntime().availableProcessors();
+    if(numThreads<1) {
+      numThreads = 1;
+    }
     int seed = 0;
     Parms parmdef = new Parms(parmString,
                 "t:topics:i",
@@ -87,22 +90,29 @@ public class EngineMBTopicsLDA extends EngineMBMallet {
                 "w:words:i",
                 "d:docs:i",
                 "s:seed:i",
-                "a:alpha:f",
-                "b:beta:f"
+                "a:alpha:d",
+                "b:beta:d"
     );
     nrTopics = (int) parmdef.getValueOrElse("topics", nrTopics);
-    alpha = (float) parmdef.getValueOrElse("alpha", alpha);
-    beta = (float) parmdef.getValueOrElse("beta", beta);
+    alpha = (double) parmdef.getValueOrElse("alpha", alpha);
+    beta = (double) parmdef.getValueOrElse("beta", beta);
     showNrTopWords = (int) parmdef.getValueOrElse("words", showNrTopWords);
     showNrDocs = (int) parmdef.getValueOrElse("docs", showNrDocs);
     numThreads = (int) parmdef.getValueOrElse("procs", numThreads);
     seed = (int) parmdef.getValueOrElse("seed", seed);
+    
+    System.out.println("INFO: running Mallet LDA with parameters: topics="+nrTopics+
+            ",alpha="+alpha+",beta="+beta+",words="+showNrTopWords+",procs="+numThreads+
+            ",docs="+showNrDocs+",seed="+seed);
     
     tm = new ParallelTopicModel(nrTopics, alpha, beta);
     model= tm;    
     tm.setTopicDisplay(displayInterval, showNrTopWords);
     tm.setNumThreads(numThreads);
     tm.setNumIterations(numIterations);
+    tm.setRandomSeed(seed);
+    // For showing top documents see implementation of 
+    // tm.printTopicDocuments(printwriter, showNrDocs);
     tm.addInstances(corpusRepresentation.getRepresentationMallet());
     try {
       tm.estimate();
