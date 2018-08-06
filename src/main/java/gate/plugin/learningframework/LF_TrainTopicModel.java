@@ -227,6 +227,7 @@ public class LF_TrainTopicModel extends LearningFrameworkPRBase {
         ParallelTopicModel tm = engine_mbt.getTopicModel();
         if(nDuplicates.get() == 1 && corpus.size() == getSeenDocuments().get()) {
           System.err.println("DEBUG: running application...");
+          /*
           List<TopicAssignment> tas = tm.getData();
           int n = 0;
           for(Document doc : corpus) {
@@ -235,6 +236,7 @@ public class LF_TrainTopicModel extends LearningFrameworkPRBase {
             // TODO: go through either the existing or the newly to create document annotations in
             // the document, for each assign the next topic distribution from the model.
           }
+          */
         } else {
           System.err.println("ERROR: cannot apply after training, either more than one duplicate or corpus size mismatch");
         }
