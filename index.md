@@ -23,6 +23,8 @@ Overview of the documentation:
   * [LF_ApplyRegression](LF_ApplyRegression) apply a trained regression model
   * [LF_TrainChunking](LF_TrainChunking) train a model for sequence tagging / chunking
   * [LF_ApplyChunking](LF_ApplyChunking) apply a trined model for sequence tagging / chunking
+  * [LF_TrainTopicModel](LF_TrainTopicModel) train an LDA topic model
+  * [LF_ApplyTopicModel](LF_ApplyTopicModel) find topic distribution for new documents/texts
   * [LF_Export](LF_Export) export a training set to an external file
   * [LF_EvaluateClassification](LF_EvaluateClassification) estimate classification accuracy
   * [LF_EvaluateRegression](LF_EvaluateRegression) estimate regression quality
