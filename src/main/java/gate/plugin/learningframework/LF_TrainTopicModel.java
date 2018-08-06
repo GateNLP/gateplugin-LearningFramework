@@ -223,8 +223,8 @@ public class LF_TrainTopicModel extends LearningFrameworkPRBase {
       // CAUTION: this assumes that the order of documents in the corpus still agrees with the 
       // order of documents in the mallet model.
       if (trainingAlgorithm == AlgorithmClustering.MalletLDA_CLUS_MR && getApplyAfterTraining()) {
-        EngineMBTopicsLDA engine_mbt = (EngineMBTopicsLDA)engine;
-        ParallelTopicModel tm = engine_mbt.getTopicModel();
+        //EngineMBTopicsLDA engine_mbt = (EngineMBTopicsLDA)engine;
+        //ParallelTopicModel tm = engine_mbt.getTopicModel();
         if(nDuplicates.get() == 1 && corpus.size() == getSeenDocuments().get()) {
           System.err.println("DEBUG: running application...");
           /*
