@@ -66,18 +66,38 @@ public class EngineMBTopicsLDA extends EngineMBMallet {
   public EngineMBTopicsLDA() { }
 
   @Override
-  public void trainModel(File dataDirectory, String instanceType, String parms) {
+  public void trainModel(File dataDirectory, String instanceType, String parmString) {
     System.err.println("EngineMalletClass.trainModel: trainer="+trainer);
     System.err.println("EngineMalletClass.trainModel: CR="+corpusRepresentation);
     
-    // TODO: get the most important parameters from the parms or use defaults
+
+    int displayInterval = 200;
+    int numIterations = 100;
+    // default values for those which can be set 
     int nrTopics = 10;
     double alpha = 1.0;
     double beta = 0.01;
-    int displayInterval = 200;
-    int showNrTopWords = 10;
+    int showNrTopWords = 20;
+    int showNrDocs = 5;
     int numThreads = 4;
-    int numIterations = 100;
+    int seed = 0;
+    Parms parmdef = new Parms(parmString,
+                "t:topics:i",
+                "p:procs:i",
+                "w:words:i",
+                "d:docs:i",
+                "s:seed:i",
+                "a:alpha:f",
+                "b:beta:f"
+    );
+    nrTopics = (int) parmdef.getValueOrElse("topics", nrTopics);
+    alpha = (float) parmdef.getValueOrElse("alpha", alpha);
+    beta = (float) parmdef.getValueOrElse("beta", beta);
+    showNrTopWords = (int) parmdef.getValueOrElse("words", showNrTopWords);
+    showNrDocs = (int) parmdef.getValueOrElse("docs", showNrDocs);
+    numThreads = (int) parmdef.getValueOrElse("procs", numThreads);
+    seed = (int) parmdef.getValueOrElse("seed", seed);
+    
     tm = new ParallelTopicModel(nrTopics, alpha, beta);
     model= tm;    
     tm.setTopicDisplay(displayInterval, showNrTopWords);
