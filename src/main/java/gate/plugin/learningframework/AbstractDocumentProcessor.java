@@ -33,8 +33,6 @@ import gate.util.Benchmark;
 import gate.util.Benchmarkable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import junit.framework.Assert;
-//import java.util.Optional;
 
 /**
  * Abstract base class for all the PRs in this plugin.

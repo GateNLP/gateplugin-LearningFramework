@@ -19,6 +19,8 @@
  */
 package gate.plugin.learningframework;
 
+import cc.mallet.topics.ParallelTopicModel;
+import cc.mallet.topics.TopicAssignment;
 import gate.AnnotationSet;
 import java.net.URL;
 
@@ -33,9 +35,11 @@ import gate.plugin.learningframework.data.CorpusRepresentation;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.engines.AlgorithmClustering;
 import gate.plugin.learningframework.engines.Engine;
+import gate.plugin.learningframework.engines.EngineMBTopicsLDA;
 import gate.plugin.learningframework.features.TargetType;
 import gate.util.GateRuntimeException;
 import java.io.File;
+import java.util.List;
 
 @CreoleResource(
         name = "LF_TrainTopicModel",
@@ -100,7 +104,19 @@ public class LF_TrainTopicModel extends LearningFrameworkPRBase {
   public AlgorithmClustering getTrainingAlgorithm() {
     return this.trainingAlgorithm;
   }
+  
+  private boolean applyAfterTraining = true;
+  
+  @RunTime
+  @CreoleParameter(comment = "After training the model, calculate and apply topic distributions to the training documents",
+          defaultValue="false")
+  public void setApplyAfterTraining(Boolean val) {
+    applyAfterTraining = val;
+  }
 
+  public Boolean getApplyAfterTraining() {
+    return applyAfterTraining;
+  }
 
   private transient CorpusRepresentation corpusRepresentation = null;
 
@@ -199,6 +215,31 @@ public class LF_TrainTopicModel extends LearningFrameworkPRBase {
               getInstanceType(),
               getAlgorithmParameters());
       engine.saveEngine(dataDirFile);
+      
+      // Now, if apply to training set was specified, AND we used the Mallet algorithm AND we only have one duplicate
+      // AND the number of we just processed agrees with the number of documents in the corpus (i.e. we do not 
+      // have a GCP-like process-one-document-at-a-time situation)
+      // calculate the topic distribution for each of the documents.
+      // CAUTION: this assumes that the order of documents in the corpus still agrees with the 
+      // order of documents in the mallet model.
+      if (trainingAlgorithm == AlgorithmClustering.MalletLDA_CLUS_MR && getApplyAfterTraining()) {
+        EngineMBTopicsLDA engine_mbt = (EngineMBTopicsLDA)engine;
+        ParallelTopicModel tm = engine_mbt.getTopicModel();
+        if(nDuplicates.get() == 1 && corpus.size() == getSeenDocuments().get()) {
+          System.err.println("DEBUG: running application...");
+          List<TopicAssignment> tas = tm.getData();
+          int n = 0;
+          for(Document doc : corpus) {
+            System.err.println("DEBUG applying to document "+doc.getName()+" / "+n);
+            System.err.println("");
+            // TODO: go through either the existing or the newly to create document annotations in
+            // the document, for each assign the next topic distribution from the model.
+          }
+        } else {
+          System.err.println("ERROR: cannot apply after training, either more than one duplicate or corpus size mismatch");
+        }
+        
+      }
     }
   }
 

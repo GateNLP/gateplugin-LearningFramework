@@ -54,6 +54,14 @@ public class EngineMBTopicsLDA extends EngineMBMallet {
   // private static final Logger LOGGER = Logger.getLogger(EngineMBTopicsLDA.class);
 
   protected TopicModelDiagnostics tmd;
+  protected ParallelTopicModel tm;
+  
+  public ParallelTopicModel getTopicModel() {
+    return tm;
+  }
+  public TopicModelDiagnostics getTopicModelDiagnostics() {
+    return tmd;
+  }
   
   public EngineMBTopicsLDA() { }
 
@@ -70,7 +78,7 @@ public class EngineMBTopicsLDA extends EngineMBMallet {
     int showNrTopWords = 10;
     int numThreads = 4;
     int numIterations = 100;
-    ParallelTopicModel tm = new ParallelTopicModel(nrTopics, alpha, beta);
+    tm = new ParallelTopicModel(nrTopics, alpha, beta);
     model= tm;    
     tm.setTopicDisplay(displayInterval, showNrTopWords);
     tm.setNumThreads(numThreads);
