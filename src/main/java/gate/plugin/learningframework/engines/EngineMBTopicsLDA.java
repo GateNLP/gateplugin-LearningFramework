@@ -196,15 +196,34 @@ public class EngineMBTopicsLDA extends EngineMBMallet {
           String tokenFeature, String parms) {
     CorpusRepresentationMalletLDA data = (CorpusRepresentationMalletLDA)corpusRepresentation;
     data.stopGrowth();
+
+    int numIterations = 10;
+    int burnIn = 10;
+    int thinning = 0;
+    int seed = 0;
+    Parms parmdef = new Parms(parms,
+                "i:iters:i",
+                "B:burnin:i",
+                "T:thinning:i",
+                "s:seed:i"
+    );
+    numIterations = (int) parmdef.getValueOrElse("iters", numIterations);
+    burnIn = (int) parmdef.getValueOrElse("burnin", burnIn);
+    thinning = (int) parmdef.getValueOrElse("thinning", thinning);
+    seed = (int) parmdef.getValueOrElse("seed", seed);
+
+
     ParallelTopicModel tm = (ParallelTopicModel)model;
+    TopicInferencer ti = tm.getInferencer();
+    tm.setRandomSeed(seed);
+    
     for(Annotation instAnn : instanceAS.inDocumentOrder()) {
       // System.err.println("DEBUG: adding instance annotation "+instAnn);
       Instance inst = data.getInstanceFor(gate.Utils.start(instAnn), gate.Utils.end(instAnn), inputAS, tokenFeature);
       // System.err.println("DEBUG: Instance data is "+inst.getData());
-      TopicInferencer ti = tm.getInferencer();
       // System.err.println("DEBUG: got inferencer "+ti);
       // NOTE: see http://mallet.cs.umass.edu/api/cc/mallet/topics/TopicInferencer.html#getSampledDistribution(cc.mallet.types.Instance,%20int,%20int,%20int)
-      double[] tdist = tm.getInferencer().getSampledDistribution(inst, 0, 0, 0);
+      double[] tdist = ti.getSampledDistribution(inst, numIterations, thinning, burnIn);
       List<Double> tdistlist = new ArrayList<>(tdist.length);
       int i = 0;
       int bestTopic = -1;
