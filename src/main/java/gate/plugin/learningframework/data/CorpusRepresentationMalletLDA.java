@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import cc.mallet.pipe.Noop;
 import cc.mallet.pipe.Pipe;
+import cc.mallet.types.Alphabet;
 import cc.mallet.types.FeatureSequence;
 import cc.mallet.types.Instance;
 import cc.mallet.types.TokenSequence;
@@ -43,6 +44,7 @@ import static gate.plugin.learningframework.LFUtils.newURL;
 import gate.plugin.learningframework.mallet.LFAlphabet;
 import gate.plugin.learningframework.mallet.LFInstanceList;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.logging.Level;
 
 public class CorpusRepresentationMalletLDA extends CorpusRepresentationMallet {
@@ -169,7 +171,31 @@ public class CorpusRepresentationMalletLDA extends CorpusRepresentationMallet {
       }
     }
     TokenSequence tokenSeq = new TokenSequence(tokenList.toArray());
-    FeatureSequence featSeq = tokenSeq.toFeatureSequence(instances.getAlphabet());
+    //System.err.println("DEBUG: tokensequence="+tokenSeq);
+    //System.err.println("DEBUG: alphabet growStopped()="+instances.getAlphabet().growthStopped());
+    
+    
+    // NOTE: the following will create a feature sequence that contains -1 entries
+    // for tokens which are not in the alphabet, if alphabet growth has been stopped
+    // FeatureSequence featSeq = tokenSeq.toFeatureSequence(instances.getAlphabet());
+    
+    // Instead we create the FeatureSequence ourselves
+    FeatureSequence featSeq = new FeatureSequence(instances.getAlphabet(), tokenSeq.size());
+    Alphabet alph = instances.getAlphabet();
+    for(int i=0; i<tokenSeq.size(); i++) {
+      int idx = alph.lookupIndex(tokenSeq.get(i).getText());
+      if(idx > -1) {
+        featSeq.add(idx);
+      }
+    }
+    /*
+    System.err.println("DEBUG: fseq size="+featSeq.size());
+    System.err.println("DEBUG: fseq length="+featSeq.getLength());
+    System.err.println("DEBUG: fseq feats="+Arrays.toString(featSeq.getFeatures()));
+    System.err.println("DEBUG: fseq feats="+Arrays.toString(featSeq.getFeatures()));
+    System.err.println("DEBUG: fseq featIndexSequence="+Arrays.toString(featSeq.toFeatureIndexSequence()));
+    */
+    
     return new Instance(featSeq, null, null, null);
 
   }
