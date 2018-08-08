@@ -7,7 +7,7 @@ This PR can be used to train an LDA topic model from a training corpus. For this
 The algorithm has no init parameters and the following run-time parameters:
 
 * `algorithmParameters` (String, default: none) - algorithm specific parameters, see below
-* `applyAfterTraining` (Boolean, default: false) - (NOT YET IMPLEMENTED) if this is true, and if the algorithm is `MalletLDA_CLUS_MR` and the PR is the only duplicate and the corpus contains all training documents, then the model will get applied to the original documents/instances in the training set.
+* `applyAfterTraining` (Boolean, default: false) - if this is true, and if the algorithm is `MalletLDA_CLUS_MR` and the PR is the only duplicate and the corpus contains all training documents, then the model will get applied to the original documents/instances in the training set.
 * `dataDirectory`- (file URL, default: none) Where to save the model, required
 * `inputASName` - (String, default: empty meaning the default annotation set) Input annotation set containing the instance and token annotations
 * `instanceType` (String, default: empty, meaning the whole document) - annotation type to use as "instance", i.e. as document. If not specified, the whole document is used
@@ -33,6 +33,20 @@ The following parameters can be specified in the `algorithmParameters` field:
 * -s (integer, default: 0 which uses the clock) - random seed to use for the gibbs sampler
 * -a (float, default: 1.0) - alpha prior of the underlying dirichlet (NEED TO CHECK if sum `alpha_k` or single one). Higher values allow for more topics per document.
 * -b (float, default: 0.01) - beta parameter for topic-word smoothing. Higher values allow for more corpus words per topic.
+
+If the `applyAfterTraining` parameter is `true` and all conditions for application to run are met,
+then after training the model, the topic distributions are applied to each document. This is done by
+adding features to the instance annotations as specified throught the `instanceType` parameter or
+by using instead any "Document" annotation in the default set, or if none is found, adding one that spans
+the whole GATE document. The following features are added:
+* `LF_MBTopicsLDA_MLTopic_train`: integer, most prominent/likely topic for this document
+* `LF_MBTopicsLDA_MLTopicProb_train`: float, the probability of the most likely topic for this document
+* `LF_MBTopicsLDA_TopicDist_train`: a list of as many float values as there are topics, representing the probabilities for each of the topics in the document.
+Note that the values of these features can differ from what would be the result of
+applying the model using the `LF_ApplyTopicModel` PR, because the latter is the result of a new
+iteration of Gibbs sampling. 
+
+
 
 In addition to the annotations and features in the annotations created by the PR, the following
 files are written to the data directory:
