@@ -22,6 +22,7 @@ package gate.plugin.learningframework.engines;
 
 import cc.mallet.classify.Classifier;
 import cc.mallet.topics.ParallelTopicModel;
+import cc.mallet.topics.TopicInferencer;
 import cc.mallet.topics.TopicModelDiagnostics;
 import cc.mallet.types.Instance;
 import gate.Annotation;
@@ -67,6 +68,13 @@ public class EngineMBTopicsLDA extends EngineMBMallet {
 
   @Override
   public void trainModel(File dataDirectory, String instanceType, String parmString) {
+    
+    // TODO: at this point we could maybe remove low-frequency words.
+    // This would be possible by adding a vocab/stats object to count each 
+    // entry in the alphabet and then going through the instances, using
+    // the FeatureSequence.prune method
+    
+    
     System.err.println("EngineMalletClass.trainModel: trainer="+trainer);
     System.err.println("EngineMalletClass.trainModel: CR="+corpusRepresentation);
     
@@ -190,7 +198,12 @@ public class EngineMBTopicsLDA extends EngineMBMallet {
     data.stopGrowth();
     ParallelTopicModel tm = (ParallelTopicModel)model;
     for(Annotation instAnn : instanceAS.inDocumentOrder()) {
+      // System.err.println("DEBUG: adding instance annotation "+instAnn);
       Instance inst = data.getInstanceFor(gate.Utils.start(instAnn), gate.Utils.end(instAnn), inputAS, tokenFeature);
+      // System.err.println("DEBUG: Instance data is "+inst.getData());
+      TopicInferencer ti = tm.getInferencer();
+      // System.err.println("DEBUG: got inferencer "+ti);
+      // NOTE: see http://mallet.cs.umass.edu/api/cc/mallet/topics/TopicInferencer.html#getSampledDistribution(cc.mallet.types.Instance,%20int,%20int,%20int)
       double[] tdist = tm.getInferencer().getSampledDistribution(inst, 0, 0, 0);
       List<Double> tdistlist = new ArrayList<>(tdist.length);
       int i = 0;
@@ -226,4 +239,11 @@ public class EngineMBTopicsLDA extends EngineMBMallet {
   }
   
 
+  @Override
+  protected void initWhenLoading(URL dir, String parms) {
+    super.initWhenLoading(dir, parms);
+    corpusRepresentation.stopGrowth();
+  }
+  
+  
 }
