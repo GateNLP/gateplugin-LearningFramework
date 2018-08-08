@@ -232,7 +232,9 @@ public class LF_TrainTopicModel extends LearningFrameworkPRBase {
           System.err.println("DEBUG: running application...");
           // List<TopicAssignment> tass = tm.getData();
           int n = 0; // this is the running index of the instances as seen by Mallet
-          for(Document doc : corpus) {
+          for(int docNr=0; docNr < corpus.size(); docNr++) {
+            boolean documentWasLoaded = corpus.isDocumentLoaded(docNr);
+            Document doc = corpus.get(docNr);
             AnnotationSet inputAS = doc.getAnnotations(getInputASName());
             if (getTokenAnnotationType() == null || getTokenAnnotationType().isEmpty()) {
               inputAS = inputAS.get("Token");
@@ -270,6 +272,10 @@ public class LF_TrainTopicModel extends LearningFrameworkPRBase {
               instAnn.getFeatures().put("LF_MBTopicsLDA_MLTopic_train", bestTopic);
               instAnn.getFeatures().put("LF_MBTopicsLDA_MLTopicProb_train", bestProb);
               n++;
+            }
+            if(!documentWasLoaded) {
+              corpus.unloadDocument(doc);
+              Factory.deleteResource(doc);
             }
           }
         } else {

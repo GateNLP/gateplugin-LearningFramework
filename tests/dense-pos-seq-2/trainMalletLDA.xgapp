@@ -318,6 +318,10 @@
                   <string></string>
                 </entry>
                 <entry>
+                  <string>inputASName</string>
+                  <string>Original markups</string>
+                </entry>
+                <entry>
                   <string>annotationTypes</string>
                   <gate.util.persistence.CollectionPersistence>
                     <localList>
@@ -329,10 +333,6 @@
                     </localList>
                     <collectionType>java.util.ArrayList</collectionType>
                   </gate.util.persistence.CollectionPersistence>
-                </entry>
-                <entry>
-                  <string>inputASName</string>
-                  <string>Original markups</string>
                 </entry>
               </localMap>
             </runtimeParams>
@@ -420,20 +420,12 @@
               <mapType>gate.util.SimpleFeatureMapImpl</mapType>
               <localMap>
                 <entry>
-                  <string>corpus</string>
-                  <gate.util.persistence.CorpusPersistence reference="../../../../../../../../corpus"/>
+                  <string>applyAfterTraining</string>
+                  <boolean>true</boolean>
                 </entry>
                 <entry>
                   <string>trainingAlgorithm</string>
                   <gate.plugin.learningframework.engines.AlgorithmClustering>MalletLDA_CLUS_MR</gate.plugin.learningframework.engines.AlgorithmClustering>
-                </entry>
-                <entry>
-                  <string>tokenFeature</string>
-                  <string>string_lc</string>
-                </entry>
-                <entry>
-                  <string>inputASName</string>
-                  <string></string>
                 </entry>
                 <entry>
                   <string>dataDirectory</string>
@@ -443,6 +435,18 @@
                 </entry>
                 <entry>
                   <string>instanceType</string>
+                  <string></string>
+                </entry>
+                <entry>
+                  <string>corpus</string>
+                  <gate.util.persistence.CorpusPersistence reference="../../../../../../../../corpus"/>
+                </entry>
+                <entry>
+                  <string>tokenFeature</string>
+                  <string>string_lc</string>
+                </entry>
+                <entry>
+                  <string>inputASName</string>
                   <string></string>
                 </entry>
               </localMap>
