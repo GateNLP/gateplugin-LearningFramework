@@ -318,10 +318,6 @@
                   <string></string>
                 </entry>
                 <entry>
-                  <string>inputASName</string>
-                  <string>Original markups</string>
-                </entry>
-                <entry>
                   <string>annotationTypes</string>
                   <gate.util.persistence.CollectionPersistence>
                     <localList>
@@ -333,6 +329,10 @@
                     </localList>
                     <collectionType>java.util.ArrayList</collectionType>
                   </gate.util.persistence.CollectionPersistence>
+                </entry>
+                <entry>
+                  <string>inputASName</string>
+                  <string>Original markups</string>
                 </entry>
               </localMap>
             </runtimeParams>
@@ -412,6 +412,8 @@
         </gate.util.persistence.AnalyserRunningStrategyPersistence>
         <gate.util.persistence.AnalyserRunningStrategyPersistence>
           <runMode>1</runMode>
+          <featureName></featureName>
+          <featureValue></featureValue>
           <pr class="gate.util.persistence.LanguageAnalyserPersistence">
             <corpus class="gate.util.persistence.CorpusPersistence" reference="../../../../../corpus"/>
             <runtimeParams class="gate.util.persistence.MapPersistence">

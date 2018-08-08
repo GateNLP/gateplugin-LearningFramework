@@ -21,12 +21,14 @@ package gate.plugin.learningframework;
 
 import cc.mallet.topics.ParallelTopicModel;
 import cc.mallet.topics.TopicAssignment;
+import gate.Annotation;
 import gate.AnnotationSet;
 import java.net.URL;
 
 
 import gate.Controller;
 import gate.Document;
+import gate.Factory;
 import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.Optional;
@@ -39,6 +41,7 @@ import gate.plugin.learningframework.engines.EngineMBTopicsLDA;
 import gate.plugin.learningframework.features.TargetType;
 import gate.util.GateRuntimeException;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 @CreoleResource(
@@ -223,20 +226,52 @@ public class LF_TrainTopicModel extends LearningFrameworkPRBase {
       // CAUTION: this assumes that the order of documents in the corpus still agrees with the 
       // order of documents in the mallet model.
       if (trainingAlgorithm == AlgorithmClustering.MalletLDA_CLUS_MR && getApplyAfterTraining()) {
-        //EngineMBTopicsLDA engine_mbt = (EngineMBTopicsLDA)engine;
-        //ParallelTopicModel tm = engine_mbt.getTopicModel();
+        EngineMBTopicsLDA engine_mbt = (EngineMBTopicsLDA)engine;
+        ParallelTopicModel tm = engine_mbt.getTopicModel();
         if(nDuplicates.get() == 1 && corpus.size() == getSeenDocuments().get()) {
           System.err.println("DEBUG: running application...");
-          /*
-          List<TopicAssignment> tas = tm.getData();
-          int n = 0;
+          // List<TopicAssignment> tass = tm.getData();
+          int n = 0; // this is the running index of the instances as seen by Mallet
           for(Document doc : corpus) {
-            System.err.println("DEBUG applying to document "+doc.getName()+" / "+n);
-            System.err.println("");
-            // TODO: go through either the existing or the newly to create document annotations in
-            // the document, for each assign the next topic distribution from the model.
+            AnnotationSet inputAS = doc.getAnnotations(getInputASName());
+            if (getTokenAnnotationType() == null || getTokenAnnotationType().isEmpty()) {
+              inputAS = inputAS.get("Token");
+            } else {
+              inputAS = inputAS.get(getTokenAnnotationType());
+            }
+            AnnotationSet instanceAS;
+            if (getInstanceType() != null && !getInstanceType().isEmpty()) {
+              instanceAS = inputAS.get(getInstanceType());
+            } else {     
+              // if the instance annotation set has not been specified, we put a Document annotation
+              // into the default set for now, unless we already have one or more.
+              instanceAS = doc.getAnnotations().get("Document");
+              if (instanceAS.isEmpty()) {
+                gate.Utils.addAnn(doc.getAnnotations(), 0, doc.getContent().size(), "Document", Factory.newFeatureMap());
+                instanceAS = doc.getAnnotations().get("Document");
+              }
+            }
+            for (Annotation instAnn : instanceAS) {
+              double[] tdist = tm.getTopicProbabilities(n);
+              List<Double> tdistlist = new ArrayList<>(tdist.length);
+              int i = 0;
+              int bestTopic = -1;
+              double bestProb = -999.99;
+              for (double val : tdist) {
+                tdistlist.add(val);
+                if (val > bestProb) {
+                  bestTopic = i;
+                  bestProb = val;
+                }
+                i++;
+              }
+              instAnn.getFeatures().put("LF_MBTopicsLDA_TopicDist_train", tdistlist);
+              // Also add a feature that gives the index and word list of the most likely topic
+              instAnn.getFeatures().put("LF_MBTopicsLDA_MLTopic_train", bestTopic);
+              instAnn.getFeatures().put("LF_MBTopicsLDA_MLTopicProb_train", bestProb);
+              n++;
+            }
           }
-          */
         } else {
           System.err.println("ERROR: cannot apply after training, either more than one duplicate or corpus size mismatch");
         }

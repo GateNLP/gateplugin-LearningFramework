@@ -279,7 +279,17 @@
           <pr class="gate.util.persistence.LanguageAnalyserPersistence">
             <runtimeParams class="gate.util.persistence.MapPersistence">
               <mapType>gate.util.SimpleFeatureMapImpl</mapType>
-              <localMap/>
+              <localMap>
+                <entry>
+                  <string>annotationTypes</string>
+                  <gate.util.persistence.CollectionPersistence>
+                    <localList>
+                      <string>Token</string>
+                    </localList>
+                    <collectionType>java.util.Arrays$ArrayList</collectionType>
+                  </gate.util.persistence.CollectionPersistence>
+                </entry>
+              </localMap>
             </runtimeParams>
             <resourceType>gate.creole.annotdelete.AnnotationDeletePR</resourceType>
             <resourceName>Document Reset PR 003C5</resourceName>
@@ -318,17 +328,17 @@
                   <string></string>
                 </entry>
                 <entry>
-                  <string>inputASName</string>
-                  <string>Original markups</string>
-                </entry>
-                <entry>
                   <string>annotationTypes</string>
                   <gate.util.persistence.CollectionPersistence>
                     <localList>
                       <string>Token</string>
                     </localList>
-                    <collectionType>java.util.Arrays$ArrayList</collectionType>
+                    <collectionType>java.util.ArrayList</collectionType>
                   </gate.util.persistence.CollectionPersistence>
+                </entry>
+                <entry>
+                  <string>inputASName</string>
+                  <string>Original markups</string>
                 </entry>
               </localMap>
             </runtimeParams>
