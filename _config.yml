@@ -31,4 +31,11 @@ defaults:
     path: "*.md"
   values:
     layout: "default"
-    
+   
+
+optional_front_matter:
+  enabled: true
+
+optional_front_matter:
+  remove_originals: true
+ 
