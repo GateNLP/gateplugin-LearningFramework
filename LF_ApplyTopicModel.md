@@ -24,9 +24,11 @@ The following features are set in each of the "Document" or instanceType annotat
 
 ### Algorithm `MalletLDA_CLUS_MR`
 
-In addition to the annotations and features in the annotations created by the PR, the following
-files are written to the data directory:
-
-(TBD/NOT YET)
+The algorithm supports the following parameters for application:
+* `-i/-iters` (int, default 10) -- total number of iterations for Gibbs sampling 
+* `-B/-burnin` (int, default 10) -- number of iterations before first sample 
+* `-Tthinning` (int, default 0) -- number of iterations between saved samples
 
 ### Algorithm `GensimLDA_CLUS_DR`
+
+NOT IMPLEMENTED YET
