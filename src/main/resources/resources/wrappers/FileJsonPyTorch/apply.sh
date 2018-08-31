@@ -42,7 +42,7 @@ echo 'WRAPPER SCRIPT  = ' $wrapperapply >&2
 echo 'ADDITIONALPARMS = ' "$@"       >&2
 echo 'PYTHON          = ' $wherepython >&2
 echo 'PYTHONPATH      = ' $PYTHONPATH >&2
-echo 'RUNNING         = ' ${wherepython} "${wrapperapply}" "${modelbase}" "${metafile}" "${datadir}" "$@"  >&2
+echo 'RUNNING         = ' ${wherepython} "${wrapperapply}" "${modelbase}" "$@"  >&2
 
-${wherepython} "${wrapperapply}" "${modelbase}" "${metafile}" "${datadir}" "$@" 
+${wherepython} "${wrapperapply}" "${modelbase}" "$@" 
 
