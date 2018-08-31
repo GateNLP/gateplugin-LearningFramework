@@ -8,7 +8,7 @@ shift
 wrapperdir="$1"
 shift
 
-wrapperapply=$wrapperdir/apply.py
+wrapperapply=$wrapperdir/gate-lf-pytorch-json/apply.py
 
 datadir=`dirname modelbase`
 datadir=`cd $datadir; pwd -P`

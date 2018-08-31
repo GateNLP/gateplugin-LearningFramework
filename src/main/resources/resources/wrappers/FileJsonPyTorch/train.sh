@@ -5,6 +5,12 @@ metafile="$1"
 shift
 modelbase="$1"
 shift
+
+if [[ "x$modelbase" == "x" ]]
+then
+  echo 'Error: two parameters required: metafile and modelprefix' >&2
+  exit 1
+fi
 datadir=`dirname $metafile`
 datadir=`cd $datadir; pwd -P`
 
