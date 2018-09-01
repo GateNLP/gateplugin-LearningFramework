@@ -74,6 +74,17 @@ public class ModelApplication {
     this.seqSpanID = sequenceSpanID;
   }
 
+  public ModelApplication(Annotation instance, String classAssigned,
+          Double confidenceScore, List<String> classes, List<Double> confidences,
+          Integer sequenceSpanID) {
+    this.instance = instance;
+    this.classAssigned = classAssigned;
+    this.confidenceScore = confidenceScore;
+    this.classList = classes;
+    this.confidenceList = confidences;
+    this.seqSpanID = sequenceSpanID;
+  }
+
   public Annotation getInstance() {
     return instance;
   }

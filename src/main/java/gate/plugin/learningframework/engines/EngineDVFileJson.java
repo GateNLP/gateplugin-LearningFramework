@@ -337,6 +337,7 @@ public abstract class EngineDVFileJson extends EngineDV {
     System.err.println("DEBUG: running applyModel");
     ObjectMapper mapper = new ObjectMapper();
     List<ModelApplication> modelapps = new ArrayList<>();
+    
     if(sequenceAS==null) {
       // non-sequences
       List<Annotation> instanceAnnotations = instancesAS.inDocumentOrder();
@@ -368,12 +369,22 @@ public abstract class EngineDVFileJson extends EngineDV {
           status = "";
         }
         if(!"ok".equals(status.toLowerCase())) {
-          throw new GateRuntimeException("Something went wrong applying the model, got status: "+status);
+          // try to get the exception from json
+          String exc = (String)retMap.get("error");
+          throw new GateRuntimeException("Something went wrong applying the model, got status: "+status+
+                  " error is: "+exc);
         }
-        // outputs and confidence can both be a scalar (for a single feature vector) or a list
-        // for a sequence of feature vectors. Also the type depends on the kind of algorithm...
+        
+        // Here we do NOT have a sequence tagging problem, so for now, the only
+        // thing we should get is the label and the scores, which should be
+        // a list of nclasses values. In addition we get the labels array so 
+        // we know which score belongs to which label
+        // TODO: we should retrieve the label array only once through a special command!
         ModelApplication ma = null;
         if(info.task.equals(AlgorithmKind.REGRESSOR.toString())) {
+          throw new GateRuntimeException("Not implemented yet: task REGRESSION");
+          // NOTE: this is not actually supported yet, we do not support REGRESSION
+          /*
           Double output = (Double)retMap.get("output");
           if(output==null) {
             throw new GateRuntimeException("Did not get a regression result from model");
@@ -381,6 +392,7 @@ public abstract class EngineDVFileJson extends EngineDV {
           // NOTE: eventually we may get variance or confidence interval boundaries here: "ci_upper"/"ci_lower"/"ci_p"
           // Double variance = (Double)retMap.get("variance");
           ma = new ModelApplication(instanceAnnotation,output); 
+          */
         } else if(info.task.equals(AlgorithmKind.CLUSTERING.toString())) {
           throw new GateRuntimeException("Not implemented yet: task CLUSTERING");
         } else if(info.task.equals(AlgorithmKind.CLASSIFIER.toString())) {
@@ -388,13 +400,10 @@ public abstract class EngineDVFileJson extends EngineDV {
           if(output==null) {
             throw new GateRuntimeException("Did not get a classification result from model");
           }
-          // note: the confidence actually may be null (missing in the map) meaning we do not have it
-          Double confidence = (Double)retMap.get("confidence");
-          // NOTE/TODO: currently the model application can only take lists of confidences, where 
-          // the order is predefined, we either need to map the map to a list here
-          // or support having a map in the final feature instead??
-          Map<String,Double> confidences = (Map<String,Double>)retMap.get("confidences");
-          ma = new ModelApplication(instanceAnnotation,output, confidence, null, null);
+          Double conf = (Double)retMap.get("conf");
+          List<Double> dist = (List<Double>)retMap.get("dist");
+          List<String> labels = (List<String>)retMap.get("labels");
+          ma = new ModelApplication(instanceAnnotation,output, conf, labels, dist);
         } else if(info.task.equals(AlgorithmKind.SEQUENCE_TAGGER.toString())) {
           // error: if no sequence AS is specified we should not get this!
           throw new GateRuntimeException("Model application not possible: no sequenceAS but model expects it!");
@@ -436,7 +445,9 @@ public abstract class EngineDVFileJson extends EngineDV {
           status = "";
         }
         if(!"ok".equals(status.toLowerCase())) {
-          throw new GateRuntimeException("Something went wrong applying the model, got status: "+status);
+          String exc = (String)retMap.get("error");
+          throw new GateRuntimeException("Something went wrong applying the model, got status: "+status+
+                  " error is: "+exc);
         }
         
         // we expect output to be a list of string and if confidence exists, a list of double
@@ -445,8 +456,9 @@ public abstract class EngineDVFileJson extends EngineDV {
           throw new GateRuntimeException("Did not get a classification result from model");
         }
         // note: the confidence actually may be null (missing in the map) meaning we do not have it
-        List<Double>confidence = (List<Double>)retMap.get("confidence");
-        
+        List<Double>confidence = (List<Double>)retMap.get("conf");
+        List<String>labels = (List<String>)retMap.get("labels");
+        List<List<Double>>dist = (List<List<Double>>)retMap.get("dist");
         
         ModelApplication ma;
         if(info.task.equals(AlgorithmKind.SEQUENCE_TAGGER.toString())) {
@@ -458,7 +470,15 @@ public abstract class EngineDVFileJson extends EngineDV {
             if(confidence!=null) {
               conf=confidence.get(i);
             }
-            ma = new ModelApplication(ann, output.get(i), conf, seq_id);
+            if(dist!=null && labels != null) {
+              if(dist.get(i) != null) {
+                ma = new ModelApplication(ann, output.get(i), conf, labels, dist.get(i), seq_id);
+              } else {
+                ma = new ModelApplication(ann, output.get(i), conf, seq_id);
+              }
+            } else {
+              ma = new ModelApplication(ann, output.get(i), conf, seq_id);
+            }
             modelapps.add(ma);
             i++;
           }
