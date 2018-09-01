@@ -56,3 +56,9 @@ training command from the command line (see [PytorchWrapper_Info])
 In order to use a separate validation file:
 * Use `LF_Export` to export the corpus for validation into a separate data directory
 * specify the relative path to the data file create (datadirectory/crvd.data.json) with the --valfile parameter
+
+NOTE: to re-run or continue training:
+* change into the dataDirectory that was specified in the training PR
+* run `./FileJsonPytorch/train.sh crvd.meta.json FileJsonPytorch.model PARAMETERS` (linux/MacOS) were PARAMETERS are the parameters
+  needed (e.g. those which were also specified as algorithmParameters in GATE). If --resume is added, trainign will 
+  not start from scratch and the existing model will be used to start from.
