@@ -18,3 +18,24 @@ paginate_path:      "/blog/page:num/"
 plugins:
 - jemoji      
 # - jekyll-paginate
+
+exclude:
+- Gemfile
+- Gemfile.lock
+- deploy.sh
+- stop.sh
+- test.sh
+
+defaults:
+- scope:
+    path: "*.md"
+  values:
+    layout: "default"
+   
+
+optional_front_matter:
+  enabled: true
+
+optional_front_matter:
+  remove_originals: true
+ 
