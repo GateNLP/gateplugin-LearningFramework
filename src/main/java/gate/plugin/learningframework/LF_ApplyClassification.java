@@ -166,11 +166,11 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
 
     //System.out.println("LF_ApplyClassification debug: instanceAS="+instanceAS.size()+", inputAS="+inputAS.size()+
     //  ", sequenceAS="+sequenceAS);
-    if(sequenceAS == null) {
-      System.err.println("DEBUG: classifying doc "+doc.getName()+" instanceAS:"+instanceAS.size()+", inputAS:"+inputAS.size());
-    } else {
-      System.err.println("DEBUG: classifying doc "+doc.getName()+" instanceAS:"+instanceAS.size()+", inputAS:"+inputAS.size()+", sequenceAS:"+sequenceAS.size());      
-    }
+    //if(sequenceAS == null) {
+    //  System.err.println("DEBUG: classifying doc "+doc.getName()+" instanceAS:"+instanceAS.size()+", inputAS:"+inputAS.size());
+    //} else {
+    //  System.err.println("DEBUG: classifying doc "+doc.getName()+" instanceAS:"+instanceAS.size()+", inputAS:"+inputAS.size()+", sequenceAS:"+sequenceAS.size());      
+    //}
     List<ModelApplication> gcs = engine.applyModel(
             instanceAS, inputAS,
             sequenceAS, getAlgorithmParameters());

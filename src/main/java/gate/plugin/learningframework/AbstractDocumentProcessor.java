@@ -180,7 +180,7 @@ public abstract class AbstractDocumentProcessor
       LOGGER.debug("DEBUG: creating first instance of PR "+this.getName());
       setNDuplicates(new AtomicInteger(1));
       duplicateId = 0;
-      System.err.println("DEBUG: "+this.getName()+" init() for first instance, duplicateId="+duplicateId);
+      //System.err.println("DEBUG: "+this.getName()+" init() for first instance, duplicateId="+duplicateId);
       setSharedData(new ConcurrentHashMap<>());
       setSeenDocuments(new AtomicInteger(0));
       setRemainingDuplicates(new AtomicInteger(0));
@@ -189,7 +189,7 @@ public abstract class AbstractDocumentProcessor
     } else {
       int thisn = getNDuplicates().getAndAdd(1);
       duplicateId = thisn;
-      System.err.println("DEBUG: "+this.getName()+" init() for non-first instance, duplicateId="+duplicateId);
+      //System.err.println("DEBUG: "+this.getName()+" init() for non-first instance, duplicateId="+duplicateId);
       LOGGER.debug("DEBUG: created duplicate "+duplicateId+" of PR "+this.getName());
     }
     return this;
@@ -225,7 +225,7 @@ public abstract class AbstractDocumentProcessor
     LOGGER.error("Controller ended with error "+arg1.getMessage());
     int tmp = getRemainingDuplicates().decrementAndGet();
     LOGGER.debug("DEBUG "+this.getName()+" controllerExecutionAborted invocation "+tmp+" for duplicate "+duplicateId);
-    System.err.println("DEBUG: "+this.getName()+" controllerExecutionAborted, duplicateId="+duplicateId+" remaining="+tmp);
+    //System.err.println("DEBUG: "+this.getName()+" controllerExecutionAborted, duplicateId="+duplicateId+" remaining="+tmp);
     // Assert.assertEquals(tmp, duplicateId);
     
     controllerFinished(arg0, arg1);

@@ -202,7 +202,8 @@ public abstract class EngineDVFileJson extends EngineDV {
 
   @Override
   protected void loadAndSetCorpusRepresentation(URL directory) {
-    System.err.println("DEBUG EngineDVFileJson: running loadAndSetCorpusRepresentation "+directory);
+    //System.err.println("DEBUG EngineDVFileJson: running loadAndSetCorpusRepresentation "+directory);
+    
     // this does not actually need to load anything but the featureInfo ... 
     // this is needed to convert our instance data to JSON, which is then sent
     // off to the script or server which is responsible to use any other saved
@@ -334,7 +335,7 @@ public abstract class EngineDVFileJson extends EngineDV {
   @Override
   @SuppressWarnings("unchecked")
   public List<ModelApplication> applyModel(AnnotationSet instancesAS, AnnotationSet inputAS, AnnotationSet sequenceAS, String parms) {
-    System.err.println("DEBUG: running applyModel");
+    //System.err.println("DEBUG: running applyModel");
     ObjectMapper mapper = new ObjectMapper();
     List<ModelApplication> modelapps = new ArrayList<>();
     
@@ -350,11 +351,11 @@ public abstract class EngineDVFileJson extends EngineDV {
         InstanceRepresentation inst = 
                 corpusRepresentation.unlabeledAnnotation2Instance(instanceAnnotation, inputAS, null);
         String json = corpusRepresentation.internal2Json(inst,true);        
-        System.err.println("DEBUG - sending json: "+json);
+        //System.err.println("DEBUG - sending json: "+json);
         process.writeObject(json);
-        System.err.println("DEBUG - before reading response");
+        //System.err.println("DEBUG - before reading response");
         String returnJson = (String)process.readObject();
-        System.err.println("DEBUG - received return json: "+returnJson);
+        //System.err.println("DEBUG - received return json: "+returnJson);
         Object obj = null;
         try {
           obj = mapper.readValue(returnJson,Map.class);          
