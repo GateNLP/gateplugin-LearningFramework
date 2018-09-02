@@ -24,7 +24,7 @@ Finally, the application of a trained model can also be performed via the use of
 
 ## Supported Machine Learning Tasks
 
-The Learning Framework implements different task modes:
+The Learning Framework supports the following tasks:
 * Classification, which simply assigns a class to each instance annotation. For example, each sentence might be classified as having positive or negative sentiment, each word may get assigned a part-of-speech tag, or a document may be classified as being relevant to some topic or not. With classification, the parts of text are known in advance and assigned one out of several possible class labels.
 * Sequence tagging, also called Chunking, which finds mentions, such as locations or persons, within the text, i.e. the relevant parts of text are not known in advanced but the task is to find them.
 * Topic modelling an unsupervised learning method where the algorithm processes chunks of texts / documents and tries to
