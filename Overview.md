@@ -43,7 +43,7 @@ In addition, the plugin contains PRs that help with the creation of features to 
   present in the string (see [LF_GenFeatures_Misc](LF_GenFeatures_Misc))
 
 Note that PRs from other plugins can also be very useful to generate features:
-* [StringAnnotation plugin](https://github.com/johann-petrak/gateplugin-StringAnnotation/wiki): PR FeatureGazetteer can be used to add features to an annotation, by looking up the string
+* [StringAnnotation plugin](https://gatenlp.github.io/gateplugin-StringAnnotation/): PR FeatureGazetteer can be used to add features to an annotation, by looking up the string
   of another feature in a gazetteer and retrieving the features from there. This can be used e.g. to add cluster ids
   (embedding cluster ids, brown cluster ids, distsim cluster ids) or other features.
 * [CorpusStats plugin](https://gatenlp.github.io/gateplugin-CorpusStats/): this can be used to calculate corpus-based
