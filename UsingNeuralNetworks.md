@@ -75,7 +75,8 @@ that contains one JSON representation of an instance or sequence per line.
 When a PR for training classification or chunking is used in GATE with the Pytorch or Keras wrapper,
 * each document is processed and the feature specification is used to extract the necessary features
 * the features and the target for the instance are written as a new line to a data file in JSON format.
-  This file is located in the `dataDirectory` and has the name `crvd.data.json`
+  This file is located in the `dataDirectory` and has the name `crvd.data.json`. If a sequence is specified,
+  a whole sequence of instances is extracted and saved as a line to the data file.
 * If the PR is used with [GCP](https://github.com/GateNLP/gcp), documents are processed and features extracted in parallel
 * Unlike with all other algorithms (the ones having names that end in `_MR`), the corpus is not kept in memory
   and can thus be larger than the available memory would allow
@@ -112,3 +113,32 @@ When a PR for training classification or chunking is used in GATE with the Pytor
 * Training ends once the maximum number epochs has been reached or some specific ending criterion has been reached
   (for the PytorchWrapper, the default is that two validations on the validation data did not show any improvement)
 * The model get saved (either the model at the time training was terminated or the best model encountered until then)
+
+When a PR for application is run:
+* The `apply.sh` script is being run, passing the default name prefix of the model. This first loads and activates
+  the saved model, the starts reading data from the GATE process and sending response data back to the gate process until the GATE process stops sending data.
+* Each document in the corpus is processed, an for each instance, the features are extracted; if a sequence
+  annotation is specified, features for a sequence of instances are extracted.
+* The instance or sequence is converted to a JSON representation and sent to the apply script process
+* The apply script process converts the JSON data, runs it through the trained model, generates the predictions
+  and converts them back to JSON format which is then sent back to the GATE process.
+* The GATE process converts the JSON and uses the data to annotate the instance or sequence of instances.
+
+## Training when using a Neural Network backend
+
+Note that training of a neural network on a large corpus can take a very long time. In some cases, and with very
+complex network architectures, it may be necessary to train on a different computer than where the GATE LearningFramework
+was run. Exploring different architectures or hyperparameters may require many training runs and sometimes it
+is convenient to run those in parallel on several computers.
+
+Note also that re-training variations of the network or re-training with different hyperparameters does not
+actually need the step where the data and meta files are created from the original GATE document corpus: unless
+the feature specification is changed, these files will end up to be identical.
+
+The way how the neural network backends are implemented makes it easy to just concentrate on re-running
+the actual training step (running the `train.sh`) directly from the command line, either on the same
+computer on which the content of the `dataDirectory` was created or on a different computer that has Python
+and the required Python packages installed by copying the whole directory to that computer. That way
+the user can experiment with modified networks or hyperparameters until the validation accuracy looks
+good. The model created that way can then be transferred back to the `dataDirectory`  where the
+application to new documents should be carried out with GATE.
