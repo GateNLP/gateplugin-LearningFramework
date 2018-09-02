@@ -3,20 +3,22 @@
 This is the home page for the GateNLP LearningFramework plugin.
 
 The GATE LearningFramework plugin is a plugin for the [GATE](https://gate.ac.uk/) NLP platform.
-It supports a number of machine learning tasks relevant to NLP (classification, sequence tagging, regression)
+It supports a number of machine learning tasks relevant to NLP (classification, sequence tagging, topic models, regression)
 and provides a consistent way to use a broad range of machine learning algorithms from
 several libraries to perform to tasks.
 
 NOTE: This web site provides the most recent documentation for the plugin. We try
 to keep the documentation up-to-date with the most recent version of the plugin.
 The documentation on this web site is mainly intended for users of the LearningFramework.
-Developer-specific documentation is kept in the [GitHub Wiki for the project](https://github.com/GateNLP/gateplugin-LearningFramework/wiki).
+Developer-specific documentation is kept in the
+[GitHub Wiki for the project](https://github.com/GateNLP/gateplugin-LearningFramework/wiki).
 
 Overview of the documentation:
-* [Detailed Overview Page](Overview)
+* [Detailed Overview Page](Overview) - detailed table of contents and pointers to all parts of the documentation
 * [Installation](Installation)
 * [Getting started](GettingStarted)
-* Processing Resources:
+* [How It Works](HowItWorks) - a short overview of how things are implemented
+* Processing Resources Documentation:
   * [LF_TrainClassification](LF_TrainClassification) train a classification model
   * [LF_ApplyClassification](LF_ApplyClassification) apply a trained classification model
   * [LF_TrainRegression](LF_TrainRegression) train a regression model
@@ -32,7 +34,6 @@ Overview of the documentation:
   * [LF_GenFeatures_Misc](LF_GenFeatures_Misc) generate other features like word shape
 * [Using Neural Networks](UsingNeuralNetworks)
 * [Tutorials](tutorials/)
-
 
 Additional information:
 * [The GitHub source code repository](https://github.com/GateNLP/gateplugin-LearningFramework)
