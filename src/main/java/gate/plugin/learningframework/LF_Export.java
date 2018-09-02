@@ -220,14 +220,14 @@ public class LF_Export extends LF_ExportBase {
     AnnotationSet inputAS = doc.getAnnotations(getInputASName());
     AnnotationSet instanceAS = inputAS.get(getInstanceType());
     String nameFeatureName = null;
-    if(haveSequenceAlg) {
-      if(haveSequenceProblem) {
+    if(haveSequenceAlg) {  // this implies we have a sequence annotation type
+      if(haveSequenceProblem) {  // this implies we have a classAS
         AnnotationSet classAS = inputAS.get(classAnnotationTypesSet);
         corpusRepresentation.add(instanceAS, inputAS.get(getSequenceSpan()), inputAS, classAS, null, targetType, instanceWeightFeature, nameFeatureName, seqEncoder);
       } else {
         corpusRepresentation.add(instanceAS, inputAS.get(getSequenceSpan()), inputAS, null, getTargetFeature(), targetType, instanceWeightFeature, nameFeatureName, seqEncoder);        
       }
-    } else {
+    } else {  // not a sequence algorithm, we do not have a sequence annotation type
       if(haveSequenceProblem) {
         AnnotationSet classAS = inputAS.get(classAnnotationTypesSet);
         corpusRepresentation.add(instanceAS, null, inputAS, classAS, null, targetType, instanceWeightFeature, nameFeatureName, seqEncoder);
@@ -244,23 +244,33 @@ public class LF_Export extends LF_ExportBase {
       throw new GateRuntimeException("Exporter parameter is null");
     }
     
-    System.err.println("DEBUG: Before Documents.");
-    if(getSeqEncoder().getEncoderClass() == null) {
-      throw new GateRuntimeException("SeqEncoder class not yet implemented, please choose another one: "+getSeqEncoder());
-    }
+    // OK, we try to figure out what kind of problem we have and which algorithm
+    // kind we export for. Essentially we have the following possible problems:
+    // * regression: predict a numeric target
+    //   If: target feature is given and tgargetType is numeric
+    // * classification: just predict a nominal label
+    //   If: target feature is given and targetType is nominal
+    // * sequence tagging/chunking: predict a nominal BIO-like label and postprocess
+    //   classAnnotationTypes is given, targetFeature is empty, targetType must be nominal
     
-    try {
-      @SuppressWarnings("unchecked")
-      Constructor<?> tmpc = getSeqEncoder().getEncoderClass().getDeclaredConstructor();
-      seqEncoder = (SeqEncoder) tmpc.newInstance();
-      seqEncoder.setOptions(getSeqEncoder().getOptions());
-    } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | SecurityException | InvocationTargetException ex) {
-      throw new GateRuntimeException("Could not create SeqEncoder instance",ex);
-    }
+    // We have the following kinds of algorithms
+    // * regressor: given feature vector, predict numeric target
+    // * classifier:  given feature vector, predict nominal target
+    // * sequence tagger: given list of feature vectors, predict list of nominal targets
     
+    // This shows which problem is compatible with which algorithm:
+    // PROBLEM  /  ALGORITHM  / COMPATIBLE
+    // regression / regressor / yes
+    // regression / not regressor / no
+    // classification / classifier / yes 
+    // classification / sequence tagger / yes
+    // sequence tagging / sequence tagger / yes
+    // sequence tagging / classifier / yes
+   
     if(getClassAnnotationTypes() == null) {
       setClassAnnotationTypes(new ArrayList<>());
     }
+    
     if(!getClassAnnotationTypes().isEmpty()) {      
       classAnnotationTypesSet = new HashSet<>();
       classAnnotationTypesSet.addAll(classAnnotationTypes);
@@ -279,22 +289,41 @@ public class LF_Export extends LF_ExportBase {
       haveSequenceProblem = false;      
     }
     
+    seqEncoder = null;
+    // seqEncoder is ignored if we do not have a sequence tagging problem
+    if(haveSequenceProblem) {
+      if(getSeqEncoder().getEncoderClass() == null) {
+        throw new GateRuntimeException("SeqEncoder class not yet implemented, please choose another one: "+getSeqEncoder());
+      }
+      try {
+        @SuppressWarnings("unchecked")
+        Constructor<?> tmpc = getSeqEncoder().getEncoderClass().getDeclaredConstructor();
+        seqEncoder = (SeqEncoder) tmpc.newInstance();
+       seqEncoder.setOptions(getSeqEncoder().getOptions());
+     } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | SecurityException | InvocationTargetException ex) {
+        throw new GateRuntimeException("Could not create SeqEncoder instance",ex);
+      }
+    } // haveSequenceProblem
+    
+    
+    // Check what kind of algorithm the user has chosen and if compatible with 
+    // the pronlem. 
+    // Currently, the only non-compatible situation is using a regressor with 
+    // a non-regression problem or having a regression problem without a regressor
     AlgorithmKind algkind = exporter.getAlgorithmKind();
-    // now check if the problem is compatible with the algorithm kind:
-    // here are all combinations and if they are compatible:
-    // seq prob / SEQU:  yes
-    // seq prob / REGR:  NO
-    // seq prob / CLASS: yes
-    // no seq   / SEQU:  NO
-    // no seq   / REGR:  yes
-    // no seq   / CLASS: yes
     if(haveSequenceProblem && algkind == AlgorithmKind.REGRESSOR) {
       throw new GateRuntimeException("Cannot use a regressor for a sequence tagging problem");
-    } else if(!haveSequenceProblem && algkind == AlgorithmKind.SEQUENCE_TAGGER) {
-      throw new GateRuntimeException("Cannot use a sequence tagger if it is not a sequence tagging problem");
+    } 
+    if(algkind == AlgorithmKind.REGRESSOR && !getTargetType().equals(TargetType.NUMERIC)) {
+      throw new GateRuntimeException("Cannot use a regressor without a numeric target type");
     }
-
-    // Check if we have a sequence span if the algorithm is a Sequence Tagger
+    if(algkind != AlgorithmKind.REGRESSOR && getTargetType().equals(TargetType.NUMERIC)) {
+      throw new GateRuntimeException("Cannot use a numeric target type without a regressor");
+    }
+    
+    // if we have an sequence tagging algorithm, we need a sequence, so the sequence
+    // span type must be given, but it must not be given unless we have a sequence
+    // tagging algorithm    
     if(getExporter().getAlgorithmKind() == AlgorithmKind.SEQUENCE_TAGGER) {
       if(getSequenceSpan() == null || getSequenceSpan().isEmpty()) {
         throw new GateRuntimeException("SequenceSpan parameter is required for Sequence exporter");
@@ -311,7 +340,7 @@ public class LF_Export extends LF_ExportBase {
     if (getDuplicateId() == 0) {
       // Read and parse the feature specification
       featureSpec = new FeatureSpecification(featureSpecURL);
-      System.err.println("DEBUG Read the feature specification: " + featureSpec);
+      //System.err.println("DEBUG Read the feature specification: " + featureSpec);
 
       // create the corpus exporter
       URL effectiveDataDirectory;
@@ -324,7 +353,7 @@ public class LF_Export extends LF_ExportBase {
       } else {
         effectiveDataDirectory = dataDirectory;
       }
-      System.err.println("DEBUG: using data directory:" + effectiveDataDirectory);
+      //System.err.println("DEBUG: using data directory:" + effectiveDataDirectory);
       corpusExporter = CorpusExporter.create(exporter, getAlgorithmParameters(), featureSpec.getFeatureInfo(),
               getInstanceType(), effectiveDataDirectory);
 
@@ -332,6 +361,8 @@ public class LF_Export extends LF_ExportBase {
       getSharedData().put("corpusEporter", corpusExporter);
       getSharedData().put("featureSpec", featureSpec);
       getSharedData().put("corpusRepresentation", corpusRepresentation);
+      System.out.println("INFO: Sequence tagging problem: "+haveSequenceProblem);
+      System.out.println("INFO: Sequence tagging algorithm: "+haveSequenceAlg);
     } else {
       // duplicateId > 0
       corpusExporter = (CorpusExporter) getSharedData().get("corpusExporter");
@@ -345,7 +376,7 @@ public class LF_Export extends LF_ExportBase {
   public void controllerFinished(Controller arg0, Throwable t) {
     if (getDuplicateId() == 0) {
       corpusRepresentation.finishAdding();
-      System.err.println("DEBUG LF_Export exporting data to "+getDataDirectory());
+      System.out.println("INFO: LF_Export exporting data to "+getDataDirectory());
       corpusExporter.export();
     }
   }
