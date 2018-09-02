@@ -65,3 +65,50 @@ Installation of Python:
 * Install Keras version 2.1 or newer. This will automatically also install a number of additional
   packages, including Tensorflow and Tensorboard
 * For GPU support under Keras: TO BE DONE!!!
+
+## Overview
+
+Support for neural networks through the Pytorch and Keras wrappers follows the same basic
+design and is based on the same representation of training data through an out-of-memory file
+that contains one JSON representation of an instance or sequence per line.
+
+When a PR for training classification or chunking is used in GATE with the Pytorch or Keras wrapper,
+* each document is processed and the feature specification is used to extract the necessary features
+* the features and the target for the instance are written as a new line to a data file in JSON format.
+  This file is located in the `dataDirectory` and has the name `crvd.data.json`
+* If the PR is used with [GCP](https://github.com/GateNLP/gcp), documents are processed and features extracted in parallel
+* Unlike with all other algorithms (the ones having names that end in `_MR`), the corpus is not kept in memory
+  and can thus be larger than the available memory would allow
+* Once all documents have been processed, a "metafile" is created. This file contains statistics about the
+  features used (e.g. for a feature that contains the strings of tokens, the number of different strings, frequency
+  of each string etc are written to the file). The metafile contains all information in JSON format and is stored
+  in the `dataDirectory` with the name `crvd.meta.json`
+* Additional files are created in the `dataDirectory` for use by the LearningFramework at application time
+* A directory is created inside the `dataDirectory` that contains the necessary python software for the wrapper:
+  * for the PytorchWrapper, a directory `FileJsonPytorch` is created. This directory contains script files for
+    running the training (`train.sh`) and application `apply.sh` and contains subdirectories `gate-lf-python-data`
+    and `gate-lf-pytorch-json` with the two python libraries required by the wrapper.
+  * for the KerasWrapper, a directory `FileJsonKeras` is created. This directory contains script files for
+    running the training (`train.sh`) and application `apply.sh` and contains subdirectories `gate-lf-python-data`
+    and `gate-lf-keras-json` with the two python libraries required by the wrapper.
+  * NOTE: once the directory has been created it is never being overridden! This means that you can change or add
+    to the backend specific library, e.g. add a new network module to `gate-lf-pytorch-json` specific for your project.
+* The training script is run, passing the name of the meta file (always `crvd.meta.json`) and the a fixed name prefix for
+  the model files (always `FileJsonPytorch` for PytorchWrapper and  `FileJsonKeras.model` for KerasWrapper) as well
+  as the algorithmParameters specified for the PR.
+* The training script uses the `gate-lf-python-data` library to prepare the JSON-format data and convert it to
+  a JSON representation that only contains float and integer numbers. This also prepares the actual training file
+  and a validation file.
+* The training script then uses the information in the meta file to build a default neural network for the task.
+  Depending on the wrapper, a number of details for this can be overridden by parameters, and the details for embeddings
+  are based on what has been specified, if any, in the feature specification file.
+* Once the neural network has been built, the actual training of the network starts. For this the prepared training
+  file is run through the network in training mode in small chunks, "batches", of only a few instances (a few dozen to a few hundred usually, the "batchsize"), optimizing the network parameters after each chunk.
+* After a certain number of batches/instances the optimization criterion, the "loss" is shown together with the
+  accuracy of the model on that batch of data.
+* This is repeated until the whole training file has been processed, completing one "epoch". Training continues
+  for many epochs (maximum can be specified by a parameter)
+* After every epoch (or some other configurable amount of data), the model is evaluated on the validation data.
+* Training ends once the maximum number epochs has been reached or some specific ending criterion has been reached
+  (for the PytorchWrapper, the default is that two validations on the validation data did not show any improvement)
+* The model get saved (either the model at the time training was terminated or the best model encountered until then)
