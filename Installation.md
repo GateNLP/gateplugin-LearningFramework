@@ -20,6 +20,10 @@ In the GATE GUI:
   plugin that has not yet been downloaded to your computer will get downloaded
   (and stored in your local Maven cache)
 
+IMPORTANT: if you want to use a wrapper-based learning algorithm (Weka, Sklearn, Pytorch, Keras etc.)
+additional installation steps specific to that wrapper may be required. See the documentation
+for that algorithm for additional information.
+
 For GATE version 8.4.x or earlier, the LearningFramework plugin can get installed
 using the plugin manager of that GATE version:
 * Click on the "jigsaw puzzle" icon or choose "Manage Creole Plugins" from the "File" menu
