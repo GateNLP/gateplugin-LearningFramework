@@ -17,15 +17,11 @@ more easily adapt or implement the Pytorch neural network module specifically to
 The pytorch wrapper library also comes with a number of pre-defined special-purpose modules which can be
 used as starting points for specific tasks (e.g. NER or POS tagging).
 
-Since the process of adapting / replacing the network architecture and optimzing the hyperparameters of the
-network, or choosing the correct regularization strategy or optimizer require a better understanding of which
-data the network is using (with the other algorithms supported by the LearningFramework, e.g. LibSVM or the
-Mallet algorithms, the format of the data is just an implementation detail that the user does not need to know
-about) the data format an many other details are document in this pages and its subpages. Here is an overview
-of the PytorchWrapper documentation:
+Here is an overview of the PytorchWrapper documentation:
 * [Training](Dnn_PytorchWrapper_Training) - all the details about how to train a model, specify parameters, change
   the neural network architecture and hyperparameters, use and adapt a predefined special-purpose module from the
   library etc. (TO BE IMPROVED)
 * [Application](Dnn_PytorchWrapper_Application) - how to use a trained model and apply it to new documents (TO BE DONE)
 * [Examples](Dnn_PytorchWrapper_Examples) - some simple illustrative examples (TO BE DONE)
 * [Tutorials](Dnn_PytorchWrapper_Tutorials) - tutorials to solve some NLP task using the PytorchWrapper backend (TO BE DONE)
+* [Modules](Dnn_PytorchWrapper_Modules) - documentation of predefined network architectures which can be used in place of the automatically generated generic architectures
