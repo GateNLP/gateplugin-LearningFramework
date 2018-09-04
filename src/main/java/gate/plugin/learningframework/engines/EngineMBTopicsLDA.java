@@ -91,6 +91,7 @@ public class EngineMBTopicsLDA extends EngineMBMallet {
     int showNrDocs = 5;
     int showNrTopics = 10;
     int optimizeInterval = 50;
+    boolean doDiagnostics = false;
     int numThreads = Runtime.getRuntime().availableProcessors();
     if(numThreads<1) {
       numThreads = 1;
@@ -107,7 +108,8 @@ public class EngineMBTopicsLDA extends EngineMBMallet {
                 "a:alpha:d",
                 "M:mcmi:i",
                 "b:beta:d",
-                "o:opti:i"
+                "o:opti:i",
+                "D:diags:b"
     );
     nrTopics = (int) parmdef.getValueOrElse("topics", nrTopics);
     alpha = (double) parmdef.getValueOrElse("alpha", alpha);
@@ -118,6 +120,7 @@ public class EngineMBTopicsLDA extends EngineMBMallet {
     seed = (int) parmdef.getValueOrElse("seed", seed);
     maxCondModesIts = (int)parmdef.getValueOrElse("mcmi", maxCondModesIts);
     optimizeInterval = (int)parmdef.getValueOrElse("opti", optimizeInterval);
+    doDiagnostics = (boolean)parmdef.getValueOrElse("diags", doDiagnostics);
     
     System.out.println("INFO: running Mallet LDA with parameters: topics="+nrTopics+
             ",alpha="+alpha+",beta="+beta+",words="+showNrTopWords+",procs="+numThreads+
@@ -127,6 +130,7 @@ public class EngineMBTopicsLDA extends EngineMBMallet {
     // NOTE: this cauases the model to get saved by the standard mallet serialization process
     model= tm;    
     tm.setTopicDisplay(displayInterval, showNrTopWords);
+    tm.setOptimizeInterval(optimizeInterval);
     tm.setNumThreads(numThreads);
     tm.setNumIterations(numIterations);
     tm.setRandomSeed(seed);
@@ -183,10 +187,13 @@ public class EngineMBTopicsLDA extends EngineMBMallet {
       throw new GateRuntimeException("Exception during writing of topic word weights file", ex);
     }
   
-    System.out.println("INFO: calculating topic model diagnostics...");
-    tmd = new TopicModelDiagnostics(tm, corpusRepresentation.getRepresentationMallet().getAlphabet().size());
-    System.out.println("Topic Model Coherence: "+Arrays.toString(tmd.getCoherence().scores));
-    updateInfo();
+    tmd = null; // if we do not run it, null indicates that we do not need to save it!
+    if(doDiagnostics) {
+      System.out.println("INFO: calculating topic model diagnostics...");
+      tmd = new TopicModelDiagnostics(tm, corpusRepresentation.getRepresentationMallet().getAlphabet().size());
+      System.out.println("Topic Model Coherence: "+Arrays.toString(tmd.getCoherence().scores));
+      updateInfo();
+    }
   }
 
   @Override
@@ -195,14 +202,16 @@ public class EngineMBTopicsLDA extends EngineMBMallet {
     super.saveModel(directory);
     // in addition to saving the model, we also write out some additional files
     // generated from the diagnostics
-    try (
-            PrintWriter pw = new PrintWriter(new File(directory, "diagnostics.xml"), "UTF-8");
-        )
-    {
-      System.out.println("INFO: saving diagnostics.xml file");
-      pw.print(tmd.toXML());
-    } catch (FileNotFoundException | UnsupportedEncodingException ex)  {
-      throw new GateRuntimeException("Exception when writing diagnostics.xml",ex);
+    if(tmd != null) {
+      try (
+              PrintWriter pw = new PrintWriter(new File(directory, "diagnostics.xml"), "UTF-8");
+          )
+      {
+        System.out.println("INFO: saving diagnostics.xml file");
+        pw.print(tmd.toXML());
+      } catch (FileNotFoundException | UnsupportedEncodingException ex)  {
+        throw new GateRuntimeException("Exception when writing diagnostics.xml",ex);
+      }
     }
   }  
   
