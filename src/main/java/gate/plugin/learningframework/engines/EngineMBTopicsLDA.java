@@ -199,24 +199,30 @@ public class EngineMBTopicsLDA extends EngineMBMallet {
     } catch (IOException ex) {
       throw new GateRuntimeException("Exception during training of model", ex);
     }    
-    System.out.println("Top topic words and their scores:\n"+tm.displayTopWords(showNrTopWords, true));
+    
+    System.out.println("Top topic words and their scores:\n");    
     List<Map<String,Double>> perTopicWord2Score = getTopicWordScores(tm);
     for(int topicnr=0; topicnr<tm.numTopics; topicnr++) {
       Map<String,Double> sortedWordScores = perTopicWord2Score.get(topicnr);
-      System.out.print(topicnr+": ");
+      System.out.print(topicnr);
+      System.out.print("(");
+      System.out.print(String.format(java.util.Locale.US,"%.4f", tm.alpha[topicnr]));
+      System.out.print(")");
+      System.out.print(": ");
       Iterator<Map.Entry<String,Double>> it = sortedWordScores.entrySet().iterator();
       for(int i=0; i<showNrTopWords; i++) {
         if(it.hasNext()) {
           Entry<String,Double> entry = it.next();
           System.out.print(entry.getKey());
           System.out.print(":");
-          System.out.print(String.format(java.util.Locale.US,"%.2f", entry.getValue()));
+          System.out.print(String.format(java.util.Locale.US,"%.4f", entry.getValue()));
         } else {
           break;
         }
       }
       System.out.println();
     }
+    
     File topWordsPerTopicFile = new File(dataDirectory, "topWordsPerTopic.txt");
     try {
       // Save the topicKeysFile
