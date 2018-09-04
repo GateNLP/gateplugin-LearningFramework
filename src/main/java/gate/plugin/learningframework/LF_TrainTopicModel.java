@@ -20,7 +20,6 @@
 package gate.plugin.learningframework;
 
 import cc.mallet.topics.ParallelTopicModel;
-import cc.mallet.topics.TopicAssignment;
 import gate.Annotation;
 import gate.AnnotationSet;
 import java.net.URL;
@@ -229,7 +228,7 @@ public class LF_TrainTopicModel extends LearningFrameworkPRBase {
         EngineMBTopicsLDA engine_mbt = (EngineMBTopicsLDA)engine;
         ParallelTopicModel tm = engine_mbt.getTopicModel();
         if(nDuplicates.get() == 1 && corpus.size() == getSeenDocuments().get()) {
-          System.err.println("DEBUG: running application...");
+          System.out.println("INFO: re-processing corpus for application...");
           // List<TopicAssignment> tass = tm.getData();
           int n = 0; // this is the running index of the instances as seen by Mallet
           for(int docNr=0; docNr < corpus.size(); docNr++) {
@@ -270,7 +269,7 @@ public class LF_TrainTopicModel extends LearningFrameworkPRBase {
               instAnn.getFeatures().put("LF_MBTopicsLDA_TopicDist_train", tdistlist);
               // Also add a feature that gives the index and word list of the most likely topic
               instAnn.getFeatures().put("LF_MBTopicsLDA_MLTopic_train", bestTopic);
-              instAnn.getFeatures().put("LF_MBTopicsLDA_MLTopicProb_train", bestProb);
+              instAnn.getFeatures().put("LF_MBTopicsLDA_MLTopicProb_train", bestProb);              
               n++;
             }
             if(!documentWasLoaded) {
