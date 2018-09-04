@@ -36,6 +36,7 @@ The following parameters can be specified in the `algorithmParameters` field:
 * -b (float, default: 0.01) - beta parameter for topic-word smoothing. Higher values allow for more corpus words per topic.
 * -M/-mcmi (integer, default: 0) - if larger than 0, the number of iterations to do topic maximization by iterated conditional modes, do not do this if 0. 
 * -o/-opti (integer, default: 50) - number of iterations between reestimating dirichlet hyperparameters, if 0, never estimate.
+* -D/-diags (boolean, default: false) - run the topic model diagnostics and save the diagnostics.xml file. This can take a long time and use up a large amount of memory.
 
 If the `applyAfterTraining` parameter is `true` and all conditions for application to run are met,
 then after training the model, the topic distributions are applied to each document. This is done by
