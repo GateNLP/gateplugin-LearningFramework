@@ -40,7 +40,9 @@ import java.util.List;
 import static gate.plugin.learningframework.LFUtils.newURL;
 import gate.plugin.learningframework.data.CorpusRepresentationMalletLDA;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
@@ -116,6 +118,33 @@ public class EngineMBTopicsLDA extends EngineMBMallet {
     }
     return perTopicWord2Score;
   }
+  
+  public void printTopTopicWords(ParallelTopicModel tm, PrintStream pw, int numTopWords) {
+    List<Map<String,Double>> perTopicWord2Score = getTopicWordScores(tm);
+    for(int topicnr=0; topicnr<tm.numTopics; topicnr++) {
+      Map<String,Double> sortedWordScores = perTopicWord2Score.get(topicnr);
+      pw.print(topicnr);
+      pw.print("(");
+      pw.print(String.format(java.util.Locale.US,"%.4f", tm.alpha[topicnr]));
+      pw.print(")");
+      pw.print(":");
+      Iterator<Map.Entry<String,Double>> it = sortedWordScores.entrySet().iterator();
+      for(int i=0; i<numTopWords; i++) {
+        if(it.hasNext()) {
+          Entry<String,Double> entry = it.next();
+          pw.print(" ");
+          pw.print(entry.getKey());
+          pw.print(":");
+          pw.print(String.format(java.util.Locale.US,"%.4f", entry.getValue()));
+        } else {
+          break;
+        }
+      }
+      pw.println();
+    }
+  }
+  
+  
   
   @Override
   public void trainModel(File dataDirectory, String instanceType, String parmString) {
@@ -199,32 +228,21 @@ public class EngineMBTopicsLDA extends EngineMBMallet {
     } catch (IOException ex) {
       throw new GateRuntimeException("Exception during training of model", ex);
     }    
-    
-    System.out.println("Top topic words and their scores:\n");    
-    List<Map<String,Double>> perTopicWord2Score = getTopicWordScores(tm);
-    for(int topicnr=0; topicnr<tm.numTopics; topicnr++) {
-      Map<String,Double> sortedWordScores = perTopicWord2Score.get(topicnr);
-      System.out.print(topicnr);
-      System.out.print("(");
-      System.out.print(String.format(java.util.Locale.US,"%.4f", tm.alpha[topicnr]));
-      System.out.print(")");
-      System.out.print(":");
-      Iterator<Map.Entry<String,Double>> it = sortedWordScores.entrySet().iterator();
-      for(int i=0; i<showNrTopWords; i++) {
-        if(it.hasNext()) {
-          Entry<String,Double> entry = it.next();
-          System.out.print(" ");
-          System.out.print(entry.getKey());
-          System.out.print(":");
-          System.out.print(String.format(java.util.Locale.US,"%.4f", entry.getValue()));
-        } else {
-          break;
-        }
-      }
-      System.out.println();
-    }
+    System.out.println();
+    System.out.println("Top topic words and their scores:");    
+    printTopTopicWords(tm, System.out, showNrTopWords);
+    System.out.println();
     
     File topWordsPerTopicFile = new File(dataDirectory, "topWordsPerTopic.txt");
+    try  (FileOutputStream fos = new FileOutputStream(topWordsPerTopicFile);
+          PrintStream out = new PrintStream(fos) )
+    {
+      System.out.println("INFO: writing top words per topic to "+topWordsPerTopicFile);
+      printTopTopicWords(tm, out, showNrTopWords);
+    } catch (Exception ex) {
+      throw new GateRuntimeException("Exception during writing of words per topic file", ex);
+    }    
+    /* replaced by our own method above 
     try {
       // Save the topicKeysFile
       System.out.println("INFO: writing top words per topics to file "+topWordsPerTopicFile);
@@ -232,7 +250,7 @@ public class EngineMBTopicsLDA extends EngineMBMallet {
     } catch (IOException ex) {
       throw new GateRuntimeException("Exception during writing of top words per topic", ex);
     }
-    
+    */
     
     File topDocsPerTopicFile = new File(dataDirectory, "topDocsPerTopic.txt");
     try  (PrintWriter out = new PrintWriter(topDocsPerTopicFile) )
