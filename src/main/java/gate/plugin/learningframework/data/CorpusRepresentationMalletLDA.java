@@ -196,7 +196,7 @@ public class CorpusRepresentationMalletLDA extends CorpusRepresentationMallet {
     System.err.println("DEBUG: fseq featIndexSequence="+Arrays.toString(featSeq.toFeatureIndexSequence()));
     */
     
-    return new Instance(featSeq, null, null, null);
+    return new Instance(featSeq, null, doc.getName(), null);
 
   }
 

@@ -44,6 +44,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -68,6 +73,50 @@ public class EngineMBTopicsLDA extends EngineMBMallet {
   
   public EngineMBTopicsLDA() { }
 
+  public List<Map<String,Double>>  getTopicWordScores(ParallelTopicModel tm) {
+    List<Map<String,Double>> perTopicWord2Score = new ArrayList<>(tm.numTopics);
+    for(int i=0; i<tm.numTopics; i++) {
+      perTopicWord2Score.add(new HashMap<>());
+    }
+    // modified from Mallet ParallelTopicModel code
+    for(int topicnr=0; topicnr<tm.numTopics; topicnr++) {
+      for(int type=0; type<tm.numTypes; type++) {
+        int[] topicCounts=tm.typeTopicCounts[type];
+        double weight = tm.beta;
+        int index = 0;
+        while (index < topicCounts.length && topicCounts[index] > 0) {
+          // Mallet really stores both the count and the topic number in the 
+          // topicCounts variable: the actual counts are in the highest bits 
+          // while the topic number is in as many lowest bits as necessary.
+          // The topic mask is ones for those lowest bits.
+          int currentTopic = topicCounts[index] & tm.topicMask;
+          if(currentTopic == topicnr) {
+            weight += topicCounts[index] >> tm.topicBits;  // get the actual count
+            break;
+          }
+          index++;
+        }
+        perTopicWord2Score.get(topicnr).put((String)tm.alphabet.lookupObject(type), weight);
+      }
+    }
+    
+    for(int i=0; i<perTopicWord2Score.size(); i++) {
+      Map<String,Double> unsortedMap = perTopicWord2Score.get(i);
+      // calculate sum
+      double sum = unsortedMap.entrySet().stream().mapToDouble(x -> x.getValue()).sum();
+      // remap values to 0..1, NOTE: sum should always be > 0!
+      unsortedMap.entrySet().stream().forEach(x -> unsortedMap.put(x.getKey(), x.getValue()/sum));
+      // sort and store result in a linked hash map
+      Map<String,Double> sortedMap = new LinkedHashMap<>();
+      unsortedMap.entrySet().stream().
+              sorted(Map.Entry.<String, Double>comparingByValue().reversed()).
+              forEachOrdered(x -> sortedMap.put(x.getKey(), x.getValue()));
+      // store the sorted map instead of the original one int th result
+      perTopicWord2Score.set(i, sortedMap);
+    }
+    return perTopicWord2Score;
+  }
+  
   @Override
   public void trainModel(File dataDirectory, String instanceType, String parmString) {
     
@@ -124,15 +173,16 @@ public class EngineMBTopicsLDA extends EngineMBMallet {
     
     System.out.println("INFO: running Mallet LDA with parameters: topics="+nrTopics+
             ",alpha="+alpha+",beta="+beta+",words="+showNrTopWords+",procs="+numThreads+
-            ",docs="+showNrDocs+",seed="+seed);
+            ",docs="+showNrDocs+",seed="+seed+",maxCondModesIts="+maxCondModesIts+
+            ",optimizeInterval="+optimizeInterval+"doDiagnostics"+doDiagnostics);
     
     tm = new ParallelTopicModel(nrTopics, alpha, beta);
     // NOTE: this cauases the model to get saved by the standard mallet serialization process
     model= tm;    
     tm.setTopicDisplay(displayInterval, showNrTopWords);
-    tm.setOptimizeInterval(optimizeInterval);
     tm.setNumThreads(numThreads);
     tm.setNumIterations(numIterations);
+    tm.setOptimizeInterval(optimizeInterval);
     tm.setRandomSeed(seed);
     // For showing top documents see implementation of 
     // tm.printTopicDocuments(printwriter, showNrDocs);
@@ -149,7 +199,24 @@ public class EngineMBTopicsLDA extends EngineMBMallet {
     } catch (IOException ex) {
       throw new GateRuntimeException("Exception during training of model", ex);
     }    
-    tm.displayTopWords(showNrTopWords, true);
+    System.out.println("Top topic words and their scores:\n"+tm.displayTopWords(showNrTopWords, true));
+    List<Map<String,Double>> perTopicWord2Score = getTopicWordScores(tm);
+    for(int topicnr=0; topicnr<tm.numTopics; topicnr++) {
+      Map<String,Double> sortedWordScores = perTopicWord2Score.get(topicnr);
+      System.out.print(topicnr+": ");
+      Iterator<Map.Entry<String,Double>> it = sortedWordScores.entrySet().iterator();
+      for(int i=0; i<showNrTopWords; i++) {
+        if(it.hasNext()) {
+          Entry<String,Double> entry = it.next();
+          System.out.print(entry.getKey());
+          System.out.print(":");
+          System.out.print(String.format(java.util.Locale.US,"%.2f", entry.getValue()));
+        } else {
+          break;
+        }
+      }
+      System.out.println();
+    }
     File topWordsPerTopicFile = new File(dataDirectory, "topWordsPerTopic.txt");
     try {
       // Save the topicKeysFile
