@@ -35,7 +35,7 @@ The following parameters can be specified in the `algorithmParameters` field:
 * -a (float, default: 1.0) - alpha prior of the underlying symmetrich dirichlet (so each topic initially gets assined the 1/numbertopics of this value). Higher values allow for more topics per document.
 * -b (float, default: 0.01) - beta parameter for topic-word smoothing. Higher values allow for more corpus words per topic.
 * -M/-mcmi (integer, default: 0) - if larger than 0, the number of iterations to do topic maximization by iterated conditional modes, do not do this if 0. 
-* -o/-opti (integer, default: 50) - number of iterations between reestimating dirichlet hyperparameters
+* -o/-opti (integer, default: 50) - number of iterations between reestimating dirichlet hyperparameters, if 0, never estimate.
 
 If the `applyAfterTraining` parameter is `true` and all conditions for application to run are met,
 then after training the model, the topic distributions are applied to each document. This is done by
