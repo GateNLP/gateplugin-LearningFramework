@@ -208,11 +208,12 @@ public class EngineMBTopicsLDA extends EngineMBMallet {
       System.out.print("(");
       System.out.print(String.format(java.util.Locale.US,"%.4f", tm.alpha[topicnr]));
       System.out.print(")");
-      System.out.print(": ");
+      System.out.print(":");
       Iterator<Map.Entry<String,Double>> it = sortedWordScores.entrySet().iterator();
       for(int i=0; i<showNrTopWords; i++) {
         if(it.hasNext()) {
           Entry<String,Double> entry = it.next();
+          System.out.print(" ");
           System.out.print(entry.getKey());
           System.out.print(":");
           System.out.print(String.format(java.util.Locale.US,"%.4f", entry.getValue()));
