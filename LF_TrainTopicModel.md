@@ -27,12 +27,15 @@ available RAM.
 
 The following parameters can be specified in the `algorithmParameters` field:
 * -t/-topics (integer, default: 10) - the number of topics to use
+* -T/-stopics (integer, default: 10) - maximum number of topics to show per document in the topTopicsPerDoc.txt file
 * -p/-procs (integer, default: depends on computer) - the number of threads to use for parallel training
 * -w/-words (integer, default: 20) - the number of most probably topic words to show for each topic
 * -d/-docs (integer, default: 5) - the number of most prominent training documents to show for each topic
 * -s (integer, default: 0 which uses the clock) - random seed to use for the gibbs sampler
-* -a (float, default: 1.0) - alpha prior of the underlying dirichlet (NEED TO CHECK if sum `alpha_k` or single one). Higher values allow for more topics per document.
+* -a (float, default: 1.0) - alpha prior of the underlying symmetrich dirichlet (so each topic initially gets assined the 1/numbertopics of this value). Higher values allow for more topics per document.
 * -b (float, default: 0.01) - beta parameter for topic-word smoothing. Higher values allow for more corpus words per topic.
+* -M/-mcmi (integer, default: 0) - if larger than 0, the number of iterations to do topic maximization by iterated conditional modes, do not do this if 0. 
+* -o/-opti (integer, default: 50) - number of iterations between reestimating dirichlet hyperparameters
 
 If the `applyAfterTraining` parameter is `true` and all conditions for application to run are met,
 then after training the model, the topic distributions are applied to each document. This is done by
