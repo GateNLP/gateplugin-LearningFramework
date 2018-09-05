@@ -87,6 +87,20 @@ public class LF_ApplyTopicModel extends LearningFrameworkPRBase {
   }
   
   
+  private String featurePrefix;
+  
+  @RunTime
+  @Optional
+  @CreoleParameter(comment="Prefix of the feature names written to the instance annotations", 
+          defaultValue="LDA_")
+  public void setFeaturePrefix(String val) {
+    featurePrefix = val;
+  }
+  
+  public String getFeaturePrefix() {
+    return featurePrefix;
+  }
+  
 ////////////////////////////////////////////////////////////////////////////
 
   private transient Engine engine;
@@ -99,14 +113,15 @@ public class LF_ApplyTopicModel extends LearningFrameworkPRBase {
       interrupted = false;
       throw new GateRuntimeException("Execution was requested to be interrupted");
     }
-    // extract the required annotation sets,
+    // extract the required annotation sets
     AnnotationSet inputAS = doc.getAnnotations(getInputASName());
+    AnnotationSet tokenAS;
     if(getTokenAnnotationType()==null || getTokenAnnotationType().isEmpty()) {
-      inputAS = inputAS.get("Token");
+      tokenAS = inputAS.get("Token");
     } else {
-      inputAS = inputAS.get(getTokenAnnotationType());
+      tokenAS = inputAS.get(getTokenAnnotationType());
     }
-    AnnotationSet instanceAS = null;
+    AnnotationSet instanceAS;
     if (getInstanceType()!=null && !getInstanceType().isEmpty()) {
       instanceAS = inputAS.get(getInstanceType());
     } else {
@@ -114,14 +129,16 @@ public class LF_ApplyTopicModel extends LearningFrameworkPRBase {
       // into the default set for now, unless we already have one or more.
       instanceAS = document.getAnnotations().get("Document");
       if(instanceAS.isEmpty()) {
-        gate.Utils.addAnn(document.getAnnotations(), 0, doc.getContent().size(), "Document", Factory.newFeatureMap());
+        gate.Utils.addAnn(inputAS, 0, doc.getContent().size(), "Document", Factory.newFeatureMap());
         instanceAS = document.getAnnotations().get("Document");
       } 
     }
     EngineMBTopicsLDA engineLDA = (EngineMBTopicsLDA)engine;
     engineLDA.applyTopicModel(
-          instanceAS, inputAS,
-          getTokenFeature(), getAlgorithmParameters());
+          instanceAS, tokenAS,
+          getTokenFeature(), 
+          getFeaturePrefix(),
+          getAlgorithmParameters());
 
   }
 

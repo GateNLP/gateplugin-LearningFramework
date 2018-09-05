@@ -120,6 +120,23 @@ public class LF_TrainTopicModel extends LearningFrameworkPRBase {
     return applyAfterTraining;
   }
 
+  private String featurePrefix;
+  
+  @RunTime
+  @Optional
+  @CreoleParameter(comment="Prefix of the feature names written to the instance annotations", 
+          defaultValue="LDA_")
+  public void setFeaturePrefix(String val) {
+    featurePrefix = val;
+  }
+  
+  public String getFeaturePrefix() {
+    return featurePrefix;
+  }
+  
+  
+  
+  
   private transient CorpusRepresentation corpusRepresentation = null;
 
   private transient Engine engine = null;
@@ -261,10 +278,14 @@ public class LF_TrainTopicModel extends LearningFrameworkPRBase {
                 }
                 i++;
               }
-              instAnn.getFeatures().put("LF_MBTopicsLDA_TopicDist_train", tdistlist);
+              String pref = getFeaturePrefix();
+              if(pref==null) {
+                pref = "";
+              }
+              instAnn.getFeatures().put(pref+"TopicDist", tdistlist);
               // Also add a feature that gives the index and word list of the most likely topic
-              instAnn.getFeatures().put("LF_MBTopicsLDA_MLTopic_train", bestTopic);
-              instAnn.getFeatures().put("LF_MBTopicsLDA_MLTopicProb_train", bestProb);              
+              instAnn.getFeatures().put(pref+"BestTopic", bestTopic);
+              instAnn.getFeatures().put(pref+"BestTopicProb", bestProb);              
               n++;
             }
             if(!documentWasLoaded) {

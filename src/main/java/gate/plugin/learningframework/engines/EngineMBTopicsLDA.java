@@ -191,7 +191,7 @@ public class EngineMBTopicsLDA extends EngineMBMallet {
                 "o:opti:i",
                 "D:diags:b",
                 "i:iters:i",
-                "B:burn:i",
+                "B:burnin:i",
                 "S:show:i"
     );
     nrTopics = (int) parmdef.getValueOrElse("topics", nrTopics);
@@ -354,8 +354,8 @@ public class EngineMBTopicsLDA extends EngineMBMallet {
     throw new GateRuntimeException("Method applyModel cannot be used with EngineMBTopicsLDA, use applyTopicModel");
   }
   
-  public void applyTopicModel(AnnotationSet instanceAS, AnnotationSet inputAS, 
-          String tokenFeature, String parms) {
+  public void applyTopicModel(AnnotationSet instanceAS, AnnotationSet tokenAS,
+          String tokenFeature, String featurePrefix, String parms) {
     CorpusRepresentationMalletLDA data = (CorpusRepresentationMalletLDA)corpusRepresentation;
     data.stopGrowth();
 
@@ -381,7 +381,7 @@ public class EngineMBTopicsLDA extends EngineMBMallet {
     
     for(Annotation instAnn : instanceAS.inDocumentOrder()) {
       // System.err.println("DEBUG: adding instance annotation "+instAnn);
-      Instance inst = data.getInstanceFor(gate.Utils.start(instAnn), gate.Utils.end(instAnn), inputAS, tokenFeature);
+      Instance inst = data.getInstanceFor(gate.Utils.start(instAnn), gate.Utils.end(instAnn), tokenAS, tokenFeature);
       // System.err.println("DEBUG: Instance data is "+inst.getData());
       // System.err.println("DEBUG: got inferencer "+ti);
       // NOTE: see http://mallet.cs.umass.edu/api/cc/mallet/topics/TopicInferencer.html#getSampledDistribution(cc.mallet.types.Instance,%20int,%20int,%20int)
@@ -398,10 +398,13 @@ public class EngineMBTopicsLDA extends EngineMBMallet {
         }
         i++;
       }
-      instAnn.getFeatures().put("LF_MBTopicsLDA_TopicDist", tdistlist);    
+      if(featurePrefix == null) {
+        featurePrefix = "";
+      }
+      instAnn.getFeatures().put(featurePrefix+"TopicDist", tdistlist);    
       // Also add a feature that gives the index and word list of the most likely topic
-      instAnn.getFeatures().put("LF_MBTopicsLDA_MLTopic", bestTopic);
-      instAnn.getFeatures().put("LF_MBTopicsLDA_MLTopicProb", bestProb);
+      instAnn.getFeatures().put(featurePrefix+"BestTopic", bestTopic);
+      instAnn.getFeatures().put(featurePrefix+"BestTopicProb", bestProb);
       // TODO: to add the topic words we have to pre-calculate the top k words for each topic
       // and assign the list for topic k here!
       // instAnn.getFeatures().put("LF_MBTopicsLDA_MLTopicWords", bestProb);            

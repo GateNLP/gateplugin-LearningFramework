@@ -149,15 +149,15 @@ public class CorpusRepresentationMalletLDA extends CorpusRepresentationMallet {
   public Instance getInstanceFor(
           long from,
           long to,
-          AnnotationSet inputAS,
+          AnnotationSet tokenAS,
           String tokenFeatureName) {
 
     
     if(tokenFeatureName == null) {
       tokenFeatureName = "";
     }
-    Document doc = inputAS.getDocument();
-    List<Annotation> tokenAnnotations = inputAS.get(from, to).inDocumentOrder();
+    Document doc = tokenAS.getDocument();
+    List<Annotation> tokenAnnotations = tokenAS.get(from, to).inDocumentOrder();
     List<String> tokenList = new ArrayList<>();
     String str;
     for(Annotation tokenAnnotation : tokenAnnotations) {
