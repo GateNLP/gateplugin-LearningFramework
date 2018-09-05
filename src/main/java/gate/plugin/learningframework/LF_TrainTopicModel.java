@@ -245,11 +245,11 @@ public class LF_TrainTopicModel extends LearningFrameworkPRBase {
               instanceAS = inputAS.get(getInstanceType());
             } else {     
               // if the instance annotation set has not been specified, we put a Document annotation
-              // into the default set for now, unless we already have one or more.
-              instanceAS = doc.getAnnotations().get("Document");
+              // into the inputAS, unless we already have one or more
+              instanceAS = inputAS.get("Document");
               if (instanceAS.isEmpty()) {
-                gate.Utils.addAnn(doc.getAnnotations(), 0, doc.getContent().size(), "Document", Factory.newFeatureMap());
-                instanceAS = doc.getAnnotations().get("Document");
+                gate.Utils.addAnn(inputAS, 0, doc.getContent().size(), "Document", Factory.newFeatureMap());
+                instanceAS = inputAS.get("Document");
               }
             }
             for (Annotation instAnn : instanceAS) {
