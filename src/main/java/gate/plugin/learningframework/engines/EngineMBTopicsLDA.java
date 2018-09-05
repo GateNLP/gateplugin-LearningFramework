@@ -159,8 +159,6 @@ public class EngineMBTopicsLDA extends EngineMBMallet {
     System.err.println("EngineMalletClass.trainModel: CR="+corpusRepresentation);
     
 
-    int displayInterval = 200;
-    int numIterations = 100;
     // default values for those which can be set 
     int nrTopics = 10;
     double alpha = 1.0;
@@ -176,6 +174,10 @@ public class EngineMBTopicsLDA extends EngineMBMallet {
     }
     int seed = 0;
     int maxCondModesIts = 0;
+    int displayInterval = 200;
+    int numIterations = 1000;
+    int numBurnin = 200;
+
     Parms parmdef = new Parms(parmString,
                 "t:topics:i",
                 "T:stopics:i",
@@ -187,7 +189,10 @@ public class EngineMBTopicsLDA extends EngineMBMallet {
                 "M:mcmi:i",
                 "b:beta:d",
                 "o:opti:i",
-                "D:diags:b"
+                "D:diags:b",
+                "i:iters:i",
+                "B:burn:i",
+                "S:show:i"
     );
     nrTopics = (int) parmdef.getValueOrElse("topics", nrTopics);
     alpha = (double) parmdef.getValueOrElse("alpha", alpha);
@@ -199,11 +204,16 @@ public class EngineMBTopicsLDA extends EngineMBMallet {
     maxCondModesIts = (int)parmdef.getValueOrElse("mcmi", maxCondModesIts);
     optimizeInterval = (int)parmdef.getValueOrElse("opti", optimizeInterval);
     doDiagnostics = (boolean)parmdef.getValueOrElse("diags", doDiagnostics);
+    numIterations = (int)parmdef.getValueOrElse("iters", numIterations);
+    numBurnin = (int)parmdef.getValueOrElse("burn", numBurnin);
+    displayInterval = (int)parmdef.getValueOrElse("show", displayInterval);
     
     System.out.println("INFO: running Mallet LDA with parameters: topics="+nrTopics+
             ",alpha="+alpha+",beta="+beta+",words="+showNrTopWords+",procs="+numThreads+
             ",docs="+showNrDocs+",seed="+seed+",maxCondModesIts="+maxCondModesIts+
-            ",optimizeInterval="+optimizeInterval+"doDiagnostics"+doDiagnostics);
+            ",optimizeInterval="+optimizeInterval+",doDiagnostics"+doDiagnostics+
+            ",iters="+numIterations+",burnin="+numBurnin
+            );
     
     tm = new ParallelTopicModel(nrTopics, alpha, beta);
     // NOTE: this cauases the model to get saved by the standard mallet serialization process
@@ -212,6 +222,8 @@ public class EngineMBTopicsLDA extends EngineMBMallet {
     tm.setNumThreads(numThreads);
     tm.setNumIterations(numIterations);
     tm.setOptimizeInterval(optimizeInterval);
+    tm.setNumIterations(numIterations);
+    tm.setBurninPeriod(numBurnin);    
     tm.setRandomSeed(seed);
     // For showing top documents see implementation of 
     // tm.printTopicDocuments(printwriter, showNrDocs);
