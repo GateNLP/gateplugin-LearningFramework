@@ -32,6 +32,9 @@ The following parameters can be specified in the `algorithmParameters` field:
 * -w/-words (integer, default: 20) - the number of most probably topic words to show for each topic
 * -d/-docs (integer, default: 5) - the number of most prominent training documents to show for each topic
 * -s (integer, default: 0 which uses the clock) - random seed to use for the gibbs sampler
+* -i/-iters (integer, default: 1000) - number of iterations to run, should be larger than burnin (-B/-burn)
+* -B/-burn (integer, default: 200) - number of burn-in iterations
+* -S/-show (integer, default: 200) - number of iterations after which to show topics
 * -a (float, default: 1.0) - alpha prior of the underlying symmetrich dirichlet (so each topic initially gets assined the 1/numbertopics of this value). Higher values allow for more topics per document.
 * -b (float, default: 0.01) - beta parameter for topic-word smoothing. Higher values allow for more corpus words per topic.
 * -M/-mcmi (integer, default: 0) - if larger than 0, the number of iterations to do topic maximization by iterated conditional modes, do not do this if 0. 
