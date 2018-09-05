@@ -234,12 +234,7 @@ public class LF_TrainTopicModel extends LearningFrameworkPRBase {
           for(int docNr=0; docNr < corpus.size(); docNr++) {
             boolean documentWasLoaded = corpus.isDocumentLoaded(docNr);
             Document doc = corpus.get(docNr);
-            AnnotationSet inputAS = doc.getAnnotations(getInputASName());
-            if (getTokenAnnotationType() == null || getTokenAnnotationType().isEmpty()) {
-              inputAS = inputAS.get("Token");
-            } else {
-              inputAS = inputAS.get(getTokenAnnotationType());
-            }
+            AnnotationSet inputAS = doc.getAnnotations(getInputASName());            
             AnnotationSet instanceAS;
             if (getInstanceType() != null && !getInstanceType().isEmpty()) {
               instanceAS = inputAS.get(getInstanceType());
