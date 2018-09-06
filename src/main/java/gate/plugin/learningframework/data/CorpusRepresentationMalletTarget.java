@@ -297,17 +297,16 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
     System.err.println("INFO: scaling/re-normalizing instances...");
     // TODO: this does not look right: we update the instances in place here AND add
     // the normalizer to the pipe later?
-    
-    for(Instance inst : instances) {
-      // System.err.println("DEBUG: before normalizing: "+inst);
+    for(int i=0; i<instances.size(); i++) {
+      Instance inst = instances.get(i);
       inst = normalizer.pipe(inst);
-      // System.err.println("DEBUG: before normalizing: "+inst);
+      instances.set(i,inst);
     }
     
     System.err.println("INFO: scaling/re-normalizing instances finished.");
-    ArrayList<Pipe> pipeList = pipe.pipes();
     // It looks as if we never actually run anything though those pipes??
     // So for now, since we do in-place updating above, we do not add this step
+    //ArrayList<Pipe> pipeList = pipe.pipes();
     // pipeList.add(normalizer);
     // System.err.println("DEBUG normalize: added normalizer pipe " + normalizer);
     // System.err.println("DEBUG pipes after normalization: " + pipe);
