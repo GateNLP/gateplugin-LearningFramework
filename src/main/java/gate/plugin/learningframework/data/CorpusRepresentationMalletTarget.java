@@ -248,12 +248,27 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
     }
   }
   
+  protected boolean finishAddingCalled = false;
+  
   /**
    * Finish adding instances to the CR. 
    * This will also do the rescaling and any other additional calculations, if necessary. 
+   * This can only be called once for a corpus representation and after this has been
+   * called, no adding must be done any more!
    */
   @Override
-  public void finishAdding() {    
+  public void finishAdding() {   
+    System.err.println("DEBUG: calling finishAdding(), scaling="+scalingMethod);
+    /*
+    StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+    System.err.println("DEBUG: [1]="+stack[1].getClassName()+"/"+stack[1].getLineNumber());
+    System.err.println("DEBUG: [2]="+stack[2].getClassName()+"/"+stack[2].getLineNumber());
+    System.err.println("DEBUG: [3]="+stack[2].getClassName()+"/"+stack[3].getLineNumber());
+    */
+    if(finishAddingCalled) {
+      return;
+    }
+    finishAddingCalled = true;
     if(scalingMethod == ScalingMethod.NONE) {
       return;
     }
@@ -276,16 +291,19 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
           break;
         }
       default:
-        throw new GateRuntimeException("Internal error: unexpected scaling method");
+        throw new GateRuntimeException("Internal error: unexpected scaling method: "+scalingMethod);
     }
-    //System.err.println("DEBUG: re-normalizing instances");
-    for(Instance inst : instances) {
-      inst = normalizer.pipe(inst);
-    }
+    System.err.println("INFO: scaling/re-normalizing instances...");
+    // TODO: this does not look right: we update the instances in place here AND add
+    // the normalizer to the pipe later?
+    //for(Instance inst : instances) {
+    //  inst = normalizer.pipe(inst);
+    //}
+    System.err.println("INFO: scaling/re-normalizing instances finished.");
     ArrayList<Pipe> pipeList = pipe.pipes();
     pipeList.add(normalizer);
-    //System.out.println("DEBUG normalize: added normalizer pipe " + normalizer);
-    //System.out.println("DEBUG pipes after normalization: " + pipe);
+    System.err.println("DEBUG normalize: added normalizer pipe " + normalizer);
+    System.err.println("DEBUG pipes after normalization: " + pipe);
   }
   
   @Override

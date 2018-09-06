@@ -89,7 +89,9 @@ public class EngineMBWekaWrapper extends EngineMB {
     //Previously, this would create the proper corpus representation in the MB base class,
     //now we instead create the corpus exporter we use later and get the CR from it
     //super.initWhenCreating(directory, algorithm, parameters, fi, tt);
-    corpusExporter = CorpusExporter.create(Exporter.CSV_CL_MR, "-t -n "+parameters, featureInfo, parameters, directory);
+    corpusExporter = CorpusExporter.create(
+            Exporter.CSV_CL_MR, "-t -n "+parameters, featureInfo, parameters, 
+            directory);
     corpusRepresentation = (CorpusRepresentationMallet)corpusExporter.getCorpusRepresentation();
   } 
 

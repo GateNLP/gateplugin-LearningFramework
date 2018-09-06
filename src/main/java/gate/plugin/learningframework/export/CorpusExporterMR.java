@@ -40,19 +40,26 @@ public abstract class CorpusExporterMR extends CorpusExporter {
     // exporter. We provide a default implementation here which creates a 
     // target CR, the seq exporters then override in turn
     // TODO: need to properly support scaling when exporting!
-    corpusRepresentation = new CorpusRepresentationMalletTarget(featureInfo, 
-            ScalingMethod.NONE, targetType);
+    corpusRepresentation = new CorpusRepresentationMalletTarget(
+            featureInfo, 
+            featureInfo.getGlobalScalingMethod(), 
+            targetType);
   }
   
   // All the mallet related exporters also write the pipe and the info, each
   // of the export() implementations should call this method
+  // This is done as the first step in the export() method and since
+  // the scaling needs to be done before exporting, the finishAdding()  method
+  // is called in here always, just to be sure. The finishAdding() method is
+  // not doing anything on any call after the first call.
   public void exportMeta() {
+    CorpusRepresentationMallet crm = (CorpusRepresentationMallet)corpusRepresentation;
+    crm.finishAdding();
     // get the pre-filled info object
     Info info = getInfo();
     // In addition to the actual data file exported by the methods above,
     // always also export the pipe and a template info file!
     info.classAnnotationType = "null";
-    CorpusRepresentationMallet crm = (CorpusRepresentationMallet)corpusRepresentation;
     LFPipe lfpipe = crm.getPipe();
     if (lfpipe.getTargetAlphabet() == null) {
       info.classLabels = null;

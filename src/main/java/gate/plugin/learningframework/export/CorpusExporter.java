@@ -20,6 +20,7 @@
 
 package gate.plugin.learningframework.export;
 
+import gate.plugin.learningframework.ScalingMethod;
 import gate.plugin.learningframework.data.CorpusRepresentation;
 import gate.plugin.learningframework.engines.Info;
 import gate.plugin.learningframework.features.FeatureInfo;
@@ -28,6 +29,7 @@ import gate.util.Files;
 import gate.util.GateRuntimeException;
 import java.io.File;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 
 /**
@@ -57,13 +59,14 @@ public abstract class CorpusExporter {
    * @param datadir data directory
    * @return CorpusExporter instance
    */
-  public static CorpusExporter create(Exporter exporter, String parms, FeatureInfo featureInfo, String instanceType, URL datadir) {
+  public static CorpusExporter create(Exporter exporter, String parms, 
+          FeatureInfo featureInfo, String instanceType, URL datadir) {
     CorpusExporter ce = null;
     try {
       @SuppressWarnings("unchecked")             
       Constructor<?> constr = exporter.getCorpusExporterClass().getDeclaredConstructor();
       ce = (CorpusExporter)constr.newInstance();
-    } catch (Exception ex) {
+    } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | SecurityException | InvocationTargetException ex) {
       throw new GateRuntimeException("Error creating CorpusExporter instance for "+exporter.getCorpusExporterClass(),ex);
     }
     ce.datadir = datadir;

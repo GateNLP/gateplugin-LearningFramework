@@ -251,7 +251,7 @@ public class EngineMBTopicsLDA extends EngineMBMallet {
     {
       System.out.println("INFO: writing top words per topic to "+topWordsPerTopicFile);
       printTopTopicWords(tm, out, showNrTopWords);
-    } catch (Exception ex) {
+    } catch (IOException ex) {
       throw new GateRuntimeException("Exception during writing of words per topic file", ex);
     }    
     /* replaced by our own method above 
