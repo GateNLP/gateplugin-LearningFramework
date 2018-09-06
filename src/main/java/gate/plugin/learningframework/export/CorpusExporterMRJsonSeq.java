@@ -104,7 +104,7 @@ public class CorpusExporterMRJsonSeq extends CorpusExporterMRJsonBase {
 
     // get the alphabets
     @SuppressWarnings("unchecked")
-    LFAlphabet dataAlphabet = (LFAlphabet)malletInstances.getPipe().getDataAlphabet();
+    // LFAlphabet dataAlphabet = (LFAlphabet)malletInstances.getPipe().getDataAlphabet();
     LabelAlphabet targetAlphabet = (LabelAlphabet) malletInstances.getPipe().getTargetAlphabet();
     int nrFeatures = pipe.getDataAlphabet().size();
     for (Instance inst : malletInstances) {
@@ -194,7 +194,7 @@ public class CorpusExporterMRJsonSeq extends CorpusExporterMRJsonBase {
 
   @Override
   public void initWhenCreating() {
-    corpusRepresentation = new CorpusRepresentationMalletSeq(featureInfo, ScalingMethod.NONE);
+    corpusRepresentation = new CorpusRepresentationMalletSeq(featureInfo);
   }
   
 }

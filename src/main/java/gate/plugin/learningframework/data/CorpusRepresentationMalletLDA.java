@@ -49,9 +49,9 @@ public class CorpusRepresentationMalletLDA extends CorpusRepresentationMallet {
 
   static final Logger LOGGER = Logger.getLogger("CorpusRepresentationMalletLDA");
 
-  public CorpusRepresentationMalletLDA(FeatureInfo fi, ScalingMethod sm) {
+  public CorpusRepresentationMalletLDA(FeatureInfo fi) {
     featureInfo = fi;  // always null
-    scalingMethod = ScalingMethod.NONE;
+    scalingMethod = fi.getGlobalScalingMethod();
 
     // TODO: we really do not need any of this, figure out if we can simplify,
     // but keeping this should not really do any harm!

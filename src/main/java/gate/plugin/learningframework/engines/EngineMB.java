@@ -87,14 +87,14 @@ public abstract class EngineMB extends Engine {
     } else {
       switch (algorithm.getAlgorithmKind()) {
         case SEQUENCE_TAGGER:
-          corpusRepresentation = new CorpusRepresentationMalletSeq(fi, fi.getGlobalScalingMethod());
+          corpusRepresentation = new CorpusRepresentationMalletSeq(fi);
           break;
         case REGRESSOR:
         case CLASSIFIER:
-          corpusRepresentation = new CorpusRepresentationMalletTarget(fi, fi.getGlobalScalingMethod(), tt);
+          corpusRepresentation = new CorpusRepresentationMalletTarget(fi, tt);
           break;
         case CLUSTERING:
-          corpusRepresentation = new CorpusRepresentationMalletLDA(null, null);
+          corpusRepresentation = new CorpusRepresentationMalletLDA(fi);
           break;
         default:
           throw new GateRuntimeException("Not a usable algorithm kind for now with Mallet based engines: "+algorithm);

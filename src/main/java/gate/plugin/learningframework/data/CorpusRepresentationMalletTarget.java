@@ -67,12 +67,11 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
    * Constructor for creating a new CorpusRepresentation from a FeatureInfo. 
    * 
    * @param fi FeatureInfo instance
-   * @param sm  ScalingMethod instance
    * @param targetType type of target
    */
-  public CorpusRepresentationMalletTarget(FeatureInfo fi, ScalingMethod sm, TargetType targetType) {
+  public CorpusRepresentationMalletTarget(FeatureInfo fi, TargetType targetType) {
     featureInfo = fi;
-    scalingMethod = sm;
+    scalingMethod = fi.getGlobalScalingMethod();    
     this.targetType = targetType;
     LabelAlphabet targetAlphabet = (targetType == TargetType.NOMINAL) ? new LabelAlphabet() : null;
     Pipe innerPipe = new Noop(new LFAlphabet(), targetAlphabet);
@@ -91,7 +90,7 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
   CorpusRepresentationMalletTarget(LFPipe pipe) {
     this.pipe = pipe;
     this.featureInfo = pipe.getFeatureInfo();
-    this.scalingMethod = null;
+    this.scalingMethod = this.featureInfo.getGlobalScalingMethod();
     this.instances = new LFInstanceList(pipe);
   }
 

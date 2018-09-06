@@ -52,7 +52,8 @@ public class TestFeatureScaling extends GATEPluginTests {
     File configFile = new File("tests/cl-ionosphere/feats.xml");
     FeatureSpecification spec = new FeatureSpecification(configFile);
     FeatureInfo featureInfo = spec.getFeatureInfo();
-    CorpusRepresentationMalletTarget crm = new CorpusRepresentationMalletTarget(featureInfo, ScalingMethod.MEANVARIANCE_ALL_FEATURES, TargetType.NOMINAL);
+    featureInfo.setGlobalScalingMethod(ScalingMethod.MEANVARIANCE_ALL_FEATURES);
+    CorpusRepresentationMalletTarget crm = new CorpusRepresentationMalletTarget(featureInfo, TargetType.NOMINAL);
     
     Document doc = loadDocument(new File("tests/cl-ionosphere/ionosphere_gate.xml"));
     

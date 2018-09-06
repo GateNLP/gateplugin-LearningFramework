@@ -51,9 +51,9 @@ public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
 
   static final Logger LOGGER = Logger.getLogger("CorpusRepresentationMalletSeq");
 
-  public CorpusRepresentationMalletSeq(FeatureInfo fi, ScalingMethod sm) {
+  public CorpusRepresentationMalletSeq(FeatureInfo fi) {
     featureInfo = fi;
-    scalingMethod = sm;
+    scalingMethod = fi.getGlobalScalingMethod();
 
     Pipe innerPipe = new Noop(new LFAlphabet(), new LabelAlphabet());
     List<Pipe> pipes = new ArrayList<>();
@@ -72,7 +72,7 @@ public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
   CorpusRepresentationMalletSeq(LFPipe pipe) {
     this.pipe = pipe;
     this.featureInfo = pipe.getFeatureInfo();
-    this.scalingMethod = null;
+    this.scalingMethod = this.featureInfo.getGlobalScalingMethod();
     this.instances = new LFInstanceList(pipe);
     this.targetType = TargetType.NOMINAL;
   }

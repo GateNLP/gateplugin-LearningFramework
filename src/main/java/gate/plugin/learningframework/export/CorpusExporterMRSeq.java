@@ -55,7 +55,7 @@ public class CorpusExporterMRSeq extends CorpusExporterMR {
 
   @Override
   public void initWhenCreating() {
-    corpusRepresentation = new CorpusRepresentationMalletSeq(featureInfo, ScalingMethod.NONE);
+    corpusRepresentation = new CorpusRepresentationMalletSeq(featureInfo);
   }
   
   

@@ -42,7 +42,6 @@ public abstract class CorpusExporterMR extends CorpusExporter {
     // TODO: need to properly support scaling when exporting!
     corpusRepresentation = new CorpusRepresentationMalletTarget(
             featureInfo, 
-            featureInfo.getGlobalScalingMethod(), 
             targetType);
   }
   

@@ -35,6 +35,7 @@ import gate.creole.metadata.RunTime;
 import gate.plugin.learningframework.data.CorpusRepresentation;
 import gate.plugin.learningframework.engines.AlgorithmKind;
 import gate.plugin.learningframework.export.CorpusExporter;
+import gate.plugin.learningframework.features.FeatureInfo;
 import gate.plugin.learningframework.features.FeatureSpecification;
 import gate.plugin.learningframework.features.SeqEncoder;
 import gate.plugin.learningframework.features.SeqEncoderEnum;
@@ -356,6 +357,8 @@ public class LF_Export extends LF_ExportBase {
       // Read and parse the feature specification
       featureSpec = new FeatureSpecification(featureSpecURL);
       //System.err.println("DEBUG Read the feature specification: " + featureSpec);
+      FeatureInfo finfo = featureSpec.getFeatureInfo();
+      finfo.setGlobalScalingMethod(scaleFeatures);
 
       // create the corpus exporter
       URL effectiveDataDirectory;
