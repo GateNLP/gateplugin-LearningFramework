@@ -269,7 +269,7 @@ public class EngineMBTopicsLDA extends EngineMBMallet {
     {
       System.out.println("INFO: writing top documents per topic file "+topDocsPerTopicFile);
       tm.printTopicDocuments(out, showNrDocs);
-    } catch (Exception ex) {
+    } catch (FileNotFoundException ex) {
       throw new GateRuntimeException("Exception during writing of docs per topic file", ex);
     }
     
@@ -279,7 +279,7 @@ public class EngineMBTopicsLDA extends EngineMBMallet {
     {
       System.out.println("INFO: writing top topics per document file "+topTopicPerDocFile);
       tm.printDocumentTopics(out, 0.0, showNrTopics);
-    } catch (Exception ex) {
+    } catch (FileNotFoundException ex) {
       throw new GateRuntimeException("Exception during writing of topics per doc file", ex);
     }
     
