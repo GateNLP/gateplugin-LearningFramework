@@ -372,7 +372,7 @@ public class LF_Export extends LF_ExportBase {
         effectiveDataDirectory = dataDirectory;
       }
       //System.err.println("DEBUG: using data directory:" + effectiveDataDirectory);
-      corpusExporter = CorpusExporter.create(exporter, getAlgorithmParameters(), featureSpec.getFeatureInfo(),
+      corpusExporter = CorpusExporter.create(exporter, getAlgorithmParameters(), finfo,
               getInstanceType(), effectiveDataDirectory);
 
       corpusRepresentation = corpusExporter.getCorpusRepresentation();

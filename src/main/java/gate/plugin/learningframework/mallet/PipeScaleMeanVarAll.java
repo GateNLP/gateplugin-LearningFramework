@@ -31,7 +31,10 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- *
+ * Pipe for normalizing features so they have mean 1 and standard deviation 1.
+ * 
+ * If a feature only has one value the variance is 0 so it is impossible to scale
+ * to variance 1. 
  *
  */
 public class PipeScaleMeanVarAll extends Pipe implements Serializable {

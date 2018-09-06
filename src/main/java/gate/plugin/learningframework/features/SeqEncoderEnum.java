@@ -36,14 +36,16 @@ public enum SeqEncoderEnum {
   private SeqEncoderEnum() {
     
   }
-  private SeqEncoderEnum(Class encoderClass, Map<String,String> encoderOptions) {    
+  private SeqEncoderEnum(Class<?> encoderClass, Map<String,String> encoderOptions) {    
     this.encoderClass = encoderClass;
     this.encoderOptions = new HashMap<>();
-    if(encoderOptions != null) this.encoderOptions.putAll(encoderOptions);
+    if(encoderOptions != null) {
+      this.encoderOptions.putAll(encoderOptions);
+    }
   }
-  private Class encoderClass;
+  private Class<?> encoderClass;
   private Map<String,String> encoderOptions;
-  public Class getEncoderClass() { return encoderClass; }
+  public Class<?> getEncoderClass() { return encoderClass; }
   public Map<String,String> getOptions() { return encoderOptions; }
 
 }

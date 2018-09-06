@@ -148,7 +148,7 @@ public class FeatureExtractionBase {
    * 
    * 
    * @param attr attribute
-   * @param listEl: for a list attribute, the element number, otherwise ignored
+   * @param listEl for a list attribute, the element number, otherwise ignored
    * @return  internal feature name
    */
   public static String featureName(FeatureSpecAttribute attr, int listEl) {

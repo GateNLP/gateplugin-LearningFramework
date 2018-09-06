@@ -125,7 +125,7 @@ public class EngineMBWekaWrapper extends EngineMB {
         throw new GateRuntimeException("Could not load yaml file "+wekaInfoFile,ex);
       }    
       tmp = null;
-      Map map = null;
+      Map<?,?> map = null;
       if(obj instanceof Map) {
         map = (Map)obj;
         tmp = (String)map.get("wekawrapper.home");      

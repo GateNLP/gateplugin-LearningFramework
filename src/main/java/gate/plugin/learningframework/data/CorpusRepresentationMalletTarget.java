@@ -257,7 +257,7 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
    */
   @Override
   public void finishAdding() {   
-    System.err.println("DEBUG: calling finishAdding(), scaling="+scalingMethod);
+    //System.err.println("DEBUG: calling finishAdding(), scaling="+scalingMethod);
     /*
     StackTraceElement[] stack = Thread.currentThread().getStackTrace();
     System.err.println("DEBUG: [1]="+stack[1].getClassName()+"/"+stack[1].getLineNumber());
@@ -274,35 +274,43 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
     Pipe normalizer = null;
     if(null == scalingMethod) {
       throw new GateRuntimeException("Internal error: unexpected scaling method");
-    } else switch (scalingMethod) {
-      case MEANVARIANCE_ALL_FEATURES:
+    } else {
+      switch (scalingMethod) {
+        case MEANVARIANCE_ALL_FEATURES:
         {
           FVStatsMeanVarAll stats = new FVStatsMeanVarAll(instances);
-          //System.err.println("DEBUG: got stats:\n"+stats);
+          // System.err.println("DEBUG: got stats:\n"+stats);
           normalizer = new PipeScaleMeanVarAll(instances.getDataAlphabet(), stats);
           break;
         }
-      case MINMAX_ALL_FEATURES:
+        case MINMAX_ALL_FEATURES:
         {
           FVStatsMeanVarAll stats = new FVStatsMeanVarAll(instances);
-          //System.err.println("DEBUG: got stats:\n"+stats);
+          // System.err.println("DEBUG: got stats:\n"+stats);
           normalizer = new PipeScaleMinMaxAll(instances.getDataAlphabet(), stats);
           break;
         }
-      default:
-        throw new GateRuntimeException("Internal error: unexpected scaling method: "+scalingMethod);
+        default:
+          throw new GateRuntimeException("Internal error: unexpected scaling method: "+scalingMethod);
+      }
     }
     System.err.println("INFO: scaling/re-normalizing instances...");
     // TODO: this does not look right: we update the instances in place here AND add
     // the normalizer to the pipe later?
-    //for(Instance inst : instances) {
-    //  inst = normalizer.pipe(inst);
-    //}
+    
+    for(Instance inst : instances) {
+      // System.err.println("DEBUG: before normalizing: "+inst);
+      inst = normalizer.pipe(inst);
+      // System.err.println("DEBUG: before normalizing: "+inst);
+    }
+    
     System.err.println("INFO: scaling/re-normalizing instances finished.");
     ArrayList<Pipe> pipeList = pipe.pipes();
-    pipeList.add(normalizer);
-    System.err.println("DEBUG normalize: added normalizer pipe " + normalizer);
-    System.err.println("DEBUG pipes after normalization: " + pipe);
+    // It looks as if we never actually run anything though those pipes??
+    // So for now, since we do in-place updating above, we do not add this step
+    // pipeList.add(normalizer);
+    // System.err.println("DEBUG normalize: added normalizer pipe " + normalizer);
+    // System.err.println("DEBUG pipes after normalization: " + pipe);
   }
   
   @Override

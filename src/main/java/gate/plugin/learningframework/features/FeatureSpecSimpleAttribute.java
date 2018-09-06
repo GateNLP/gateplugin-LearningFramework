@@ -20,7 +20,6 @@
 
 package gate.plugin.learningframework.features;
 
-import cc.mallet.types.Alphabet;
 import gate.plugin.learningframework.mallet.LFAlphabet;
 import java.io.Serializable;
 

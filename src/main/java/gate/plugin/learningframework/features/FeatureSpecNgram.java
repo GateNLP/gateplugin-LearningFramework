@@ -29,6 +29,8 @@ import java.io.Serializable;
  */
 public class FeatureSpecNgram extends FeatureSpecAttribute implements Serializable, Cloneable {
 
+  private static final long serialVersionUID = -3538356352141472056L;
+
   public FeatureSpecNgram(String aname, int number, String type, String feature, String featureName4Value) {
     this.name = aname;
     this.number = number;

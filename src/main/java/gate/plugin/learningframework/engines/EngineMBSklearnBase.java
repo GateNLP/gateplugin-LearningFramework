@@ -39,7 +39,9 @@ import gate.util.Files;
 import gate.util.GateRuntimeException;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -125,11 +127,11 @@ public abstract class EngineMBSklearnBase extends EngineMB {
       Object obj;
       try {
         obj = yaml.load(new InputStreamReader(new FileInputStream(sklearnInfoFile),"UTF-8"));
-      } catch (Exception ex) {
+      } catch (FileNotFoundException | UnsupportedEncodingException ex) {
         throw new GateRuntimeException("Could not load yaml file "+sklearnInfoFile,ex);
       }    
       tmp = null;
-      Map map = null;
+      Map<?,?> map = null;
       if(obj instanceof Map) {
         map = (Map)obj;
         tmp = (String)map.get(YAML_SETTING_WRAPPER_HOME);      

@@ -40,7 +40,7 @@ import org.jdom.input.SAXBuilder;
  */
 public class FeatureSpecification {
 
-  private static Logger logger = Logger.getLogger(FeatureSpecification.class.getName());
+  //private static Logger LOGGER = Logger.getLogger(FeatureSpecification.class.getName());
 
 
   private org.jdom.Document jdomDocConf = null;

@@ -206,7 +206,7 @@ public class EngineMBServer extends EngineMB {
       throw new GateRuntimeException("Response von server is NOK, status="+status+" msg="+response.getBody());
     }
     //System.err.println("Got response, status is OK, data is: "+response.getBody());
-    Map responseMap = null;
+    Map<?,?> responseMap = null;
     try {
       // Parse the json
       responseMap = mapper.readValue(response.getBody(), HashMap.class);

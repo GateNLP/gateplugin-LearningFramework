@@ -683,7 +683,7 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
       target = seqEncoder.seqAnns2ClassLabel(overlappingClassAnns, instanceAnnotation, doc);
     } else {
       //No overlapping mentions so it's an outside
-      target = seqEncoder.CODE_OUTSIDE;
+      target = SeqEncoder.CODE_OUTSIDE;
     }
     // if debugging is enabled, we put the 
     // the target class on the instance annotation

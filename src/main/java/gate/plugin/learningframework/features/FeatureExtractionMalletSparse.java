@@ -1022,7 +1022,7 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
    * @param inst instance
    * @param alph the label alphabet to use, must be an instance of LabelAlphabet
    * @param classAS class annotation set
-   * @param instanceAnnotation, the instance annotation, e.g. "Token".
+   * @param instanceAnnotation  the instance annotation, e.g. "Token".
    * @param seqEncoder sequence encoder instance
    */
   public static void extractClassForSeqTagging(Instance inst, Alphabet alph, AnnotationSet classAS, Annotation instanceAnnotation, SeqEncoder seqEncoder) {
