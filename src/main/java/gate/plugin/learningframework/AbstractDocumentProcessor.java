@@ -214,7 +214,7 @@ public abstract class AbstractDocumentProcessor
    * but also stores the last Throwable so it can be inspected by the PR.
    * @param arg0 controller invoking the callback
    * @param arg1 throwable representing the error that was encountered
-   * @throws ExecutionException 
+   * @throws ExecutionException can be thrown
    */
   @Override
   public void controllerExecutionAborted(Controller arg0, Throwable arg1)
@@ -226,8 +226,7 @@ public abstract class AbstractDocumentProcessor
     int tmp = getRemainingDuplicates().decrementAndGet();
     LOGGER.debug("DEBUG "+this.getName()+" controllerExecutionAborted invocation "+tmp+" for duplicate "+duplicateId);
     //System.err.println("DEBUG: "+this.getName()+" controllerExecutionAborted, duplicateId="+duplicateId+" remaining="+tmp);
-    // Assert.assertEquals(tmp, duplicateId);
-    
+    // Assert.assertEquals(tmp, duplicateId);    
     controllerFinished(arg0, arg1);
   }
 

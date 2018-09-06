@@ -142,7 +142,7 @@ public class CorpusRepresentationMalletLDA extends CorpusRepresentationMallet {
    * The span is what is covered by the original instance annotation.
    * @param from start offset
    * @param to end offset 
-   * @param inputAS  annotation set containing the token-like annotations
+   * @param tokenAS  annotation set containing the token-like annotations
    * @param tokenFeatureName feature in the token-like annotations to use or empty for document text
    * @return  mallet instance containing a feature sequence 
    */
