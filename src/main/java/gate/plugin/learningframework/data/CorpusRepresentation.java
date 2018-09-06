@@ -64,4 +64,23 @@ public abstract class CorpusRepresentation {
    */
   public abstract int nrInstances();
   
+  protected TargetType targetType;
+  /**
+   * Get the target type set for this corpus.
+   * @return the target type
+   */
+  public TargetType getTargetType() {
+    return targetType;
+  }
+  /**
+   * Set the target type for the corpus representation.
+   * Normally, this is automatically set when the corpus representation 
+   * subclass is created and needs never to be changed.
+   * @param val the target type 
+   */
+  public void setTargetType(TargetType val) {
+    targetType = val;
+  }
+  
+  
 }

@@ -35,6 +35,7 @@ public enum Exporter {
   JSON_SEQ_MR(CorpusExporterMRJsonSeq.class,TargetType.NOMINAL,AlgorithmKind.SEQUENCE_TAGGER),
   LibSVM_CL_MR(CorpusExporterMRLibSVM.class,TargetType.NOMINAL,AlgorithmKind.CLASSIFIER),
   LibSVM_RG_MR(CorpusExporterMRLibSVM.class,TargetType.NUMERIC,AlgorithmKind.REGRESSOR),
+  MatrixMarket2_CLUS_MR(CorpusExporterMRMatrixMarket2.class,TargetType.NONE,AlgorithmKind.CLUSTERING),
   MatrixMarket2_CL_MR(CorpusExporterMRMatrixMarket2.class,TargetType.NOMINAL,AlgorithmKind.CLASSIFIER),
   MatrixMatket2_RG_MR(CorpusExporterMRMatrixMarket2.class,TargetType.NUMERIC,AlgorithmKind.REGRESSOR
   );

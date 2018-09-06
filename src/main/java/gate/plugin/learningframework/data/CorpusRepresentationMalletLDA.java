@@ -44,8 +44,6 @@ import static gate.plugin.learningframework.LFUtils.newURL;
 import gate.plugin.learningframework.mallet.LFAlphabet;
 import gate.plugin.learningframework.mallet.LFInstanceList;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.logging.Level;
 
 public class CorpusRepresentationMalletLDA extends CorpusRepresentationMallet {
 
@@ -63,6 +61,7 @@ public class CorpusRepresentationMalletLDA extends CorpusRepresentationMallet {
     pipe = new LFPipe(pipes);
     pipe.setFeatureInfo(fi);
     instances = new LFInstanceList(pipe);
+    targetType = TargetType.NONE;
   }
 
   /**
@@ -75,6 +74,7 @@ public class CorpusRepresentationMalletLDA extends CorpusRepresentationMallet {
     this.featureInfo = pipe.getFeatureInfo();
     this.scalingMethod = ScalingMethod.NONE;
     this.instances = new LFInstanceList(pipe);
+    targetType = TargetType.NONE;
   }
 
   /**

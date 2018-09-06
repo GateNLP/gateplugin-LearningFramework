@@ -73,7 +73,7 @@ public class CorpusRepresentationMalletTarget extends CorpusRepresentationMallet
   public CorpusRepresentationMalletTarget(FeatureInfo fi, ScalingMethod sm, TargetType targetType) {
     featureInfo = fi;
     scalingMethod = sm;
-
+    this.targetType = targetType;
     LabelAlphabet targetAlphabet = (targetType == TargetType.NOMINAL) ? new LabelAlphabet() : null;
     Pipe innerPipe = new Noop(new LFAlphabet(), targetAlphabet);
     List<Pipe> pipes = new ArrayList<>();

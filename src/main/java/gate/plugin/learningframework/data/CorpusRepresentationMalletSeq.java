@@ -61,6 +61,7 @@ public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
     pipe = new LFPipe(pipes);
     pipe.setFeatureInfo(fi);
     instances = new LFInstanceList(pipe);
+    targetType = TargetType.NOMINAL;
   }
 
   /**
@@ -73,6 +74,7 @@ public class CorpusRepresentationMalletSeq extends CorpusRepresentationMallet {
     this.featureInfo = pipe.getFeatureInfo();
     this.scalingMethod = null;
     this.instances = new LFInstanceList(pipe);
+    this.targetType = TargetType.NOMINAL;
   }
 
   /**

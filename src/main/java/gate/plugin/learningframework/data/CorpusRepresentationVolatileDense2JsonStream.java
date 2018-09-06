@@ -189,6 +189,7 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
           SeqEncoder seqEncoder) {
     // first of all, distinguish between processing for sequences and for non-sequences
     // if the sequenceAS parameter is non-null we process sequences of instances, otherwise we process plain instances
+    setTargetType(targetType);
     String json;
     if (sequenceAS == null) {
       if (isSequence == null) {

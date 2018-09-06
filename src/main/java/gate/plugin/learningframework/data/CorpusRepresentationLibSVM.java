@@ -41,7 +41,7 @@ public class CorpusRepresentationLibSVM extends CorpusRepresentationMalletRelate
 
   public CorpusRepresentationLibSVM(CorpusRepresentationMallet other) {
     data = getFromMallet(other);
-    crm = other;
+    crm = other;    
   }
 
   /**
@@ -141,5 +141,16 @@ public class CorpusRepresentationLibSVM extends CorpusRepresentationMalletRelate
   public int nrInstances() {
     return crm.nrInstances();
   }
+  
+  @Override
+  public TargetType getTargetType() {
+    return crm.getTargetType();
+  }
+  
+  @Override
+  public void setTargetType(TargetType val) {
+    crm.setTargetType(val);
+  }
+  
   
 }

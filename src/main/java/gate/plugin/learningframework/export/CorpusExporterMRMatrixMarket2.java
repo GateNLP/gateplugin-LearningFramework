@@ -27,6 +27,7 @@ import gate.plugin.learningframework.LFUtils;
 import gate.plugin.learningframework.data.CorpusRepresentationMallet;
 import gate.plugin.learningframework.engines.Info;
 import gate.plugin.learningframework.features.FeatureExtractionMalletSparse;
+import gate.plugin.learningframework.features.TargetType;
 import gate.plugin.learningframework.mallet.NominalTargetWithCosts;
 import gate.util.GateRuntimeException;
 import java.io.File;
@@ -65,8 +66,10 @@ public class CorpusExporterMRMatrixMarket2 extends CorpusExporterMR {
     File outFileDep = new File(dataDirFile, "dep.mtx");
     File outFileCosts = new File(dataDirFile,"instcosts.mtx");
     File outFileInstWeights = new File(dataDirFile, "instweights.mtx");
-    try {
-      outDep = new PrintStream(outFileDep);
+    try {      
+      if(corpusRepresentation.getTargetType() != TargetType.NONE) {
+        outDep = new PrintStream(outFileDep);
+      }
       outIndep = new PrintStream(outFileIndep);
     } catch (FileNotFoundException ex) {
       throw new GateRuntimeException("Could not open output file ",ex);
@@ -106,17 +109,18 @@ public class CorpusExporterMRMatrixMarket2 extends CorpusExporterMR {
     outIndep.print(" ");
     outIndep.print(DFi.format(nrVals));
     outIndep.println();
-    // dep
-    outDep.println("%%MatrixMarket matrix coordinate real general\n%");
-    // TODO: we could actually also count the non-zero targets above and
-    // not include the zeros!
-    outDep.print(DFi.format(nrRows)); // Each row has one value, non-sparse
-    outDep.print(" ");
-    outDep.print(DFi.format(1));
-    outDep.print(" ");
-    outDep.print(DFi.format(nrRows));
-    outDep.println();
-    
+    if(outDep != null) {
+      // dep
+      outDep.println("%%MatrixMarket matrix coordinate real general\n%");
+      // TODO: we could actually also count the non-zero targets above and
+      // not include the zeros!
+      outDep.print(DFi.format(nrRows)); // Each row has one value, non-sparse
+      outDep.print(" ");
+      outDep.print(DFi.format(1));
+      outDep.print(" ");
+      outDep.print(DFi.format(nrRows));
+      outDep.println();
+    }
     // NOTE: MatrixMarket numbers are base-1!!
     int rowNr = 0;
     for(Instance instance : instances) {
@@ -200,10 +204,12 @@ public class CorpusExporterMRMatrixMarket2 extends CorpusExporterMR {
           }
         }
       }
-      outDep.print(rowNr);
-      outDep.print(" ");
-      outDep.print("1 ");
-      outDep.println(DFf.format(target));
+      if(outDep != null) {
+        outDep.print(rowNr);
+        outDep.print(" ");
+        outDep.print("1 ");
+        outDep.println(DFf.format(target));
+      }
       // Now print all the feature values, but no MVs which will be ignored (as this is a sparse 
       // representation and we want to replace them with zero here).
       // NOTE: if the values were transformed, zero may not be the correct value to use,
@@ -226,7 +232,9 @@ public class CorpusExporterMRMatrixMarket2 extends CorpusExporterMR {
     }
     // close all the files
     outIndep.close();
-    outDep.close();
+    if (outDep != null) {
+      outDep.close();
+    }
     if(outInstWeights!=null) {
       outInstWeights.close();
     }

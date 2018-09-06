@@ -212,6 +212,8 @@ public class LF_Export extends LF_ExportBase {
   
   private boolean haveSequenceProblem = false; 
   private boolean haveSequenceAlg    = false;  
+  private boolean haveClusteringProblem = false;
+  private boolean haveClusteringAlg = false;
   private CorpusExporter corpusExporter = null;
   
   @Override
@@ -220,7 +222,10 @@ public class LF_Export extends LF_ExportBase {
     AnnotationSet inputAS = doc.getAnnotations(getInputASName());
     AnnotationSet instanceAS = inputAS.get(getInstanceType());
     String nameFeatureName = null;
-    if(haveSequenceAlg) {  // this implies we have a sequence annotation type
+    if(haveClusteringAlg) {
+      // we should already have checked at starting time that we do not have a sequence problem!
+      corpusRepresentation.add(instanceAS, null, inputAS, null, null, TargetType.NONE, instanceWeightFeature, nameFeatureName, seqEncoder);      
+    } else if(haveSequenceAlg) {  // this implies we have a sequence annotation type
       if(haveSequenceProblem) {  // this implies we have a classAS
         AnnotationSet classAS = inputAS.get(classAnnotationTypesSet);
         corpusRepresentation.add(instanceAS, inputAS.get(getSequenceSpan()), inputAS, classAS, null, targetType, instanceWeightFeature, nameFeatureName, seqEncoder);
@@ -257,15 +262,20 @@ public class LF_Export extends LF_ExportBase {
     // * regressor: given feature vector, predict numeric target
     // * classifier:  given feature vector, predict nominal target
     // * sequence tagger: given list of feature vectors, predict list of nominal targets
+    // * clusterer: given feature vector, find clusters
     
     // This shows which problem is compatible with which algorithm:
     // PROBLEM  /  ALGORITHM  / COMPATIBLE
     // regression / regressor / yes
-    // regression / not regressor / no
+    // regression / clusterer / yes, ignore target
+    // regression / clsasification, sequence tagger / no
     // classification / classifier / yes 
     // classification / sequence tagger / yes
+    // classification / clusterer / yes, but ignore target
     // sequence tagging / sequence tagger / yes
     // sequence tagging / classifier / yes
+    // clustering / clusterer / yes
+    // clustering / not clusterer / no
    
     if(getClassAnnotationTypes() == null) {
       setClassAnnotationTypes(new ArrayList<>());
@@ -283,7 +293,9 @@ public class LF_Export extends LF_ExportBase {
     } else {
       // we do not have class annotations, so we must have the target feature
       if(getTargetFeature() == null || getTargetFeature().isEmpty()) {
-        throw new GateRuntimeException("One of targetFeature or classAnnotationTypes must be specified");
+        haveClusteringProblem = true;
+      } else {
+        haveClusteringProblem = false;  // could be classification or regression
       }
       // we do not have a sequence tagging problem
       haveSequenceProblem = false;      
@@ -319,6 +331,9 @@ public class LF_Export extends LF_ExportBase {
     }
     if(algkind != AlgorithmKind.REGRESSOR && getTargetType().equals(TargetType.NUMERIC)) {
       throw new GateRuntimeException("Cannot use a numeric target type without a regressor");
+    }
+    if(algkind == AlgorithmKind.CLUSTERING && haveSequenceProblem) {
+      throw new GateRuntimeException("Cannot use a clusterer with sequence problem");
     }
     
     // if we have an sequence tagging algorithm, we need a sequence, so the sequence
@@ -363,6 +378,9 @@ public class LF_Export extends LF_ExportBase {
       getSharedData().put("corpusRepresentation", corpusRepresentation);
       System.out.println("INFO: Sequence tagging problem: "+haveSequenceProblem);
       System.out.println("INFO: Sequence tagging algorithm: "+haveSequenceAlg);
+      System.out.println("INFO: clustering problem: "+haveClusteringProblem);
+      System.out.println("INFO: clustering algorithm: "+haveClusteringAlg);
+      
     } else {
       // duplicateId > 0
       corpusExporter = (CorpusExporter) getSharedData().get("corpusExporter");
