@@ -51,7 +51,8 @@ public class CorpusRepresentationMalletLDA extends CorpusRepresentationMallet {
 
   public CorpusRepresentationMalletLDA(FeatureInfo fi) {
     featureInfo = fi;  // always null
-    scalingMethod = fi.getGlobalScalingMethod();
+    // since we always pass a null feature info, the scaling method is hard-wired to be NONE
+    scalingMethod = ScalingMethod.NONE;
 
     // TODO: we really do not need any of this, figure out if we can simplify,
     // but keeping this should not really do any harm!
