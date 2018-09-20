@@ -24,7 +24,6 @@ import gate.Annotation;
 import gate.AnnotationSet;
 import java.net.URL;
 
-import org.apache.log4j.Logger;
 
 import gate.Controller;
 import gate.Document;
@@ -170,8 +169,9 @@ public class LF_ExportText extends AbstractDocumentProcessor {
   
   private transient PrintWriter pw;
   
-  private final String tokenDelimiter = " ";
-  private final String fieldDelimiter = "\t";
+  private static final String TOKEN_DELIMITER = " ";
+  private static final String FIELD_DELIMITER = "\t";
+  private static final String OFFSET_DELIMITER = "|";
   
   // ----------------------------------------------------------------------------
   protected void processOne(long from, long to, Annotation containing, AnnotationSet inputAS, Document doc) {
@@ -179,9 +179,9 @@ public class LF_ExportText extends AbstractDocumentProcessor {
     // first print the field containing the id, if needed
     if(getIncludeDocumentId()) {
       pw.print(doc.getName());
-      pw.print("|");
+      pw.print(OFFSET_DELIMITER);
       pw.print(from);
-      pw.print(fieldDelimiter);
+      pw.print(FIELD_DELIMITER);
     }
     
     
@@ -199,7 +199,7 @@ public class LF_ExportText extends AbstractDocumentProcessor {
           text = gate.Utils.cleanStringFor(doc, tokenAnnot);
         }
         if(!first) {
-          sb.append(tokenDelimiter);
+          sb.append(TOKEN_DELIMITER);
         } else {
           first = false;
         }
@@ -212,7 +212,7 @@ public class LF_ExportText extends AbstractDocumentProcessor {
     pw.print(text);
     // if we need to print a target
     if(getTargetFeature()!=null && !getTargetFeature().isEmpty()) {
-      pw.print(fieldDelimiter);
+      pw.print(FIELD_DELIMITER);
       Object val  = containing.getFeatures().get(getTargetFeature());
       if(val!=null) {
         pw.print(val.toString());
