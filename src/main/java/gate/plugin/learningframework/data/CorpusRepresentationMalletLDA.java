@@ -121,7 +121,7 @@ public class CorpusRepresentationMalletLDA extends CorpusRepresentationMallet {
     if (instancesAS == null) {
       // create one mallet instance for the whole document
       Document doc = inputAS.getDocument();
-      instances.add(getInstanceFor(0L, doc.getContent().size(),inputAS, tokenFeatureName));
+      instances.add(getInstanceFor(0L, doc.getContent().size(), inputAS, tokenFeatureName));
     } else {
       // create one mallet instance for each instance annotation
       for (Annotation instanceAnnotation : instancesAS.inDocumentOrder()) {
@@ -159,6 +159,7 @@ public class CorpusRepresentationMalletLDA extends CorpusRepresentationMallet {
     }
     Document doc = tokenAS.getDocument();
     List<Annotation> tokenAnnotations = tokenAS.get(from, to).inDocumentOrder();
+    // System.err.println("DEBUG: getInstanceFor from="+from+", to="+to+", tokenanns="+tokenAnnotations.size());
     List<String> tokenList = new ArrayList<>();
     String str;
     for(Annotation tokenAnnotation : tokenAnnotations) {
@@ -196,8 +197,8 @@ public class CorpusRepresentationMalletLDA extends CorpusRepresentationMallet {
     System.err.println("DEBUG: fseq feats="+Arrays.toString(featSeq.getFeatures()));
     System.err.println("DEBUG: fseq featIndexSequence="+Arrays.toString(featSeq.toFeatureIndexSequence()));
     */
-    
-    return new Instance(featSeq, null, doc.getName(), null);
+    // append the start offset to the document name, using a pipe character
+    return new Instance(featSeq, null, doc.getName()+"|"+from, null);
 
   }
 

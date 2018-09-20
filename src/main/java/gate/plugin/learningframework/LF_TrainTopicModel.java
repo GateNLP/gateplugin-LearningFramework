@@ -151,16 +151,18 @@ public class LF_TrainTopicModel extends LearningFrameworkPRBase {
     }
     // extract the required annotation sets,
     AnnotationSet inputAS = doc.getAnnotations(getInputASName());
+    AnnotationSet tokenAS;
     if(getTokenAnnotationType()==null || getTokenAnnotationType().isEmpty()) {
-      inputAS = inputAS.get("Token");
+      tokenAS = inputAS.get("Token");
     } else {
-      inputAS = inputAS.get(getTokenAnnotationType());
+      tokenAS = inputAS.get(getTokenAnnotationType());
     }
     AnnotationSet instanceAS = null;
     if (getInstanceType()!=null && !getInstanceType().isEmpty()) {
       instanceAS = inputAS.get(getInstanceType());
+      //System.err.println("DEBUG: doc="+doc.getName()+", instance anns: "+instanceAS.size());
     }
-    corpusRepresentation.add(instanceAS, null, inputAS, null, getTokenFeature(), TargetType.NONE, null, null, null);
+    corpusRepresentation.add(instanceAS, null, tokenAS, null, getTokenFeature(), TargetType.NONE, null, null, null);
   }
   
   @Override
@@ -293,6 +295,7 @@ public class LF_TrainTopicModel extends LearningFrameworkPRBase {
               Factory.deleteResource(doc);
             }
           }
+          System.out.println("INFO: re-processing corpus for application finished.");
         } else {
           System.err.println("ERROR: cannot apply after training, either more than one duplicate or corpus size mismatch");
         }
