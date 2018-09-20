@@ -57,7 +57,7 @@ public class LF_ExportText extends AbstractDocumentProcessor {
   private static final long serialVersionUID = 2455930612239919114L;
 
 
-  private final Logger logger = Logger.getLogger(LF_ExportText.class.getCanonicalName());
+  private transient final Logger logger = Logger.getLogger(LF_ExportText.class.getCanonicalName());
 
   protected URL dataDirectory;
   { 
@@ -170,7 +170,7 @@ public class LF_ExportText extends AbstractDocumentProcessor {
 
   private ExporterText exporter;
   
-  private PrintWriter pw;
+  private transient PrintWriter pw;
   
   private final String tokenDelimiter = " ";
   private final String fieldDelimiter = "\t";
