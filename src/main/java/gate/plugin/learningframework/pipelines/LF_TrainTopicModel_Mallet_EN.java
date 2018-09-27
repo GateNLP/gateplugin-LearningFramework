@@ -19,4 +19,6 @@ import gate.creole.metadata.CreoleResource;
           @AutoInstanceParam(name="menu", value="LearningFramework")})) 
 public class LF_TrainTopicModel_Mallet_EN extends PackagedController {
   
+  private static final long serialVersionUID = -1892123999534954276L;
+  
 }
