@@ -362,12 +362,22 @@
                   <gate.plugin.learningframework.engines.AlgorithmClustering>MalletLDA_CLUS_MR</gate.plugin.learningframework.engines.AlgorithmClustering>
                 </entry>
                 <entry>
-                  <string>algorithmParameters</string>
-                  <string>-s 1 -t 10</string>
+                  <string>dataDirectory</string>
+                  <gate.util.persistence.PersistenceManager-URLHolder>
+                    <urlString>$relpath$</urlString>
+                  </gate.util.persistence.PersistenceManager-URLHolder>
                 </entry>
                 <entry>
                   <string>instanceType</string>
                   <string></string>
+                </entry>
+                <entry>
+                  <string>algorithmParameters</string>
+                  <string>-s 1 -t 10</string>
+                </entry>
+                <entry>
+                  <string>inputASName</string>
+                  <string>LDA</string>
                 </entry>
               </localMap>
             </runtimeParams>
