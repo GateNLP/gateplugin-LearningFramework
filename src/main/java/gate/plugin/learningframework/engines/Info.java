@@ -23,7 +23,6 @@ package gate.plugin.learningframework.engines;
 import gate.util.GateRuntimeException;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -35,6 +34,7 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
 import org.yaml.snakeyaml.nodes.Tag;
 import static gate.plugin.learningframework.LFUtils.newURL;
+import java.io.IOException;
 
 /**
  * A class that represents the information stored in the info file.
@@ -113,7 +113,7 @@ public class Info {
     //System.err.println("Saving engine to "+infoFile);
     try (OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(infoFile),"UTF-8")) {
       out.append(dump);
-    } catch (Exception ex) {
+    } catch (IOException ex) {
       throw new GateRuntimeException("Could not write info file "+infoFile,ex);
     } 
   }
