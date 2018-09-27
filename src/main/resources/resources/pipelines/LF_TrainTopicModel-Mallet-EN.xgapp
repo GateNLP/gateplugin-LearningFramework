@@ -58,7 +58,35 @@
                 <entry>
                   <string>scriptURL</string>
                   <gate.util.persistence.PersistenceManager-RRPersistence>
-                    <uriString>$relpath$groovy/filterTokens4LDA.groovy</uriString>
+                    <uriString>creole://uk.ac.gate.plugins;learningframework;4.1.1-SNAPSHOT/resources/pipelines/groovy/filterTokens4LDA.groovy</uriString>
+                  </gate.util.persistence.PersistenceManager-RRPersistence>
+                </entry>
+              </localMap>
+            </initParams>
+            <features class="gate.util.persistence.MapPersistence">
+              <mapType>gate.util.SimpleFeatureMapImpl</mapType>
+              <localMap/>
+            </features>
+          </pr>
+        </gate.util.persistence.AnalyserRunningStrategyPersistence>
+        <gate.util.persistence.AnalyserRunningStrategyPersistence>
+          <runMode>1</runMode>
+          <featureName></featureName>
+          <featureValue></featureValue>
+          <pr class="gate.util.persistence.LanguageAnalyserPersistence">
+            <runtimeParams class="gate.util.persistence.MapPersistence">
+              <mapType>gate.util.SimpleFeatureMapImpl</mapType>
+              <localMap/>
+            </runtimeParams>
+            <resourceType>gate.groovy.ScriptPR</resourceType>
+            <resourceName>Groovy scripting PR 0000E</resourceName>
+            <initParams class="gate.util.persistence.MapPersistence">
+              <mapType>gate.util.SimpleFeatureMapImpl</mapType>
+              <localMap>
+                <entry>
+                  <string>scriptURL</string>
+                  <gate.util.persistence.PersistenceManager-RRPersistence>
+                    <uriString>creole://uk.ac.gate.plugins;learningframework;4.1.1-SNAPSHOT/resources/pipelines/groovy/filterTokens4LDA.groovy</uriString>
                   </gate.util.persistence.PersistenceManager-RRPersistence>
                 </entry>
               </localMap>
@@ -107,7 +135,7 @@
                 <entry>
                   <string>configFileURL</string>
                   <gate.util.persistence.PersistenceManager-RRPersistence>
-                    <uriString>$relpath$gazetteer/stopwords-en-long.def</uriString>
+                    <uriString>creole://uk.ac.gate.plugins;learningframework;4.1.1-SNAPSHOT/resources/pipelines/gazetteer/stopwords-en-long.def</uriString>
                   </gate.util.persistence.PersistenceManager-RRPersistence>
                 </entry>
               </localMap>
@@ -156,7 +184,7 @@
                 <entry>
                   <string>configFileURL</string>
                   <gate.util.persistence.PersistenceManager-RRPersistence>
-                    <uriString>$relpath$gazetteer/stopwords-en-long.def</uriString>
+                    <uriString>creole://uk.ac.gate.plugins;learningframework;4.1.1-SNAPSHOT/resources/pipelines/gazetteer/stopwords-en-long.def</uriString>
                   </gate.util.persistence.PersistenceManager-RRPersistence>
                 </entry>
               </localMap>
@@ -188,9 +216,9 @@
               <localMap>
                 <entry>
                   <string>patternFileURL</string>
-                  <gate.util.persistence.PersistenceManager-URLHolder>
-                    <urlString>$relpath$regexp/unwantedText4LDA.txt</urlString>
-                  </gate.util.persistence.PersistenceManager-URLHolder>
+                  <gate.util.persistence.PersistenceManager-RRPersistence>
+                    <uriString>creole://uk.ac.gate.plugins;learningframework;4.1.1-SNAPSHOT/resources/pipelines/regexp/unwantedText4LDA.txt</uriString>
+                  </gate.util.persistence.PersistenceManager-RRPersistence>
                 </entry>
               </localMap>
             </initParams>
@@ -233,7 +261,7 @@
                 <entry>
                   <string>scriptURL</string>
                   <gate.util.persistence.PersistenceManager-RRPersistence>
-                    <uriString>$relpath$groovy/removeUnwantedTokens4LDA.groovy</uriString>
+                    <uriString>creole://uk.ac.gate.plugins;learningframework;4.1.1-SNAPSHOT/resources/pipelines/groovy/removeUnwantedTokens4LDA.groovy</uriString>
                   </gate.util.persistence.PersistenceManager-RRPersistence>
                 </entry>
               </localMap>
@@ -263,12 +291,6 @@
                 <entry>
                   <string>trainingAlgorithm</string>
                   <gate.plugin.learningframework.engines.AlgorithmClustering>MalletLDA_CLUS_MR</gate.plugin.learningframework.engines.AlgorithmClustering>
-                </entry>
-                <entry>
-                  <string>dataDirectory</string>
-                  <gate.util.persistence.PersistenceManager-URLHolder>
-                    <urlString>$relpath$</urlString>
-                  </gate.util.persistence.PersistenceManager-URLHolder>
                 </entry>
                 <entry>
                   <string>instanceType</string>
@@ -304,9 +326,10 @@
         <gate.util.persistence.LanguageAnalyserPersistence reference="../../../strategiesList/localList/gate.util.persistence.AnalyserRunningStrategyPersistence/pr"/>
         <gate.util.persistence.LanguageAnalyserPersistence reference="../../../strategiesList/localList/gate.util.persistence.AnalyserRunningStrategyPersistence[2]/pr"/>
         <gate.util.persistence.LanguageAnalyserPersistence reference="../../../strategiesList/localList/gate.util.persistence.AnalyserRunningStrategyPersistence[3]/pr"/>
-        <gate.util.persistence.PRPersistence reference="../../../strategiesList/localList/gate.util.persistence.AnalyserRunningStrategyPersistence[4]/pr"/>
-        <gate.util.persistence.LanguageAnalyserPersistence reference="../../../strategiesList/localList/gate.util.persistence.AnalyserRunningStrategyPersistence[5]/pr"/>
+        <gate.util.persistence.LanguageAnalyserPersistence reference="../../../strategiesList/localList/gate.util.persistence.AnalyserRunningStrategyPersistence[4]/pr"/>
+        <gate.util.persistence.PRPersistence reference="../../../strategiesList/localList/gate.util.persistence.AnalyserRunningStrategyPersistence[5]/pr"/>
         <gate.util.persistence.LanguageAnalyserPersistence reference="../../../strategiesList/localList/gate.util.persistence.AnalyserRunningStrategyPersistence[6]/pr"/>
+        <gate.util.persistence.LanguageAnalyserPersistence reference="../../../strategiesList/localList/gate.util.persistence.AnalyserRunningStrategyPersistence[7]/pr"/>
       </localList>
       <collectionType>java.util.ArrayList</collectionType>
     </prList>
