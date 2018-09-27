@@ -111,19 +111,11 @@ public class Info {
                     .dumpAs(this,Tag.MAP,DumperOptions.FlowStyle.BLOCK);
     File infoFile = new File(directory,FILENAME_INFO);
     //System.err.println("Saving engine to "+infoFile);
-    OutputStreamWriter out = null;
-    try {
-      out = new OutputStreamWriter(new FileOutputStream(infoFile),"UTF-8");
+    try (OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(infoFile),"UTF-8")) {
       out.append(dump);
     } catch (Exception ex) {
       throw new GateRuntimeException("Could not write info file "+infoFile,ex);
-    } finally {
-      try {
-        out.close();
-      } catch (IOException ex) {
-        //
-      }
-    }
+    } 
   }
 
   /**

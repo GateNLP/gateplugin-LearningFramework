@@ -40,8 +40,11 @@ import gate.plugin.learningframework.engines.EngineMBTopicsLDA;
 import gate.plugin.learningframework.features.TargetType;
 import gate.util.GateRuntimeException;
 import java.io.File;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @CreoleResource(
         name = "LF_TrainTopicModel",
@@ -57,7 +60,8 @@ public class LF_TrainTopicModel extends LearningFrameworkPRBase {
   protected URL dataDirectory;
 
   @RunTime
-  @CreoleParameter(comment = "The directory where all data will be stored and read from")
+  @Optional
+  @CreoleParameter(comment = "The directory where all data will be stored and read from, if not specified, uses current running directory")
   public void setDataDirectory(URL output) {
     dataDirectory = output;
   }
@@ -168,7 +172,11 @@ public class LF_TrainTopicModel extends LearningFrameworkPRBase {
   @Override
   public void controllerStarted(Controller controller) {
     if(dataDirectory==null) {
-      throw new GateRuntimeException("dataDirectory parameter must not be null");
+      try {
+        dataDirectory = new File(".").toURI().toURL();
+      } catch (MalformedURLException ex) {
+        throw new GateRuntimeException("Could not create URL for current dirctory", ex);
+      }
     }
     if("file".equals(dataDirectory.getProtocol())) {
       dataDirFile = gate.util.Files.fileFromURL(dataDirectory);
