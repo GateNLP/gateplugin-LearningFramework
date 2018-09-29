@@ -11,11 +11,11 @@ import gate.creole.metadata.CreoleResource;
  * @author Johann Petrak <johann.petrak@gmail.com>
  */
 @CreoleResource(
-        name = "LF_TrainTopicModel-Mallet-EN", 
+        name = "LF_TrainTopicModel_Mallet_EN", 
         comment = "Example steps to prepare and train a topic model using Mallet LDA",
-        // icon = "measurements", 
+        icon = "LF_TrainTopicModel_Mallet_EN", 
         autoinstances = @AutoInstance(parameters = {
-          @AutoInstanceParam(name="pipelineURL", value="resources/pipelines/LF_TrainTopicModel-Mallet-EN.xgapp"), 
+          @AutoInstanceParam(name="pipelineURL", value="resources/pipelines/LF_TrainTopicModel_Mallet_EN.xgapp"), 
           @AutoInstanceParam(name="menu", value="LearningFramework")})) 
 public class LF_TrainTopicModel_Mallet_EN extends PackagedController {
   

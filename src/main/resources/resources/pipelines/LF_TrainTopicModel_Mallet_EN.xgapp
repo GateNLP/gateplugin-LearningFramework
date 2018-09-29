@@ -307,7 +307,7 @@
               </localMap>
             </runtimeParams>
             <resourceType>gate.plugin.learningframework.LF_TrainTopicModel</resourceType>
-            <resourceName>LF_TrainTopicModel 00031</resourceName>
+            <resourceName>LF_TrainTopicModel</resourceName>
             <initParams class="gate.util.persistence.MapPersistence">
               <mapType>gate.util.SimpleFeatureMapImpl</mapType>
               <localMap/>
@@ -334,14 +334,25 @@
       <collectionType>java.util.ArrayList</collectionType>
     </prList>
     <resourceType>gate.creole.ConditionalSerialAnalyserController</resourceType>
-    <resourceName>LF_TrainTopicModel-Mallet-EN</resourceName>
+    <resourceName>LF_TrainTopicModel_Mallet_EN</resourceName>
     <initParams class="gate.util.persistence.MapPersistence">
       <mapType>gate.util.SimpleFeatureMapImpl</mapType>
       <localMap/>
     </initParams>
     <features class="gate.util.persistence.MapPersistence">
       <mapType>gate.util.SimpleFeatureMapImpl</mapType>
-      <localMap/>
+      <localMap>
+        <entry>
+          <string>gate.app.MetadataURL</string>
+          <gate.util.persistence.PersistenceManager-URLHolder>
+            <urlString>$relpath$.LF_TrainTopicModel_Mallet_EN.metadata/metadata.xml</urlString>
+          </gate.util.persistence.PersistenceManager-URLHolder>
+        </entry>
+        <entry>
+          <string>gate.gui.icon</string>
+          <string>LF_TrainTopicModel_Mallet_EN</string>
+        </entry>
+      </localMap>
     </features>
   </application>
 </gate.util.persistence.GateApplication>

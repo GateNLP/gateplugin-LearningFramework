@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<metadata xmlns="http://gate.ac.uk/ns/pipeline-metadata">
+  <pipeline-name>LF Train Mallet Topic Model, EN</pipeline-name>
+  <slug>LF_TrainTopicModel_Mallet_EN</slug>
+  <tags>
+    <tag>English</tag>
+    <tag>Topic Models</tag>
+  </tags>
+</metadata>
