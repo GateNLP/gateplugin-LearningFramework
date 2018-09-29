@@ -81,6 +81,10 @@ Note that PRs from other plugins can also be very useful to generate features:
 * [LF_GenFeatures_Affixes](LF_GenFeatures_Affixes) generate features from prefixes and suffixes
 * [LF_GenFeatures_Misc](LF_GenFeatures_Misc) generate other features like word shape
 
+### Example pipelines, tutorials etc
+
+* [Pipeline_LF_TrainTopicModel_Mallet_EN](Pipeline_LF_TrainTopicModel_Mallet_EN) prepared pipeline for filtering tokens and training a Mallet topic model
+
 ### Other important documentation pages:
 
 * [FeatureSpecification](FeatureSpecification) all about the feature specification file and what it can contain as well as how machine learning features
