@@ -7,8 +7,8 @@ import gate.creole.metadata.AutoInstanceParam;
 import gate.creole.metadata.CreoleResource;
 
 /**
- * 
- * @author Johann Petrak <johann.petrak@gmail.com>
+ * Class for providing the ready made application.
+ * @author Johann Petrak, johann.petrak@gmail.com
  */
 @CreoleResource(
         name = "LF_TrainTopicModel_Mallet_EN", 
