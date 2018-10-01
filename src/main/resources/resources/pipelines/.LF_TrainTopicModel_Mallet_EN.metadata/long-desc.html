@@ -4,6 +4,11 @@
 A pipeline for training a topic model on the filtered tokens for 
 English documents. 
 <p/>
+This pipeline expects Token annotations with POS tags (in feature "category") in
+the default annotation set and filters them by token kind,
+English stop words, and POS tag to create TokenWord annotations in the "LDA" annotation set
+which is used for training the Mallet topic model.
+<p/>
 More information: <a href="https://gatenlp.github.io/gateplugin-LearningFramework/Pipeline_LF_TrainTopicModel_Mallet_EN">Pipeline LF_TrainTopicModel_Mallet_EN</a>
 <p/>
 This is part of the GATE <a href="https://gatenlp.github.io/gateplugin-LearningFramework/">Learning Framework Plugin</a>

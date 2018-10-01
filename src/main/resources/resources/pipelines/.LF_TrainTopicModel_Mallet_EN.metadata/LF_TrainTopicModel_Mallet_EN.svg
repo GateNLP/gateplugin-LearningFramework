@@ -1,445 +1,366 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="210mm"
-   height="297mm"
-   viewBox="0 0 210 297"
-   version="1.1"
-   id="svg18"
-   inkscape:version="0.92.3 (2405546, 2018-03-11)"
-   sodipodi:docname="drawing.svg">
-  <defs
-     id="defs12" />
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="1"
-     inkscape:cx="396.85039"
-     inkscape:cy="484.89338"
-     inkscape:document-units="mm"
-     inkscape:current-layer="layer1"
-     showgrid="true"
-     inkscape:window-width="1360"
-     inkscape:window-height="837"
-     inkscape:window-x="115"
-     inkscape:window-y="62"
-     inkscape:window-maximized="0"
-     showguides="true"
-     inkscape:snap-to-guides="false"
-     inkscape:guide-bbox="true">
-    <inkscape:grid
-       type="xygrid"
-       id="grid20" />
-    <sodipodi:guide
-       position="60.689654,69.413795"
-       orientation="0,1"
-       id="guide4550"
-       inkscape:locked="false" />
-    <sodipodi:guide
-       position="24.655172,90.655175"
-       orientation="1,0"
-       id="guide4552"
-       inkscape:locked="false" />
-  </sodipodi:namedview>
-  <metadata
-     id="metadata15">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
-  <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
-     id="layer1">
-    <ellipse
-       cy="224.23207"
-       cx="84.530403"
-       id="circle4546"
-       style="opacity:1;fill:#000000;fill-opacity:0.18518521;stroke:#000000;stroke-width:7.882092;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       rx="16.947571"
-       ry="16.383564" />
-    <ellipse
-       style="opacity:1;fill:#000000;fill-opacity:0.18518521;stroke:#000000;stroke-width:7.882092;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="circle4548"
-       cx="129.50664"
-       cy="224.23204"
-       rx="16.947571"
-       ry="16.383564" />
-    <ellipse
-       style="opacity:1;fill:#000000;fill-opacity:0.18518521;stroke:#000000;stroke-width:7.882092;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="circle4556"
-       cx="222.06645"
-       cy="223.60193"
-       rx="16.947571"
-       ry="16.383564" />
-    <ellipse
-       cy="225.49232"
-       cx="175.78653"
-       id="circle4558"
-       style="opacity:1;fill:#000000;fill-opacity:0.18518521;stroke:#000000;stroke-width:7.882092;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       rx="16.947571"
-       ry="16.383564" />
-    <ellipse
-       cy="139.16357"
-       cx="38.902325"
-       id="circle4566"
-       style="opacity:1;fill:#000000;fill-opacity:0.18518521;stroke:#000000;stroke-width:7.882092;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       rx="16.947571"
-       ry="16.383564" />
-    <ellipse
-       style="opacity:1;fill:#000000;fill-opacity:0.18518521;stroke:#000000;stroke-width:7.882092;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="circle4568"
-       cx="83.878563"
-       cy="139.16357"
-       rx="16.947571"
-       ry="16.383564" />
-    <ellipse
-       cy="139.16356"
-       cx="128.85483"
-       id="circle4570"
-       style="opacity:1;fill:#000000;fill-opacity:0.18518521;stroke:#000000;stroke-width:7.882092;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       rx="16.947571"
-       ry="16.383564" />
-    <ellipse
-       style="opacity:1;fill:#000000;fill-opacity:0.18518521;stroke:#000000;stroke-width:7.882092;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="circle4572"
-       cx="266.39087"
-       cy="139.79367"
-       rx="16.947571"
-       ry="16.383564" />
-    <ellipse
-       cy="138.53343"
-       cx="221.41464"
-       id="circle4574"
-       style="opacity:1;fill:#000000;fill-opacity:0.18518521;stroke:#000000;stroke-width:7.882092;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       rx="16.947571"
-       ry="16.383564" />
-    <ellipse
-       style="opacity:1;fill:#000000;fill-opacity:0.18518521;stroke:#000000;stroke-width:7.882092;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="circle4576"
-       cx="175.13472"
-       cy="140.42383"
-       rx="16.947571"
-       ry="16.383564" />
-    <ellipse
-       style="opacity:1;fill:#000000;fill-opacity:0.18518521;stroke:#000000;stroke-width:7.882092;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="circle4582"
-       cx="128.85483"
-       cy="49.053959"
-       rx="16.947571"
-       ry="16.383564" />
-    <ellipse
-       cy="50.314232"
-       cx="175.13472"
-       id="circle4588"
-       style="opacity:1;fill:#000000;fill-opacity:0.18518521;stroke:#000000;stroke-width:7.882092;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       rx="16.947571"
-       ry="16.383564" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.37924647;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 50.670751,127.37459 117.0864,60.842936"
-       id="path4590"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3"
-       inkscape:connection-end="#circle4582"
-       inkscape:connection-start="#circle4566" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.37924647;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 161.08566,59.476883 52.951389,130.00092"
-       id="path4594"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3"
-       inkscape:connection-start="#circle4588"
-       inkscape:connection-end="#circle4566" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.37924647;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 91.243389,124.40819 121.48999,63.809336"
-       id="path4596"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3"
-       inkscape:connection-start="#circle4568"
-       inkscape:connection-end="#circle4582" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.37924647;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 95.819397,127.53767 163.19388,61.940134"
-       id="path4598"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3"
-       inkscape:connection-start="#circle4568"
-       inkscape:connection-end="#circle4588" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.37924647;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 128.85482,122.78 V 65.437523"
-       id="path4600"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3"
-       inkscape:connection-start="#circle4570"
-       inkscape:connection-end="#circle4582" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.37924647;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 175.13472,124.04026 V 66.697796"
-       id="path4602"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3"
-       inkscape:connection-start="#circle4576"
-       inkscape:connection-end="#circle4588" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.37924647;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 136.47691,124.53048 167.51263,64.947308"
-       id="path4604"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3"
-       inkscape:connection-start="#circle4570"
-       inkscape:connection-end="#circle4588" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.37924647;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 167.68181,125.70965 136.30773,63.768144"
-       id="path4606"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3"
-       inkscape:connection-start="#circle4576"
-       inkscape:connection-end="#circle4582" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.37924647;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 209.4309,126.9485 140.83857,60.63889"
-       id="path4608"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3"
-       inkscape:connection-start="#circle4574"
-       inkscape:connection-end="#circle4582" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.37924647;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 213.74931,123.92172 182.80004,64.925947"
-       id="path4610"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3"
-       inkscape:connection-start="#circle4574"
-       inkscape:connection-end="#circle4588" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.37924647;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 252.3927,130.55835 142.85299,58.289282"
-       id="path4612"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3"
-       inkscape:connection-start="#circle4572"
-       inkscape:connection-end="#circle4582" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.37924647;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 254.49263,128.12709 187.03295,61.980816"
-       id="path4614"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3"
-       inkscape:connection-start="#circle4572"
-       inkscape:connection-end="#circle4588" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.37924647;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 76.729154,209.68751 46.70357,153.70814"
-       id="path4616"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3"
-       inkscape:connection-start="#circle4546"
-       inkscape:connection-end="#circle4566" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.37924647;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 84.404868,207.84925 84.004094,155.54639"
-       id="path4618"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3"
-       inkscape:connection-start="#circle4546"
-       inkscape:connection-end="#circle4568" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.37924647;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 92.154388,209.59993 121.23084,153.79569"
-       id="path4620"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3"
-       inkscape:connection-start="#circle4546"
-       inkscape:connection-end="#circle4570" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.37924647;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 96.775364,212.90558 162.88976,151.75031"
-       id="path4626"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3"
-       inkscape:connection-start="#circle4546"
-       inkscape:connection-end="#circle4576" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.37924647;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 98.755292,215.32634 207.18975,147.43915"
-       id="path4628"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3"
-       inkscape:connection-start="#circle4546"
-       inkscape:connection-end="#circle4574" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.37924647;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 99.807032,217.13909 251.11424,146.88666"
-       id="path4632"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3"
-       inkscape:connection-start="#circle4546"
-       inkscape:connection-end="#circle4572" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.37924647;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 117.34938,212.81759 51.059576,150.57803"
-       id="path4636"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3"
-       inkscape:connection-start="#circle4548"
-       inkscape:connection-end="#circle4566" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.37924647;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 121.70539,209.68748 91.679808,153.70814"
-       id="path4638"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3"
-       inkscape:connection-start="#circle4548"
-       inkscape:connection-end="#circle4568" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.37924647;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 129.38111,207.84922 -0.40076,-52.30284"
-       id="path4640"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3"
-       inkscape:connection-start="#circle4548"
-       inkscape:connection-end="#circle4570" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.37924647;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 137.39976,209.7342 29.84183,-54.81253"
-       id="path4642"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3"
-       inkscape:connection-start="#circle4548"
-       inkscape:connection-end="#circle4576" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.37924647;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 141.70448,212.8583 209.2168,149.90717"
-       id="path4644"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3"
-       inkscape:connection-start="#circle4548"
-       inkscape:connection-end="#circle4574" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.37924647;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 143.79322,215.41923 252.10429,148.60649"
-       id="path4646"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3"
-       inkscape:connection-start="#circle4548"
-       inkscape:connection-end="#circle4572" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.37924647;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 53.096345,148.11532 161.59251,216.54058"
-       id="path4650"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3"
-       inkscape:connection-end="#circle4558"
-       inkscape:connection-start="#circle4566" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.37924647;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 96.033343,150.58051 67.598407,63.49488"
-       id="path4652"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3"
-       inkscape:connection-start="#circle4568"
-       inkscape:connection-end="#circle4558" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.37924647;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 136.73892,153.666 31.16352,57.32388"
-       id="path4654"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3"
-       inkscape:connection-start="#circle4570"
-       inkscape:connection-end="#circle4558" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.37924647;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 175.26025,156.80665 0.40075,52.30286"
-       id="path4656"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3"
-       inkscape:connection-start="#circle4576"
-       inkscape:connection-end="#circle4558" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.37924647;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 213.74806,153.14453 -30.29496,57.7367"
-       id="path4658"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3"
-       inkscape:connection-start="#circle4574"
-       inkscape:connection-end="#circle4558" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.37924647;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 254.27721,151.25146 -66.37702,62.78309"
-       id="path4660"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3"
-       inkscape:connection-start="#circle4572"
-       inkscape:connection-end="#circle4558" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.37924647;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 54.199368,146.21549 206.76941,216.55001"
-       id="path4664"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3"
-       inkscape:connection-end="#circle4556"
-       inkscape:connection-start="#circle4566" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.37924647;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 98.204264,147.91716 207.74075,214.84834"
-       id="path4668"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3"
-       inkscape:connection-start="#circle4568"
-       inkscape:connection-end="#circle4556" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.37924647;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 141.22119,150.36598 68.4789,62.03352"
-       id="path4670"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3"
-       inkscape:connection-start="#circle4570"
-       inkscape:connection-end="#circle4556" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.37924647;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 183.24997,154.80666 30.70124,54.41244"
-       id="path4672"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3"
-       inkscape:connection-start="#circle4576"
-       inkscape:connection-end="#circle4556" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.37924647;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 221.54017,154.91625 0.40076,52.30286"
-       id="path4674"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3"
-       inkscape:connection-start="#circle4574"
-       inkscape:connection-end="#circle4556" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.37924647;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 258.676,154.38091 229.78133,209.0147"
-       id="path4676"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="3"
-       inkscape:connection-start="#circle4572"
-       inkscape:connection-end="#circle4556" />
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.2" width="1000mm" height="1000mm" viewBox="0 0 100000 100000" preserveAspectRatio="xMidYMid" fill-rule="evenodd" stroke-width="28.222" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" xmlns:ooo="http://xml.openoffice.org/svg/export" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:presentation="http://sun.com/xmlns/staroffice/presentation" xmlns:smil="http://www.w3.org/2001/SMIL20/" xmlns:anim="urn:oasis:names:tc:opendocument:xmlns:animation:1.0" xml:space="preserve">
+ <defs class="ClipPathGroup">
+  <clipPath id="presentation_clip_path" clipPathUnits="userSpaceOnUse">
+   <rect x="0" y="0" width="100000" height="100000"/>
+  </clipPath>
+  <clipPath id="presentation_clip_path_shrink" clipPathUnits="userSpaceOnUse">
+   <rect x="100" y="100" width="99800" height="99800"/>
+  </clipPath>
+ </defs>
+ <defs class="TextShapeIndex">
+  <g ooo:slide="id1" ooo:id-list="id3 id4 id5 id6 id7 id8 id9 id10 id11 id12 id13 id14 id15 id16 id17 id18 id19 id20 id21 id22 id23 id24 id25 id26 id27 id28 id29 id30 id31 id32 id33 id34 id35 id36 id37 id38 id39 id40 id41 id42 id43 id44 id45 id46 id47 id48 id49 id50"/>
+ </defs>
+ <defs class="EmbeddedBulletChars">
+  <g id="bullet-char-template-57356" transform="scale(0.00048828125,-0.00048828125)">
+   <path d="M 580,1141 L 1163,571 580,0 -4,571 580,1141 Z"/>
   </g>
+  <g id="bullet-char-template-57354" transform="scale(0.00048828125,-0.00048828125)">
+   <path d="M 8,1128 L 1137,1128 1137,0 8,0 8,1128 Z"/>
+  </g>
+  <g id="bullet-char-template-10146" transform="scale(0.00048828125,-0.00048828125)">
+   <path d="M 174,0 L 602,739 174,1481 1456,739 174,0 Z M 1358,739 L 309,1346 659,739 1358,739 Z"/>
+  </g>
+  <g id="bullet-char-template-10132" transform="scale(0.00048828125,-0.00048828125)">
+   <path d="M 2015,739 L 1276,0 717,0 1260,543 174,543 174,936 1260,936 717,1481 1274,1481 2015,739 Z"/>
+  </g>
+  <g id="bullet-char-template-10007" transform="scale(0.00048828125,-0.00048828125)">
+   <path d="M 0,-2 C -7,14 -16,27 -25,37 L 356,567 C 262,823 215,952 215,954 215,979 228,992 255,992 264,992 276,990 289,987 310,991 331,999 354,1012 L 381,999 492,748 772,1049 836,1024 860,1049 C 881,1039 901,1025 922,1006 886,937 835,863 770,784 769,783 710,716 594,584 L 774,223 C 774,196 753,168 711,139 L 727,119 C 717,90 699,76 672,76 641,76 570,178 457,381 L 164,-76 C 142,-110 111,-127 72,-127 30,-127 9,-110 8,-76 1,-67 -2,-52 -2,-32 -2,-23 -1,-13 0,-2 Z"/>
+  </g>
+  <g id="bullet-char-template-10004" transform="scale(0.00048828125,-0.00048828125)">
+   <path d="M 285,-33 C 182,-33 111,30 74,156 52,228 41,333 41,471 41,549 55,616 82,672 116,743 169,778 240,778 293,778 328,747 346,684 L 369,508 C 377,444 397,411 428,410 L 1163,1116 C 1174,1127 1196,1133 1229,1133 1271,1133 1292,1118 1292,1087 L 1292,965 C 1292,929 1282,901 1262,881 L 442,47 C 390,-6 338,-33 285,-33 Z"/>
+  </g>
+  <g id="bullet-char-template-9679" transform="scale(0.00048828125,-0.00048828125)">
+   <path d="M 813,0 C 632,0 489,54 383,161 276,268 223,411 223,592 223,773 276,916 383,1023 489,1130 632,1184 813,1184 992,1184 1136,1130 1245,1023 1353,916 1407,772 1407,592 1407,412 1353,268 1245,161 1136,54 992,0 813,0 Z"/>
+  </g>
+  <g id="bullet-char-template-8226" transform="scale(0.00048828125,-0.00048828125)">
+   <path d="M 346,457 C 273,457 209,483 155,535 101,586 74,649 74,723 74,796 101,859 155,911 209,963 273,989 346,989 419,989 480,963 531,910 582,859 608,796 608,723 608,648 583,586 532,535 482,483 420,457 346,457 Z"/>
+  </g>
+  <g id="bullet-char-template-8211" transform="scale(0.00048828125,-0.00048828125)">
+   <path d="M -4,459 L 1135,459 1135,606 -4,606 -4,459 Z"/>
+  </g>
+  <g id="bullet-char-template-61548" transform="scale(0.00048828125,-0.00048828125)">
+   <path d="M 173,740 C 173,903 231,1043 346,1159 462,1274 601,1332 765,1332 928,1332 1067,1274 1183,1159 1299,1043 1357,903 1357,740 1357,577 1299,437 1183,322 1067,206 928,148 765,148 601,148 462,206 346,322 231,437 173,577 173,740 Z"/>
+  </g>
+ </defs>
+ <defs class="TextEmbeddedBitmaps"/>
+ <g>
+  <g id="id2" class="Master_Slide">
+   <g id="bg-id2" class="Background"/>
+   <g id="bo-id2" class="BackgroundObjects"/>
+  </g>
+ </g>
+ <g class="SlideGroup">
+  <g>
+   <g id="container-id1">
+    <g id="id1" class="Slide" clip-path="url(#presentation_clip_path)">
+     <g class="Page">
+      <g class="Group">
+       <g class="com.sun.star.drawing.ClosedBezierShape">
+        <g id="id3">
+         <rect class="BoundingBox" stroke="none" fill="none" x="19313" y="74369" width="13176" height="12771"/>
+         <path fill="rgb(0,0,0)" fill-opacity="0.188" stroke="rgb(255,255,255)" stroke-opacity="0.188" d="M 31995,80752 C 31995,81840 31739,82760 31178,83700 30617,84638 29919,85314 28946,85855 27977,86398 27022,86646 25901,86646 24779,86646 23824,86398 22852,85855 21883,85314 21184,84638 20623,83700 20062,82760 19806,81840 19806,80752 19806,79668 20062,78748 20623,77807 21184,76870 21883,76194 22852,75650 23824,75109 24779,74862 25901,74862 27022,74862 27977,75109 28946,75650 29919,76194 30617,76870 31178,77807 31739,78748 31995,79668 31995,80752 Z"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="985" stroke-linejoin="miter" d="M 31995,80752 C 31995,81840 31739,82760 31178,83700 30617,84638 29919,85314 28946,85855 27977,86398 27022,86646 25901,86646 24779,86646 23824,86398 22852,85855 21883,85314 21184,84638 20623,83700 20062,82760 19806,81840 19806,80752 19806,79668 20062,78748 20623,77807 21184,76870 21883,76194 22852,75650 23824,75109 24779,74862 25901,74862 27022,74862 27977,75109 28946,75650 29919,76194 30617,76870 31178,77807 31739,78748 31995,79668 31995,80752 Z"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.ClosedBezierShape">
+        <g id="id4">
+         <rect class="BoundingBox" stroke="none" fill="none" x="35482" y="74369" width="13176" height="12771"/>
+         <path fill="rgb(0,0,0)" fill-opacity="0.188" stroke="rgb(255,255,255)" stroke-opacity="0.188" d="M 48164,80752 C 48164,81840 47908,82760 47347,83700 46786,84638 46088,85314 45115,85855 44146,86398 43191,86646 42070,86646 40948,86646 39993,86398 39021,85855 38052,85314 37353,84638 36792,83700 36231,82760 35975,81840 35975,80752 35975,79668 36231,78748 36792,77807 37353,76870 38052,76194 39021,75650 39993,75109 40948,74862 42070,74862 43191,74862 44146,75109 45115,75650 46088,76194 46786,76870 47347,77807 47908,78748 48164,79668 48164,80752 Z"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="985" stroke-linejoin="miter" d="M 48164,80752 C 48164,81840 47908,82760 47347,83700 46786,84638 46088,85314 45115,85855 44146,86398 43191,86646 42070,86646 40948,86646 39993,86398 39021,85855 38052,85314 37353,84638 36792,83700 36231,82760 35975,81840 35975,80752 35975,79668 36231,78748 36792,77807 37353,76870 38052,76194 39021,75650 39993,75109 40948,74862 42070,74862 43191,74862 44146,75109 45115,75650 46088,76194 46786,76870 47347,77807 47908,78748 48164,79668 48164,80752 Z"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.ClosedBezierShape">
+        <g id="id5">
+         <rect class="BoundingBox" stroke="none" fill="none" x="68759" y="74142" width="13176" height="12771"/>
+         <path fill="rgb(0,0,0)" fill-opacity="0.188" stroke="rgb(255,255,255)" stroke-opacity="0.188" d="M 81441,80525 C 81441,81613 81185,82533 80624,83473 80063,84411 79365,85087 78392,85628 77423,86171 76468,86419 75347,86419 74225,86419 73270,86171 72298,85628 71329,85087 70630,84411 70069,83473 69508,82533 69252,81613 69252,80525 69252,79441 69508,78521 70069,77580 70630,76643 71329,75967 72298,75423 73270,74882 74225,74635 75347,74635 76468,74635 77423,74882 78392,75423 79365,75967 80063,76643 80624,77580 81185,78521 81441,79441 81441,80525 Z"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="985" stroke-linejoin="miter" d="M 81441,80525 C 81441,81613 81185,82533 80624,83473 80063,84411 79365,85087 78392,85628 77423,86171 76468,86419 75347,86419 74225,86419 73270,86171 72298,85628 71329,85087 70630,84411 70069,83473 69508,82533 69252,81613 69252,80525 69252,79441 69508,78521 70069,77580 70630,76643 71329,75967 72298,75423 73270,74882 74225,74635 75347,74635 76468,74635 77423,74882 78392,75423 79365,75967 80063,76643 80624,77580 81185,78521 81441,79441 81441,80525 Z"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.ClosedBezierShape">
+        <g id="id6">
+         <rect class="BoundingBox" stroke="none" fill="none" x="52121" y="74823" width="13176" height="12771"/>
+         <path fill="rgb(0,0,0)" fill-opacity="0.188" stroke="rgb(255,255,255)" stroke-opacity="0.188" d="M 64803,81206 C 64803,82294 64547,83214 63986,84154 63425,85092 62727,85768 61754,86309 60785,86852 59830,87100 58709,87100 57587,87100 56632,86852 55660,86309 54691,85768 53992,85092 53431,84154 52870,83214 52614,82294 52614,81206 52614,80122 52870,79202 53431,78261 53992,77324 54691,76648 55660,76104 56632,75563 57587,75316 58709,75316 59830,75316 60785,75563 61754,76104 62727,76648 63425,77324 63986,78261 64547,79202 64803,80122 64803,81206 Z"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="985" stroke-linejoin="miter" d="M 64803,81206 C 64803,82294 64547,83214 63986,84154 63425,85092 62727,85768 61754,86309 60785,86852 59830,87100 58709,87100 57587,87100 56632,86852 55660,86309 54691,85768 53992,85092 53431,84154 52870,83214 52614,82294 52614,81206 52614,80122 52870,79202 53431,78261 53992,77324 54691,76648 55660,76104 56632,75563 57587,75316 58709,75316 59830,75316 60785,75563 61754,76104 62727,76648 63425,77324 63986,78261 64547,79202 64803,80122 64803,81206 Z"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.ClosedBezierShape">
+        <g id="id7">
+         <rect class="BoundingBox" stroke="none" fill="none" x="2907" y="43787" width="13176" height="12771"/>
+         <path fill="rgb(0,0,0)" fill-opacity="0.188" stroke="rgb(255,255,255)" stroke-opacity="0.188" d="M 15589,50170 C 15589,51258 15333,52178 14772,53118 14211,54056 13513,54732 12540,55273 11571,55816 10616,56064 9495,56064 8373,56064 7418,55816 6446,55273 5477,54732 4778,54056 4217,53118 3656,52178 3400,51258 3400,50170 3400,49086 3656,48166 4217,47225 4778,46288 5477,45612 6446,45068 7418,44527 8373,44280 9495,44280 10616,44280 11571,44527 12540,45068 13513,45612 14211,46288 14772,47225 15333,48166 15589,49086 15589,50170 Z"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="985" stroke-linejoin="miter" d="M 15589,50170 C 15589,51258 15333,52178 14772,53118 14211,54056 13513,54732 12540,55273 11571,55816 10616,56064 9495,56064 8373,56064 7418,55816 6446,55273 5477,54732 4778,54056 4217,53118 3656,52178 3400,51258 3400,50170 3400,49086 3656,48166 4217,47225 4778,46288 5477,45612 6446,45068 7418,44527 8373,44280 9495,44280 10616,44280 11571,44527 12540,45068 13513,45612 14211,46288 14772,47225 15333,48166 15589,49086 15589,50170 Z"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.ClosedBezierShape">
+        <g id="id8">
+         <rect class="BoundingBox" stroke="none" fill="none" x="19077" y="43787" width="13176" height="12771"/>
+         <path fill="rgb(0,0,0)" fill-opacity="0.188" stroke="rgb(255,255,255)" stroke-opacity="0.188" d="M 31759,50170 C 31759,51258 31503,52178 30942,53118 30381,54056 29683,54732 28710,55273 27741,55816 26786,56064 25665,56064 24543,56064 23588,55816 22616,55273 21647,54732 20948,54056 20387,53118 19826,52178 19570,51258 19570,50170 19570,49086 19826,48166 20387,47225 20948,46288 21647,45612 22616,45068 23588,44527 24543,44280 25665,44280 26786,44280 27741,44527 28710,45068 29683,45612 30381,46288 30942,47225 31503,48166 31759,49086 31759,50170 Z"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="985" stroke-linejoin="miter" d="M 31759,50170 C 31759,51258 31503,52178 30942,53118 30381,54056 29683,54732 28710,55273 27741,55816 26786,56064 25665,56064 24543,56064 23588,55816 22616,55273 21647,54732 20948,54056 20387,53118 19826,52178 19570,51258 19570,50170 19570,49086 19826,48166 20387,47225 20948,46288 21647,45612 22616,45068 23588,44527 24543,44280 25665,44280 26786,44280 27741,44527 28710,45068 29683,45612 30381,46288 30942,47225 31503,48166 31759,49086 31759,50170 Z"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.ClosedBezierShape">
+        <g id="id9">
+         <rect class="BoundingBox" stroke="none" fill="none" x="35246" y="43784" width="13176" height="12771"/>
+         <path fill="rgb(0,0,0)" fill-opacity="0.188" stroke="rgb(255,255,255)" stroke-opacity="0.188" d="M 47928,50167 C 47928,51255 47672,52175 47111,53115 46550,54053 45852,54729 44879,55270 43910,55813 42955,56061 41834,56061 40712,56061 39757,55813 38785,55270 37816,54729 37117,54053 36556,53115 35995,52175 35739,51255 35739,50167 35739,49083 35995,48163 36556,47222 37117,46285 37816,45609 38785,45065 39757,44524 40712,44277 41834,44277 42955,44277 43910,44524 44879,45065 45852,45609 46550,46285 47111,47222 47672,48163 47928,49083 47928,50167 Z"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="985" stroke-linejoin="miter" d="M 47928,50167 C 47928,51255 47672,52175 47111,53115 46550,54053 45852,54729 44879,55270 43910,55813 42955,56061 41834,56061 40712,56061 39757,55813 38785,55270 37816,54729 37117,54053 36556,53115 35995,52175 35739,51255 35739,50167 35739,49083 35995,48163 36556,47222 37117,46285 37816,45609 38785,45065 39757,44524 40712,44277 41834,44277 42955,44277 43910,44524 44879,45065 45852,45609 46550,46285 47111,47222 47672,48163 47928,49083 47928,50167 Z"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.ClosedBezierShape">
+        <g id="id10">
+         <rect class="BoundingBox" stroke="none" fill="none" x="84693" y="44011" width="13176" height="12771"/>
+         <path fill="rgb(0,0,0)" fill-opacity="0.188" stroke="rgb(255,255,255)" stroke-opacity="0.188" d="M 97375,50394 C 97375,51482 97119,52402 96558,53342 95997,54280 95299,54956 94326,55497 93357,56040 92402,56288 91281,56288 90159,56288 89204,56040 88232,55497 87263,54956 86564,54280 86003,53342 85442,52402 85186,51482 85186,50394 85186,49310 85442,48390 86003,47449 86564,46512 87263,45836 88232,45292 89204,44751 90159,44504 91281,44504 92402,44504 93357,44751 94326,45292 95299,45836 95997,46512 96558,47449 97119,48390 97375,49310 97375,50394 Z"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="985" stroke-linejoin="miter" d="M 97375,50394 C 97375,51482 97119,52402 96558,53342 95997,54280 95299,54956 94326,55497 93357,56040 92402,56288 91281,56288 90159,56288 89204,56040 88232,55497 87263,54956 86564,54280 86003,53342 85442,52402 85186,51482 85186,50394 85186,49310 85442,48390 86003,47449 86564,46512 87263,45836 88232,45292 89204,44751 90159,44504 91281,44504 92402,44504 93357,44751 94326,45292 95299,45836 95997,46512 96558,47449 97119,48390 97375,49310 97375,50394 Z"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.ClosedBezierShape">
+        <g id="id11">
+         <rect class="BoundingBox" stroke="none" fill="none" x="68523" y="43560" width="13176" height="12771"/>
+         <path fill="rgb(0,0,0)" fill-opacity="0.188" stroke="rgb(255,255,255)" stroke-opacity="0.188" d="M 81205,49943 C 81205,51031 80949,51951 80388,52891 79827,53829 79129,54505 78156,55046 77187,55589 76232,55837 75111,55837 73989,55837 73034,55589 72062,55046 71093,54505 70394,53829 69833,52891 69272,51951 69016,51031 69016,49943 69016,48859 69272,47939 69833,46998 70394,46061 71093,45385 72062,44841 73034,44300 73989,44053 75111,44053 76232,44053 77187,44300 78156,44841 79129,45385 79827,46061 80388,46998 80949,47939 81205,48859 81205,49943 Z"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="985" stroke-linejoin="miter" d="M 81205,49943 C 81205,51031 80949,51951 80388,52891 79827,53829 79129,54505 78156,55046 77187,55589 76232,55837 75111,55837 73989,55837 73034,55589 72062,55046 71093,54505 70394,53829 69833,52891 69272,51951 69016,51031 69016,49943 69016,48859 69272,47939 69833,46998 70394,46061 71093,45385 72062,44841 73034,44300 73989,44053 75111,44053 76232,44053 77187,44300 78156,44841 79129,45385 79827,46061 80388,46998 80949,47939 81205,48859 81205,49943 Z"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.ClosedBezierShape">
+        <g id="id12">
+         <rect class="BoundingBox" stroke="none" fill="none" x="51885" y="44238" width="13176" height="12771"/>
+         <path fill="rgb(0,0,0)" fill-opacity="0.188" stroke="rgb(255,255,255)" stroke-opacity="0.188" d="M 64567,50621 C 64567,51709 64311,52629 63750,53569 63189,54507 62491,55183 61518,55724 60549,56267 59594,56515 58473,56515 57351,56515 56396,56267 55424,55724 54455,55183 53756,54507 53195,53569 52634,52629 52378,51709 52378,50621 52378,49537 52634,48617 53195,47676 53756,46739 54455,46063 55424,45519 56396,44978 57351,44731 58473,44731 59594,44731 60549,44978 61518,45519 62491,46063 63189,46739 63750,47676 64311,48617 64567,49537 64567,50621 Z"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="985" stroke-linejoin="miter" d="M 64567,50621 C 64567,51709 64311,52629 63750,53569 63189,54507 62491,55183 61518,55724 60549,56267 59594,56515 58473,56515 57351,56515 56396,56267 55424,55724 54455,55183 53756,54507 53195,53569 52634,52629 52378,51709 52378,50621 52378,49537 52634,48617 53195,47676 53756,46739 54455,46063 55424,45519 56396,44978 57351,44731 58473,44731 59594,44731 60549,44978 61518,45519 62491,46063 63189,46739 63750,47676 64311,48617 64567,49537 64567,50621 Z"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.ClosedBezierShape">
+        <g id="id13">
+         <rect class="BoundingBox" stroke="none" fill="none" x="35246" y="11390" width="13176" height="12771"/>
+         <path fill="rgb(0,0,0)" fill-opacity="0.188" stroke="rgb(255,255,255)" stroke-opacity="0.188" d="M 47928,17773 C 47928,18861 47672,19781 47111,20721 46550,21659 45852,22335 44879,22876 43910,23419 42955,23667 41834,23667 40712,23667 39757,23419 38785,22876 37816,22335 37117,21659 36556,20721 35995,19781 35739,18861 35739,17773 35739,16689 35995,15769 36556,14828 37117,13891 37816,13215 38785,12671 39757,12130 40712,11883 41834,11883 42955,11883 43910,12130 44879,12671 45852,13215 46550,13891 47111,14828 47672,15769 47928,16689 47928,17773 Z"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="985" stroke-linejoin="miter" d="M 47928,17773 C 47928,18861 47672,19781 47111,20721 46550,21659 45852,22335 44879,22876 43910,23419 42955,23667 41834,23667 40712,23667 39757,23419 38785,22876 37816,22335 37117,21659 36556,20721 35995,19781 35739,18861 35739,17773 35739,16689 35995,15769 36556,14828 37117,13891 37816,13215 38785,12671 39757,12130 40712,11883 41834,11883 42955,11883 43910,12130 44879,12671 45852,13215 46550,13891 47111,14828 47672,15769 47928,16689 47928,17773 Z"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.ClosedBezierShape">
+        <g id="id14">
+         <rect class="BoundingBox" stroke="none" fill="none" x="51885" y="11842" width="13176" height="12771"/>
+         <path fill="rgb(0,0,0)" fill-opacity="0.188" stroke="rgb(255,255,255)" stroke-opacity="0.188" d="M 64567,18225 C 64567,19313 64311,20233 63750,21173 63189,22111 62491,22787 61518,23328 60549,23871 59594,24119 58473,24119 57351,24119 56396,23871 55424,23328 54455,22787 53756,22111 53195,21173 52634,20233 52378,19313 52378,18225 52378,17141 52634,16221 53195,15280 53756,14343 54455,13667 55424,13123 56396,12582 57351,12335 58473,12335 59594,12335 60549,12582 61518,13123 62491,13667 63189,14343 63750,15280 64311,16221 64567,17141 64567,18225 Z"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="985" stroke-linejoin="miter" d="M 64567,18225 C 64567,19313 64311,20233 63750,21173 63189,22111 62491,22787 61518,23328 60549,23871 59594,24119 58473,24119 57351,24119 56396,23871 55424,23328 54455,22787 53756,22111 53195,21173 52634,20233 52378,19313 52378,18225 52378,17141 52634,16221 53195,15280 53756,14343 54455,13667 55424,13123 56396,12582 57351,12335 58473,12335 59594,12335 60549,12582 61518,13123 62491,13667 63189,14343 63750,15280 64311,16221 64567,17141 64567,18225 Z"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.LineShape">
+        <g id="id15">
+         <rect class="BoundingBox" stroke="none" fill="none" x="13575" y="21860" width="24182" height="24222"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="422" stroke-linejoin="miter" d="M 13725,45931 L 37606,22010"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.LineShape">
+        <g id="id16">
+         <rect class="BoundingBox" stroke="none" fill="none" x="14429" y="21344" width="39113" height="25714"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="422" stroke-linejoin="miter" d="M 53425,21521 L 14545,46880"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.LineShape">
+        <g id="id17">
+         <rect class="BoundingBox" stroke="none" fill="none" x="28121" y="22982" width="11257" height="21981"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="422" stroke-linejoin="miter" d="M 28310,44867 L 39188,23077"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.LineShape">
+        <g id="id18">
+         <rect class="BoundingBox" stroke="none" fill="none" x="29807" y="22255" width="24523" height="23892"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="422" stroke-linejoin="miter" d="M 29955,45994 L 54181,22407"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.LineShape">
+        <g id="id19">
+         <rect class="BoundingBox" stroke="none" fill="none" x="41623" y="23664" width="423" height="20617"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="422" stroke-linejoin="miter" d="M 41834,44280 L 41834,23664"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.LineShape">
+        <g id="id20">
+         <rect class="BoundingBox" stroke="none" fill="none" x="58261" y="24115" width="423" height="20617"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="422" stroke-linejoin="miter" d="M 58472,44731 L 58472,24115"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.LineShape">
+        <g id="id21">
+         <rect class="BoundingBox" stroke="none" fill="none" x="44387" y="23387" width="11536" height="21621"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="422" stroke-linejoin="miter" d="M 44575,44909 L 55734,23485"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.LineShape">
+        <g id="id22">
+         <rect class="BoundingBox" stroke="none" fill="none" x="44323" y="22967" width="11662" height="22466"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="422" stroke-linejoin="miter" d="M 55795,45336 L 44512,23063"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.LineShape">
+        <g id="id23">
+         <rect class="BoundingBox" stroke="none" fill="none" x="45995" y="21786" width="24958" height="24148"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="422" stroke-linejoin="miter" d="M 70805,45781 L 46142,21938"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.LineShape">
+        <g id="id24">
+         <rect class="BoundingBox" stroke="none" fill="none" x="61041" y="23381" width="11506" height="21411"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="422" stroke-linejoin="miter" d="M 72359,44692 L 61228,23480"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.LineShape">
+        <g id="id25">
+         <rect class="BoundingBox" stroke="none" fill="none" x="46750" y="20915" width="39618" height="26341"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="422" stroke-linejoin="miter" d="M 86250,47078 L 46867,21092"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.LineShape">
+        <g id="id26">
+         <rect class="BoundingBox" stroke="none" fill="none" x="62601" y="22270" width="24552" height="24086"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="422" stroke-linejoin="miter" d="M 87004,46204 L 62749,22421"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.LineShape">
+        <g id="id27">
+         <rect class="BoundingBox" stroke="none" fill="none" x="12113" y="55299" width="11170" height="20328"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="422" stroke-linejoin="miter" d="M 23096,75526 L 12299,55399"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.LineShape">
+        <g id="id28">
+         <rect class="BoundingBox" stroke="none" fill="none" x="25499" y="56056" width="570" height="18812"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="422" stroke-linejoin="miter" d="M 25857,74865 L 25710,56058"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.LineShape">
+        <g id="id29">
+         <rect class="BoundingBox" stroke="none" fill="none" x="28450" y="55330" width="10835" height="20264"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="422" stroke-linejoin="miter" d="M 28638,75495 L 39096,55428"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.LineShape">
+        <g id="id30">
+         <rect class="BoundingBox" stroke="none" fill="none" x="30157" y="54539" width="24060" height="22299"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="422" stroke-linejoin="miter" d="M 30301,76682 L 54072,54694"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.LineShape">
+        <g id="id31">
+         <rect class="BoundingBox" stroke="none" fill="none" x="30899" y="52965" width="39211" height="24769"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="422" stroke-linejoin="miter" d="M 31011,77554 L 69997,53144"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.LineShape">
+        <g id="id32">
+         <rect class="BoundingBox" stroke="none" fill="none" x="31302" y="52754" width="54578" height="25646"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="422" stroke-linejoin="miter" d="M 31391,78207 L 85790,52946"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.LineShape">
+        <g id="id33">
+         <rect class="BoundingBox" stroke="none" fill="none" x="13718" y="54118" width="24126" height="22688"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="422" stroke-linejoin="miter" d="M 37698,76651 L 13863,54272"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.LineShape">
+        <g id="id34">
+         <rect class="BoundingBox" stroke="none" fill="none" x="28282" y="55299" width="11170" height="20328"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="422" stroke-linejoin="miter" d="M 39265,75526 L 28468,55399"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.LineShape">
+        <g id="id35">
+         <rect class="BoundingBox" stroke="none" fill="none" x="41669" y="56056" width="570" height="18812"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="422" stroke-linejoin="miter" d="M 42027,74865 L 41880,56058"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.LineShape">
+        <g id="id36">
+         <rect class="BoundingBox" stroke="none" fill="none" x="44720" y="55732" width="11104" height="19913"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="422" stroke-linejoin="miter" d="M 44906,75543 L 55637,55833"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.LineShape">
+        <g id="id37">
+         <rect class="BoundingBox" stroke="none" fill="none" x="46309" y="53875" width="24564" height="22946"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="422" stroke-linejoin="miter" d="M 46453,76665 L 70728,54030"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.LineShape">
+        <g id="id38">
+         <rect class="BoundingBox" stroke="none" fill="none" x="47093" y="53384" width="39166" height="24385"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="422" stroke-linejoin="miter" d="M 47204,77588 L 86147,53564"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.LineShape">
+        <g id="id39">
+         <rect class="BoundingBox" stroke="none" fill="none" x="14484" y="53207" width="39236" height="24962"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="422" stroke-linejoin="miter" d="M 14597,53386 L 53606,77989"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.LineShape">
+        <g id="id40">
+         <rect class="BoundingBox" stroke="none" fill="none" x="29888" y="54121" width="24597" height="23140"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="422" stroke-linejoin="miter" d="M 30033,54275 L 54339,77106"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.LineShape">
+        <g id="id41">
+         <rect class="BoundingBox" stroke="none" fill="none" x="44481" y="55281" width="11578" height="20813"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="422" stroke-linejoin="miter" d="M 44667,55382 L 55872,75992"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.LineShape">
+        <g id="id42">
+         <rect class="BoundingBox" stroke="none" fill="none" x="58307" y="56510" width="570" height="18812"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="422" stroke-linejoin="miter" d="M 58518,56512 L 58665,75319"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.LineShape">
+        <g id="id43">
+         <rect class="BoundingBox" stroke="none" fill="none" x="61277" y="55096" width="11270" height="20959"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="422" stroke-linejoin="miter" d="M 72359,55195 L 61464,75955"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.LineShape">
+        <g id="id44">
+         <rect class="BoundingBox" stroke="none" fill="none" x="62918" y="54359" width="24157" height="22884"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="422" stroke-linejoin="miter" d="M 86929,54513 L 63063,77088"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.LineShape">
+        <g id="id45">
+         <rect class="BoundingBox" stroke="none" fill="none" x="14905" y="52512" width="55033" height="25675"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="422" stroke-linejoin="miter" d="M 14994,52704 L 69848,77994"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.LineShape">
+        <g id="id46">
+         <rect class="BoundingBox" stroke="none" fill="none" x="30704" y="53136" width="39606" height="24428"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="422" stroke-linejoin="miter" d="M 30815,53317 L 70198,77382"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.LineShape">
+        <g id="id47">
+         <rect class="BoundingBox" stroke="none" fill="none" x="46138" y="54040" width="24908" height="22620"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="422" stroke-linejoin="miter" d="M 46280,54197 L 70903,76502"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.LineShape">
+        <g id="id48">
+         <rect class="BoundingBox" stroke="none" fill="none" x="61205" y="55689" width="11411" height="19775"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="422" stroke-linejoin="miter" d="M 61389,55793 L 72431,75359"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.LineShape">
+        <g id="id49">
+         <rect class="BoundingBox" stroke="none" fill="none" x="74946" y="55831" width="570" height="18812"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="422" stroke-linejoin="miter" d="M 75157,55833 L 75304,74640"/>
+        </g>
+       </g>
+       <g class="com.sun.star.drawing.LineShape">
+        <g id="id50">
+         <rect class="BoundingBox" stroke="none" fill="none" x="77932" y="55542" width="10767" height="19843"/>
+         <path fill="none" stroke="rgb(0,0,0)" stroke-width="422" stroke-linejoin="miter" d="M 88511,55641 L 78119,75285"/>
+        </g>
+       </g>
+      </g>
+     </g>
+    </g>
+   </g>
+  </g>
+ </g>
 </svg>
