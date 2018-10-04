@@ -228,7 +228,8 @@ public abstract class Engine {
     // NOTE: for external algorithms the model will be null
     // or a string at this point, if that is the case, we 
     // do not save the info file here, but expect saveModel to do this!
-    if(info.modelClass==null) {
+    if(model==null) {
+      System.err.println("DEBUG: Not saving the info file in saveEngine because modelClass is null");
       // do nothing
     } else {
       info.modelClass = model.getClass().getName();
