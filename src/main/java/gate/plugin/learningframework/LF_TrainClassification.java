@@ -83,7 +83,8 @@ public class LF_TrainClassification extends LearningFrameworkPRBase {
   private java.net.URL featureSpecURL;
 
   @RunTime
-  @CreoleParameter(comment = "The feature specification file.")
+  @Optional
+  @CreoleParameter(comment = "The feature specification file. If empty, only use [InstanceAnnotation].string")
   public void setFeatureSpecURL(URL featureSpecURL) {
     this.featureSpecURL = featureSpecURL;
   }
@@ -225,14 +226,45 @@ public class LF_TrainClassification extends LearningFrameworkPRBase {
 
     if (getDuplicateId() == 0) {
       // Read and parse the feature specification
-      featureSpec = new FeatureSpecification(featureSpecURL);
-      System.err.println("DEBUG Read the feature specification: " + featureSpec);
+      if (featureSpecURL==null) {
+        // Find a good default: there are two situations: if we have a sequence 
+        // annotation, then we probably need the string of the instance annotation.
+        // If we do not have a sequence annotation, we probably want to do text classification
+        // and the instance is something that covers the text, so we want the Token.string
+        // within the instance annotation.
+        String featureSpecDefaultString;
+        if (getSequenceSpan()==null || getSequenceSpan().isEmpty()) {
+          featureSpecDefaultString = "<ML-CONFIG>\n" +
+            "<NGRAM>\n" +
+            "<NUMBER>1</NUMBER>\n" +
+            "<TYPE>Token</TYPE>\n" +
+            "<FEATURE>string</FEATURE>\n" +
+            // "<EMBEDDINGS><ID>token</ID><TRAIN>yes</TRAIN><DIMS>50</DIMS><MINFREQ>3</MINFREQ></EMBEDDINGS>\n" +
+            "</NGRAM>\n" +
+            "</ML-CONFIG>";
+        } else {
+          featureSpecDefaultString = "<ML-CONFIG>\n" +
+            "<ATTRIBUTE>\n" +
+            "<FEATURE>string</FEATURE>\n" +
+            "<DATATYPE>nominal</DATATYPE>" +
+            // "<EMBEDDINGS><ID>token</ID><TRAIN>yes</TRAIN><DIMS>50</DIMS><MINFREQ>3</MINFREQ></EMBEDDINGS>\n" +
+            "</ATTRIBUTE>\n" +
+            "</ML-CONFIG>";
+          
+        }
+        featureSpec = new FeatureSpecification(featureSpecDefaultString);
+        System.out.println("Using default feature specification: " + featureSpec);
+      } else {
+        featureSpec = new FeatureSpecification(featureSpecURL);
+        System.out.println("Read the feature specification: " + featureSpec);
+      }
+      
       // Create the engine from the Algorithm parameter
       FeatureInfo fi = featureSpec.getFeatureInfo();
       fi.setGlobalScalingMethod(scaleFeatures);
       engine = Engine.create(trainingAlgorithm, getAlgorithmParameters(), fi, TargetType.NOMINAL, dataDirectory);
       corpusRepresentation = engine.getCorpusRepresentation();
-      System.err.println("DEBUG: created the engine: " + engine + " with CR=" + corpusRepresentation);
+      System.out.println("Created the engine: " + engine + " with CR=" + corpusRepresentation);
       getSharedData().put("engine", engine);
       getSharedData().put("featureSpec", featureSpec);
       getSharedData().put("corpusRepresentation", corpusRepresentation);
