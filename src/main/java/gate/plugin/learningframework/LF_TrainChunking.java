@@ -82,6 +82,7 @@ public class LF_TrainChunking extends LearningFrameworkPRBase {
   private java.net.URL featureSpecURL;
 
   @RunTime
+  @Optional
   @CreoleParameter(comment = "The feature specification file.")
   public void setFeatureSpecURL(URL featureSpecURL) {
     this.featureSpecURL = featureSpecURL;
@@ -255,7 +256,38 @@ public class LF_TrainChunking extends LearningFrameworkPRBase {
     }
     
     if (getDuplicateId() == 0) {
-      featureSpec = new FeatureSpecification(featureSpecURL);
+      if (featureSpecURL==null) {
+        // Find a good default: there are two situations: if we have a sequence 
+        // annotation, then we probably need the string of the instance annotation.
+        // If we do not have a sequence annotation, we probably want to do text classification
+        // and the instance is something that covers the text, so we want the Token.string
+        // within the instance annotation.
+        String featureSpecDefaultString;
+        if (getSequenceSpan()==null || getSequenceSpan().isEmpty()) {
+          featureSpecDefaultString = "<ML-CONFIG>\n" +
+            "<NGRAM>\n" +
+            "<NUMBER>1</NUMBER>\n" +
+            "<TYPE>Token</TYPE>\n" +
+            "<FEATURE>string</FEATURE>\n" +
+            // "<EMBEDDINGS><ID>token</ID><TRAIN>yes</TRAIN><DIMS>50</DIMS><MINFREQ>3</MINFREQ></EMBEDDINGS>\n" +
+            "</NGRAM>\n" +
+            "</ML-CONFIG>";
+        } else {
+          featureSpecDefaultString = "<ML-CONFIG>\n" +
+            "<ATTRIBUTE>\n" +
+            "<DATATYPE>nominal</DATATYPE>" +
+            "<FEATURE>string</FEATURE>\n" +
+            // "<EMBEDDINGS><ID>token</ID><TRAIN>yes</TRAIN><DIMS>50</DIMS><MINFREQ>3</MINFREQ></EMBEDDINGS>\n" +
+            "</ATTRIBUTE>\n" +
+            "</ML-CONFIG>";
+          
+        }
+        featureSpec = new FeatureSpecification(featureSpecDefaultString);
+        System.out.println("Using default feature specification: " + featureSpec);
+      } else {
+        featureSpec = new FeatureSpecification(featureSpecURL);
+        System.out.println("Read the feature specification: " + featureSpec);
+      }
       FeatureInfo fi = featureSpec.getFeatureInfo();
       fi.setGlobalScalingMethod(scaleFeatures);
       engine = Engine.create(trainingAlgorithm, getAlgorithmParameters(), fi, TargetType.NOMINAL, dataDirectory);
