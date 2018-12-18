@@ -52,7 +52,7 @@ public class LF_EvaluateClassification extends LearningFrameworkPRBase {
 
   private static final long serialVersionUID = -3542195765685547360L;
 
-  private final transient Logger logger = Logger.getLogger(LF_EvaluateClassification.class.getCanonicalName());
+  private final Logger logger = Logger.getLogger(LF_EvaluateClassification.class.getCanonicalName());
 
   /**
    * The configuration file.
