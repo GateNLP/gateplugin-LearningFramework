@@ -52,13 +52,13 @@ public class LF_EvaluateClassification extends LearningFrameworkPRBase {
 
   private static final long serialVersionUID = -3542195765685547360L;
 
-  private final Logger logger = Logger.getLogger(LF_EvaluateClassification.class.getCanonicalName());
+  private final transient Logger logger = Logger.getLogger(LF_EvaluateClassification.class.getCanonicalName());
 
   /**
    * The configuration file.
    *
    */
-  private transient java.net.URL featureSpecURL = null;
+  private java.net.URL featureSpecURL = null;
 
   @RunTime
   @CreoleParameter(comment = "The feature specification file.")
@@ -108,10 +108,10 @@ public class LF_EvaluateClassification extends LearningFrameworkPRBase {
     return this.targetFeature;
   }
 
-  private CorpusRepresentation corpusRepresentation = null;
-  private FeatureSpecification featureSpec = null;
+  private transient CorpusRepresentation corpusRepresentation = null;
+  private transient FeatureSpecification featureSpec = null;
 
-  private Engine engine = null;
+  private transient Engine engine = null;
 
   protected String sequenceSpan;
 
