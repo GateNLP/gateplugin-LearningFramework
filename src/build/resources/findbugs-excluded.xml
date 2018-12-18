@@ -1,0 +1,26 @@
+<FindBugsFilter>
+   <Match>
+      <Or>
+         <!--
+         The warnings about logger not being Serializable are silly. 
+         -->
+         <Bug pattern="SE_BAD_FIELD" />
+         <!-- yes, when I do this I do it deliberately and for performance reasosns,
+              do not break my build because of this. -->
+         <Bug pattern="EI_EXPOSE_REP" />
+
+         <!--
+         No I do not want to create a separate class for the Thread
+         -->
+         <Bug pattern="SIC_INNER_SHOULD_BE_STATIC_ANON" />
+      </Or>
+   </Match>
+
+   <Match>
+      <Or>
+         <!-- Not written by me, will be replaced anyway --> 
+         <Package name="~org\.apache\.commons.*" />
+      </Or>
+   </Match>
+</FindBugsFilter>
+
