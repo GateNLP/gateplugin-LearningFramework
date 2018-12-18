@@ -58,7 +58,7 @@ public class LF_EvaluateClassification extends LearningFrameworkPRBase {
    * The configuration file.
    *
    */
-  private java.net.URL featureSpecURL;
+  private transient java.net.URL featureSpecURL = null;
 
   @RunTime
   @CreoleParameter(comment = "The feature specification file.")

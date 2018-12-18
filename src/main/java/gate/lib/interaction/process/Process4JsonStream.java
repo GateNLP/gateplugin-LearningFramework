@@ -60,13 +60,17 @@ public class Process4JsonStream extends ProcessBase
       synchronized(synchronizer) {
         String json = ir.readLine();
         //System.err.println("DEBUG: got json line: "+json);
-        while(!json.trim().startsWith("{")) {
+        while(json != null && !json.trim().startsWith("{")) {
           // System.err.println("DEBUG: Ignoring non-map response: "+json);
           json = ir.readLine();
           // System.err.println("DEBUG: got another line: "+json);
         }
-        Object obj = mapper.readValue(json,Map.class);
-        return obj;
+        if(json == null) {
+          return null;
+        } else {
+          Object obj = mapper.readValue(json,Map.class);
+          return obj;
+        }
       }
     } catch (IOException ex) {
       throw new RuntimeException("Problem when reading from object stream",ex);
@@ -151,12 +155,12 @@ public class Process4JsonStream extends ProcessBase
             "java -cp target/interaction-1.0-SNAPSHOT.jar:target/dependency/* gate.lib.interaction.process.EchoStream");
     //String someString = "this is some string";
     System.err.println("Right before writing to process");
-    Map m = new HashMap();
+    Map<String,Object> m = new HashMap<>();
     m.put("field1",12);
     m.put("field2","asasa");
     pr.writeObject(m);
     System.err.println("Right before reading from process");
-    Map ret = (Map)pr.readObject();
+    Map<?,?> ret = (Map<?,?>)pr.readObject();
     System.err.println("Got the object back: "+ret);
     //System.err.println("Writing another one (1234)");
     //pr.writeObject("1234");

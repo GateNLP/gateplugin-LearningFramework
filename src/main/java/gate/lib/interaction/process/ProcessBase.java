@@ -122,6 +122,20 @@ public abstract class ProcessBase
   
   protected abstract void stopInteraction();
   
+  private static class MyLoggerThread extends Thread {
+      InputStream stream;
+      public MyLoggerThread(InputStream stream) {
+        this.stream = stream;
+      }
+      @Override
+      public void run() {
+        try {
+          IOUtils.copy(stream, System.err);
+        } catch (IOException ex) {
+          LOGGER.error("Could not copy standard error from the process to our own standard error", ex);
+        }
+      }  
+  }
   
   /**
    * Copy the stream output to the logger using the given logging level.
@@ -133,6 +147,7 @@ public abstract class ProcessBase
     // stream to another stream which is our own implementation that
     // actually writes to the logger
     // For now we do nothing at all
+    /*
     loggerThread = new Thread() {
       @Override
       public void run() {
@@ -143,6 +158,8 @@ public abstract class ProcessBase
         }
       }
     };
+    */
+    loggerThread = new MyLoggerThread(stream);
     loggerThread.setDaemon(true);
     loggerThread.start();
   }

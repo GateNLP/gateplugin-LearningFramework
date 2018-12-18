@@ -139,7 +139,7 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
   }
 
 ////////////////////////////////////////////////////////////////////////////
-  private Engine engine;
+  private transient Engine engine;
 
   // this is either what the user specifies as the PR parameter, or what we have stored 
   // with the saved model.

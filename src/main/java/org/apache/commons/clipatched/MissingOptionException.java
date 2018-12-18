@@ -31,7 +31,7 @@ public class MissingOptionException extends ParseException
     private static final long serialVersionUID = 8161889051578563249L;
 
     /** The list of missing options and groups */
-    private List missingOptions;
+    private List<Object> missingOptions;
 
     /**
      * Construct a new <code>MissingSelectedException</code>
@@ -51,7 +51,7 @@ public class MissingOptionException extends ParseException
      * @param missingOptions the list of missing options and groups
      * @since 1.2
      */
-    public MissingOptionException(List missingOptions)
+    public MissingOptionException(List<Object> missingOptions)
     {
         this(createMessage(missingOptions));
         this.missingOptions = missingOptions;
@@ -64,7 +64,7 @@ public class MissingOptionException extends ParseException
      *         options, and OptionGroup instances for required option groups.
      * @since 1.2
      */
-    public List getMissingOptions()
+    public List<Object> getMissingOptions()
     {
         return missingOptions;
     }

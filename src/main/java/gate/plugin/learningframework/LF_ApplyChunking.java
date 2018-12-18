@@ -115,12 +115,12 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
     return sequenceSpan;
   }
   
-  private SeqEncoder seqEncoder;
+  private transient SeqEncoder seqEncoder = null;
   
 
 ////////////////////////////////////////////////////////////////////////////
 
-  private Engine engine;
+  private transient Engine engine = null;
 
   private URL dataDir;
 
@@ -151,7 +151,6 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
 
     AnnotationSet tmpAS = doc.getAnnotations("LF_SEQ_TMP");
     // since we specify the output annotation set tmpAS, new instance annotations are created there
-    String featureName = engine.getInfo().targetFeature;    
     ModelApplication.applyClassification(doc, gcs, Globals.outputClassFeature, tmpAS, null);
     AnnotationSet tmpInstanceAS = tmpAS.get(getInstanceType());
     AnnotationSet outputAS = doc.getAnnotations(getOutputASName());

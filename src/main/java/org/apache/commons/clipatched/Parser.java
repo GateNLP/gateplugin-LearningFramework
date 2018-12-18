@@ -40,12 +40,12 @@ public abstract class Parser implements CommandLineParser
     private Options options;
 
     /** list of required options strings */
-    private List requiredOptions;
+    private List<Object> requiredOptions;
 
     protected void setOptions(Options options)
     {
         this.options = options;
-        this.requiredOptions = new ArrayList(options.getRequiredOptions());
+        this.requiredOptions = new ArrayList<>(options.getRequiredOptions());
     }
 
     protected Options getOptions()
@@ -53,7 +53,7 @@ public abstract class Parser implements CommandLineParser
         return options;
     }
 
-    protected List getRequiredOptions()
+    protected List<Object> getRequiredOptions()
     {
         return requiredOptions;
     }
