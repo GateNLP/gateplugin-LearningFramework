@@ -8,6 +8,7 @@ import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 /**
@@ -113,6 +114,7 @@ public class Process4ObjectStream extends ProcessBase
     } catch (IOException ex) {
       throw new RuntimeException("Could not create object input stream",ex);      
     }
+    logStream(process.getErrorStream(), System.out);
   }
 
   @Override

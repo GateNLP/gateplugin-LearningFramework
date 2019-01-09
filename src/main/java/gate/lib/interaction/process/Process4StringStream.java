@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.apache.log4j.Logger;
 import java.util.Map;
+import org.apache.log4j.Level;
 /**
  * Minimalist class for exchanging String lines
  * 
@@ -122,6 +123,7 @@ public class Process4StringStream extends ProcessBase
     } catch (IOException ex) {
       throw new RuntimeException("Could not create input connection",ex);      
     }
+    logStream(process.getErrorStream(), System.out);
     //System.err.println("DONE setting up the interaction");
   }
 

@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 import com.fasterxml.jackson.databind.*;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.log4j.Level;
 /**
  * Minimalist class for exchanging objects through JSON
  * 
@@ -130,6 +131,7 @@ public class Process4JsonStream extends ProcessBase
     } catch (IOException ex) {
       throw new RuntimeException("Could not create input connection",ex);      
     }
+    logStream(process.getErrorStream(), System.out);
     //System.err.println("DONE setting up the interaction");
   }
 

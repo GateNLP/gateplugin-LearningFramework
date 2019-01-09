@@ -3,6 +3,8 @@ package gate.lib.interaction.process;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +12,7 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Level;
+import org.apache.log4j.Priority;
 
 /**
  * Minimalist base class for exchanging objects with a command line process.
@@ -48,9 +51,6 @@ public abstract class ProcessBase
       } catch (IOException ex) {
         throw new RuntimeException("Could not start the process "+command,ex);
       }
-      // copy the standard output of the process to the logger
-      logStream(process.getErrorStream(),Level.ERROR);
-      // do the class-specific setup of how to interact
       setupInteraction();
       return true;
     } else {
@@ -124,13 +124,15 @@ public abstract class ProcessBase
   
   private static class MyLoggerThread extends Thread {
       InputStream stream;
-      public MyLoggerThread(InputStream stream) {
+      OutputStream outstream;
+      public MyLoggerThread(InputStream stream, OutputStream outstream) {
         this.stream = stream;
+        this.outstream = outstream;
       }
       @Override
       public void run() {
         try {
-          IOUtils.copy(stream, System.err);
+          IOUtils.copy(stream, this.outstream);
         } catch (IOException ex) {
           LOGGER.error("Could not copy standard error from the process to our own standard error", ex);
         }
@@ -140,26 +142,10 @@ public abstract class ProcessBase
   /**
    * Copy the stream output to the logger using the given logging level.
    * @param stream stream to copy 
-   * @param level  loggin level
+   * @param outstream where to copy it to
    */
-  protected void logStream(final InputStream stream, Level level) {
-    // Not sure how to do this yet, probably a thread that copies the 
-    // stream to another stream which is our own implementation that
-    // actually writes to the logger
-    // For now we do nothing at all
-    /*
-    loggerThread = new Thread() {
-      @Override
-      public void run() {
-        try {
-          IOUtils.copy(stream, System.err);
-        } catch (IOException ex) {
-          LOGGER.error("Could not copy standard error from the process to our own standard error", ex);
-        }
-      }
-    };
-    */
-    loggerThread = new MyLoggerThread(stream);
+  protected void logStream(final InputStream stream, OutputStream outstream) {
+    loggerThread = new MyLoggerThread(stream, outstream);
     loggerThread.setDaemon(true);
     loggerThread.start();
   }

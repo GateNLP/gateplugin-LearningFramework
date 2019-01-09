@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 /**
@@ -111,6 +112,7 @@ public class ProcessSimple extends ProcessBase
     } catch (IOException ex) {
       //
     }
+    logStream(process.getErrorStream(), System.out);
   }
 
   @Override
