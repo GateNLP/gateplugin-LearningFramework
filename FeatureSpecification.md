@@ -4,7 +4,7 @@ The feature specification file is a file that describes how machine learning fea
 
 Machine learning features are sometimes also called "attributes" or "independent variables". This can be a bit confusing because annotation features are converted to machine learning features and depending on the type of value, one annotation feature can be converted and represented through several different attributes or variables for the machine learning algorithm. Some of the details of how this is done is included in the description of the feature specification settings below.
 
-In addition to the examples in this page, example feature specification files for the two task types are included in the [tutorial](Tutorial).
+In addition to the examples in this page, example feature specification files for the two task types are included in the [tutorials](tutorials).
 
 ## A rough overview of how machine learning features / attributes are created
 
