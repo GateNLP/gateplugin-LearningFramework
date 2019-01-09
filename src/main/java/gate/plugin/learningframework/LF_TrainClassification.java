@@ -219,8 +219,7 @@ public class LF_TrainClassification extends LearningFrameworkPRBase {
       }
     }
 
-    AlgorithmClassification alg = getTrainingAlgorithm();
-
+    // AlgorithmClassification alg = getTrainingAlgorithm();
     //System.err.println("DEBUG: Training algorithm engine class is " + alg.getEngineClass());
     //System.err.println("DEBUG: Training algorithm algor class is " + alg.getTrainerClass());
 

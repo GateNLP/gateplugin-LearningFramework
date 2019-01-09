@@ -191,8 +191,7 @@ public class LF_TrainTopicModel extends LearningFrameworkPRBase {
     if (getTrainingAlgorithm() == null) {
       throw new GateRuntimeException("LearningFramework: no training algorithm specified");
     }
-    AlgorithmClustering alg = getTrainingAlgorithm();
-
+    // AlgorithmClustering alg = getTrainingAlgorithm();
     // System.err.println("DEBUG: Before Document.");
     // System.err.println("  Training algorithm engine class is " + alg.getEngineClass());
     // System.err.println("  Training algorithm algor class is " + alg.getTrainerClass());

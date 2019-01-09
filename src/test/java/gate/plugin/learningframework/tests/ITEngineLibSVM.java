@@ -224,7 +224,7 @@ public class ITEngineLibSVM extends GATEPluginTests {
       n++;
       Annotation lf = gate.Utils.getOnlyAnn(gate.Utils.getCoextensiveAnnotations(lfAS, orig));
       //System.err.println("ORIG="+orig+", lf="+lf);
-      double origTarget = (double)Double.parseDouble(orig.getFeatures().get("target").toString());
+      double origTarget = Double.parseDouble(orig.getFeatures().get("target").toString());
       double predTarget = (double)lf.getFeatures().get("target");
       totalAbs = Math.abs(origTarget - predTarget);
       totalSquared = Math.abs((origTarget - predTarget)*(origTarget - predTarget));

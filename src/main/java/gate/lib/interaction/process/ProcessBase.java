@@ -4,15 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import org.apache.log4j.Level;
-import org.apache.log4j.Priority;
 
 /**
  * Minimalist base class for exchanging objects with a command line process.
@@ -40,8 +37,8 @@ public abstract class ProcessBase
    */
   public boolean ensureProcess() {
     if(need2start()) {
-      System.err.println("ProcessBase: running command:");
-      for(int i=0; i<command.size();i++) { System.err.println(i+": "+command.get(i)); }
+      // System.err.println("ProcessBase: running command:");
+      // for(int i=0; i<command.size();i++) { System.err.println(i+": "+command.get(i)); }
       builder = new ProcessBuilder(command);
       builder.directory(workingDir);
       Map<String,String> env = builder.environment();

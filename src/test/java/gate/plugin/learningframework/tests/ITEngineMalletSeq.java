@@ -186,7 +186,7 @@ public class ITEngineMalletSeq extends GATEPluginTests {
       AnnotationDifferTagging docDiffer = new AnnotationDifferTagging(
               doc.getAnnotations("Key").get("Link"),
               doc.getAnnotations("LF").get("Link"),
-              new HashSet(),
+              new HashSet<String>(),
               FeatureComparison.FEATURE_EQUALITY,
               annotationTypeSpecs
       );
