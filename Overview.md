@@ -20,7 +20,7 @@ Wrappers are software which runs the machine learning software or library in a s
 1. the license of the machine learning library or tool is not compatible with the license of the LearningFramework (e.g. Weka) and therefore cannot get distributed with it
 2. the machine learning tool is written in a different language, e.g. Python (e.g. Keras, Pytorch, SciKit-Learn).
 
-Finally, the application of a trained model can also be performed via the use of a HTTP model application server. The LearningFramework supports a very simple HTTP protocol for sending feature vectors to the server in JSON format, getting back the model predictions and applying them to the document that is being processed. See [ServerForApplication](ServerApplication)
+Finally, the application of a trained model can also be performed via the use of a HTTP model application server. The LearningFramework supports a very simple HTTP protocol for sending feature vectors to the server in JSON format, getting back the model predictions and applying them to the document that is being processed. See [ServerForApplication](ServerForApplication)
 
 ## Supported Machine Learning Tasks
 
