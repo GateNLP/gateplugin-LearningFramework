@@ -496,7 +496,7 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
    * @param writer where to write the JSON to
    */
   public void json4metadata(Writer writer) {
-    System.err.println("DEBUG: writing the metadata file!!");
+    //System.err.println("DEBUG: writing the metadata file!!");
     try {
       ObjectMapper mapper = new ObjectMapper();
       // NOTE: the default mapper constructor uses a factory which 

@@ -193,14 +193,14 @@ public class LF_TrainTopicModel extends LearningFrameworkPRBase {
     }
     AlgorithmClustering alg = getTrainingAlgorithm();
 
-    System.err.println("DEBUG: Before Document.");
-    System.err.println("  Training algorithm engine class is " + alg.getEngineClass());
-    System.err.println("  Training algorithm algor class is " + alg.getTrainerClass());
+    // System.err.println("DEBUG: Before Document.");
+    // System.err.println("  Training algorithm engine class is " + alg.getEngineClass());
+    // System.err.println("  Training algorithm algor class is " + alg.getTrainerClass());
 
     if (getDuplicateId() == 0) {
       engine = Engine.create(trainingAlgorithm, getAlgorithmParameters(), null, TargetType.NONE, dataDirectory);
       corpusRepresentation = engine.getCorpusRepresentation();
-      System.err.println("DEBUG: created the engine: " + engine);
+      // System.err.println("DEBUG: created the engine: " + engine);
       getSharedData().put("engine", engine);
       getSharedData().put("corpusRepresentation", corpusRepresentation);
     } else {

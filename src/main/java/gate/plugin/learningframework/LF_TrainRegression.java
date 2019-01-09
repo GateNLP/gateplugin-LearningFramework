@@ -178,20 +178,20 @@ public class LF_TrainRegression extends LearningFrameworkPRBase {
     }
     AlgorithmRegression alg = getTrainingAlgorithm();
 
-    System.err.println("DEBUG: Before Document.");
-    System.err.println("  Training algorithm engine class is " + alg.getEngineClass());
-    System.err.println("  Training algorithm algor class is " + alg.getTrainerClass());
+    // System.err.println("DEBUG: Before Document.");
+    //System.err.println("  Training algorithm engine class is " + alg.getEngineClass());
+    //System.err.println("  Training algorithm algor class is " + alg.getTrainerClass());
 
     if (getDuplicateId() == 0) {
       // Read and parse the feature specification
       featureSpec = new FeatureSpecification(featureSpecURL);
-      System.err.println("DEBUG Read the feature specification: " + featureSpec);
+      // System.err.println("DEBUG Read the feature specification: " + featureSpec);
       // Create the engine from the Algorithm parameter
       FeatureInfo fi = featureSpec.getFeatureInfo();
       fi.setGlobalScalingMethod(scaleFeatures);
       engine = Engine.create(trainingAlgorithm, getAlgorithmParameters(), fi, TargetType.NUMERIC, dataDirectory);
       corpusRepresentation = engine.getCorpusRepresentation();
-      System.err.println("DEBUG: created the engine: " + engine);
+      // System.err.println("DEBUG: created the engine: " + engine);
       getSharedData().put("engine", engine);
       getSharedData().put("featureSpec", featureSpec);
       getSharedData().put("corpusRepresentation", corpusRepresentation);

@@ -236,7 +236,7 @@ public abstract class AbstractDocumentProcessor
     controller = arg0;
     int tmp = getRemainingDuplicates().decrementAndGet();
     LOGGER.debug(this.getName()+": controllerExecutionFinished invocation "+tmp+" for duplicate "+duplicateId);
-    System.err.println("DEBUG: "+this.getName()+" controllerExecutionFinished, duplicateId="+duplicateId+" remaining="+tmp);
+    // System.err.println("DEBUG: "+this.getName()+" controllerExecutionFinished, duplicateId="+duplicateId+" remaining="+tmp);
     // Assert.assertEquals(tmp, duplicateId);
     
     controllerFinished(arg0, null);
@@ -260,7 +260,7 @@ public abstract class AbstractDocumentProcessor
     }
     // just for checking that our assumption is right that invocation happens
     // in the order the duplicate was originally created in GCP.
-    System.err.println("DEBUG: "+this.getName()+" controllerExecutionStarted, duplicateId="+duplicateId+" remaining="+tmp);
+    // System.err.println("DEBUG: "+this.getName()+" controllerExecutionStarted, duplicateId="+duplicateId+" remaining="+tmp);
     // Assert.assertEquals(tmp, duplicateId);
     
     controllerStarted(arg0);

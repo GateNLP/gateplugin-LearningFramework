@@ -133,7 +133,7 @@ public abstract class Engine {
   public static Engine create(Algorithm algorithm, String parms, FeatureInfo featureInfo, TargetType targetType, URL directory) {
     Engine eng;
     try {
-      System.err.println("CREATE ENGINE: trying to create for class "+algorithm.getEngineClass());
+      // System.err.println("CREATE ENGINE: trying to create for class "+algorithm.getEngineClass());
       @SuppressWarnings("unchecked")
       Constructor<?> tmpc = algorithm.getEngineClass().getDeclaredConstructor();
       eng = (Engine)tmpc.newInstance();

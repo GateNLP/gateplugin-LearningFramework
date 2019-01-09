@@ -301,9 +301,9 @@ public class FeatureSpecification {
     // with the datatype
     String atype = getChildTextOrElse(attributeElement, "TYPE", "");
     // if empty we use the instance annotation type, whatever that is
-    if (atype.isEmpty()) {
-      System.err.println("Warning: TYPE in ATTRIBUTE "+i+" is empty, using instance annotation type");
-    }
+    //if (atype.isEmpty()) {
+    //  System.err.println("Warning: TYPE in ATTRIBUTE "+i+" is empty, using instance annotation type");
+    //}
     String codeasstr = getChildTextOrElse(attributeElement, "CODEAS", "").toLowerCase();
     if (!codeasstr.isEmpty() && !codeasstr.equals("one_of_k") && !codeasstr.equals("number")) {
       throw new GateRuntimeException("CODEAS for ATTRIBUTE " + i + " specified but not one_of_k or number but " + codeasstr);

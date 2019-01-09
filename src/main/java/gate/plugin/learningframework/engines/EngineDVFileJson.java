@@ -253,10 +253,10 @@ public abstract class EngineDVFileJson extends EngineDV {
         int i=0; for(String sp : sps) { finalCommand.add(++i,sp); }
       }
     }
-    System.err.println("Running: ");
-    for(int i=0; i<finalCommand.size();i++) {
-      System.err.println(i+": >"+finalCommand.get(i)+"<");
-    }
+    //System.err.println("Running: ");
+    //for(int i=0; i<finalCommand.size();i++) {
+    //  System.err.println(i+": >"+finalCommand.get(i)+"<");
+    //}
     Map<String,String> env = new HashMap<>();
     env.put("WRAPPER_HOME",getWrapperHome());
     process = Process4StringStream.create(dataDir,env,finalCommand);
@@ -309,10 +309,10 @@ public abstract class EngineDVFileJson extends EngineDV {
         int i=0; for(String sp : sps) { finalCommand.add(++i,sp); }
       }
     }
-    System.err.println("Running: ");
-    for(int i=0; i<finalCommand.size();i++) {
-      System.err.println(i+": >"+finalCommand.get(i)+"<");
-    }
+    //System.err.println("Running: ");
+    //for(int i=0; i<finalCommand.size();i++) {
+    //  System.err.println(i+": >"+finalCommand.get(i)+"<");
+    //}
     // Create a fake Model jsut to make LF_Apply... happy which checks if this is null
     model = new Object();
     Map<String,String> env = new HashMap<>();

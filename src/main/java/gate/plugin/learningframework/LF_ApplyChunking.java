@@ -197,7 +197,8 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
         // where the model is handled externally.
         // For now, we just show a warning.
         // throw new GateRuntimeException("Do not have a model, something went wrong.");
-        System.err.println("WARNING: no internal model to apply, this is ok if an external model is used");
+        
+        // System.err.println("WARNING: no internal model to apply, this is ok if an external model is used");
         //throw new GateRuntimeException("Do not have a model, something went wrong.");
     } else {
       System.out.println("LearningFramework: Applying model "

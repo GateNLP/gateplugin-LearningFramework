@@ -216,7 +216,7 @@ public class LF_TrainChunking extends LearningFrameworkPRBase {
     }
     
     try {
-      System.err.println("Trying to create instance of "+getSeqEncoder().getEncoderClass());
+      // System.err.println("Trying to create instance of "+getSeqEncoder().getEncoderClass());
       @SuppressWarnings("unchecked")
       Constructor<?> tmpc = getSeqEncoder().getEncoderClass().getDeclaredConstructor();
       seqEncoder = (SeqEncoder) tmpc.newInstance();
@@ -292,7 +292,7 @@ public class LF_TrainChunking extends LearningFrameworkPRBase {
       fi.setGlobalScalingMethod(scaleFeatures);
       engine = Engine.create(trainingAlgorithm, getAlgorithmParameters(), fi, TargetType.NOMINAL, dataDirectory);
       corpusRepresentation = engine.getCorpusRepresentation();
-      System.err.println("DEBUG: created the engine: " + engine + " with CR=" + engine.getCorpusRepresentation());
+      // System.err.println("DEBUG: created the engine: " + engine + " with CR=" + engine.getCorpusRepresentation());
       getSharedData().put("engine", engine);
       getSharedData().put("featureSpec", featureSpec);
       getSharedData().put("corpusRepresentation", corpusRepresentation);
