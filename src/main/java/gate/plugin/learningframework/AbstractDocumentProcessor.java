@@ -31,8 +31,11 @@ import gate.creole.ExecutionException;
 import gate.creole.metadata.Sharable;
 import gate.util.Benchmark;
 import gate.util.Benchmarkable;
+import java.io.IOException;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
 
 /**
  * Abstract base class for all the PRs in this plugin.
@@ -176,7 +179,14 @@ public abstract class AbstractDocumentProcessor
     // other. Usuall, all duplicates will get created from the same first
     // created instance, but we do not rely on that.
     
-    //LOGGER.info("NEW VERSION LOADED! xyz");
+    Properties properties = new Properties();
+    try {
+      properties.load(getClass().getClassLoader().getResourceAsStream("git.properties"));
+      System.out.println("LearningFramework version="+properties.getProperty("gitInfo.build.version")+
+              " commit="+properties.getProperty("gitInfo.commit.id.abbrev"));
+    } catch (IOException ex) {
+      System.err.println("Could not obtain version info: "+ex.getMessage());
+    }
     
     seenDocumentsThisDuplicate = new AtomicInteger(0);
     if(getNDuplicates() == null || getNDuplicates().get() == 0) {    
