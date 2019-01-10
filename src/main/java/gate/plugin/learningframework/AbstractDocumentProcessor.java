@@ -175,6 +175,7 @@ public abstract class AbstractDocumentProcessor
     // always expect duplication to happen in a single thread, one after the
     // other. Usuall, all duplicates will get created from the same first
     // created instance, but we do not rely on that.
+    LOGGER.info("NEW VERSION LOADED! xyz");
     seenDocumentsThisDuplicate = new AtomicInteger(0);
     if(getNDuplicates() == null || getNDuplicates().get() == 0) {    
       LOGGER.debug("DEBUG: creating first instance of PR "+this.getName());
