@@ -83,6 +83,7 @@ public class ModelApplication {
     this.classList = classes;
     this.confidenceList = confidences;
     this.seqSpanID = sequenceSpanID;
+    
   }
 
   public Annotation getInstance() {
@@ -400,7 +401,7 @@ public class ModelApplication {
   
   @Override
   public String toString() {
-    return "GateClassification{type="+instance.getType()+", at="+gate.Utils.start(instance)+
-            ", target="+(numericTarget?targetAssigned:classAssigned)+"}";
+    return "ModelApplication{type="+instance.getType()+",at="+gate.Utils.start(instance)+
+            ",target="+(numericTarget?targetAssigned:classAssigned)+"}";
   }
 }

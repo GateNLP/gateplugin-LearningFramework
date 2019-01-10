@@ -185,7 +185,6 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
     } else {
       outputAS = doc.getAnnotations(getOutputASName());
     }
-
     ModelApplication.applyClassification(doc, gcs, targetFeatureToUse, outputAS, getConfidenceThreshold());
   }
 
