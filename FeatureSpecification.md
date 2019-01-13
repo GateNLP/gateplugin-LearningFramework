@@ -41,7 +41,7 @@ The `ATTRIBUTE` element can have the following nested elements (see below for a 
 * `CODEAS` (optional) the way how the value of the attribute should get encoded. This is only relevant for non-numeric features and must be one of `one_of_k` or `number`. Non-nominal is always encoded as a number, the default for nominal is `one_of_k`. This is ignored for dense instance representations.
 * `MISSINGVALUETREATMENT` (optional) how to handle situations where the value of the attribute is null or there is no annotation from which to take the value. One of `keep`, `zero_value`, or `special_value`. The default for nominal values encoded as `one_of_k` is `keep`, for boolean values is `zero_value` (identical to false) and for all other data types is `special_value`. For dense feature representations, will always use the value set bby MISSINGVALUE.
 * `MISSINGVALUE` (optional) currently only used for dense feature representations, the value to use if a feature is missing for some reason. If not set the default is "" for nominal, "false" for boolean and "0.0" for numeric. 
-* `<FEATURENAME4VALUE>` (optional): only allowed for datattype `nominal` and codeas `one_of_k`. The name of a feature which contains the value to assign to the attribute, instead of 1.0. This can be used e.g. to assign a TF*IDF score or some other score to each word. If the feature is not present or null, then no machine learning feature is created. This is ignored for dense feature representations.
+* `<FEATURENAME4VALUE>` (optional): only allowed for datattype `nominal` and codeas `one_of_k`. The name of a feature which contains the value to assign to the attribute, instead of 1.0. This can be used e.g. to assign a TF\*IDF score or some other score to each word. If the feature is not present or null, then no machine learning feature is created. This is ignored for dense feature representations.
 * `LISTSEP` (optional) a list separator string to use for nominal values which contain a string representing a list. In this case each element in the list is used as a separate indicator feature (a feature is generated for each element in the list and set to 1.0)
 * `WITHIN` (optional): NOTE: This may get removed in the future (and a PR for setting features that indicate if an ATTRIBUTE begins with or ends with another annotation will be added).
 An annotation type that represents some kind of sequence within which the attribute should occur. If this is specified, then only annotations which are within the same `WITHIN` annotation as the instance annotation will be used. In addition, if the beginning of the instance annotation is the same as the beginning of the `WITHIN` annotation, a special `START` symbol will be added, and if the end of the the instance annotation is the same as the end of the `WITHIN` annotation a special `END` symbol will be added. This can help the learning algorithm to detect situations where a word occurs at the beginning or end of a sentence, for example. IMPORTANT: the `WITHIN` element should only be specified for one attribute or attributelist feature if there are several since it is probably redundant and not helpful if the stop symbol attribute is generated more than once. 
@@ -106,6 +106,7 @@ looks like this:
   <DIMS>100</DIMS>
   <FILE>embs/glove6b.txt.gz</FILE>
   <TRAIN>mapping</TRAIN>
+  <MINFREQ>5</MINFREQ>
 </EMBEDDINGS>
 ```
 Within the EMBEDDINGS block the following settings are possible:
@@ -122,6 +123,8 @@ Within the EMBEDDINGS block the following settings are possible:
   * mapping: a dense layer is used to train a mapping from the existing pretrained embeddings to a new vector
     of the same size. This makes only sense if FILE is also specified. 
   * onehot: instead of embeddings, as many input units as there are values are used. The weights connecting these units to the hidden layer are trained.
+* MINFREQ: the number of times the word or categorical values has to occur in the training set to get assigned to its own embedding vector.
+  If a value occurs less than MINFREQ times, it gets mapped to a special out-of-vocabulary vector.
 
 
 ### NOTES
