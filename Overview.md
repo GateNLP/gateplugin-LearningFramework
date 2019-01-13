@@ -103,4 +103,5 @@ Note that PRs from other plugins can also be very useful to generate features:
 
 ### Miscellaneous other pages:
 
-* [WrapperConfig](DNN/WrapperConfig) documents the wrapper configuration file for the Pytorch and Keras backends
+* [DNN Preparation](DNN/Preparation) how to install Python and prepare for using the Pytorch/Keras backends
+* [DNN WrapperConfig](DNN/WrapperConfig) documents the wrapper configuration file for the Pytorch and Keras backends
