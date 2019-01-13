@@ -163,6 +163,7 @@ public abstract class AbstractDocumentProcessor
   // int getNDuplicates().get() - returns the current number of duplicates 
   //     that exist. 
   //================================================================================
+  static boolean versionInfoShown = false;
   @Override
   public Resource init() throws ResourceInstantiationException {
     // we always provide the following shared fields to all PRs which are used for duplicated PRs:
@@ -179,15 +180,20 @@ public abstract class AbstractDocumentProcessor
     // other. Usuall, all duplicates will get created from the same first
     // created instance, but we do not rely on that.
     
-    Properties properties = new Properties();
-    try {
-      properties.load(getClass().getClassLoader().getResourceAsStream("git.properties"));
-      System.out.println("LearningFramework version="+properties.getProperty("gitInfo.build.version")+
-              " commit="+properties.getProperty("gitInfo.commit.id.abbrev"));
-    } catch (IOException ex) {
-      System.err.println("Could not obtain version info: "+ex.getMessage());
+    if (!versionInfoShown) {
+      Properties properties = new Properties();
+      try {
+        properties.load(getClass().getClassLoader().getResourceAsStream("git.properties"));
+        String buildVersion = properties.getProperty("gitInfo.build.version");
+        if (buildVersion.endsWith("-SNAPSHOT")) {
+          System.out.println("LearningFramework version=" + buildVersion
+                  + " commit=" + properties.getProperty("gitInfo.commit.id.abbrev"));
+        }
+      } catch (IOException ex) {
+        System.err.println("Could not obtain version info: " + ex.getMessage());
+      }
+      versionInfoShown = true;
     }
-    
     seenDocumentsThisDuplicate = new AtomicInteger(0);
     if(getNDuplicates() == null || getNDuplicates().get() == 0) {    
       LOGGER.debug("DEBUG: creating first instance of PR "+this.getName());
