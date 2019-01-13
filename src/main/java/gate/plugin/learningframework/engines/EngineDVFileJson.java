@@ -259,6 +259,10 @@ public abstract class EngineDVFileJson extends EngineDV {
     //}
     Map<String,String> env = new HashMap<>();
     env.put("WRAPPER_HOME",getWrapperHome());
+    String pythonbin = config.get("PYTHON_BIN");
+    if (pythonbin != null) {
+      env.put("PYTHON_BIN", pythonbin);
+    }
     process = Process4StringStream.create(dataDir,env,finalCommand);
     
   }

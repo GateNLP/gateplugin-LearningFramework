@@ -17,22 +17,28 @@ datadir=`cd $datadir; pwd -P`
 wrapperdir=$datadir/FileJsonPyTorch
 wrappertrain=$wrapperdir/gate-lf-pytorch-json/train.py
 
-versionpython="UNKNOWN"
-wherepython=`which python`
-if [[ "x$wherepython" != "x" ]]
+
+if [[ -z "${PYTHON_BIN}" ]]
 then
-  versionpython=`python -V |& cut -f 2 -d " " | cut -f 1 -d'.'`
-fi
-if [[ "$versionpython" == "3" ]]
-then
-  pythoncmd=$wherepython
-else
-  wherepython=`which python3`
-  if [[ "x$wherepython" == "x" ]]
+  versionpython="UNKNOWN"
+  wherepython=`which python`
+  if [[ "x$wherepython" != "x" ]]
   then
-    echo 'ERROR: could not find a python 3 interpreter, exiting'
-    exit 1
+    versionpython=`python -V |& cut -f 2 -d " " | cut -f 1 -d'.'`
   fi
+  if [[ "$versionpython" == "3" ]]
+  then
+    pythoncmd=$wherepython
+  else
+    wherepython=`which python3`
+    if [[ "x$wherepython" == "x" ]]
+    then
+      echo 'ERROR: could not find a python 3 interpreter, exiting' >&2
+      exit 1
+    fi
+  fi
+else
+  wherepython="${PYTHON_BIN}"
 fi
 
 export PYTHONPATH="$wrapperdir/gate-lf-python-data:$wrapperdir/gate-lf-pytorch-json"
