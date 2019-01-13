@@ -13,6 +13,10 @@
          No I do not want to create a separate class for the Thread
          -->
          <Bug pattern="SIC_INNER_SHOULD_BE_STATIC_ANON" />
+         <!-- 
+         Yes I want to write that static field
+         -->
+         <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD" />
       </Or>
    </Match>
 
