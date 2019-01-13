@@ -100,3 +100,7 @@ Note that PRs from other plugins can also be very useful to generate features:
 * [ServerForApplication](ServerForApplication) describes the interaction with a HTTP server for carrying out the application of trained models
 * [API](API) how to use the LearningFramework classes from Java/Scala/Groovy code and examples of how to use it with the [GATE Java Plugin](https://github.com/johann-petrak/gateplugin-Java)
 * [FAQs](FAQs)
+
+### Miscellaneous other pages:
+
+* [WrapperConfig](DNN/WrapperConfig) documents the wrapper configuration file for the Pytorch and Keras backends
