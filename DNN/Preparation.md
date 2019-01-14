@@ -1,4 +1,4 @@
-# Preparation / Installation
+# Preparation / Installation for Pytorch/Keras
 
 The Pytorch and Keras learning algorithms use Python and a number of python packages which
 have to be installed before the algorithms can be used.

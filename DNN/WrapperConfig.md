@@ -1,4 +1,4 @@
-# Wrapper Configuration file
+# Pytorch/Keras Wrapper Configuration file
 
 The wrapper configuration file is a YAML (see https://yaml.org/) format file
 that can be used to configure the details of how GATE invokes the wrapper scripts
