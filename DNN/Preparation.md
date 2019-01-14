@@ -41,6 +41,8 @@ The following installation instructions show how to prepare the system by using 
   * For Pytorch: `conda install -y pytorch torchvision -c pytorch`
   * For Keras, with GPU: `conda install -y keras-gpu h5py`
   * For Keras, without GPU: `conda install -y keras h5py`
+  * NOTE: Installation of Keras/Tensorflow is much more brittle than Pytorch and may fail on your system for various
+    reasons. Please consult the Keras/Tensorflow support resources on the Web if you encounter any problems!
 
 
 ## Windows
@@ -62,6 +64,8 @@ The following installation instructions show how to prepare the system by using 
   * For Pytorch: `conda install -y pytorch torchvision -c pytorch`
   * For Keras, with GPU: `conda install -y keras-gpu h5py`
   * For Keras, without GPU: `conda install -y keras h5py`
+  * NOTE: Installation of Keras/Tensorflow is much more brittle than Pytorch and may fail on your system for various
+    reasons. Please consult the Keras/Tensorflow support resources on the Web if you encounter any problems!
 
 ## MacOS
 
