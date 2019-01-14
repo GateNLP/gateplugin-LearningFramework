@@ -1,6 +1,9 @@
 @ECHO OFF
 
 SET ROOTDIR=%WRAPPER_HOME%
+if "%ROOTDIR%"=="" (
+  set ROOTDIR=%~dp0
+)
 SET data=%1
 shift
 SET model=%1

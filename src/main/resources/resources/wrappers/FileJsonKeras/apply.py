@@ -30,7 +30,7 @@ wrapper.loadModel(modelprefix)
 
 with sys.stdin as infile:
     for line in infile:
-        print("PYTHON FileJsonKeras APPLICATION, input=",line,file=sys.stderr)
+        #! print("PYTHON FileJsonKeras APPLICATION, input=",line,file=sys.stderr)
         if line == "STOP":
             break
         # TODO: currently the LF sends individual instances here, we may want to change
@@ -50,7 +50,7 @@ with sys.stdin as infile:
         # list contains all the confidences in the order used by the model. 
         # For now we just extract the label or for a sequence, the list of labels, knowing that for now we always process only one instance/sequence!
         ret = {"status":"ok", "output":preds[0]}
-        print("PYTHON FileJsonKeras APPLICATION, return=", ret, file=sys.stderr)
+        #! print("PYTHON FileJsonKeras APPLICATION, return=", ret, file=sys.stderr)
         print(json.dumps(ret))
         # TODO: IMPORTANT!!! What the model returns is currently different from what the LF code expects!!!
         sys.stdout.flush()
