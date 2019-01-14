@@ -21,6 +21,26 @@ The following installation instructions show how to prepare the system by using 
 
 ## Linux and Linux-like Operating Systems
 
+* Install the 64 bit distribution for Python 3.x from https://conda.io/miniconda.html
+  * Download the file
+  * Start a terminal and ...
+  * Change permissions to make it executable:
+    `chmod 700 Miniconda3-latest-Linux-x86_64.sh`
+  * Run the file:
+    `./Miniconda3-latest-Linux-x86_64.sh`
+  * Agree to the license by typing in "yes" and ENTER
+  * Confirm or change the location where to install to and take a note of that path (e.g. /home/username/miniconda3)
+  * Agree to initialize Miniconda3 in the .bashrc file (this will add everything to your binary path)
+  * Start a new terminal and check: `which python` should show the location of the python command inside
+    the miniconda installation directory (e.g. /home/username/miniconda3/bin/python)
+* Start a new terminal
+* In the terminal window enter and run the following commands  (NOTE: a working internet connection is 
+  quired for this! The following steps will automatically download the required packages and all dependencies
+  and install them into your Miniconda environment)
+  * `conda install -y pytorch torchvision -c pytorch`
+  * `pip install keras` 
+
+
 ## Windows
 
 * Install the 64 bit distribution for Python 3.x from https://conda.io/miniconda.html
@@ -37,7 +57,7 @@ The following installation instructions show how to prepare the system by using 
   quired for this! The following steps will automatically download the required packages and all dependencies
   and install them into your Miniconda environment)
   * `conda install -y pytorch torchvision -c pytorch`
-  * `pip install -y keras` 
+  * `pip install keras` 
 
 ## MacOS
 
