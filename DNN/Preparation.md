@@ -69,4 +69,26 @@ The following installation instructions show how to prepare the system by using 
 
 ## MacOS
 
+* Install the 64 bit distribution for Python 3.x from https://conda.io/miniconda.html
+  * Download the file
+  * Start a terminal and ...
+  * Change permissions to make it executable:
+    `chmod 700 Miniconda3-latest-Linux-x86_64.sh`
+  * Run the file:
+    `./Miniconda3-latest-Linux-x86_64.sh`
+  * Agree to the license by typing in "yes" and ENTER
+  * Confirm or change the location where to install to and take a note of that path (e.g. /Users//username/miniconda3)
+  * Agree to initialize Miniconda3 in the .bashrc file (this will add everything to your binary path)
+  * Start a new terminal and check: `which python` should show the location of the python command inside
+    the miniconda installation directory (e.g. /Users//username/miniconda3/bin/python)
+* Start a new terminal
+* In the terminal window enter and run the following commands  (NOTE: a working internet connection is
+  quired for this! The following steps will automatically download the required packages and all dependencies
+  and install them into your Miniconda environment)
+  * `conda install -y python=3.6`
+  * For Pytorch: `conda install -y pytorch torchvision -c pytorch`
+  * For Keras, with GPU: `conda install -y tensorflow-gpu keras-gpu h5py`
+  * For Keras, without GPU: `conda install -y tensorflow keras h5py`
+  * NOTE: Installation of Keras/Tensorflow is much more brittle than Pytorch and may fail on your system for various
+    reasons. Please consult the Keras/Tensorflow support resources on the Web if you encounter any problems!
 
