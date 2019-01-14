@@ -11,7 +11,7 @@ requriements are met:
 * Python version 3.5 or newer, 64bit
 * For the Pytorch backend: Pytorch 4.1 or newer installed, optionally with CUDA support of a 
   supported GPU is available
-* For the Keras backend: Keras ??? or newer installed, optionally with everything installed in 
+* For the Keras backend: Keras 1.2 and Tensorflow 1.0 or newer installed, optionally with everything installed in 
   addition to support CUDA, if a GPU is available. 
 
 However, the recommended approach to install Python and the required packages is by using
@@ -39,8 +39,8 @@ The following installation instructions show how to prepare the system by using 
   and install them into your Miniconda environment)
   * `conda install -y python=3.6`
   * For Pytorch: `conda install -y pytorch torchvision -c pytorch`
-  * For Keras, with GPU: `conda install -y keras-gpu h5py`
-  * For Keras, without GPU: `conda install -y keras h5py`
+  * For Keras, with GPU: `conda install -y tensorflow-gpu keras-gpu h5py`
+  * For Keras, without GPU: `conda install -y tensorflow keras h5py`
   * NOTE: Installation of Keras/Tensorflow is much more brittle than Pytorch and may fail on your system for various
     reasons. Please consult the Keras/Tensorflow support resources on the Web if you encounter any problems!
 
@@ -62,11 +62,33 @@ The following installation instructions show how to prepare the system by using 
   and install them into your Miniconda environment)
   * `conda install -y python=3.6`
   * For Pytorch: `conda install -y pytorch torchvision -c pytorch`
-  * For Keras, with GPU: `conda install -y keras-gpu h5py`
-  * For Keras, without GPU: `conda install -y keras h5py`
+  * For Keras, with GPU: `conda install -y tensorflow-gpu keras-gpu h5py`
+  * For Keras, without GPU: `conda install -y tensorflow keras h5py`
   * NOTE: Installation of Keras/Tensorflow is much more brittle than Pytorch and may fail on your system for various
     reasons. Please consult the Keras/Tensorflow support resources on the Web if you encounter any problems!
 
 ## MacOS
 
+* Install the 64 bit distribution for Python 3.x from https://conda.io/miniconda.html
+  * Download the file
+  * Start a terminal and ...
+  * Change permissions to make it executable:
+    `chmod 700 Miniconda3-latest-Linux-x86_64.sh`
+  * Run the file:
+    `./Miniconda3-latest-Linux-x86_64.sh`
+  * Agree to the license by typing in "yes" and ENTER
+  * Confirm or change the location where to install to and take a note of that path (e.g. /Users//username/miniconda3)
+  * Agree to initialize Miniconda3 in the .bashrc file (this will add everything to your binary path)
+  * Start a new terminal and check: `which python` should show the location of the python command inside
+    the miniconda installation directory (e.g. /Users//username/miniconda3/bin/python)
+* Start a new terminal
+* In the terminal window enter and run the following commands  (NOTE: a working internet connection is
+  quired for this! The following steps will automatically download the required packages and all dependencies
+  and install them into your Miniconda environment)
+  * `conda install -y python=3.6`
+  * For Pytorch: `conda install -y pytorch torchvision -c pytorch`
+  * For Keras, with GPU: `conda install -y tensorflow-gpu keras-gpu h5py`
+  * For Keras, without GPU: `conda install -y tensorflow keras h5py`
+  * NOTE: Installation of Keras/Tensorflow is much more brittle than Pytorch and may fail on your system for various
+    reasons. Please consult the Keras/Tensorflow support resources on the Web if you encounter any problems!
 
