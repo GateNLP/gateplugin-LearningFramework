@@ -11,7 +11,7 @@ requriements are met:
 * Python version 3.5 or newer, 64bit
 * For the Pytorch backend: Pytorch 4.1 or newer installed, optionally with CUDA support of a 
   supported GPU is available
-* For the Keras backend: Keras ??? or newer installed, optionally with everything installed in 
+* For the Keras backend: Keras 1.2 and Tensorflow 1.0 or newer installed, optionally with everything installed in 
   addition to support CUDA, if a GPU is available. 
 
 However, the recommended approach to install Python and the required packages is by using
