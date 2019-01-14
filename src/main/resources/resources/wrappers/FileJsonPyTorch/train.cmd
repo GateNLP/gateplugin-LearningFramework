@@ -1,5 +1,5 @@
 @ECHO OFF
-
+REM 001
 SET ROOTDIR=%WRAPPER_HOME%
 if "%ROOTDIR%"=="" (
   set ROOTDIR=%~dp0
