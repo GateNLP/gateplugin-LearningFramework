@@ -37,8 +37,10 @@ The following installation instructions show how to prepare the system by using 
 * In the terminal window enter and run the following commands  (NOTE: a working internet connection is 
   quired for this! The following steps will automatically download the required packages and all dependencies
   and install them into your Miniconda environment)
-  * `conda install -y pytorch torchvision -c pytorch`
-  * `pip install keras` 
+  * `conda install -y python=3.6`
+  * For Pytorch: `conda install -y pytorch torchvision -c pytorch`
+  * For Keras, with GPU: `conda install -y keras-gpu h5py`
+  * For Keras, without GPU: `conda install -y keras h5py`
 
 
 ## Windows
@@ -56,8 +58,10 @@ The following installation instructions show how to prepare the system by using 
 * In the terminal window enter and run the following commands  (NOTE: a working internet connection is 
   quired for this! The following steps will automatically download the required packages and all dependencies
   and install them into your Miniconda environment)
-  * `conda install -y pytorch torchvision -c pytorch`
-  * `pip install keras` 
+  * `conda install -y python=3.6`
+  * For Pytorch: `conda install -y pytorch torchvision -c pytorch`
+  * For Keras, with GPU: `conda install -y keras-gpu h5py`
+  * For Keras, without GPU: `conda install -y keras h5py`
 
 ## MacOS
 
