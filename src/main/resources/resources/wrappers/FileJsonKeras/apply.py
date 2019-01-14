@@ -45,7 +45,7 @@ with sys.stdin as infile:
         # from our returned data here
         # confidences: a map with confidences for all labels, may be null: this is NOT SUPPORTED in the LF yet!
         preds=wrapper.applyModel(instancedata)
-        print("PYTHON  APPLICATION, preds=", preds, file=sys.stderr)
+        #! print("PYTHON  APPLICATION, preds=", preds, file=sys.stderr)
         # preds are a list of one or two lists, where the first list contains all the labels and the second
         # list contains all the confidences in the order used by the model. 
         # For now we just extract the label or for a sequence, the list of labels, knowing that for now we always process only one instance/sequence!
