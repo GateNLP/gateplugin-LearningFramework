@@ -53,7 +53,11 @@ echo 'PYTHON          = ' $wherepython >&2
 echo 'PYTHONPATH      = ' $PYTHONPATH >&2
 echo 'RUNNING         = ' ${wherepython} "${wrappertrain}" "${metafile}" "${modelbase}" "$@"  >&2
 
-${wherepython} "${wrappertrain}" "${metafile}" "${modelbase}"  "$@" 
-exitcode = $?
-echo 'EXIT CODE       = ' $exitcode >&2
+if ${wherepython} "${wrappertrain}" "${metafile}" "${modelbase}"  "$@" ; then
+  echo 'PROCESSING OK ' $? >&2
+  exit 0
+else
+  echo 'PROCESSING ERROR ' $? >&2
+  exit 127
+fi
 

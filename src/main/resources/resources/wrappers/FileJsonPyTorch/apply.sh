@@ -39,6 +39,7 @@ fi
 export PYTHONPATH="$wrapperdir/gate-lf-python-data:$wrapperdir/gate-lf-pytorch-json"
 
 
+echo 'PYTHON_BIN      = ' ${PYTHON_BIN} >&2
 echo 'MODEL BASE NAME = ' $modelbase >&2
 echo 'META FILE       = ' $metafile  >&2
 echo 'DATA DIR        = ' $datadir   >&2
@@ -49,5 +50,11 @@ echo 'PYTHON          = ' $wherepython >&2
 echo 'PYTHONPATH      = ' $PYTHONPATH >&2
 echo 'RUNNING         = ' ${wherepython} "${wrapperapply}" "${modelbase}" "$@"  >&2
 
-${wherepython} "${wrapperapply}" "${modelbase}" "$@" 
+if ${wherepython} "${wrapperapply}" "${modelbase}" "$@"  ; then
+  echo 'PROCESSING OK ' $? >&2
+  exit 0
+else
+  echo 'PROCESSING ERROR ' $? >&2
+  exit 127
+fi
 
