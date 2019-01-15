@@ -221,7 +221,9 @@ public abstract class EngineDVFileJson extends EngineDV {
     } else {
       // On windows, use C:\\User\\username\\Miniconda3\python.exe 
       String drive = System.getenv("HOMEDRIVE");
+      System.err.println("DEBUG: Windows drive is "+drive);
       String path = System.getenv("HOMEPATH");
+      System.err.println("DEBUG: Windows home path is "+path);
       return drive + path + "\\Miniconda3\\python.exe";
     }
   }
@@ -339,9 +341,11 @@ public abstract class EngineDVFileJson extends EngineDV {
     env.put("GATE_LF_DATA_DIR", dataDir.getAbsolutePath());
     String pythonbin = config.get("PYTHON_BIN");
     if (pythonbin != null) {
+      System.err.println("DEBUG: python bin from config: "+pythonbin);
       env.put("PYTHON_BIN", pythonbin);
     } else {
       env.put("PYTHON_BIN", getDefaultPythonBin());
+      System.err.println("DEBUG: python bin from default: "+getDefaultPythonBin());
     }    
     process = ProcessSimple.create(dataDir,env,finalCommand);
     process.waitFor();
