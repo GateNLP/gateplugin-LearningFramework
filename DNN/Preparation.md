@@ -52,7 +52,10 @@ The following installation instructions show how to prepare the system by using 
   * Run it to start the installation process
   * At the prompt "Install for:" choose "Just Me"
   * Confirm the default installation location (probably "C:\Users\THEUSERNAME\Miniconda3") and
-    take a note of that location.
+    take a note of that location! 
+  * IMPORTANT: On Windows, it is not always possible to figure out where Python is installed, 
+    if you copy or take a note of the location shown by the installer you can later configure it
+    in the [WrapperConfig.yaml](WrapperConfig) file!
   * In the "Advanced Options" screen, keep the default settings
 * After the installation completes successfully you should find an entry "Anaconda3" in your Start menu
   which contains the entry "Anaconda Prompt"
