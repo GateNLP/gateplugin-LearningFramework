@@ -17,8 +17,9 @@ datadir=`cd $datadir; pwd -P`
 wrapperdir=$datadir/FileJsonPyTorch
 wrappertrain=$wrapperdir/gate-lf-pytorch-json/train.py
 
+echo "PYTHON_BIN is ${PYTHON_BIN}" >&2
 
-if [[ -z "${PYTHON_BIN}" ]]
+if [[ -z ${PYTHON_BIN} ]]
 then
   versionpython="UNKNOWN"
   wherepython=`which python`

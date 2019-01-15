@@ -157,7 +157,9 @@ public abstract class EngineDVFileJson extends EngineDV {
   @SuppressWarnings("unchecked")
   public Map<String,String> getWrapperConfig() {
     File wrapperInfoFile = new File(dataDir,WRAPPER_NAME+".yaml");
+    System.err.println("DEBUG: wrapper file: "+wrapperInfoFile.getAbsolutePath());
     if(wrapperInfoFile.exists()) {
+      System.err.println("DEBUG: seems to exist ...");
       Yaml yaml = new Yaml();
       Object obj;
       try {
@@ -168,11 +170,13 @@ public abstract class EngineDVFileJson extends EngineDV {
       Map<String,String> map = null;
       if(obj instanceof Map) {
         map = (Map<String,String>)obj;
+        System.err.println("DEBUG: got map: "+map);
       } else {
         throw new GateRuntimeException("Info file has strange format: "+wrapperInfoFile.getAbsolutePath());
       }
       return map;
     } else {
+      System.err.println("DEBUG: does not exist, returning empty map");
       return new HashMap<>();
     }
     
@@ -340,6 +344,7 @@ public abstract class EngineDVFileJson extends EngineDV {
     env.put("WRAPPER_HOME",getWrapperHome());
     env.put("GATE_LF_DATA_DIR", dataDir.getAbsolutePath());
     String pythonbin = config.get("PYTHON_BIN");
+    System.err.println("DEBUG: config python bin: "+pythonbin);
     if (pythonbin != null) {
       System.err.println("DEBUG: python bin from config: "+pythonbin);
       env.put("PYTHON_BIN", pythonbin);
