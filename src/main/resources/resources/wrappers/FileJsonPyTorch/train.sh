@@ -17,7 +17,6 @@ datadir=`cd $datadir; pwd -P`
 wrapperdir=$datadir/FileJsonPyTorch
 wrappertrain=$wrapperdir/gate-lf-pytorch-json/train.py
 
-echo "PYTHON_BIN is ${PYTHON_BIN}" >&2
 
 if [[ -z ${PYTHON_BIN} ]]
 then
@@ -44,6 +43,7 @@ fi
 
 export PYTHONPATH="$wrapperdir/gate-lf-python-data:$wrapperdir/gate-lf-pytorch-json"
 
+echo 'PYTHON_BIN      = ' ${PYTHON_BIN} >&2
 echo 'MODEL BASE NAME = ' $modelbase >&2
 echo 'META FILE       = ' $metafile  >&2
 echo 'DATA DIR        = ' $datadir   >&2
@@ -54,4 +54,6 @@ echo 'PYTHONPATH      = ' $PYTHONPATH >&2
 echo 'RUNNING         = ' ${wherepython} "${wrappertrain}" "${metafile}" "${modelbase}" "$@"  >&2
 
 ${wherepython} "${wrappertrain}" "${metafile}" "${modelbase}"  "$@" 
+exitcode = $?
+echo 'EXIT CODE       = ' $exitcode >&2
 
