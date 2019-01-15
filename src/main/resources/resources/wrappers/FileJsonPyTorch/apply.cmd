@@ -5,6 +5,8 @@ if "x%WRAPPER_HOME%"=="x" (
 )
 SET model=%1
 shift
+shift
+shift
 
 : create var with remaining arguments
 set r=%1
