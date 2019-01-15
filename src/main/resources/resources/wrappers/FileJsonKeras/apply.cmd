@@ -18,5 +18,5 @@ goto loop
 if "x%PYTHON_BIN%"=="x" (
   set PYTHON_BIN="%HOMEDRIVE%""%HOMEPATH%"\Miniconda3\python.exe
 )
-%PYTHON_BIN% %WRAPPER_HOME%\gate-lf-pytorch-json\apply.py %model% %r%
+%PYTHON_BIN% %WRAPPER_HOME%\gate-lf-keras-json\apply.py %model% %r%
 
