@@ -157,9 +157,14 @@ public abstract class EngineDVFileJson extends EngineDV {
   @SuppressWarnings("unchecked")
   public Map<String,String> getWrapperConfig() {
     File wrapperInfoFile = new File(dataDir,WRAPPER_NAME+".yaml");
-    System.err.println("DEBUG: wrapper file: "+wrapperInfoFile.getAbsolutePath());
+    if(!wrapperInfoFile.exists()) {
+      // Windows is just insane and hides a txt extension if a user creates 
+      // a "text file" with a yaml extensions, so lets allow .yaml.txt as well
+      wrapperInfoFile = new File(dataDir,WRAPPER_NAME+".yaml.txt");
+    }
+    // System.err.println("DEBUG: wrapper file: "+wrapperInfoFile.getAbsolutePath());
     if(wrapperInfoFile.exists()) {
-      System.err.println("DEBUG: seems to exist ...");
+      // System.err.println("DEBUG: seems to exist ...");
       Yaml yaml = new Yaml();
       Object obj;
       try {
@@ -170,13 +175,13 @@ public abstract class EngineDVFileJson extends EngineDV {
       Map<String,String> map = null;
       if(obj instanceof Map) {
         map = (Map<String,String>)obj;
-        System.err.println("DEBUG: got map: "+map);
+        // System.err.println("DEBUG: got map: "+map);
       } else {
         throw new GateRuntimeException("Info file has strange format: "+wrapperInfoFile.getAbsolutePath());
       }
       return map;
     } else {
-      System.err.println("DEBUG: does not exist, returning empty map");
+      // System.err.println("DEBUG: does not exist, returning empty map");
       return new HashMap<>();
     }
     
@@ -225,9 +230,9 @@ public abstract class EngineDVFileJson extends EngineDV {
     } else {
       // On windows, use C:\\User\\username\\Miniconda3\python.exe 
       String drive = System.getenv("HOMEDRIVE");
-      System.err.println("DEBUG: Windows drive is "+drive);
+      // System.err.println("DEBUG: Windows drive is "+drive);
       String path = System.getenv("HOMEPATH");
-      System.err.println("DEBUG: Windows home path is "+path);
+      // System.err.println("DEBUG: Windows home path is "+path);
       return drive + path + "\\Miniconda3\\python.exe";
     }
   }
@@ -344,13 +349,13 @@ public abstract class EngineDVFileJson extends EngineDV {
     env.put("WRAPPER_HOME",getWrapperHome());
     env.put("GATE_LF_DATA_DIR", dataDir.getAbsolutePath());
     String pythonbin = config.get("PYTHON_BIN");
-    System.err.println("DEBUG: config python bin: "+pythonbin);
+    // System.err.println("DEBUG: config python bin: "+pythonbin);
     if (pythonbin != null) {
-      System.err.println("DEBUG: python bin from config: "+pythonbin);
+      // System.err.println("DEBUG: python bin from config: "+pythonbin);
       env.put("PYTHON_BIN", pythonbin);
     } else {
       env.put("PYTHON_BIN", getDefaultPythonBin());
-      System.err.println("DEBUG: python bin from default: "+getDefaultPythonBin());
+      // System.err.println("DEBUG: python bin from default: "+getDefaultPythonBin());
     }    
     process = ProcessSimple.create(dataDir,env,finalCommand);
     process.waitFor();
