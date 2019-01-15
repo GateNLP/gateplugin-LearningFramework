@@ -31,7 +31,7 @@ public enum AlgorithmClassification implements Algorithm {
   // Also consider supporting in addition this port: https://github.com/davidsoergel/jlibsvm/
   CostclaWrapper_CL_MR(EngineMBCostclaWrapper.class,null),
   KerasWrapper_CL_DR(EngineDVFileJsonKeras.class,null),
-  KerasWrapper_CL_MR(EngineKerasWrapper.class,null,AlgorithmKind.CLASSIFIER),
+  // KerasWrapper_CL_MR(EngineKerasWrapper.class,null,AlgorithmKind.CLASSIFIER),
   KerasWrapper_SEQ_DR(EngineDVFileJsonKeras.class,null,AlgorithmKind.SEQUENCE_TAGGER),
   LibSVM_CL_MR(EngineLibSVM.class,libsvm.svm.class), 
   MalletBalancedWinnow_CL_MR(EngineMBMalletClass.class,cc.mallet.classify.BalancedWinnowTrainer.class),

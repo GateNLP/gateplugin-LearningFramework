@@ -26,8 +26,8 @@ package gate.plugin.learningframework.engines;
  * @author johann
  */
 public enum AlgorithmRegression implements Algorithm {
-  KerasWrapper_RG_DR(EngineDVFileJsonKeras.class,null),
-  KerasWrapper_RG_MR(EngineKerasWrapper.class,null),
+  // KerasWrapper_RG_DR(EngineDVFileJsonKeras.class,null),
+  // KerasWrapper_RG_MR(EngineKerasWrapper.class,null),
   LibSVM_RG_MR(EngineLibSVM.class,null),
   //GenericServer_RG_MR(EngineServer.class,null),
   PytorchWrapper_RG_DR(EngineDVFileJsonPyTorch.class,null),
