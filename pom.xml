@@ -52,19 +52,6 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <gate-core.version>8.5</gate-core.version>
   </properties>
-  <!-- make sure the snapshot versions are updated every time -->
-  <repositories>
-    <repository>
-      <id>gate-snapshots</id>
-      <url>http://repo.gate.ac.uk/content/groups/public/</url>
-      <snapshots>
-        <updatePolicy>always</updatePolicy>
-      </snapshots>
-      <releases>
-        <updatePolicy>always</updatePolicy>
-      </releases>
-    </repository>
-  </repositories>
   <dependencies>
     <dependency>
       <groupId>org.apache.commons</groupId>
