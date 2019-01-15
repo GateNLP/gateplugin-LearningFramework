@@ -1,8 +1,7 @@
 @ECHO OFF
-REM 001
-SET ROOTDIR=%WRAPPER_HOME%
-if "%ROOTDIR%"=="" (
-  set ROOTDIR=%~dp0
+
+if "x%WRAPPER_HOME%"=="x" (
+  set WRAPPER_HOME=%~dp0
 )
 SET data=%1
 shift
@@ -13,14 +12,12 @@ shift
 set r=%1
 :loop
 shift
-if [%1]==[] goto done
+if "x%1"=="x" goto done
 set r=%r% %1
 goto loop
 :done
 
-if [%PYTHON_BIN%]==[] goto nopython
-%PYTHON_BIN% %ROOTDIR%\FileJsonPyTorch\gate-lf-pytorch-json\train.py %data% %model% %r%
-goto exit
-:nopython
-python %ROOTDIR%\FileJsonPyTorch\gate-lf-pytorch-json\train.py %data% %model% %r%
-:exit
+if "x%PYTHON_BIN%"=="x" (
+  set PYTHON_BIN="%HOMEDRIVE%""%HOMEPATH%"\Miniconda3\python.exe
+)
+%PYTHON_BIN% %WRAPPER_HOME%\gate-lf-pytorch-json\train.py %data% %model% %r%

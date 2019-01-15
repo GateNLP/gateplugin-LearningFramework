@@ -213,6 +213,18 @@ public abstract class EngineDVFileJson extends EngineDV {
     corpusRepresentation = new CorpusRepresentationVolatileDense2JsonStream(dataDir, featureInfo);
   }
 
+  protected String getDefaultPythonBin() {
+    // TODO: depending on OS and the result of doing the equivalent of "which python"
+    // provide some useful default here
+    if(getOsType()==OsType.LINUXLIKE) {
+      return "python";
+    } else {
+      // On windows, use C:\\User\\username\\Miniconda3\python.exe 
+      String drive = System.getenv("HOMEDRIVE");
+      String path = System.getenv("HOMEPATH");
+      return drive + path + "\\Miniconda3\\python.exe";
+    }
+  }
   
   @Override
   protected void loadModel(URL directory, String parms) {
@@ -259,9 +271,12 @@ public abstract class EngineDVFileJson extends EngineDV {
     //}
     Map<String,String> env = new HashMap<>();
     env.put("WRAPPER_HOME",getWrapperHome());
+    env.put("GATE_LF_DATA_DIR", dataDir.getAbsolutePath());
     String pythonbin = config.get("PYTHON_BIN");
     if (pythonbin != null) {
       env.put("PYTHON_BIN", pythonbin);
+    } else {
+      env.put("PYTHON_BIN", getDefaultPythonBin());
     }
     process = Process4StringStream.create(dataDir,env,finalCommand);
     
@@ -321,6 +336,13 @@ public abstract class EngineDVFileJson extends EngineDV {
     model = new Object();
     Map<String,String> env = new HashMap<>();
     env.put("WRAPPER_HOME",getWrapperHome());
+    env.put("GATE_LF_DATA_DIR", dataDir.getAbsolutePath());
+    String pythonbin = config.get("PYTHON_BIN");
+    if (pythonbin != null) {
+      env.put("PYTHON_BIN", pythonbin);
+    } else {
+      env.put("PYTHON_BIN", getDefaultPythonBin());
+    }    
     process = ProcessSimple.create(dataDir,env,finalCommand);
     process.waitFor();
     
