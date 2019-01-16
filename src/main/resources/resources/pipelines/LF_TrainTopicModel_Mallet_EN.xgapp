@@ -10,7 +10,7 @@
       <gate.creole.Plugin-Maven>
         <group>uk.ac.gate.plugins</group>
         <artifact>stringannotation</artifact>
-        <version>4.1-SNAPSHOT</version>
+        <version>4.1</version>
         <downloadListeners/>
       </gate.creole.Plugin-Maven>
       <gate.creole.Plugin-Maven>
