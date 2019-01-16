@@ -309,7 +309,9 @@ public abstract class EngineDVFileJson extends EngineDV {
   public void trainModel(File dataDirectory, String instanceType, String parms) {    
     // first of all close the corpus and save the metadata
     corpusRepresentation.finishAdding();
-    
+    if (corpusRepresentation.nrInstances()==0) {
+      throw new RuntimeException("No training instances found in the corpus, cannot train!");
+    }
     // update the info instance with stuff we should know now
     info.classLabels = corpusRepresentation.getTargetLabels();
     info.nrTargetValues = info.classLabels.size();
