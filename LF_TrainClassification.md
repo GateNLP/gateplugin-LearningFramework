@@ -142,11 +142,17 @@ These algorithms are primarily used for chunking but are included here so
 they can be applied to classification tasks as well. The algorithms and their
 parameters are all documented in [LF_TrainChunking](LF_TrainChunking).
 
-### `PytorchWrapper_CL_DR`
+### `PytorchWrapper_CL_DR` and `PytorchWrapper_SEQ_DR`
 
 This uses the Python-based wrapper for the Pytorch back-end. In order to use this, 
 [the Python environment must first be prepared on your machine](DNN/Preparation.md).
-See the [documentation for the Pytorch backend](DNN/PytorchAlgorithm) for more.
+See the [documentation for the Pytorch backend](DNN/Pytorch) for more.
+
+### `KerasWrapper_CL_DR` and `KerasWrapper_SEQ_DR`
+
+This uses the Python-based wrapper for the Keras/Tensorflow back-end. In order to use this,
+[the Python environment must first be prepared on your machine](DNN/Preparation.md).
+See the [documentation for the Keras backend](DNN/Keras) for more.
 
 ### `WekaWrapper_CL_MR`
 

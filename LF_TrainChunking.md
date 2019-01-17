@@ -107,12 +107,22 @@ otherwise the CRFTrainerByLabelLikelihood is used.
 
 ### `MalletCRFSG_SEQ_MR`
 
-NOTE: this does not work properly yet!
 
 ### `MalletCRFVG_SEQ_MR`
 
-NOTE: this does not work properly yet!
 
 ### `MalletMEMM_SEQ_MR`
 
-NOTE: this does not work properly yet!
+
+### `PytorchWrapper_CL_DR` and `PytorchWrapper_SEQ_DR`
+
+This uses the Python-based wrapper for the Pytorch back-end. In order to use this,
+[the Python environment must first be prepared on your machine](DNN/Preparation.md).
+See the [documentation for the Pytorch backend](DNN/Pytorch) for more.
+
+### `KerasWrapper_CL_DR` and `KerasWrapper_SEQ_DR`
+
+This uses the Python-based wrapper for the Keras/Tensorflow back-end. In order to use this,
+[the Python environment must first be prepared on your machine](DNN/Preparation.md).
+See the [documentation for the Keras backend](DNN/Keras) for more.
+
