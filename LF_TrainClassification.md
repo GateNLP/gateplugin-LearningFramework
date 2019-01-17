@@ -142,6 +142,12 @@ These algorithms are primarily used for chunking but are included here so
 they can be applied to classification tasks as well. The algorithms and their
 parameters are all documented in [LF_TrainChunking](LF_TrainChunking).
 
+### `PytorchWrapper_CL_DR`
+
+This uses the Python-based wrapper for the Pytorch back-end. In order to use this, 
+[the Python environment must first be prepared on your machine](DNN/Preparation.md).
+See the [documentation for the Pytorch backend](DNN/PytorchAlgorithm) for more.
+
 ### `WekaWrapper_CL_MR`
 
 See [UsingWeka](UsingWeka) for how to use the external weka-wrapper software to train a Weka model.
