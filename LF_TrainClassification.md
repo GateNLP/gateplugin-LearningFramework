@@ -146,7 +146,7 @@ parameters are all documented in [LF_TrainChunking](LF_TrainChunking).
 
 This uses the Python-based wrapper for the Pytorch back-end. In order to use this, 
 [the Python environment must first be prepared on your machine](DNN/Preparation.md).
-See the [documentation for the Pytorch backend](DNN/Pytorch) for more.
+See the [documentation for the Pytorch backend](Dnn_PytorchWrapper) for more.
 
 ### `KerasWrapper_CL_DR` and `KerasWrapper_SEQ_DR`
 
