@@ -20,7 +20,10 @@ In the GATE GUI:
   plugin that has not yet been downloaded to your computer will get downloaded
   (and stored in your local Maven cache)
 
-IMPORTANT: if you want to use a wrapper-based learning algorithm (Weka, Sklearn, Pytorch, Keras etc.)
+IMPORTANT: 
+* if you want to use the Pytorch and Keras wrapper algorithms 
+  [additional installation steps are required](DNN/Preparation)
+* if you want to use other wrapper-based learning algorithms (Weka, Sklearn, CostCLA)
 additional installation steps specific to that wrapper may be required. See the documentation
 for that algorithm for additional information.
 

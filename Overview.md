@@ -20,7 +20,7 @@ Wrappers are software which runs the machine learning software or library in a s
 1. the license of the machine learning library or tool is not compatible with the license of the LearningFramework (e.g. Weka) and therefore cannot get distributed with it
 2. the machine learning tool is written in a different language, e.g. Python (e.g. Keras, Pytorch, SciKit-Learn).
 
-Finally, the application of a trained model can also be performed via the use of a HTTP model application server. The LearningFramework supports a very simple HTTP protocol for sending feature vectors to the server in JSON format, getting back the model predictions and applying them to the document that is being processed. See [ServerForApplication](ServerApplication)
+Finally, the application of a trained model can also be performed via the use of a HTTP model application server. The LearningFramework supports a very simple HTTP protocol for sending feature vectors to the server in JSON format, getting back the model predictions and applying them to the document that is being processed. See [ServerForApplication](ServerForApplication)
 
 ## Supported Machine Learning Tasks
 
@@ -81,6 +81,10 @@ Note that PRs from other plugins can also be very useful to generate features:
 * [LF_GenFeatures_Affixes](LF_GenFeatures_Affixes) generate features from prefixes and suffixes
 * [LF_GenFeatures_Misc](LF_GenFeatures_Misc) generate other features like word shape
 
+### Example pipelines, tutorials etc
+
+* [Pipeline_LF_TrainTopicModel_Mallet_EN](Pipeline_LF_TrainTopicModel_Mallet_EN) prepared pipeline for filtering tokens and training a Mallet topic model
+
 ### Other important documentation pages:
 
 * [FeatureSpecification](FeatureSpecification) all about the feature specification file and what it can contain as well as how machine learning features
@@ -96,3 +100,8 @@ Note that PRs from other plugins can also be very useful to generate features:
 * [ServerForApplication](ServerForApplication) describes the interaction with a HTTP server for carrying out the application of trained models
 * [API](API) how to use the LearningFramework classes from Java/Scala/Groovy code and examples of how to use it with the [GATE Java Plugin](https://github.com/johann-petrak/gateplugin-Java)
 * [FAQs](FAQs)
+
+### Miscellaneous other pages:
+
+* [DNN Preparation](DNN/Preparation) how to install Python and prepare for using the Pytorch/Keras backends
+* [DNN WrapperConfig](DNN/WrapperConfig) documents the wrapper configuration file for the Pytorch and Keras backends

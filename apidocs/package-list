@@ -7,5 +7,7 @@ gate.plugin.learningframework.export
 gate.plugin.learningframework.features
 gate.plugin.learningframework.mallet
 gate.plugin.learningframework.mbstats
+gate.plugin.learningframework.pipelines
 gate.plugin.learningframework.stats
+gate.resources.img.svg
 org.apache.commons.clipatched
