@@ -1,3 +1,3 @@
-# Tutorials for using the PytorcWrapper
+# Tutorials for using the PytorchWrapper
 
 TBD

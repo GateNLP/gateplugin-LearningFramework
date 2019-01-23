@@ -1,8 +1,8 @@
 # Overview
 
-The Learning Framework is GATE's most recent machine learning plugin. It's still under active development, but stable enough to use. However future versions may introduce changes which may not be backwards compatible (meaning that pipelines may only work with the older versin or saved models may not be compatible between versions)
+The Learning Framework is GATE's most recent machine learning plugin. It's still under active development, but stable enough to use. However future versions may introduce changes which may not be backwards compatible (meaning that pipelines may only work with the older version or saved models may not be compatible between versions)
 
-It offers a wider variety of more up to date ML algorithms than earlier machine learning plugins, currently the following is supported natively (directly integrated in the plugin code):
+It offers a wider variety of more up to date ML algorithms than the earlier machine learning plugins, currently the following is supported natively (directly integrated in the plugin code):
 * most [Mallet]( http://mallet.cs.umass.edu/) classification algorithms
 * Mallet's CRF implementation
 * [LibSVM](https://www.csie.ntu.edu.tw/~cjlin/libsvm/) for classification and regression, using the java implementation of the original LibSVM code.
@@ -11,8 +11,6 @@ The following libraries and tools are available in the LearningFramework through
 * [Weka](http://www.cs.waikato.ac.nz/ml/weka/) through the [weka-wrapper](https://github.com/GateNLP/weka-wrapper), see  [Using Weka](UsingWeka)
 * [SciKit-Learn](http://scikit-learn.org/stable/) through the [sklearn-wrapper](https://github.com/GateNLP/sklearn-wrapper), see [Using SciKit Learn](UsingSklearn)
 * [CostSensitiveClassification](http://albahnsen.com/CostSensitiveClassification/index.html) through the [sklearn-wrapper](https://github.com/GateNLP/sklearn-wrapper), see [Using CostCla](UsingCostCla)
-* [KerasSparse](https://keras.io/) through the [gate-lf-keras-sparse wrapper](https://github.com/GateNLP/gate-lf-keras-sparse), see [Using KerasSparse](UsingKerasSparse)
-NOTE: this wrapper may get removed in the future!
 * PytorchJson: this is a built-in wrapper to use [Pytorch](https://pytorch.org/) neural networks, see [Using Neural Networks](UsingNeuralNetworks)
 * KerasJson: this is a built-in wrapper to use [Keras](https://keras.io/) neral networks, see [Using Neural Networks](UsingNeuralNetworks)
 
@@ -50,17 +48,19 @@ Note that PRs from other plugins can also be very useful to generate features:
   word/term statistics like term frequency, document frequency, TF\*IDF and others and to assign those statistics
   as features.
 * [JdbcLookup plugin](https://github.com/GateNLP/gateplugin-JdbcLookup): can be used to add features from a JDBC database
+* [Java plugin](https://github.com/GateNLP/gateplugin-Java) and [Groovy plugin](https://github.com/GateNLP/gateplugin-Groovy) for
+  general-purpose coding
 
 ## Feature Overview
 
 * Supports classification, regression, sequence tagging, topic modelling
-* Supports learning algorithms from: LibSVM, Mallet, Weka (using a wrapper software), Scikit-Learn (using a wrapper software), Keras, Pytorch and others
+* Supports learning algorithms from: LibSVM, Mallet, Weka (using a wrapper software), Scikit-Learn (using a wrapper software), Keras, Pytorch
 * Supports various ways of handling missing values
 * Supports sparse coding of nominal values as one-of-k or as "value number"
 * Supports instance weights (limited support depending on the algorithm used)
 * Supports per-instance classification cost vectors instead of the class label for classification for per-instance cost aware algorithms (however only works with algorithms which support this)
 * Supports limiting attribute lists to only those annotations which are within another containing annotation
-* Supports using pre-calculated scores for one-of-k coded nominal values, e.g. pre-calculated TF\*IDF scores for terms or ngrams (for n-grams with n>1 the final score is calculated as the product of the individual pre-calculcated gram scores)
+* Supports using pre-calculated scores for one-of-k coded nominal values, e.g. pre-calculated TF\*IDF scores for terms or ngrams (for n-grams with n>1 the final score is calculated as the product of the individual pre-calculated gram scores)
 * Supports multi-valued annotation features for one-of-k coded nominal attributes: for example if the annotation feature is a List<String>, a dimension / feature is created for each element in the list
 * Supports multi-valued annotation features for numeric attributes: in this case the elements (which must be doubles or must be convertible to doubles) are "spliced" into the final feature vector (e.g. for making use of pre-calculated word embeddings).
 
@@ -90,11 +90,11 @@ Note that PRs from other plugins can also be very useful to generate features:
 * [FeatureSpecification](FeatureSpecification) all about the feature specification file and what it can contain as well as how machine learning features
   are created from the original document annotations
 * [AlgorithmParameters](AlgorithmParameters) some general notes about algorithm parameters. Most parameters are documented with the wiki page about the PR where they can be used
+* [DNN Preparation](DNN/Preparation) how to install Python and prepare for using the Pytorch/Keras backends
+* [DNN WrapperConfig](DNN/WrapperConfig) documents the wrapper configuration file for the Pytorch and Keras backends
 * [UsingWeka](UsingWeka) all about how to use Weka with the LearningFramework plugin.
 * [UsingSklearn](UsingSklearn) all about how to use SciKit Learn with the LearningFramework plugin.
 * [UsingCostCla](UsingCostCla) all about how to use CostCla (https://github.com/albahnsen/CostSensitiveClassification) with the LearningFramework plugin
-* [UsingKeras (KerasSparse, OLD!)](UsingKeras) all about how to use Keras (https://keras.io/, a Deep Learning framework built on top of
-[TensorFlow](https://www.tensorflow.org/) and [Theano](http://deeplearning.net/software/theano/) with the LearningFramework plugin
 * [VectorValues](VectorValues) how to use pre-caluclated dense vectors like embeddings and other vector-valued features
 * [SavedFiles](SavedFiles) the files that get saved as a result of training or exporting
 * [ServerForApplication](ServerForApplication) describes the interaction with a HTTP server for carrying out the application of trained models
@@ -102,6 +102,3 @@ Note that PRs from other plugins can also be very useful to generate features:
 * [FAQs](FAQs)
 
 ### Miscellaneous other pages:
-
-* [DNN Preparation](DNN/Preparation) how to install Python and prepare for using the Pytorch/Keras backends
-* [DNN WrapperConfig](DNN/WrapperConfig) documents the wrapper configuration file for the Pytorch and Keras backends
