@@ -20,10 +20,8 @@ The pytorch wrapper library also comes with a number of pre-defined special-purp
 used as starting points for specific tasks (e.g. NER or POS tagging).
 
 Here is an overview of the PytorchWrapper documentation:
-* [Training](Dnn_PytorchWrapper_Training) - all the details about how to train a model, specify parameters, change
+* [Training](Pytorch_Training) - all the details about how to train a model, specify parameters, change
   the neural network architecture and hyperparameters, use and adapt a predefined special-purpose module from the
-  library etc. (TO BE IMPROVED)
-* [Application](Dnn_PytorchWrapper_Application) - how to use a trained model and apply it to new documents (TO BE DONE)
-* [Examples](Dnn_PytorchWrapper_Examples) - some simple illustrative examples (TO BE DONE)
-* [Tutorials](Dnn_PytorchWrapper_Tutorials) - tutorials to solve some NLP task using the PytorchWrapper backend (TO BE DONE)
-* [Modules](Dnn_PytorchWrapper_Modules) - documentation of predefined network architectures which can be used in place of the automatically generated generic architectures
+  library etc.
+* [Application](Pytorch_Application) - how to use a trained model and apply it to new documents
+* [Modules](Pytorch_Modules) - documentation of predefined network architectures which can be used in place of the automatically generated generic architectures

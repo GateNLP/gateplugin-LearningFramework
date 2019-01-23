@@ -118,7 +118,7 @@ otherwise the CRFTrainerByLabelLikelihood is used.
 
 This uses the Python-based wrapper for the Pytorch back-end. In order to use this,
 [the Python environment must first be prepared on your machine](DNN/Preparation.md).
-See the [documentation for the Pytorch backend](DNN/Dnn_PytorchWrapper) for more.
+See the [documentation for the Pytorch backend](DNN/Pytorch) for more.
 
 ### `KerasWrapper_CL_DR` and `KerasWrapper_SEQ_DR`
 
