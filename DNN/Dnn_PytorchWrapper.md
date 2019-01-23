@@ -1,4 +1,6 @@
-# Pytorch Wrapper
+# Pytorch Backend/Wrapper
+
+NOTE: in order to use this, the [Python environment needs to get set up first](Preparation)
 
 The PytorchWrapper is currently one of two wrappers for using "Deep Learning" / Neural Networks
 with the Learning Framework. See [Using Neural Networks](UsingNeuralNetworks) for an overview.

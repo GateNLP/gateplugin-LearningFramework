@@ -1,8 +1,25 @@
 # Training a model using the PytorchWrapper
 
-LOTS OF STUFF TO BE DONE HERE!!
+At training time, when you use `LF_TrainClassification` or `LF_TrainChunking` the following
+happens:
+* the LearningFramework copies the python software needed into your data directory into a subdirectory with the name `FileJsonPytorch`
+* IMPORTANT: this software directory is NEVER overridden by the LearningFramework once it is there! This is done to ensure that the user can modify the neural network implementations any way needed for the
+learning project and so that the same version of the software is always used for the task.
+In order to deliberately use a newer version, the directory has to get deleted manually!
+* the PR converts the training instances found in the documents of your corpus into a data file
+  (`crvd.data.json`) and a meta-file (`crvd.meta.json`) which are stored in the data directory.
+* Some additional files are created which describe the learning problem for use by the application PR.
+* Once all documents have been processed, the PR checks if there is configuration file `FileJsonPyTorch.yaml` which [can be used to configure the wrapper](WrapperConfig).
+* The python-based backend for creating and training a neural network is started by the PR. Any parameters
+  specified in the the PR's `algorithmParameters` field are passed to this program
+* The neural network is trained on the data until some kind of conversion or termination criteria
+  occurs. The best network model is stored to a group of files (starting with `FileJsonPytorch.model`)
+   in the data directory.
+* NOTE: since training a neural network can be a long process it is possible to defer this step
+  to be done later from the command line by specifying the paramter "--notrain" in the `algorithmParameters` field of the PR.
 
-## Parameters for training
+  ## `PytorchWrapper_CL_DR` and `PytorchWrapper_SEQ_DR` parameters for training
+
 
 * `--embs` specifications: set/override the embeddings definitions for some nominal feature. This is a comma-separated list
   (no spaces!) of specifications where each specification is a colon-separated list of the form
