@@ -32,7 +32,7 @@ Overview of the documentation:
   * [LF_EvaluateRegression](LF_EvaluateRegression) estimate regression quality
   * [LF_GenFeatures_Affixes](LF_GenFeatures_Affixes) generate features from prefixes and suffixes
   * [LF_GenFeatures_Misc](LF_GenFeatures_Misc) generate other features like word shape
-* [Using Neural Networks](UsingNeuralNetworks)
+* [Using Neural Networks](DNN/UsingNeuralNetworks)
 * [Tutorials](tutorials/)
 
 Additional information:

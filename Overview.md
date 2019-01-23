@@ -11,8 +11,8 @@ The following libraries and tools are available in the LearningFramework through
 * [Weka](http://www.cs.waikato.ac.nz/ml/weka/) through the [weka-wrapper](https://github.com/GateNLP/weka-wrapper), see  [Using Weka](UsingWeka)
 * [SciKit-Learn](http://scikit-learn.org/stable/) through the [sklearn-wrapper](https://github.com/GateNLP/sklearn-wrapper), see [Using SciKit Learn](UsingSklearn)
 * [CostSensitiveClassification](http://albahnsen.com/CostSensitiveClassification/index.html) through the [sklearn-wrapper](https://github.com/GateNLP/sklearn-wrapper), see [Using CostCla](UsingCostCla)
-* PytorchJson: this is a built-in wrapper to use [Pytorch](https://pytorch.org/) neural networks, see [Using Neural Networks](UsingNeuralNetworks)
-* KerasJson: this is a built-in wrapper to use [Keras](https://keras.io/) neral networks, see [Using Neural Networks](UsingNeuralNetworks)
+* PytorchJson: this is a built-in wrapper to use [Pytorch](https://pytorch.org/) neural networks, see [Using Neural Networks](DNN/UsingNeuralNetworks)
+* KerasJson: this is a built-in wrapper to use [Keras](https://keras.io/) neral networks, see [Using Neural Networks](DNN/UsingNeuralNetworks)
 
 Wrappers are software which runs the machine learning software or library in a separate process and the LearningFramework communicates with the wrapper software for training and application by providing a file or sending/receiving data. This solution is used for either or both of two reasons:
 1. the license of the machine learning library or tool is not compatible with the license of the LearningFramework (e.g. Weka) and therefore cannot get distributed with it
