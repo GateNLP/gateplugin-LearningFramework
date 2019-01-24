@@ -34,7 +34,7 @@ In order to deliberately use a newer version, the directory has to get deleted m
     "onehot" (use onehot vector instead of embeddings)
   * `embminfreq`: (numeric) the minimum number of occurrences of a word in the training set, less frequent words get replaced
     by an OOV placeholder
-  * `embfile`: (string) the path to an embedding file in text format
+  * `embfile`: (string) the path to an embedding file in text format or gzip-compressed text format (with extension .gz)
 * `--valsize`: number of instances to split ofif the dataset for validation, if this is a float > 0.0 and < 1.0, the fraction of
   instances to split off. This is ignored if --valfile is specified.
 * `--valeverybatches`: validate on the validation set every that many batches

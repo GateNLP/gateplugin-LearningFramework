@@ -110,11 +110,58 @@ In our case there are an identical number of positive and negative sentences in 
 * dev: 1066 sentences (533 pos/neg each)
 * test: 1066 sentences (533 pos/neg each)
 
-!!TODO: prepared datastore, few words about how to prepare the datastore
 
-!!TODO: look at one or two datasets
+## Inspect the prepared corpora
 
-## !! TODO: first attempt, simple word-based model
+For this tutorial, all the sentences from the original corpus have
+been converted to GATE format (one document per snippet/sentence),
+randomly split into sets for train/dev/test and imported into
+a serial datastore.
 
+Open the datastore by starting GATE and choosing
+`Datastore` - `Open Datastore` - `SerialDatastore` - then navigate
+to the extracted directory `gate-lf-tutorial-textclassification1` and choose the subdirectory `corpus`.
 
-## !! TODO: second attempt, use embedding clusters, pos tags
+Double click the `corpora` datastore then double click each of the
+three corpora `dev`, `test`, and `train` under `GATE Serial Corpus` to  put them under the `Language Resources` tree in the GUI.
+
+Double click the `train` corpus then double click a few of the documents which get displayed to inspect them and see what they look like:
+* click the `Annotation Sets` and `Annotation List` buttons
+* There are three sets: the default set, the Key set and the "Original markups" set, only the "Key" set contains annotations, in each document, there is a single `Sentence` annotation in the Key set.
+* the `Sentence` annotation in the Key annotation set covers the
+entire span of the document (which is just a sentence or snipped in any case). The annotation contains features from the conversion
+processin in the feature map, we can ignore those.
+In addition, there is the important feature: `class` which can have
+either the value `neg` or `pos`. This is what we want to learn.
+* Also look at documents in the `dev` and `test` corpus, they
+should contain exactly the same kind of documents and annotations.
+
+## Create Tokens
+
+Before we can do anything we need at least to get token annotations.
+For this we will simply use ANNIE which will create the Token,
+SpaceToken and other annotations for us and will already create
+some features in the feature maps of the annotations as well, e.g.
+the POS tag ("category") of each token.
+
+However, the standard ANNIE pipeline also creates Sentence annotations
+and we already have those in the Key set, so we have to modify the
+ANNIE pipeline. To do this perform the following steps (the result of these steps is in your directory in the `prepared-annie.xgapp` pipeline):
+* Load the default ANNIE pipeline (`Applications` - `Ready made applications` - `ANNIE` - `ANNIE`)
+* Double click the pipeline to show the processing resources (PRs)
+* Instead of running the Sentence Splitter (step 4) we want to copy the Sentence annotation from the Key set
+* Click the Plugin-Manager and load the `Tools` plugin (which contains the Annotation Set Transfer PR)
+* Right click on `Processing Resources` - `New` and choose `Annotation Set Transfer`
+* In the ANNIE pipeline editor click on the Annotation Set Transfer PR in the left pane, then click on the ANNIE Sentence Splitter in the right pane then click the "move to right" button between the two panes (">>") to insert the Annotation Set Transfer PR
+* In the `Processing Resources` view right click the `ANNIE Sentence Splitter PR` and choose "close". This removes the Sentence Splitter from the pipeline as well.
+* Click on the Annotation Set Transfer PR and  change the run time parameters:
+  * change `copyAnnotations` to `true`
+  * set `inputASName` to Key
+
+Now save the modified pipeline into your directory as `annie.xgapp`
+
+Run the pipeline on a single document from one of the corpora and
+check that it works as intended: there should be Token, SpaceToken and Sentence annotations in the default annotation set now.
+Run the pipeline again on the same document: the same annotations should be there and annotations should not accumulate -- everything gets reset correctly!
+
+When everything works fine, run the pipeline on all three corpora (train, dev, test).
