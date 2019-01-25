@@ -37,7 +37,7 @@
   <parent>
     <groupId>uk.ac.gate</groupId>
     <artifactId>gate-plugin-base</artifactId>
-    <version>8.6-SNAPSHOT</version>
+    <version>8.5.1</version>
     <relativePath/>
   </parent>
   <licenses>
@@ -142,7 +142,8 @@
           <excludeFilterFile>src/build/resources/findbugs-excluded.xml</excludeFilterFile>
           <xmlOutput>true</xmlOutput>
           <effort>Max</effort>
-          <threshold>Low</threshold>
+	  <threshold>Low</threshold>
+	  <maxHeap>1024</maxHeap>
         </configuration>
       </plugin>
     </plugins>
