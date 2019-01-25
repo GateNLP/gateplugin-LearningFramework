@@ -28,7 +28,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
@@ -460,5 +459,14 @@ public class FeatureSpecification {
     }
    
   }
+  
+  @Override
+  public String toString() {
+    // The only difference between this and the feature info is that we also
+    // know about the embedding mapping, so just print the feature info
+    return featureInfo.toString();
+  }
+  
+  
 
 }

@@ -118,5 +118,6 @@ public abstract class FeatureSpecAttribute implements Serializable, Cloneable {
     return ret;
     
   }
+  
 
 }
