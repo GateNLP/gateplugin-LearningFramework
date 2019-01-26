@@ -568,4 +568,22 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
     }
   }
 
+  @Override
+  public int nrDimensions() {
+    return getNrFeatures();
+  }
+
+  @Override
+  public List<String> getLabelList() {
+    Stats s = stats.getStatistics(StatsForFeatures.KEY_FOR_TARGET);
+    if(s == null) {
+      return new ArrayList<>();
+    } else {
+      if(s.isString()) {
+        return s.stringValues();
+      } else {
+        return new ArrayList<>();
+      }
+    }
+  }
 }

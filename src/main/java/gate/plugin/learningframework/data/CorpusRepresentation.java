@@ -23,6 +23,7 @@ package gate.plugin.learningframework.data;
 import gate.AnnotationSet;
 import gate.plugin.learningframework.features.SeqEncoder;
 import gate.plugin.learningframework.features.TargetType;
+import java.util.List;
 
 /**
  * The base class of all classes that handle the representation of instances.
@@ -64,6 +65,13 @@ public abstract class CorpusRepresentation {
    */
   public abstract int nrInstances();
   
+  /**
+   * Number of actual dimensions represented.
+   * 
+   * @return 
+   */
+  public abstract int nrDimensions();
+  
   protected TargetType targetType;
   /**
    * Get the target type set for this corpus.
@@ -81,6 +89,11 @@ public abstract class CorpusRepresentation {
   public void setTargetType(TargetType val) {
     targetType = val;
   }
+  
+  /**
+   * If we have labels, returns a list of strings, otherwise an empty list
+   */
+  public abstract List<String> getLabelList();
   
   
 }

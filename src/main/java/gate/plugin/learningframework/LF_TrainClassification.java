@@ -42,6 +42,7 @@ import gate.plugin.learningframework.features.FeatureSpecification;
 import gate.plugin.learningframework.features.TargetType;
 import gate.util.GateRuntimeException;
 import java.io.File;
+import java.util.List;
 
 @CreoleResource(
         name = "LF_TrainClassification",
@@ -288,7 +289,10 @@ public class LF_TrainClassification extends LearningFrameworkPRBase {
     }
     if (getDuplicateId() == 0) {
       engine.getInfo().nrTrainingInstances = corpusRepresentation.nrInstances();
-
+      engine.getInfo().nrTrainingDimensions = corpusRepresentation.nrDimensions();
+      List<String> ls = corpusRepresentation.getLabelList();
+      engine.getInfo().classLabels = ls;
+      engine.getInfo().nrTargetValues = ls.size();
       // Store some additional information in the info datastructure which will be saved with the model
       engine.getInfo().nrTrainingDocuments = getSeenDocuments().get();
       engine.getInfo().targetFeature = getTargetFeature();

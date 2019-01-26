@@ -210,6 +210,6 @@ public class CorpusRepresentationMalletLDA extends CorpusRepresentationMallet {
       return instances.size();
     }
   }
-  
+
   
 }

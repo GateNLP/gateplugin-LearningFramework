@@ -27,6 +27,7 @@ import gate.AnnotationSet;
 import gate.plugin.learningframework.features.SeqEncoder;
 import gate.plugin.learningframework.features.TargetType;
 import gate.util.GateRuntimeException;
+import java.util.List;
 import libsvm.svm_node;
 import libsvm.svm_problem;
 
@@ -150,6 +151,16 @@ public class CorpusRepresentationLibSVM extends CorpusRepresentationMalletRelate
   @Override
   public void setTargetType(TargetType val) {
     crm.setTargetType(val);
+  }
+
+  @Override
+  public int nrDimensions() {
+    return crm.getPipe().getAlphabet().size();
+  }
+
+  @Override
+  public List<String> getLabelList() {
+    return crm.getLabelList();
   }
   
   

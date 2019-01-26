@@ -19,6 +19,7 @@
  */
 package gate.plugin.learningframework.data;
 
+import cc.mallet.types.Alphabet;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelAlphabet;
 import gate.plugin.learningframework.features.FeatureInfo;
@@ -28,6 +29,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.apache.log4j.Logger;
 
 /**
@@ -120,6 +124,27 @@ public abstract class CorpusRepresentationMallet extends CorpusRepresentationMal
    */
   @Override
   public abstract void finishAdding();
+  
+  @Override
+  public int nrDimensions() {
+    return pipe.getAlphabet().size();
+  }
+  
+  @Override
+  public List<String> getLabelList() {
+    Alphabet ta = pipe.getTargetAlphabet();
+    if (ta != null) {
+       Object[] ls = ta.toArray();
+       List<String> list = new ArrayList<>();
+       for(Object o : ls) {
+         list.add(o.toString());
+       }
+       return list;
+    } else {
+      return new ArrayList<>();
+    }
+  }
+  
   
   // TODO: need to do this better: make sure if there are thousands of 
   // features that we only show a subset and the number?

@@ -320,11 +320,20 @@ public class LF_TrainChunking extends LearningFrameworkPRBase {
       // NOTE: some parts of the info instance should/could get updated inside the
       // engine as part of the trainModel() method (the EngineMB engines delegate
       // this into their own updateInfo() method). 
+      
+      // TODO: setting all these things should be easier to do 
+      // e.g. engine.getInfo().updateFrom(corpusRepresentation) or
+      // corpusRepresentation.updateInfo(engine.getInfo())
+      
       engine.getInfo().nrTrainingInstances = corpusRepresentation.nrInstances();
       engine.getInfo().classAnnotationTypes = getClassAnnotationTypes();
       // engine.getInfo().classLabels = corpusRepresentation.classLabels();
       // Store some additional information in the info datastructure which will be saved with the model
       engine.getInfo().nrTrainingDocuments = getSeenDocuments().get();
+      engine.getInfo().nrTrainingDimensions = corpusRepresentation.nrDimensions();
+      List<String> ls = corpusRepresentation.getLabelList();
+      engine.getInfo().classLabels = ls;
+      engine.getInfo().nrTargetValues = ls.size();
 
       // TODO: what if we do sequence tagging by classification???
       engine.getInfo().targetFeature = "LF_class";
