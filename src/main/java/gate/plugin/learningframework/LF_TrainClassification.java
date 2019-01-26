@@ -255,7 +255,7 @@ public class LF_TrainClassification extends LearningFrameworkPRBase {
         System.out.println("Using default feature specification: " + featureSpec);
       } else {
         featureSpec = new FeatureSpecification(featureSpecURL);
-        System.out.println("Read the feature specification: " + featureSpec);
+        System.out.println("Using feature specification: " + featureSpec);
       }
       
       // Create the engine from the Algorithm parameter
@@ -263,7 +263,7 @@ public class LF_TrainClassification extends LearningFrameworkPRBase {
       fi.setGlobalScalingMethod(scaleFeatures);
       engine = Engine.create(trainingAlgorithm, getAlgorithmParameters(), fi, TargetType.NOMINAL, dataDirectory);
       corpusRepresentation = engine.getCorpusRepresentation();
-      System.out.println("Created the engine: " + engine + " with CR=" + corpusRepresentation);
+      // System.out.println("Created the engine: " + engine + " with CR=" + corpusRepresentation);
       getSharedData().put("engine", engine);
       getSharedData().put("featureSpec", featureSpec);
       getSharedData().put("corpusRepresentation", corpusRepresentation);
@@ -287,6 +287,13 @@ public class LF_TrainClassification extends LearningFrameworkPRBase {
       throw new GateRuntimeException("No documents seen, cannot train");
     }
     if (getDuplicateId() == 0) {
+      engine.getInfo().nrTrainingInstances = corpusRepresentation.nrInstances();
+
+      // Store some additional information in the info datastructure which will be saved with the model
+      engine.getInfo().nrTrainingDocuments = getSeenDocuments().get();
+      engine.getInfo().targetFeature = getTargetFeature();
+      engine.getInfo().trainingCorpusName = corpus.getName();
+
       System.out.println("LearningFramework: Starting training engine " + engine);
       if (corpusRepresentation instanceof CorpusRepresentationMallet) {
         CorpusRepresentationMallet crm = (CorpusRepresentationMallet) corpusRepresentation;
@@ -299,13 +306,8 @@ public class LF_TrainClassification extends LearningFrameworkPRBase {
           System.out.println("LearningFramework: Attributes " + crm.getRepresentationMallet().getDataAlphabet().toString().replaceAll("\\n", " "));
         }
       }
-      engine.getInfo().nrTrainingInstances = corpusRepresentation.nrInstances();
-
-      // Store some additional information in the info datastructure which will be saved with the model
-      engine.getInfo().nrTrainingDocuments = getSeenDocuments().get();
-      engine.getInfo().targetFeature = getTargetFeature();
-      engine.getInfo().trainingCorpusName = corpus.getName();
-
+      
+      
       engine.trainModel(gate.util.Files.fileFromURL(dataDirectory),
               getInstanceType(),
               getAlgorithmParameters());

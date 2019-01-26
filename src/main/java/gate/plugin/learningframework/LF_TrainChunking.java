@@ -286,7 +286,7 @@ public class LF_TrainChunking extends LearningFrameworkPRBase {
         System.out.println("Using default feature specification: " + featureSpec);
       } else {
         featureSpec = new FeatureSpecification(featureSpecURL);
-        System.out.println("Read the feature specification: " + featureSpec);
+        System.out.println("Using feature specification: " + featureSpec);
       }
       FeatureInfo fi = featureSpec.getFeatureInfo();
       fi.setGlobalScalingMethod(scaleFeatures);
@@ -317,18 +317,6 @@ public class LF_TrainChunking extends LearningFrameworkPRBase {
       throw new GateRuntimeException("No documents seen, cannot train");
     }
     if (getDuplicateId() == 0) {
-      System.out.println("LearningFramework: Starting training engine " + engine);
-      if (corpusRepresentation instanceof CorpusRepresentationMallet) {
-        CorpusRepresentationMallet crm = (CorpusRepresentationMallet) corpusRepresentation;
-        System.out.println("Training set classes: "
-                + crm.getRepresentationMallet().getPipe().getTargetAlphabet().toString().replaceAll("\\n", " "));
-        System.out.println("Training set size: " + crm.getRepresentationMallet().size());
-        if (crm.getRepresentationMallet().getDataAlphabet().size() > 20) {
-          System.out.println("LearningFramework: Attributes " + crm.getRepresentationMallet().getDataAlphabet().size());
-        } else {
-          System.out.println("LearningFramework: Attributes " + crm.getRepresentationMallet().getDataAlphabet().toString().replaceAll("\\n", " "));
-        }
-      }
       // NOTE: some parts of the info instance should/could get updated inside the
       // engine as part of the trainModel() method (the EngineMB engines delegate
       // this into their own updateInfo() method). 
@@ -347,6 +335,19 @@ public class LF_TrainChunking extends LearningFrameworkPRBase {
         engine.getInfo().seqEncoderClass = seqEncoder.getClass().getName();
         engine.getInfo().seqEncoderOptions = seqEncoder.getOptions().toString();
       }
+      
+      System.out.println("LearningFramework: Starting training engine " + engine);
+      if (corpusRepresentation instanceof CorpusRepresentationMallet) {
+        CorpusRepresentationMallet crm = (CorpusRepresentationMallet) corpusRepresentation;
+        System.out.println("Training set classes: "
+                + crm.getRepresentationMallet().getPipe().getTargetAlphabet().toString().replaceAll("\\n", " "));
+        System.out.println("Training set size: " + crm.getRepresentationMallet().size());
+        if (crm.getRepresentationMallet().getDataAlphabet().size() > 20) {
+          System.out.println("LearningFramework: Attributes " + crm.getRepresentationMallet().getDataAlphabet().size());
+        } else {
+          System.out.println("LearningFramework: Attributes " + crm.getRepresentationMallet().getDataAlphabet().toString().replaceAll("\\n", " "));
+        }
+      }      
 
       engine.trainModel(gate.util.Files.fileFromURL(dataDirectory),
               getInstanceType(),
