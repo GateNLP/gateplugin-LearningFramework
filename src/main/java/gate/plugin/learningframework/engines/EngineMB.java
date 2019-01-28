@@ -101,7 +101,7 @@ public abstract class EngineMB extends Engine {
           throw new GateRuntimeException("Not a usable algorithm kind for now with Mallet based engines: "+algorithm);
       }
     }
-    this.featureInfo = featureInfo;
+    this.featureInfo = fi;
     corpusRepresentation.startAdding();
   }
   
