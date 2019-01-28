@@ -484,7 +484,6 @@ public class EngineMBLibSVM extends EngineMB {
         System.err.println("Random seed set to "+seed);
         libsvm.svm.rand.setSeed(seed);
         
-        List<Double> accuracies = new ArrayList<>(numberOfRepeats);
         svm_problem svmprob = CorpusRepresentationLibSVM.getFromMallet(corpusRepresentation);
         int total = svmprob.l;
         int trainsize = (int)(total * trainingFraction);
