@@ -227,7 +227,7 @@ public class EngineMBLibSVM extends EngineMB {
         int bestLabel = ((Double)(svm.svm_predict(svmModel, svmInstance))).intValue();
         if (svm.svm_check_probability_model(svmModel) == 1) {
           double[] confidences = new double[numberOfLabels];
-          double v = svm.svm_predict_probability(svmModel, svmInstance, confidences);
+          svm.svm_predict_probability(svmModel, svmInstance, confidences);
           bestConf = confidences[bestLabel];
         } else {
           double[] confidences = new double[numberOfLabels * (numberOfLabels - 1) / 2];
@@ -355,7 +355,7 @@ public class EngineMBLibSVM extends EngineMB {
         int nrCorrect = 0;
         int nrIncorrect = 0;
         for(int i=0; i<target.length; i++) {
-          if(target[i] == svmprob.y[i]) {
+          if(Math.abs(target[i] - svmprob.y[i]) < 1E-8) {
             nrCorrect++;
           } else {
             nrIncorrect++;
@@ -378,7 +378,6 @@ public class EngineMBLibSVM extends EngineMB {
         int seed = (int) ps.getValueOrElse("seed", 1);
         libsvm.svm.rand.setSeed(seed);
         
-        List<Double> accuracies = new ArrayList<>(numberOfRepeats);
         svm_problem svmprob = CorpusRepresentationLibSVM.getFromMallet(corpusRepresentation);
         int total = svmprob.l;
         int trainsize = (int)(total * trainingFraction);
@@ -400,7 +399,6 @@ public class EngineMBLibSVM extends EngineMB {
         List<Double> accs = new ArrayList<>();
         int nrCorrectAll = 0;
         int nrIncorrectAll = 0;
-        int nrTotalAll = 0;
         for(int repeat=0; repeat<numberOfRepeats; repeat++) {
           // Split the instances up into training and test set
           // To do this we repeatedly shuffle the index array and divide it into 
@@ -426,7 +424,6 @@ public class EngineMBLibSVM extends EngineMB {
           accs.add(((double)nrCorrect)/nrTotal);
           nrCorrectAll += nrCorrect;
           nrIncorrectAll += nrIncorrect;
-          nrTotalAll += nrTotal;
           System.err.println("Accuracy for holdout repetition "+(repeat+1)+" is "+(((double)nrCorrect)/nrTotal));
           if(repeat != (numberOfRepeats-1)) {
             shuffle(idx,rgen);

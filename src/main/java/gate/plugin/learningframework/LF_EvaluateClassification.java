@@ -262,12 +262,6 @@ public class LF_EvaluateClassification extends LearningFrameworkPRBase {
         }
       }
 
-      AlgorithmClassification alg = getTrainingAlgorithm();
-
-      //System.err.println("DEBUG: Before Document.");
-      //System.err.println("  Training algorithm engine class is " + alg.getEngineClass());
-      //System.err.println("  Training algorithm algor class is " + alg.getTrainerClass());
-
       // Read and parse the feature specification
       featureSpec = new FeatureSpecification(featureSpecURL);
       //System.err.println("DEBUG Read the feature specification: " + featureSpec);

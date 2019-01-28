@@ -209,11 +209,6 @@ public class LF_EvaluateRegression extends LearningFrameworkPRBase {
       if (getTargetFeature() == null || getTargetFeature().isEmpty()) {
         throw new GateRuntimeException("LF_EvaluateRegression: no target feature specified");
       }
-      AlgorithmRegression alg = getTrainingAlgorithm();
-
-      //System.err.println("DEBUG: Before Document.");
-      //System.err.println("  Training algorithm engine class is " + alg.getEngineClass());
-      //System.err.println("  Training algorithm algor class is " + alg.getTrainerClass());
 
       // Read and parse the feature specification
       featureSpec = new FeatureSpecification(featureSpecURL);
