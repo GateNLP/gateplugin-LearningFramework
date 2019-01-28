@@ -203,31 +203,14 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
         throw new GateRuntimeException("Sequence span not supported for server");
       }
       engine = new EngineMBServer(dataDirectory, serverUrl);
+      System.out.println("\nStarting application:");
+      System.out.println(engine.toFormattedString());
     } else {
-
-      // NOTE: previously we tried to be clever here and only (re)load the engine if
-      // we did not have one or if the URL changed, but this fails if we keep re-training
-      // and re-applying updated models from the same URL. So we now always load
-      // the model again here.
       engine = Engine.load(dataDirectory, getAlgorithmParameters());
-      System.out.println("LF-Info: loaded model is " + engine);
-      FeatureInfo fi = engine.getFeatureInfo();
-      if(fi != null) {
-        System.out.println("FeatureInfo: "+fi);
-      } else {
-        System.out.println("FeatureInfo: not available");
-      }
-      if (engine.getModel() == null) {
-        // This is really only an error if we do not have some kind of wrapped algorithm
-        // where the model is handled externally.
-        // For now, we just show a warning.
-        // throw new GateRuntimeException("Do not have a model, something went wrong.");
-        // System.err.println("WARNING: no internal model to apply, this is ok if an external model is used");
-      } else {
-        System.out.println("LearningFramework: Applying model "
-                + engine.getModel().getClass() + " ...");
-      }
-
+      System.out.println("\nStarting application:");
+      System.out.println(engine.toFormattedString());
+      
+      
       if (engine.getAlgorithm().getAlgorithmKind() == AlgorithmKind.SEQUENCE_TAGGER) {
         if (getSequenceSpan() == null || getSequenceSpan().isEmpty()) {
           throw new GateRuntimeException("sequenceSpan parameter must not be empty when a sequence tagging algorithm is used for classification");

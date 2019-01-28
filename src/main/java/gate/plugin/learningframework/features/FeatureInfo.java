@@ -145,7 +145,7 @@ public class FeatureInfo implements Serializable {
     } catch (Exception ex) {
       throw new GateRuntimeException("Could not write feature info file ",ex);
     }
-    System.err.println("DEBUG: saved featureInfo to "+new File(dirFile,FILENAME_FEATUREINFO));
+    // System.err.println("DEBUG: saved featureInfo to "+new File(dirFile,FILENAME_FEATUREINFO));
   }
   
   /**
@@ -155,7 +155,7 @@ public class FeatureInfo implements Serializable {
    */
   public static FeatureInfo load(URL dirURL) {    
     URL infoFile = newURL(dirURL,FILENAME_FEATUREINFO);
-    System.err.println("DEBUG: saving featureInfo from "+infoFile);
+    // System.err.println("DEBUG: loading featureInfo from "+infoFile);
     try (InputStream is = infoFile.openStream();
             ObjectInputStream ois = new ObjectInputStream(is);
             ) {
@@ -180,9 +180,15 @@ public class FeatureInfo implements Serializable {
     return sb.toString();
   }
 
-
-
-
+  public String toFormattedString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("FeatureInfo.growthStopped: "); sb.append(growthStopped); sb.append("\n");
+    sb.append("FeatureInfo.globalScaling: "); sb.append(globalScalingMethod); sb.append("\n");
+    for(FeatureSpecAttribute fsa : featureSpecs) {
+      sb.append("FeatureInfo.feature: "); sb.append(fsa); sb.append("\n");
+    }
+    return sb.toString();
+  }
 
 
 }

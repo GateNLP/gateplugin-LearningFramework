@@ -422,4 +422,38 @@ public abstract class Engine {
   }
   
   
+  /**
+   * Create nicely formatted string representation.
+   * This includes information from the info and featureinfo parts stored with 
+   * the engine.  
+   * 
+   */
+  public String toFormattedString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("Engine class: "); sb.append(this.getClass()); sb.append("\n");
+    sb.append("Algorithm: "); 
+    if(algorithm==null) {
+      sb.append("[none]");
+    } else {
+      sb.append(algorithm.getClass());      
+    }
+    sb.append("\n");
+    sb.append("Trainer: ");
+    if(trainer == null) {
+      sb.append("[none]");
+    } else {
+      sb.append(trainer);
+    }
+    sb.append("\n");
+    sb.append("Model: "); sb.append(getModel()); sb.append("\n");
+    sb.append(info.toFormattedString());
+    FeatureInfo fi = getFeatureInfo();
+    if(fi != null) {
+      sb.append(fi.toFormattedString());
+    } else {
+      sb.append("FeatureInfo: [none]\n");
+    }
+    return sb.toString();    
+  }
+  
 }

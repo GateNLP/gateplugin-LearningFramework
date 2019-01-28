@@ -315,6 +315,7 @@ public class LF_TrainClassification extends LearningFrameworkPRBase {
       engine.trainModel(gate.util.Files.fileFromURL(dataDirectory),
               getInstanceType(),
               getAlgorithmParameters());
+      System.out.println(engine.toFormattedString());      
       logger.info("LearningFramework: Training complete!");
       engine.saveEngine(dataDirFile);
     }

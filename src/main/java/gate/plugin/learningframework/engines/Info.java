@@ -60,6 +60,8 @@ public class Info {
   public List<String> classAnnotationTypes; // for sequence tagging
   public String seqEncoderClass;
   public String seqEncoderOptions;
+  public String modelWhenTrained; // date-time of when the model finished training
+  public String algorithmParameters = "";
   
   /**
    * TODO: NOTE: this is incomplete!! Should contain all fields that are also in the hashCode method!
@@ -96,6 +98,7 @@ public class Info {
     hash = 89 * hash + this.nrTargetValues;
     hash = 89 * hash + Objects.hashCode(this.classLabels);
     hash = 89 * hash + Objects.hashCode(this.trainingCorpusName);
+    hash = 89 * hash + Objects.hashCode(this.algorithmParameters);
     return hash;
   }
   
@@ -140,7 +143,34 @@ public class Info {
 
   @Override
   public String toString() {
-    return "Info{" + "engineClass=" + engineClass + ", algorithmClass=" + trainerClass + ", task=" + task + ", nrTrainingInstances=" + nrTrainingInstances + ", nrTrainingDocuments=" + nrTrainingDocuments + ", nrTrainingDimensions=" + nrTrainingDimensions + ", nrTargetValues=" + nrTargetValues + ", classLabels=" + classLabels + ", trainingCorpusName=" + trainingCorpusName + '}';
+    return "Info{" + "engineClass=" + engineClass + 
+            ", algorithmClass=" + trainerClass + 
+            ", task=" + task + 
+            ", nrTrainingInstances=" + nrTrainingInstances + 
+            ", nrTrainingDocuments=" + nrTrainingDocuments + 
+            ", nrTrainingDimensions=" + nrTrainingDimensions + 
+            ", nrTargetValues=" + nrTargetValues + 
+            ", classLabels=" + classLabels + ", trainingCorpusName=" + trainingCorpusName + '}';
+  }
+
+  public String toFormattedString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("Info.engineClass: "); sb.append(engineClass); sb.append("\n");
+    sb.append("Info.algorithmClass: "); sb.append(trainerClass); sb.append("\n");
+    sb.append("Info.algorithmParameters: "); sb.append(algorithmParameters); sb.append("\n");
+    sb.append("Info.task: "); sb.append(task); sb.append("\n");
+    sb.append("Info.nrTrainingInstances: "); sb.append(nrTrainingInstances); sb.append("\n");
+    sb.append("Info.nrTrainingDocuments: "); sb.append(nrTrainingDocuments); sb.append("\n");
+    sb.append("Info.nrTrainingDimensions: "); sb.append(nrTrainingDimensions); sb.append("\n");
+    sb.append("Info.nrTargetValues: "); sb.append(nrTargetValues); sb.append("\n");
+    sb.append("Info.classLabels: "); sb.append(classLabels); sb.append("\n");
+    sb.append("Info.trainingCorpus: "); sb.append(trainingCorpusName); sb.append("\n");
+    sb.append("Info.task: "); sb.append(task); sb.append("\n");
+    sb.append("Info.seqEncoderClass: "); sb.append(seqEncoderClass); sb.append("\n");
+    sb.append("Info.seqEncoderOptions: "); sb.append(seqEncoderOptions); sb.append("\n");
+    sb.append("Info.modelWhenTrained: "); sb.append(modelWhenTrained); sb.append("\n");
+    sb.append("Info.algorithmParameters: "); sb.append(algorithmParameters); sb.append("\n");
+    return sb.toString();
   }
   
 }

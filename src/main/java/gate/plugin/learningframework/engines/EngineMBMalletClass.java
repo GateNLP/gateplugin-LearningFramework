@@ -52,6 +52,8 @@ import org.apache.log4j.Logger;
 import static gate.plugin.learningframework.LFUtils.newURL;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  *
@@ -65,11 +67,16 @@ public class EngineMBMalletClass extends EngineMBMallet {
 
   @Override
   public void trainModel(File dataDirectory, String instanceType, String parms) {
-    System.err.println("EngineMalletClass.trainModel: trainer="+trainer);
-    System.err.println("EngineMalletClass.trainModel: CR="+corpusRepresentation);
+    //System.err.println("EngineMalletClass.trainModel: trainer="+trainer);
+    //System.err.println("EngineMalletClass.trainModel: CR="+corpusRepresentation);
     
     model=((ClassifierTrainer) trainer).train(corpusRepresentation.getRepresentationMallet());
-    updateInfo();
+    updateInfo();    
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    info.modelWhenTrained = sdf.format(new Date());    
+    info.save(dataDirectory);    
+    featureInfo.save(dataDirectory);
+    
   }
 
   @Override

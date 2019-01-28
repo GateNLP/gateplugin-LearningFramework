@@ -34,7 +34,9 @@ import gate.util.GateRuntimeException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import libsvm.svm;
@@ -49,7 +51,7 @@ import libsvm.svm_problem;
  *
  * @author Johann Petrak
  */
-public class EngineLibSVM extends EngineMB {
+public class EngineMBLibSVM extends EngineMB {
 
 
   @Override
@@ -60,7 +62,7 @@ public class EngineLibSVM extends EngineMB {
     try {      
       File directoryFile = Files.fileFromURL(directory);
       svm_model svmModel = svm.svm_load_model(new File(directoryFile, FILENAME_MODEL).getAbsolutePath());
-      System.out.println("Loaded LIBSVM model, nrclasses=" + svmModel.nr_class);
+      // System.out.println("Loaded LIBSVM model, nrclasses=" + svmModel.nr_class);
       model = svmModel;
     } catch (IOException | IllegalArgumentException ex) {
       throw new GateRuntimeException("Error loading the LIBSVM model from directory "+directory, ex);
@@ -182,6 +184,11 @@ public class EngineLibSVM extends EngineMB {
 
     svm_model svmModel = libsvm.svm.svm_train(svmprob, svmparms);
     model = svmModel;
+    updateInfo();
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    info.modelWhenTrained = sdf.format(new Date());    
+    info.save(dataDirectory);    
+    featureInfo.save(dataDirectory);    
   }
 
   @Override

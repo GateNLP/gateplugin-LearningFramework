@@ -264,23 +264,23 @@ public class LF_EvaluateClassification extends LearningFrameworkPRBase {
 
       AlgorithmClassification alg = getTrainingAlgorithm();
 
-      System.err.println("DEBUG: Before Document.");
-      System.err.println("  Training algorithm engine class is " + alg.getEngineClass());
-      System.err.println("  Training algorithm algor class is " + alg.getTrainerClass());
+      //System.err.println("DEBUG: Before Document.");
+      //System.err.println("  Training algorithm engine class is " + alg.getEngineClass());
+      //System.err.println("  Training algorithm algor class is " + alg.getTrainerClass());
 
       // Read and parse the feature specification
       featureSpec = new FeatureSpecification(featureSpecURL);
-      System.err.println("DEBUG Read the feature specification: " + featureSpec);
+      //System.err.println("DEBUG Read the feature specification: " + featureSpec);
 
       // Create the engine from the Algorithm parameter
       FeatureInfo fi = featureSpec.getFeatureInfo();
       fi.setGlobalScalingMethod(scaleFeatures);
       engine = Engine.create(trainingAlgorithm, getAlgorithmParameters(), fi, TargetType.NOMINAL, dataDirURL);
-
-      System.err.println("DEBUG: created the engine: " + engine);
+      System.out.println(engine.toFormattedString());    
+      //System.err.println("DEBUG: created the engine: " + engine);
 
       corpusRepresentation = engine.getCorpusRepresentation();
-      System.err.println("DEBUG: created the corpusRepresentationMallet: " + corpusRepresentation);
+      //System.err.println("DEBUG: created the corpusRepresentationMallet: " + corpusRepresentation);
 
       getSharedData().put("engine", engine);
       getSharedData().put("featureSpec", featureSpec);
@@ -288,6 +288,7 @@ public class LF_EvaluateClassification extends LearningFrameworkPRBase {
     } else {
       // duplicateId > 0
       engine = (Engine) getSharedData().get("engine");
+      System.out.println(engine.toFormattedString());          
       featureSpec = (FeatureSpecification) getSharedData().get("featureSpec");
       corpusRepresentation = (CorpusRepresentation) getSharedData().get("corpusRepresentation");
     }

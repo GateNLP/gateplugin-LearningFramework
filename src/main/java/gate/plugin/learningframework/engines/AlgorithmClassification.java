@@ -33,7 +33,7 @@ public enum AlgorithmClassification implements Algorithm {
   KerasWrapper_CL_DR(EngineDVFileJsonKeras.class,null),
   // KerasWrapper_CL_MR(EngineKerasWrapper.class,null,AlgorithmKind.CLASSIFIER),
   KerasWrapper_SEQ_DR(EngineDVFileJsonKeras.class,null,AlgorithmKind.SEQUENCE_TAGGER),
-  LibSVM_CL_MR(EngineLibSVM.class,libsvm.svm.class), 
+  LibSVM_CL_MR(EngineMBLibSVM.class,libsvm.svm.class), 
   MalletBalancedWinnow_CL_MR(EngineMBMalletClass.class,cc.mallet.classify.BalancedWinnowTrainer.class),
   MalletC45_CL_MR(EngineMBMalletClass.class,cc.mallet.classify.C45Trainer.class),
   MalletCRF_SEQ_MR(EngineMBMalletSeq.class,null,AlgorithmKind.SEQUENCE_TAGGER), // ByLabelLikelihood or ByThreadedLabelLikelihood

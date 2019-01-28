@@ -32,7 +32,6 @@ import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
 import gate.plugin.learningframework.engines.Engine;
 import gate.plugin.learningframework.engines.EngineMBServer;
-import gate.plugin.learningframework.features.FeatureInfo;
 import gate.util.GateRuntimeException;
 import java.net.URL;
 
@@ -110,8 +109,6 @@ public class LF_ApplyRegression extends LearningFrameworkPRBase {
 
   private transient Engine engine;
 
-  private URL savedModelDirectoryURL;
-
   // this is either what the user specifies as the PR parameter, or what we have stored 
   // with the saved model.
   private String targetFeatureToUse; 
@@ -152,33 +149,15 @@ public class LF_ApplyRegression extends LearningFrameworkPRBase {
     if (dataDirectory == null) {
       throw new GateRuntimeException("Parameter dataDirectory not set!");
     }
-    if (savedModelDirectoryURL == null || !savedModelDirectoryURL.toExternalForm().equals(dataDirectory.toExternalForm())) {
-      savedModelDirectoryURL = dataDirectory;
-    }
     if (serverUrl != null && !serverUrl.isEmpty()) {
       engine = new EngineMBServer(dataDirectory, serverUrl);
+      System.out.println("\nStarting application:");
+      System.out.println(engine.toFormattedString());
     } else {
       // Restore the Engine
-      engine = Engine.load(savedModelDirectoryURL, getAlgorithmParameters());
-      System.out.println("LF-Info: model loaded is now " + engine);
-      FeatureInfo fi = engine.getFeatureInfo();
-      if(fi != null) {
-        System.out.println("FeatureInfo: "+fi);
-      } else {
-        System.out.println("FeatureInfo: not available");
-      }
-
-      if (engine.getModel() == null) {
-        // This is really only an error if we do not have some kind of wrapped algorithm
-        // where the model is handled externally.
-        // For now, we just show a warning.
-        // throw new GateRuntimeException("Do not have a model, something went wrong.");
-        // System.err.println("WARNING: no internal model to apply, this is ok if an external model is used");
-        //throw new GateRuntimeException("Do not have a model, something went wrong.");
-      } else {
-        System.out.println("LearningFramework: Applying model "
-                + engine.getModel().getClass() + " ...");
-      }
+      engine = Engine.load(dataDirectory, getAlgorithmParameters());
+      System.out.println("\nStarting application:");
+      System.out.println(engine.toFormattedString());
 
     }
 

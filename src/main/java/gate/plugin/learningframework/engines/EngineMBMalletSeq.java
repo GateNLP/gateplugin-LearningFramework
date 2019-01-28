@@ -54,6 +54,8 @@ import java.util.List;
 import java.util.Random;
 import org.apache.log4j.Logger;
 import static gate.plugin.learningframework.LFUtils.newURL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  *
@@ -70,11 +72,15 @@ public class EngineMBMalletSeq extends EngineMBMallet {
  
 
   @Override
-  public void trainModel(File DataDirectory, String instanceType, String options) {
+  public void trainModel(File dataDirectory, String instanceType, String options) {
     InstanceList trainingData = corpusRepresentation.getRepresentationMallet();
     Transducer td = trainModel(trainingData,options);
     model = td;
     updateInfo();
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    info.modelWhenTrained = sdf.format(new Date());    
+    info.save(dataDirectory);    
+    featureInfo.save(dataDirectory);
   }
   
   private static TransducerTrainer createTrainer(InstanceList trainingData, Info info, String options) {
@@ -99,7 +105,7 @@ public class EngineMBMalletSeq extends EngineMBMallet {
     // on unlabeled data, but this cannot be used here. 
     // 
     AlgorithmClassification alg = AlgorithmClassification.valueOf(info.algorithmName);
-    System.err.println("DEBUG: our algorithm name is "+alg);
+    // System.err.println("DEBUG: our algorithm name is "+alg);
 
     switch (alg) {
       case MalletCRF_SEQ_MR:

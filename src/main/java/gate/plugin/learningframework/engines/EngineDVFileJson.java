@@ -30,8 +30,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -367,6 +369,9 @@ public abstract class EngineDVFileJson extends EngineDV {
     // we also need to save the updated info file
     info.nrTrainingInstances = corpusRepresentation.nrInstances();
     info.engineClass = this.getClass().getName();
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    info.modelWhenTrained = sdf.format(new Date());
+    
     info.save(dataDir);    
     featureInfo.save(dataDir);
   }

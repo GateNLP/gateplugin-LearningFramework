@@ -32,7 +32,6 @@ import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
 import gate.plugin.learningframework.engines.AlgorithmKind;
 import gate.plugin.learningframework.engines.Engine;
-import gate.plugin.learningframework.features.FeatureInfo;
 import gate.plugin.learningframework.features.SeqEncoder;
 import gate.util.GateRuntimeException;
 import java.lang.reflect.Constructor;
@@ -123,9 +122,6 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
 
   private transient Engine engine = null;
 
-  private URL dataDir;
-
-
   @Override
   public void process(Document doc) {
     if(isInterrupted()) {
@@ -168,14 +164,8 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
     if (dataDirectory == null) {
       throw new GateRuntimeException("Parameter dataDirectory not set!");
     }
-    engine = gate.plugin.learningframework.engines.Engine.load(dataDir, getAlgorithmParameters());
-    // TODO: store the reference to the engine in the shared data map
-      FeatureInfo fi = engine.getFeatureInfo();
-      if(fi != null) {
-        System.out.println("FeatureInfo: "+fi);
-      } else {
-        System.out.println("FeatureInfo: not available");
-      }
+    engine = gate.plugin.learningframework.engines.Engine.load(dataDirectory, getAlgorithmParameters());
+    System.out.println(engine.toFormattedString());    
 
     String secn = engine.getInfo().seqEncoderClass;
     //TODO: once we have a proper seqEncoder impl, set its options from 
@@ -191,20 +181,7 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
             NoSuchMethodException | SecurityException | InvocationTargetException ex) {
       throw new GateRuntimeException("Could not create SeqEncoder instance",ex);
     }
-    
-    if (engine.getModel() == null) {
-        // This is really only an error if we do not have some kind of wrapped algorithm
-        // where the model is handled externally.
-        // For now, we just show a warning.
-        // throw new GateRuntimeException("Do not have a model, something went wrong.");
         
-        // System.err.println("WARNING: no internal model to apply, this is ok if an external model is used");
-        //throw new GateRuntimeException("Do not have a model, something went wrong.");
-    } else {
-      System.out.println("LearningFramework: Applying model "
-              + engine.getModel().getClass() + " ...");
-    }
-    
     if(engine.getAlgorithm().getAlgorithmKind() == AlgorithmKind.SEQUENCE_TAGGER) {
       if(getSequenceSpan() == null || getSequenceSpan().isEmpty()) {
         throw new GateRuntimeException("sequenceSpan parameter must not be empty when a sequence tagging algorithm is used for classification");

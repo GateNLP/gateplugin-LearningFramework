@@ -45,8 +45,10 @@ import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -301,6 +303,10 @@ public class EngineMBWekaWrapper extends EngineMB {
     Map<String,String> env = new HashMap<>();
     process = ProcessSimple.create(dataDirectory,env,finalCommand);
     process.waitFor();
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    info.modelWhenTrained = sdf.format(new Date());    
+    info.save(dataDirectory);    
+    featureInfo.save(dataDirectory);
   }
 
   @Override

@@ -361,6 +361,7 @@ public class LF_TrainChunking extends LearningFrameworkPRBase {
       engine.trainModel(gate.util.Files.fileFromURL(dataDirectory),
               getInstanceType(),
               getAlgorithmParameters());
+      System.out.println(engine.toFormattedString());      
       LOGGER.info("LearningFramework: Training complete!");
       engine.saveEngine(dataDirFile);
     } // duplicateId == 0
