@@ -32,6 +32,7 @@ import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
 import gate.plugin.learningframework.engines.AlgorithmKind;
 import gate.plugin.learningframework.engines.Engine;
+import gate.plugin.learningframework.features.FeatureInfo;
 import gate.plugin.learningframework.features.SeqEncoder;
 import gate.util.GateRuntimeException;
 import java.lang.reflect.Constructor;
@@ -176,6 +177,12 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
       System.out.println("LF-Info: re-using already loaded model: " + engine);
     }
     // TODO: store the reference to the engine in the shared data map
+      FeatureInfo fi = engine.getFeatureInfo();
+      if(fi != null) {
+        System.out.println("FeatureInfo: "+fi);
+      } else {
+        System.out.println("FeatureInfo: not available");
+      }
 
     String secn = engine.getInfo().seqEncoderClass;
     //TODO: once we have a proper seqEncoder impl, set its options from 

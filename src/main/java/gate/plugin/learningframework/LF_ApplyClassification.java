@@ -33,6 +33,7 @@ import gate.creole.metadata.RunTime;
 import gate.plugin.learningframework.engines.AlgorithmKind;
 import gate.plugin.learningframework.engines.Engine;
 import gate.plugin.learningframework.engines.EngineMBServer;
+import gate.plugin.learningframework.features.FeatureInfo;
 import gate.util.GateRuntimeException;
 import java.net.URL;
 
@@ -204,15 +205,18 @@ public class LF_ApplyClassification extends LearningFrameworkPRBase {
       engine = new EngineMBServer(dataDirectory, serverUrl);
     } else {
 
-      // if the engine is still null, or the dataDirectory has changed since 
-      // we last loaded the engine, or the algorithmParameters were changed,
-      // reload the engine.
-      if (engine == null || !dataDirectory.toString().equals(oldDataDirectory.toString()) || getAlgorithmParametersIsChanged()) {
-        oldDataDirectory = dataDirectory;
-        engine = Engine.load(dataDirectory, getAlgorithmParameters());
-      }
+      // NOTE: previously we tried to be clever here and only (re)load the engine if
+      // we did not have one or if the URL changed, but this fails if we keep re-training
+      // and re-applying updated models from the same URL. So we now always load
+      // the model again here.
+      engine = Engine.load(dataDirectory, getAlgorithmParameters());
       System.out.println("LF-Info: loaded model is " + engine);
-
+      FeatureInfo fi = engine.getFeatureInfo();
+      if(fi != null) {
+        System.out.println("FeatureInfo: "+fi);
+      } else {
+        System.out.println("FeatureInfo: not available");
+      }
       if (engine.getModel() == null) {
         // This is really only an error if we do not have some kind of wrapped algorithm
         // where the model is handled externally.

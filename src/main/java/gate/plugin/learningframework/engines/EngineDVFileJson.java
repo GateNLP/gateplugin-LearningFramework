@@ -199,11 +199,13 @@ public abstract class EngineDVFileJson extends EngineDV {
   }
   
   @Override
-  protected void initWhenCreating(URL directory, Algorithm algorithm, String parms, FeatureInfo featureInfo, TargetType targetType) {
+  protected void initWhenCreating(URL directory, Algorithm algorithm, 
+          String parms, FeatureInfo featureInfo, TargetType targetType) {
     dataDir = Files.fileFromURL(directory);
     this.featureInfo = featureInfo;
     corpusRepresentation = new CorpusRepresentationVolatileDense2JsonStream(dataDir, featureInfo);
     corpusRepresentation.startAdding();
+    this.featureInfo = featureInfo;
     // NOTE: we are copying the wrapper code only when starting training, not
     // here. This allows the user to copy their own code while the PR is running
     // but creating the corpus has not yet finished.

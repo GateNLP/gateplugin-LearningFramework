@@ -32,6 +32,7 @@ import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
 import gate.plugin.learningframework.engines.Engine;
 import gate.plugin.learningframework.engines.EngineMBServer;
+import gate.plugin.learningframework.features.FeatureInfo;
 import gate.util.GateRuntimeException;
 import java.net.URL;
 
@@ -160,6 +161,12 @@ public class LF_ApplyRegression extends LearningFrameworkPRBase {
       // Restore the Engine
       engine = Engine.load(savedModelDirectoryURL, getAlgorithmParameters());
       System.out.println("LF-Info: model loaded is now " + engine);
+      FeatureInfo fi = engine.getFeatureInfo();
+      if(fi != null) {
+        System.out.println("FeatureInfo: "+fi);
+      } else {
+        System.out.println("FeatureInfo: not available");
+      }
 
       if (engine.getModel() == null) {
         // This is really only an error if we do not have some kind of wrapped algorithm

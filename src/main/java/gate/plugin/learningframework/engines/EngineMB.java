@@ -81,7 +81,8 @@ public abstract class EngineMB extends Engine {
   
   
   @Override
-  protected void initWhenCreating(URL directory, Algorithm algorithm, String parameters, FeatureInfo fi, TargetType tt) {    
+  protected void initWhenCreating(URL directory, Algorithm algorithm, 
+          String parameters, FeatureInfo fi, TargetType tt) {    
     if(null == algorithm.getAlgorithmKind()) {
       throw new GateRuntimeException("Not a usable algorithm kind for now with Mallet based engines: "+algorithm);
     } else {
@@ -100,6 +101,7 @@ public abstract class EngineMB extends Engine {
           throw new GateRuntimeException("Not a usable algorithm kind for now with Mallet based engines: "+algorithm);
       }
     }
+    this.featureInfo = featureInfo;
     corpusRepresentation.startAdding();
   }
   

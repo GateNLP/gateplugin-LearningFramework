@@ -142,6 +142,7 @@ public abstract class Engine {
     }
     eng.algorithm = algorithm;
     eng.initializeAlgorithm(algorithm,parms);
+    eng.featureInfo = featureInfo;
     eng.initWhenCreating(directory, algorithm, parms, featureInfo, targetType);    
     eng.info = new Info();
     // we have to prevent a NPE for those algorithms where the trainer class is not stored
@@ -199,6 +200,7 @@ public abstract class Engine {
     }
     // store the info we have just obtained in the new engine instance
     eng.info = info;
+    eng.featureInfo = fi;
     eng.initWhenLoading(directory, parms);
     return eng;
   }
@@ -251,7 +253,8 @@ public abstract class Engine {
   // =================================================================
   
   // DETAILS OF HOW TO CREATE 
-  protected abstract void initWhenCreating(URL directory, Algorithm algorithm, String parms, FeatureInfo featureInfo, TargetType targetType);
+  protected abstract void initWhenCreating(URL directory, Algorithm algorithm, 
+          String parms, FeatureInfo featureInfo, TargetType targetType);
 
   // DETAILS OF HOW TO LOAD
   

@@ -145,6 +145,7 @@ public class FeatureInfo implements Serializable {
     } catch (Exception ex) {
       throw new GateRuntimeException("Could not write feature info file ",ex);
     }
+    System.err.println("DEBUG: saved featureInfo to "+new File(dirFile,FILENAME_FEATUREINFO));
   }
   
   /**
@@ -154,6 +155,7 @@ public class FeatureInfo implements Serializable {
    */
   public static FeatureInfo load(URL dirURL) {    
     URL infoFile = newURL(dirURL,FILENAME_FEATUREINFO);
+    System.err.println("DEBUG: saving featureInfo from "+infoFile);
     try (InputStream is = infoFile.openStream();
             ObjectInputStream ois = new ObjectInputStream(is);
             ) {
