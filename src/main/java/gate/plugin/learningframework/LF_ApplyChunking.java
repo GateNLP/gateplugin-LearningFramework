@@ -168,14 +168,7 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
     if (dataDirectory == null) {
       throw new GateRuntimeException("Parameter dataDirectory not set!");
     }
-    if (dataDir == null || !dataDir.toExternalForm().equals(dataDirectory.toExternalForm())) {
-      dataDir = dataDirectory;
-      // Restore the Engine
-      engine = gate.plugin.learningframework.engines.Engine.load(dataDir, getAlgorithmParameters());
-      System.out.println("LF-Info: model loaded is now: " + engine);
-    } else {
-      System.out.println("LF-Info: re-using already loaded model: " + engine);
-    }
+    engine = gate.plugin.learningframework.engines.Engine.load(dataDir, getAlgorithmParameters());
     // TODO: store the reference to the engine in the shared data map
       FeatureInfo fi = engine.getFeatureInfo();
       if(fi != null) {
