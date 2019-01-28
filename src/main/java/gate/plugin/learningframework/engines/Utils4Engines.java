@@ -4,6 +4,7 @@ import gate.util.GateRuntimeException;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
@@ -90,7 +91,7 @@ public class Utils4Engines {
           return FileVisitResult.CONTINUE;
         }
       });
-    } catch (Exception ex) {
+    } catch (IOException | URISyntaxException ex) {
       throw new GateRuntimeException("Error trying to copy the resources", ex);
     }
   }

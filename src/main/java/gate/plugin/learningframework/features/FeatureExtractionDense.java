@@ -267,7 +267,7 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
     // which are only set if there is a within annotation at all (to enable this for document start/end
     // a document annotation needs to be used as within annotation type).
     long withinFrom = -1L;
-    long withinTo = -1L;
+    //long withinTo = -1L;
     AnnotationSet withinSet = inputAS;
     if (withinType != null) {
       // find out which within annotation covers our instance annotation
@@ -288,7 +288,7 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
       rangeFrom = within.getStartNode().getOffset();
       rangeTo = within.getEndNode().getOffset();
       withinFrom = rangeFrom;
-      withinTo = rangeTo;
+      //withinTo = rangeTo;
       withinSet = gate.Utils.getContainedAnnotations(inputAS, within, annType4Getting);
     }
     if (annType.isEmpty() || instanceAnnotation.getType().equals(annType)) {
@@ -725,14 +725,19 @@ public class FeatureExtractionDense extends FeatureExtractionBase {
   public static FeatureSpecAttribute lookupAttributeForFeatureName(List<FeatureSpecAttribute> attributes,
           String mlFeatureName, String instanceType) {
     FeatureSpecAttribute ret = null;
+    
+    
     // these features are created by the LF and will not be present in the list of specifications.
     // We create a new specification on the fly for those.
+    // Following code commented out to avoid FindBug warning because so far the if is useless
+    /*
     if(mlFeatureName.endsWith(START_SYMBOL) || mlFeatureName.endsWith(STOP_SYMBOL)) {
       // TODO!!!
       // return a newly constructed dummy feature spec attribute
       // NOTE: for now we handle the case that this method does not find anything and returns
       // null if we get a START/STOP indicator feature directly where this method is called!
     }
+    */
     String attrName = attrName4MlFeature(mlFeatureName);
     // now if the attrName contains a TYPESEP, we have to find the attribute by
     // type and feature name, otherwise we simply find it by name

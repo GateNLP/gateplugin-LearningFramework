@@ -134,7 +134,7 @@ public class Info {
     URL infoFile = newURL(directory,FILENAME_INFO);
     try (InputStream is = infoFile.openStream()) {
       obj = yaml.loadAs(new InputStreamReader(is,"UTF-8"),Info.class);
-    } catch (Exception ex) {
+    } catch (IOException ex) {
       throw new GateRuntimeException("Could not load info file "+infoFile,ex);
     }    
     Info info = (Info)obj;    

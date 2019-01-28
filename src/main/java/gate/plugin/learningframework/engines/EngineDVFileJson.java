@@ -325,7 +325,6 @@ public abstract class EngineDVFileJson extends EngineDV {
     Utils4Engines.copyWrapper(WRAPPER_NAME, dataDir);
     
     ArrayList<String> finalCommand = new ArrayList<>();
-    String dataFileName = dataDir.getAbsolutePath()+File.separator;
     String modelBaseName = new File(dataDir, WRAPPER_NAME+".model").getAbsolutePath();
     finalCommand.add(getCommandPathTrain());
     finalCommand.add(corpusRepresentation.getMetaFile().getAbsolutePath());

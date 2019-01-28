@@ -138,7 +138,7 @@ public class EngineMBMalletSeq extends EngineMBMallet {
             crf.addStatesForHalfLabelsConnectedAsIn(trainingData);
             break;
           case "order-n":
-            int[] orders = new int[]{1};
+            int[] orders;
             String ordersparm = (String) parms.getValueOrElse("orders", "0:1");
             if (ordersparm.equals("1")) {
               orders = new int[]{1};
