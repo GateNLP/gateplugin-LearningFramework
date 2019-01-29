@@ -165,6 +165,7 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
       throw new GateRuntimeException("Parameter dataDirectory not set!");
     }
     engine = gate.plugin.learningframework.engines.Engine.load(dataDirectory, getAlgorithmParameters());
+    System.out.println("\nStarting application:");
     System.out.println(engine.toFormattedString());    
 
     String secn = engine.getInfo().seqEncoderClass;
