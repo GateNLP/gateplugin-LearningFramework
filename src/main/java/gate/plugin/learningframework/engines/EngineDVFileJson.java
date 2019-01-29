@@ -370,7 +370,7 @@ public abstract class EngineDVFileJson extends EngineDV {
     info.engineClass = this.getClass().getName();
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     info.modelWhenTrained = sdf.format(new Date());
-    
+    info.algorithmParameters = parms;
     info.save(dataDir);    
     featureInfo.save(dataDir);
   }

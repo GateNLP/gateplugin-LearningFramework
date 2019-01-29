@@ -74,6 +74,7 @@ public class EngineMBMalletClass extends EngineMBMallet {
     updateInfo();    
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     info.modelWhenTrained = sdf.format(new Date());    
+    info.algorithmParameters = parms;
     info.save(dataDirectory);    
     featureInfo.save(dataDirectory);
     

@@ -46,11 +46,13 @@ import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.AbstractMap;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -292,6 +294,13 @@ public abstract class EngineMBPythonNetworksBase extends EngineMB {
     env.put(ENV_WRAPPER_HOME,wrapperhome);
     process = ProcessSimple.create(dataDirectory,env,finalCommand);
     process.waitFor();
+    updateInfo();
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    info.modelWhenTrained = sdf.format(new Date());    
+    info.algorithmParameters = parms;
+    info.save(dataDirectory);    
+    featureInfo.save(dataDirectory);
+    
   }
 
   @Override

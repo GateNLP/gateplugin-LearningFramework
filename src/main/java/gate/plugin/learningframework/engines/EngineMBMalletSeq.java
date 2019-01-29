@@ -79,6 +79,7 @@ public class EngineMBMalletSeq extends EngineMBMallet {
     updateInfo();
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     info.modelWhenTrained = sdf.format(new Date());    
+    info.algorithmParameters = options;
     info.save(dataDirectory);    
     featureInfo.save(dataDirectory);
   }
