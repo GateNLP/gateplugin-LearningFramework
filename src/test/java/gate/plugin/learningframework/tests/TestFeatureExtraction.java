@@ -414,7 +414,7 @@ public class TestFeatureExtraction extends GATEPluginTests {
     FeatureExtractionMalletSparse.extractFeature(inst, as.get(0), doc.getAnnotations(), instAnn);
     System.err.println("After "+as.get(0)+" (one-grams) FV="+inst.getData());
     assertEquals(5,inst.getAlphabet().size());
-    System.err.println("Alphabet N3="+inst.getAlphabet());
+    System.err.println("Alphabet N1="+inst.getAlphabet());
     assertTrue(inst.getAlphabet().contains("ng1╬N1═tok1"));
     assertTrue(inst.getAlphabet().contains("ng1╬N1═tok2"));
     assertTrue(inst.getAlphabet().contains("ng1╬N1═tok3"));
@@ -431,7 +431,7 @@ public class TestFeatureExtraction extends GATEPluginTests {
     inst = newInstance();
     FeatureExtractionMalletSparse.extractFeature(inst, as.get(1), doc.getAnnotations(), instAnn);
     System.err.println("After "+as.get(1)+" (bi-grams) FV="+inst.getData());
-    System.err.println("Alphabet N4="+inst.getAlphabet());
+    System.err.println("Alphabet N2="+inst.getAlphabet());
     assertEquals(4,inst.getAlphabet().size());
     assertTrue(inst.getAlphabet().contains("ngram2╬N2═tok1┋tok2"));
     assertTrue(inst.getAlphabet().contains("ngram2╬N2═tok2┋tok3"));
@@ -447,7 +447,7 @@ public class TestFeatureExtraction extends GATEPluginTests {
     inst = newInstance();
     FeatureExtractionMalletSparse.extractFeature(inst, as.get(2), doc.getAnnotations(), instAnn);
     System.err.println("After "+as.get(2)+" (bi-grams) FV="+inst.getData());
-    System.err.println("Alphabet N4="+inst.getAlphabet());
+    System.err.println("Alphabet N3="+inst.getAlphabet());
     assertEquals(3,inst.getAlphabet().size());
     assertTrue(inst.getAlphabet().contains("someName╬N3═tok1┋tok2┋tok3"));
     assertTrue(inst.getAlphabet().contains("someName╬N3═tok2┋tok3┋tok4"));
@@ -457,6 +457,67 @@ public class TestFeatureExtraction extends GATEPluginTests {
     assertEquals(1.0,((FeatureVector)inst.getData()).value("someName╬N3═tok2┋tok3┋tok4"),EPS);
     assertEquals(1.0,((FeatureVector)inst.getData()).value("someName╬N3═tok3┋tok4┋tok5"),EPS);
   }
+
+  @Test
+  public void extractNgram3() {
+    // same as Ngram2 but also use featureName4Value and test the filtering if we have a null
+    // value for the second token. 
+    String spec = "<ROOT>"+
+            "<NGRAM><NAME>ng1</NAME><TYPE>theType</TYPE><FEATURE>theFeature</FEATURE><NUMBER>1</NUMBER><FEATURENAME4VALUE>val</FEATURENAME4VALUE></NGRAM>"+
+            "<NGRAM><NAME>ngram2</NAME><TYPE>theType</TYPE><FEATURE>theFeature</FEATURE><NUMBER>2</NUMBER><FEATURENAME4VALUE>val</FEATURENAME4VALUE></NGRAM>"+
+            "<NGRAM><NAME>someName</NAME><TYPE>theType</TYPE><FEATURE>theFeature</FEATURE><NUMBER>3</NUMBER><FEATURENAME4VALUE>val</FEATURENAME4VALUE></NGRAM>"+
+            "</ROOT>";
+    FeatureInfo fi = new FeatureSpecification(spec).getFeatureInfo();
+    List<FeatureSpecAttribute> as = fi.getAttributes();
+    System.err.println("NGRAMS with explicitly specified name, filtered by featurename4value!!");
+    Alphabet a = new LFAlphabet();
+    AugmentableFeatureVector afv = new AugmentableFeatureVector(a);
+    Instance inst = new Instance(afv,null,null,null);
+    
+    // prepare the document
+    Annotation instAnn = addAnn(doc, "", 0, 20, "instanceType", gate.Utils.featureMap());
+    addAnn(doc,"",0,2,"theType",gate.Utils.featureMap("theFeature","tok1","val",1.0));
+    addAnn(doc,"",2,4,"theType",gate.Utils.featureMap("theFeature","tok2"));
+    addAnn(doc,"",4,6,"theType",gate.Utils.featureMap("theFeature","tok3","val",1.0));
+    addAnn(doc,"",6,8,"theType",gate.Utils.featureMap("theFeature","tok4","val",1.0));
+    addAnn(doc,"",8,10,"theType",gate.Utils.featureMap("theFeature","tok5","val",1.0));
+    
+    FeatureExtractionMalletSparse.extractFeature(inst, as.get(0), doc.getAnnotations(), instAnn);
+    System.err.println("Ngram3: After N1 extract "+as.get(0)+" (one-grams) FV="+inst.getData());
+    assertEquals(4,inst.getAlphabet().size());
+    System.err.println("Ngram3: Alphabet N1="+inst.getAlphabet());
+    assertTrue(inst.getAlphabet().contains("ng1╬N1═tok1"));
+    assertTrue(inst.getAlphabet().contains("ng1╬N1═tok3"));
+    assertTrue(inst.getAlphabet().contains("ng1╬N1═tok4"));
+    assertTrue(inst.getAlphabet().contains("ng1╬N1═tok5"));
+    assertEquals(4,((FeatureVector)inst.getData()).numLocations());
+    assertEquals(1.0,((FeatureVector)inst.getData()).value("ng1╬N1═tok1"),EPS);
+    assertEquals(1.0,((FeatureVector)inst.getData()).value("ng1╬N1═tok3"),EPS);
+    assertEquals(1.0,((FeatureVector)inst.getData()).value("ng1╬N1═tok4"),EPS);
+    assertEquals(1.0,((FeatureVector)inst.getData()).value("ng1╬N1═tok5"),EPS);
+    
+    // now the bigrams
+    inst = newInstance();
+    FeatureExtractionMalletSparse.extractFeature(inst, as.get(1), doc.getAnnotations(), instAnn);
+    System.err.println("Ngram3: After N2 extract "+as.get(1)+" (bi-grams) FV="+inst.getData());
+    System.err.println("Alphabet N2="+inst.getAlphabet());
+    assertEquals(2,inst.getAlphabet().size());
+    assertTrue(inst.getAlphabet().contains("ngram2╬N2═tok3┋tok4"));
+    assertTrue(inst.getAlphabet().contains("ngram2╬N2═tok4┋tok5"));
+    assertEquals(2,((FeatureVector)inst.getData()).numLocations());
+    assertEquals(1.0,((FeatureVector)inst.getData()).value("ngram2╬N2═tok3┋tok4"),EPS);
+    assertEquals(1.0,((FeatureVector)inst.getData()).value("ngram2╬N2═tok4┋tok5"),EPS);
+
+    // and the 3-grams
+    inst = newInstance();
+    FeatureExtractionMalletSparse.extractFeature(inst, as.get(2), doc.getAnnotations(), instAnn);
+    System.err.println("Ngram3: After N3 extract "+as.get(2)+" (bi-grams) FV="+inst.getData());
+    System.err.println("Alphabet N3="+inst.getAlphabet());
+    assertEquals(1,inst.getAlphabet().size());
+    assertEquals(1,((FeatureVector)inst.getData()).numLocations());
+    assertEquals(1.0,((FeatureVector)inst.getData()).value("someName╬N3═tok3┋tok4┋tok5"),EPS);
+  }
+
 
   
   @Test

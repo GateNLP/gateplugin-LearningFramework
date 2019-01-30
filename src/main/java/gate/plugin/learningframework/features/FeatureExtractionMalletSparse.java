@@ -532,37 +532,73 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
     // featureName4Value was specified and exists.
     List<Double> scores = new ArrayList<>();
 
+
+    List<Integer> seqsizes = new ArrayList<>();
+    
+    // the following loop creates three lists: 
+    // strings: all the strings which should be used to make ngrams from later
+    // scores: the scores associated with each of the strings
+    // seqsizes: this is the number of strings to be considered "consecutive" within
+    //    the strings/scores: the sum of all seqsizes should be equal to the size of strings/scores
+    //    The purpose of this array is to prevent ngrams from being combined outside a sequence.
+    // For example if we find 5 annotations of which the 3rd gets filtered:
+    // Original annotations: A B C D E
+    // C gets filtered
+    // Strings: A B D E
+    // seqsizes: 2, 2
+    // unigrams: A B D E
+    // bigrams: AB DE
+    // If instead 4th gets filtered:
+    // Strings: A B C E
+    // seqsizes: 3 1
+    // unigrams: A B C E
+    // bigrams: AB BC
+    // 3grams: ABC 
+    int seqlen = 0;
     for (Annotation ann : al) {
-      // for ngrams we either have a featureName name 
+      // get the feature value
+      String featureValue = null;
       if (featureName != null) {
         // NOTE: if the featureName is not a string, we convert it to string
         Object obj = ann.getFeatures().get(featureName);
         // if there is no value at all, then the annotation is ignored
         if (obj != null) {
-          String tmp = obj.toString().trim();
-          // if the resulting string is empty, it is also ignored 
-          if (!tmp.isEmpty()) {
-            strings.add(tmp);
-            double score = 1.0;
-            if (!featureName4Value.isEmpty()) {
-              score = gate.plugin.learningframework.LFUtils.anyToDoubleOrElse(ann.getFeatures().get(featureName4Value), 1.0);
-            }
-            scores.add(score);
-          }
+          featureValue = obj.toString().trim();
         }
       } else {
-        // if the featureName is null, we get the string from the cleaned document text
-        String tmp = gate.Utils.cleanStringFor(doc, ann).trim();
-        if (!tmp.isEmpty()) {
-          strings.add(tmp);
-          double score = 1.0;
-          if (!featureName4Value.isEmpty()) {
-            score = gate.plugin.learningframework.LFUtils.anyToDoubleOrElse(ann.getFeatures().get(featureName4Value), 1.0);
-          }
-          scores.add(score);
-        }
+        featureValue = gate.Utils.cleanStringFor(doc, ann).trim();
       }
-    } // for Annotation ann : al
+      // now if the featureValue is null or empty, ignore that annotation 
+      // and end the current sequence, if there is already something in the current 
+      // sequence
+      if(featureValue==null || featureValue.isEmpty()) {
+        if(seqlen > 0) {
+          seqsizes.add(seqlen);
+          seqlen = 0;
+        }
+        continue;
+      }
+      // OK, we have a non-empty feature value. Now check if we have a featureName4Value
+      // and if yes, what that value is
+      double score = 1.0;
+      if(!featureName4Value.isEmpty()) {
+        Object tmp = ann.getFeatures().get(featureName4Value);
+        // if it does not exist, filter and end the sequence, if already created
+        if(tmp==null) {
+          if(seqlen > 0) {
+            seqsizes.add(seqlen);
+            seqlen = 0;
+          }
+          continue;
+        }
+        score = gate.plugin.learningframework.LFUtils.anyToDoubleOrElse(tmp, 1.0);
+      }
+      // now we have a value and the score, add it to the lists
+      strings.add(featureValue);
+      scores.add(score);
+      seqlen += 1;
+    }
+    seqsizes.add(seqlen);
     // Now construct the actual ngrams and add them to the augmentable featureName vector. 
     // In the process, check first if such a featureName is already there, and if yes, just 
     // increment the value.
@@ -575,48 +611,71 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
     if (strings.size() < number) {
       return;
     }
-
+    // TODO: issue#105: to filter out ngrams properly, we need to make sure that
+    // those where the featureName4Value is missing or 0.0 are not part of any ngram
+    // AND(!!!) break creating ngrams from surrounding tokens!
+    // Example if we have A B C D and C is to be filtered, then we would need to get:
+    // 1-grams: A B D
+    // 2-grams: AB (but NOT BD!!)
+    // 3-grams: (none since ABD would not be valid)
+    // This means we cannot just remove C from the list of grams to use for the ngrams
+    // Instead each filtered string would create a new list which needs to get processed to
+    // form ngrams separately!
+    
     // now create the ngrams inputAS follows: starting with the first element in strings, go
     // through all the elements up to the (size-n)ths and concatenate with the subsequent 
     // n stings using the pre-defined separator character.
     StringBuilder sb = new StringBuilder();
-    for (int i = 0; i < (strings.size() - number + 1); i++) {
-      sb.setLength(0);
-      // NOTE: the score for an ngram is calculated by multiplying the scores
-      // for each part of the ngram. If there is no featureName4Value, then all those
-      // scores are 1.0 at this point as well, so the final score is also 1.0.
-      // If we have a featureName4Value and it is a 1-gram, then we get the value of that
-      // feature. If it is an n-gram with n>1, then we get the product of all the scores
-      // of each gram. 
-      double score = 1.0;
-      for (int j = 0; j < number; j++) {
-        if (j != 0) {
-          sb.append(NGRAMSEP);
+    int start = 0;  
+    for (int l : seqsizes) {
+      if(l < number) {
+        start += l;
+        continue;
+      }
+      for (int i = start; i < (start + l - number + 1); i++) {
+        sb.setLength(0);
+        // NOTE: the score for an ngram is calculated by multiplying the scores
+        // for each part of the ngram. If there is no featureName4Value, then all those
+        // scores are 1.0 at this point as well, so the final score is also 1.0.
+        // If we have a featureName4Value and it is a 1-gram, then we get the value of that
+        // feature. If it is an n-gram with n>1, then we get the product of all the scores
+        // of each gram. 
+        double score = 1.0;
+        for (int j = 0; j < number; j++) {
+          if (j != 0) {
+            sb.append(NGRAMSEP);
+          }
+          sb.append(strings.get(i + j));
+          // Here we combine the scores by multiplication
+          // TODO: maybe we should use some other way to find the final score??
+          // could also consider adding, averaging, min, max etc.
+          score *= scores.get(i + j);
         }
-        sb.append(strings.get(i + j));
-        score *= scores.get(i + j);
+        String ngram = sb.toString();
+        // we have got our ngram now, count it, but only add if we are allowed to!
+        String prefix;
+        if (ng.name.isEmpty()) {
+          prefix = annType + TYPESEP + featureName;
+        } else {
+          prefix = ng.name;
+        }
+        prefix = prefix + NAMESEP + "N" + number;
+        // NOTE: for now, we always add to any existing value of the feature vector we 
+        // may already have. That way, if some ngram occurs multiple times, we use the 
+        // sum its scores (and the score either is just 1.0 or whatever we got from using
+        // the featureName4Value value).
+        // TODO: issue#104 here we could also try to gather document frequency statistics for the 
+        // ngram in order to use that later for any kind of tfidf transformation!
+        accumulateInFeatureVector(fv, prefix + VALSEP + ngram, score);
+        // NOTE: previously, we only accumulated if there was no weight feature, otherwise
+        // the weight was directly used without accumulation
+        //if (featureName4Value.isEmpty()) {
+        //  accumulateInFeatureVector(fv, prefix + VALSEP + ngram, score);
+        //} else {
+        //  setInFeatureVector(fv, prefix + VALSEP + ngram, score);
+        //}
       }
-      String ngram = sb.toString();
-      // we have got our ngram now, count it, but only add if we are allowed to!
-      String prefix;
-      if (ng.name.isEmpty()) {
-        prefix = annType + TYPESEP + featureName;
-      } else {
-        prefix = ng.name;
-      }
-      prefix = prefix + NAMESEP + "N" + number;
-      // NOTE: for now, we always add to any existing value of the feature vector we 
-      // may already have. That way, if some ngram occurs multiple times, we use the 
-      // sum its scores (and the score either is just 1.0 or whatever we got from using
-      // the featureName4Value value).
-      accumulateInFeatureVector(fv, prefix + VALSEP + ngram, score);
-      // NOTE: previously, we only accumulated if there was no weight feature, otherwise
-      // the weight was directly used without accumulation
-      //if (featureName4Value.isEmpty()) {
-      //  accumulateInFeatureVector(fv, prefix + VALSEP + ngram, score);
-      //} else {
-      //  setInFeatureVector(fv, prefix + VALSEP + ngram, score);
-      //}
+      start += l;
     }
     //System.err.println("DEBUG: Vector after adding feature "+ng+" is now "+fv);
   } // extractFeature(NGram)
@@ -727,8 +786,13 @@ public class FeatureExtractionMalletSparse extends FeatureExtractionBase {
               // Only in this case we allow for optionally getting the score from a different
               // feature of the same annotation we got the value from. 
               if (featureName4Value.isEmpty()) {
+                // TODO: issue#104 this would be the place to count df frequencies for the 
+                // attribute (note that the counts would need to get grouped by attribute,
+                // but for a list we would share the counts)
                 setInFeatureVector(fv, internalFeatureNamePrefix + VALSEP + val, 1.0);
               } else {
+                // issue#105: if a featureName4Value is specified, but not available for this instance,
+                // the feature gets ignored. 
                 // NOTE: sourceAnnotation should always ne non-null here since valObj is non-null
                 // If the value we get for the score is not present or null, we suppress creating the attribute
                 Object value = sourceAnnotation.getFeatures().get(featureName4Value);
