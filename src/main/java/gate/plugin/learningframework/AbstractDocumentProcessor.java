@@ -23,14 +23,17 @@ import org.apache.log4j.Logger;
 
 import gate.Controller;
 import gate.Document;
+import gate.Factory;
 import gate.Resource;
 import gate.creole.ControllerAwarePR;
 import gate.creole.ResourceInstantiationException;
 import gate.creole.AbstractLanguageAnalyser;
+import gate.creole.CustomDuplication;
 import gate.creole.ExecutionException;
 import gate.creole.metadata.Sharable;
 import gate.util.Benchmark;
 import gate.util.Benchmarkable;
+import gate.util.GateRuntimeException;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
@@ -43,7 +46,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @SuppressWarnings("serial")
 public abstract class AbstractDocumentProcessor
         extends AbstractLanguageAnalyser
-        implements ControllerAwarePR, Benchmarkable {
+        implements ControllerAwarePR, CustomDuplication, Benchmarkable {
 
   /**
    *
@@ -163,8 +166,10 @@ public abstract class AbstractDocumentProcessor
   //     that exist. 
   //================================================================================
   static boolean versionInfoShown = false;
+
   @Override
   public Resource init() throws ResourceInstantiationException {
+    System.err.println("DEBUG init(), getNDuplicates="+getNDuplicates()+" this="+this+" id="+duplicateId);
     // we always provide the following shared fields to all PRs which are used for duplicated PRs:
     // nDuplicates is an AtomicInt which gets incremented whenever a resource
     // gets duplicated. seenDocuments is an AtomicInt that contains the number
@@ -194,7 +199,37 @@ public abstract class AbstractDocumentProcessor
       versionInfoShown = true;
     }
     seenDocumentsThisDuplicate = new AtomicInteger(0);
+    if(getNDuplicates() == null) {    
+      LOGGER.debug("DEBUG: creating first instance of PR "+this.getName());
+      setNDuplicates(new AtomicInteger(1));
+      duplicateId = 0;
+      System.err.println("DEBUG: "+this.getName()+" init() for first instance, duplicateId="+duplicateId);
+      setSharedData(new ConcurrentHashMap<>());
+      setSeenDocuments(new AtomicInteger(0));
+      setRemainingDuplicates(new AtomicInteger(0));
+      setSyncObject(new Object());
+      LOGGER.debug("DEBUG: "+this.getName()+" created duplicate "+duplicateId);
+    }/* else {
+      int thisn = getNDuplicates().getAndAdd(1);
+      duplicateId = thisn;
+      //System.err.println("DEBUG: "+this.getName()+" init() for non-first instance, duplicateId="+duplicateId);
+      LOGGER.debug("DEBUG: created duplicate "+duplicateId+" of PR "+this.getName());
+    }
+    */
+    return this;
+  }
+
+  @Override
+  public Resource duplicate(Factory.DuplicationContext ctx) throws ResourceInstantiationException {
+    System.err.println("DEBUG duplicate(), getNDuplicates="+getNDuplicates()+" this="+this);
+    // NOTE: this piece of code does not need to get synchronized since we 
+    // always expect duplication to happen in a single thread, one after the
+    // other. Usually, all duplicates will get created from the same first
+    // created instance, but we do not rely on that.
+    
     if(getNDuplicates() == null || getNDuplicates().get() == 0) {    
+      throw new GateRuntimeException("This should not happen!");
+      /*
       LOGGER.debug("DEBUG: creating first instance of PR "+this.getName());
       setNDuplicates(new AtomicInteger(1));
       duplicateId = 0;
@@ -204,15 +239,18 @@ public abstract class AbstractDocumentProcessor
       setRemainingDuplicates(new AtomicInteger(0));
       setSyncObject(new Object());
       LOGGER.debug("DEBUG: "+this.getName()+" created duplicate "+duplicateId);
+      */
     } else {
       int thisn = getNDuplicates().getAndAdd(1);
       duplicateId = thisn;
-      //System.err.println("DEBUG: "+this.getName()+" init() for non-first instance, duplicateId="+duplicateId);
+      System.err.println("DEBUG: "+this.getName()+" init() for non-first instance, duplicateId="+duplicateId);
       LOGGER.debug("DEBUG: created duplicate "+duplicateId+" of PR "+this.getName());
     }
+    System.err.println("DEBUG duplicate() finished, getNDuplicates="+getNDuplicates()+" this="+this+" id="+duplicateId);
     return this;
   }
-
+  
+  
   @Override
   public void execute() throws ExecutionException {
     // The document counting happens in this synchronized code block.

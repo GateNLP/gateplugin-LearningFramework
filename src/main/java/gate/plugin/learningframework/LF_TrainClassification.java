@@ -43,6 +43,7 @@ import gate.plugin.learningframework.features.TargetType;
 import gate.util.GateRuntimeException;
 import java.io.File;
 import java.util.List;
+import junit.framework.Assert;
 
 @CreoleResource(
         name = "LF_TrainClassification",
@@ -196,6 +197,7 @@ public class LF_TrainClassification extends LearningFrameworkPRBase {
 
   @Override
   public void controllerStarted(Controller controller) {
+    System.err.println("DEBUG: controllerStarted for id="+duplicateId);
     if("file".equals(dataDirectory.getProtocol())) {
       dataDirFile = gate.util.Files.fileFromURL(dataDirectory);
     } else {
@@ -273,6 +275,9 @@ public class LF_TrainClassification extends LearningFrameworkPRBase {
       engine = (Engine) getSharedData().get("engine");
       featureSpec = (FeatureSpecification) getSharedData().get("featureSpec");
       corpusRepresentation = (CorpusRepresentation) getSharedData().get("corpusRepresentation");
+      Assert.assertNotNull(engine);
+      Assert.assertNotNull(featureSpec);
+      Assert.assertNotNull(corpusRepresentation);
     }
   }
   
