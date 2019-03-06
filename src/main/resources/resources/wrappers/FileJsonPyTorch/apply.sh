@@ -50,7 +50,7 @@ export PYTHONPATH="$wrapperdir/gate-lf-python-data:$wrapperdir/gate-lf-pytorch-j
 #echo 'PYTHONPATH      = ' $PYTHONPATH >&2
 #echo 'RUNNING         = ' ${wherepython} "${wrapperapply}" "${modelbase}" "$@"  >&2
 
-if ${wherepython} "${wrapperapply}" "${modelbase}" "$@"  ; then
+if ${wherepython} "${wrapperapply}" "${modelbase}" --cuda False --metafile "${metafile}" "$@"  ; then
   echo 'PROCESSING OK ' $? >&2
   exit 0
 else
