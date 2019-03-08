@@ -5,6 +5,7 @@ if "x%WRAPPER_HOME%"=="x" (
 )
 SET model=%1
 shift
+SET meta=%1
 shift
 shift
 
@@ -20,5 +21,5 @@ goto loop
 if "x%PYTHON_BIN%"=="x" (
   set PYTHON_BIN="%HOMEDRIVE%""%HOMEPATH%"\Miniconda3\python.exe
 )
-%PYTHON_BIN% %WRAPPER_HOME%\gate-lf-pytorch-json\apply.py %model% %r%
+%PYTHON_BIN% %WRAPPER_HOME%\gate-lf-pytorch-json\apply.py %model% --cuda False --metafile %meta% %r%
 

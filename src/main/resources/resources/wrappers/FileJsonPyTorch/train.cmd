@@ -3,7 +3,7 @@
 if "x%WRAPPER_HOME%"=="x" (
   set WRAPPER_HOME=%~dp0
 )
-SET data=%1
+SET meta=%1
 shift
 SET model=%1
 shift
@@ -20,4 +20,4 @@ goto loop
 if "x%PYTHON_BIN%"=="x" (
   set PYTHON_BIN="%HOMEDRIVE%""%HOMEPATH%"\Miniconda3\python.exe
 )
-%PYTHON_BIN% %WRAPPER_HOME%\gate-lf-pytorch-json\train.py %data% %model% %r%
+%PYTHON_BIN% %WRAPPER_HOME%\gate-lf-pytorch-json\train.py %meta% %model% %r%
