@@ -59,7 +59,7 @@ See [FeatureSpecification](FeatureSpecification) for more information on the con
 
 ### `LibSVM_CL_MR`
 
-This uses the LibSVM Support Vector Machine training algorithm (see https://www.csie.ntu.edu.tw/~cjlin/libsvm/).
+This uses the LibSVM Support Vector Machine training algorithm (see [https://www.csie.ntu.edu.tw/~cjlin/libsvm/](https://www.csie.ntu.edu.tw/~cjlin/libsvm/)).
 
 The algorithm parameters which can be used are exactly identical to what can be used with the command `svm-train`, except that the only allowed values for parameter `-s` are "0" (C-SVC) and "1" (nu-SVC). If no parameters are specified, the defaults used are the same as for the `svm-train` command, except for the `-b` (probability_estimates) parameter which is set to 1 by default.
 
