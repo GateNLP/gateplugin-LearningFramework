@@ -123,6 +123,11 @@ annotations to combine. For example if NUMBER is 2, and "MovieTitle" is
 If NUMBER is "1", unigrams are used. If this is not specified, "1" is used.
 * `<FEATURE>` the feature to use to get the value for each element of an NGRAM.
 * `<FEATURENAME4VALUE>` (only non-dense feature representations:) the name of a feature which contains the value to assign to each occurrence of a unigram. By default each individual unigram will get the value 1.0 assigned and the final feature for a unigram is the count of how often the unigram occurs within the instance. If this is specified, the value of that feature is used instead of 1.0 for each unigram. For ngrams where n is greater than 1, the value used for each ngram is the product of the value for each unigram before accumulation, and the final feature value is the sum of all ngram values for each of the ngrams that occur in the instance.
+* `<MAXLEN>` (optional, currently only used for dense representation backends): the maximum number of ngrams to use per instance. For the neural network
+backends this reduces the number of tokens used for the input sequence. The way how the sequence of ngrams is shortened can be specified 
+with the SHORTEN setting. If MAXLEN is not specified or set to 0, the whole sequence is used. 
+* `<SHORTEN>` (optional, currently only used for dense representation backends): one of "left", "right", "both", or "middle". Only relevant if
+MAXLEN is specified, in that case, chooses how the shorten the sequence (the default is "right" so the left part is kept).
 
 For all nominal attributes (ATTRIBUTE, ATTRIBUTELIST or NGRAM), an EMBEDDINGS block can be specified (this will
 get ignored for sparse representations and may get ignored for some dense representations). Such a block
