@@ -27,6 +27,7 @@ import java.io.StringReader;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -390,13 +391,13 @@ public class FeatureSpecification {
     String numberString = getChildTextOrElse(ngramElement,"NUMBER","1").trim();
     String featureName4Value = getChildTextOrElse(ngramElement,"FEATURENAME4VALUE","");
     String maxlen = getChildTextOrElse(ngramElement,"MAXLEN","0");
-    String shorten = getChildTextOrElse(ngramElement,"SHORTEN","").toLowerCase();
+    String shorten = getChildTextOrElse(ngramElement,"SHORTEN","").toLowerCase(Locale.US);
     
     String feature = getChildTextOrElse(ngramElement,"FEATURE","").trim();
     if (feature.isEmpty()) {
       throw new GateRuntimeException("FEATURE in NGRAM " + i + " must not be missing or empty");
     }
-    if (!(shorten.equals("") || shorten.equals("left") || shorten.equals("left") || 
+    if (!(shorten.equals("") || shorten.equals("left") || 
             shorten.equals("both") || shorten.equals("middle"))) {
       throw new GateRuntimeException("SHORTEN must be missing, empty or one of right, left, middle, both");
     }
