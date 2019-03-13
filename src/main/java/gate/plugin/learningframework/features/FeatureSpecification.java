@@ -384,15 +384,21 @@ public class FeatureSpecification {
   private FeatureSpecAttribute parseNgramAttribute(Element ngramElement, int i) {
     String aname = getChildTextOrElse(ngramElement,"NAME","").trim();
     String annType = getChildTextOrElse(ngramElement,"TYPE","").trim();
-    String numberString = getChildTextOrElse(ngramElement,"NUMBER","1").trim();
-    String featureName4Value = getChildTextOrElse(ngramElement,"FEATURENAME4VALUE","");
     if (annType.isEmpty()) {
       throw new GateRuntimeException("TYPE in NGRAM " + i + " must not be missing or empty");
     }
+    String numberString = getChildTextOrElse(ngramElement,"NUMBER","1").trim();
+    String featureName4Value = getChildTextOrElse(ngramElement,"FEATURENAME4VALUE","");
+    String maxlen = getChildTextOrElse(ngramElement,"MAXLEN","0");
+    String shorten = getChildTextOrElse(ngramElement,"SHORTEN","").toLowerCase();
     
     String feature = getChildTextOrElse(ngramElement,"FEATURE","").trim();
     if (feature.isEmpty()) {
       throw new GateRuntimeException("FEATURE in NGRAM " + i + " must not be missing or empty");
+    }
+    if (!(shorten.equals("") || shorten.equals("left") || shorten.equals("left") || 
+            shorten.equals("both") || shorten.equals("middle"))) {
+      throw new GateRuntimeException("SHORTEN must be missing, empty or one of right, left, middle, both");
     }
     FeatureSpecNgram ng = new FeatureSpecNgram(
             aname,
@@ -401,6 +407,8 @@ public class FeatureSpecification {
             feature,
             featureName4Value
     );
+    ng.maxlen = Integer.parseInt(maxlen);
+    ng.shorten = shorten;
     ng = (FeatureSpecNgram)parseAndAddEmbeddingInfo(ngramElement, i, ng);
     return ng;
   }

@@ -43,6 +43,8 @@ public class FeatureSpecNgram extends FeatureSpecAttribute implements Serializab
   }
   public int number = -1;
   public String featureName4Value = "";
+  public int maxlen = 0;
+  public String shorten = "";
 
   @Override
   public void stopGrowth() {
@@ -60,7 +62,10 @@ public class FeatureSpecNgram extends FeatureSpecAttribute implements Serializab
             ",type="+annType+
             ",feature="+feature+
             ",featureName4Value="+featureName4Value+
-            ",number="+number;
+            ",number="+number+
+            ",maxlen="+maxlen+
+            ",shorten="+shorten
+            ;
   }
   
   @Override
