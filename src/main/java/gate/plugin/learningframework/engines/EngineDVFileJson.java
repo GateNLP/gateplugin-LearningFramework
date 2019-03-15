@@ -266,7 +266,7 @@ public abstract class EngineDVFileJson extends EngineDV {
     finalCommand.add(corpusRepresentation.getMetaFile().getAbsolutePath());
     finalCommand.add(new File(dataDir,WRAPPER_NAME).getAbsolutePath());
     if(!parms.trim().isEmpty()) {
-      String[] tmp = parms.split("\\s+",-1);
+      String[] tmp = parms.trim().split("\\s+",-1);
       finalCommand.addAll(Arrays.asList(tmp));
     }
     // if we have a shell command prepend that, and if we have shell parms too, include them
@@ -330,7 +330,7 @@ public abstract class EngineDVFileJson extends EngineDV {
     finalCommand.add(corpusRepresentation.getMetaFile().getAbsolutePath());
     finalCommand.add(modelBaseName);
     if(!parms.trim().isEmpty()) {
-      String[] tmp = parms.split("\\s+",-1);
+      String[] tmp = parms.trim().split("\\s+",-1);
       finalCommand.addAll(Arrays.asList(tmp));
     }
     // if we have a shell command prepend that, and if we have shell parms too, include them
@@ -383,7 +383,8 @@ public abstract class EngineDVFileJson extends EngineDV {
   @Override
   @SuppressWarnings("unchecked")
   public List<ModelApplication> applyModel(AnnotationSet instancesAS, AnnotationSet inputAS, AnnotationSet sequenceAS, String parms) {
-    //System.err.println("DEBUG: running applyModel");
+    //System.err.println("DEBUG: running applyModel");    
+    corpusRepresentation.stopGrowth();
     ObjectMapper mapper = new ObjectMapper();
     List<ModelApplication> modelapps = new ArrayList<>();
     
@@ -536,6 +537,7 @@ public abstract class EngineDVFileJson extends EngineDV {
           throw new GateRuntimeException("Model application not possible: sequenceAS specified but model does not expect it!");
         }        
       }
+      corpusRepresentation.startGrowth();
     }
     
     // * use the predictions to create the return list

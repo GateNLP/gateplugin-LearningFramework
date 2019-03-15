@@ -33,7 +33,6 @@ import gate.creole.metadata.RunTime;
 import gate.plugin.learningframework.engines.AlgorithmKind;
 import gate.plugin.learningframework.engines.Engine;
 import gate.plugin.learningframework.engines.EngineMBServer;
-import gate.plugin.learningframework.features.FeatureInfo;
 import gate.util.GateRuntimeException;
 import java.net.URL;
 

@@ -136,6 +136,7 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
   /**
    * Prevent the addition of new features or feature values when instances are
    * added.
+   * For this representation, this is currently a no-operation.
    */
   @Override
   public void stopGrowth() {
@@ -144,8 +145,8 @@ public class CorpusRepresentationVolatileDense2JsonStream extends CorpusRepresen
 
   /**
    * Enable the addition of new features or feature values when instances are
-   * added. After a CorpusRepresentationMallet instance is created, growth is
-   * enabled by default.
+   * added. 
+   * For this representation, this is currently a no-operation.
    */
   @Override
   public void startGrowth() {
