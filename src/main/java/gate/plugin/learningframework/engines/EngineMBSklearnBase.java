@@ -267,7 +267,7 @@ public abstract class EngineMBSklearnBase extends EngineMB {
     finalCommand.add(modelFileName);
     finalCommand.add(sklearnClass);
     if(!sklearnParms.isEmpty()) {
-      String[] tmp = sklearnParms.split("\\s+",-1);
+      String[] tmp = sklearnParms.trim().split("\\s+",-1);
       finalCommand.addAll(Arrays.asList(tmp));
     }
     // if we have a shell command prepend that, and if we have shell parms too, include them
