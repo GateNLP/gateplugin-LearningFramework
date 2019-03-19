@@ -68,7 +68,10 @@ public class SeqEncoder_SimpleBIO extends SeqEncoder {
     // now create the actual class label by concatenating all the classnames 
     // into a single class label
     if(classnames.isEmpty()) {
-      System.err.println("Warning: no label generated in "+curDoc.getName()+" for instance "+instAnn);
+      // This can happen if all chunk annotations do not align with the instance annotation.
+      // For now we emit O here
+      System.err.println("Warning: no label generated in "+curDoc.getName()+" for instance "+instAnn+" using O");
+      classnames.add(CODE_OUTSIDE);
     }
     return String.join(TYPESEP, classnames);
   }  

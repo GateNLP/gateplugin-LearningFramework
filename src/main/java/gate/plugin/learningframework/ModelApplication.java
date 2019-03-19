@@ -266,7 +266,7 @@ public class ModelApplication {
         }
       }
       
-      // Type|B, Type|I or Type|O??
+      // Type|B, Type|I or O??
       // We could also get a sequence of different TypeX|B or TypeY|I here
       String target = (String) inst.getFeatures().get(Globals.outputClassFeature);
       String[] typesAndCodes;
@@ -294,6 +294,11 @@ public class ModelApplication {
         Set<String> touchedTypes = new HashSet<>();
         for(String typeAndCode : typesAndCodes) {
           String[] tac = typeAndCode.split(SeqEncoder.CODESEP_PATTERN);
+          // This should never happen, but if some external model returns odd targets, we catch
+          // the case where it cannot be split into the two parts we expect here. 
+          if (tac.length != 2) {
+            throw new GateRuntimeException("DEBUG: odd type and code of length "+tac.length+": "+typeAndCode+" from label "+target);
+          }
           //System.err.println("type/code="+tac[0]+"/"+tac[1]);
           switch (tac[1]) {
             case SeqEncoder.CODE_BEGIN:
@@ -340,7 +345,7 @@ public class ModelApplication {
                 }   break;
               }
             default:
-              throw new GateRuntimeException("Unexpected SeqEncoder code: "+tac[1]);
+              throw new GateRuntimeException("Unexpected SeqEncoder code: "+tac[1]+" from label "+target);
           }
         } // for typeAndCode : typesAndCodes
         // after processing all the types/codes in the target, go through the 
