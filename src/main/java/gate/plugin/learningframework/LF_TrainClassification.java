@@ -197,7 +197,7 @@ public class LF_TrainClassification extends LearningFrameworkPRBase {
 
   @Override
   public void controllerStarted(Controller controller) {
-    System.err.println("DEBUG: controllerStarted for id="+duplicateId);
+    // System.err.println("DEBUG: controllerStarted for id="+duplicateId);
     if("file".equals(dataDirectory.getProtocol())) {
       dataDirFile = gate.util.Files.fileFromURL(dataDirectory);
     } else {
