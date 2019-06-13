@@ -276,7 +276,12 @@ public class LF_GenFeatures_Affixes extends AbstractDocumentProcessor {
         if(getMapToUpper()) {
           string = string.toUpperCase(mappingLocale);
         }
+        // the maximum index to use for the prefix is the length of the 
+        // whole string minus what we want to leave as the minimum non-prefix.
+        // Then we also need to take at most the maximum prefix length if 
+        // that leads to a smaller maximum index.
         int max = string.length() - getMinNonPrefixLength();
+        max = Math.min(max, getMaxPrefixLength());
         for(int i = getMinPrefixLength(); i <= max; i++) {
           fm.put(getPrefixFeatureName()+i, string.substring(0,i));
         }
@@ -288,6 +293,8 @@ public class LF_GenFeatures_Affixes extends AbstractDocumentProcessor {
         }
         int len = string.length();
         int max = len - getMinNonSuffixLength();
+        // also limit the suffix length by the maximum suffix length parameter
+        max = Math.min(max, getMaxSuffixLength());
         for(int i = getMinSuffixLength(); i <= max; i++) {
           fm.put(getSuffixFeatureName()+i, string.substring(len-i));
         }        
@@ -296,9 +303,21 @@ public class LF_GenFeatures_Affixes extends AbstractDocumentProcessor {
   }
 
   @Override
-  public void controllerStarted(Controller controller) {
+  public void controllerStarted(Controller controller) {    
     if(!getGenPrefixes() && !getGenSuffixes()) {
       throw new GateRuntimeException("Should generate something!");
+    }
+    if(getGenPrefixes() && getMaxPrefixLength() < getMinPrefixLength()) {
+      throw new GateRuntimeException("Maximum prefix length cannot be smaller than minimum");
+    }
+    if(getGenPrefixes() && getMinPrefixLength() < 1) {
+      throw new GateRuntimeException("Minimum prefix length must be at least 1");
+    }
+    if(getGenSuffixes() && getMaxSuffixLength() < getMinSuffixLength()) {
+      throw new GateRuntimeException("Maximum suffix length cannot be smaller than minimum");
+    }
+    if(getGenSuffixes() && getMinSuffixLength() < 1) {
+      throw new GateRuntimeException("Minimum suffix length must be at least 1");
     }
   }
 
