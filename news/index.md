@@ -2,6 +2,17 @@
 
 List of changes in reverse order of date:
 
+## 2019-06-13
+
+Version 4.2:
+* pytorch backend updated: support for ELMO based models, bugs fixed, better reproducability
+* Bug fixes in the LF
+
+## 2019-04-20
+
+Version 4.1.1 release
+* additional bugfixes
+
 ## 2018-09-05
 
 Version 4.1.1-SNAPSHOT contains these improvements:
