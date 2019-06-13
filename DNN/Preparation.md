@@ -66,6 +66,7 @@ The following installation instructions show how to prepare the system by using 
   quired for this! The following steps will automatically download the required packages and all dependencies
   and install them into your Miniconda environment)
   * `conda install -y python=3.6`
+  * `pip install configsimple`
   * For Pytorch: `conda install -y pytorch torchvision -c pytorch`
   * For Keras, with GPU: `conda install -y tensorflow-gpu keras-gpu h5py`
   * For Keras, without GPU: `conda install -y tensorflow keras h5py`
@@ -91,6 +92,7 @@ The following installation instructions show how to prepare the system by using 
   quired for this! The following steps will automatically download the required packages and all dependencies
   and install them into your Miniconda environment)
   * `conda install -y python=3.6`
+  * `pip install configsimple`
   * For Pytorch: `conda install -y pytorch torchvision -c pytorch`
   * For Keras, with GPU: `conda install -y tensorflow-gpu keras-gpu h5py`
   * For Keras, without GPU: `conda install -y tensorflow keras h5py`
