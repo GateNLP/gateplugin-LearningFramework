@@ -12,7 +12,8 @@ requriements are met:
 * For the Pytorch backend: Pytorch 4.1 or newer installed, optionally with CUDA support of a 
   supported GPU is available
 * For the Keras backend: Keras 1.2 and Tensorflow 1.0 or newer installed, optionally with everything installed in 
-  addition to support CUDA, if a GPU is available. 
+  addition to support CUDA, if a GPU is available.
+* Package configsimple must be installed 
 
 However, the recommended approach to install Python and the required packages is by using
 Anaconda (https://www.anaconda.com/download/) or Miniconda (https://conda.io/miniconda.html)
@@ -38,6 +39,7 @@ The following installation instructions show how to prepare the system by using 
   quired for this! The following steps will automatically download the required packages and all dependencies
   and install them into your Miniconda environment)
   * `conda install -y python=3.6`
+  * `pip install configsimple` 
   * For Pytorch: `conda install -y pytorch torchvision -c pytorch`
   * For Keras, with GPU: `conda install -y tensorflow-gpu keras-gpu h5py`
   * For Keras, without GPU: `conda install -y tensorflow keras h5py`

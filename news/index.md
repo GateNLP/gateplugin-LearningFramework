@@ -7,6 +7,8 @@ List of changes in reverse order of date:
 Version 4.2:
 * pytorch backend updated: support for ELMO based models, bugs fixed, better reproducability
 * Bug fixes in the LF
+* NOTE: the Pytorch backend needs installation of python package `configsimple` 
+  See [DNN Preparation](../DNN/Preparation)
 
 ## 2019-04-20
 
