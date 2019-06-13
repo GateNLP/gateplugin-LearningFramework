@@ -4,7 +4,7 @@
       <gate.creole.Plugin-Maven>
         <group>uk.ac.gate.plugins</group>
         <artifact>learningframework</artifact>
-        <version>4.2-SNAPSHOT</version>
+        <version>4.2</version>
         <downloadListeners/>
       </gate.creole.Plugin-Maven>
       <gate.creole.Plugin-Maven>
@@ -58,7 +58,7 @@
                 <entry>
                   <string>scriptURL</string>
                   <gate.util.persistence.PersistenceManager-RRPersistence>
-                    <uriString>creole://uk.ac.gate.plugins;learningframework;4.2-SNAPSHOT/resources/pipelines/groovy/filterTokens4LDA.groovy</uriString>
+                    <uriString>creole://uk.ac.gate.plugins;learningframework;4.2/resources/pipelines/groovy/filterTokens4LDA.groovy</uriString>
                   </gate.util.persistence.PersistenceManager-RRPersistence>
                 </entry>
               </localMap>
@@ -86,7 +86,7 @@
                 <entry>
                   <string>scriptURL</string>
                   <gate.util.persistence.PersistenceManager-RRPersistence>
-                    <uriString>creole://uk.ac.gate.plugins;learningframework;4.2-SNAPSHOT/resources/pipelines/groovy/filterTokens4LDA.groovy</uriString>
+                    <uriString>creole://uk.ac.gate.plugins;learningframework;4.2/resources/pipelines/groovy/filterTokens4LDA.groovy</uriString>
                   </gate.util.persistence.PersistenceManager-RRPersistence>
                 </entry>
               </localMap>
@@ -135,7 +135,7 @@
                 <entry>
                   <string>configFileURL</string>
                   <gate.util.persistence.PersistenceManager-RRPersistence>
-                    <uriString>creole://uk.ac.gate.plugins;learningframework;4.2-SNAPSHOT/resources/pipelines/gazetteer/stopwords-en-long.def</uriString>
+                    <uriString>creole://uk.ac.gate.plugins;learningframework;4.2/resources/pipelines/gazetteer/stopwords-en-long.def</uriString>
                   </gate.util.persistence.PersistenceManager-RRPersistence>
                 </entry>
               </localMap>
@@ -184,7 +184,7 @@
                 <entry>
                   <string>configFileURL</string>
                   <gate.util.persistence.PersistenceManager-RRPersistence>
-                    <uriString>creole://uk.ac.gate.plugins;learningframework;4.2-SNAPSHOT/resources/pipelines/gazetteer/stopwords-en-long.def</uriString>
+                    <uriString>creole://uk.ac.gate.plugins;learningframework;4.2/resources/pipelines/gazetteer/stopwords-en-long.def</uriString>
                   </gate.util.persistence.PersistenceManager-RRPersistence>
                 </entry>
               </localMap>
@@ -217,7 +217,7 @@
                 <entry>
                   <string>patternFileURL</string>
                   <gate.util.persistence.PersistenceManager-RRPersistence>
-                    <uriString>creole://uk.ac.gate.plugins;learningframework;4.2-SNAPSHOT/resources/pipelines/regexp/unwantedText4LDA.txt</uriString>
+                    <uriString>creole://uk.ac.gate.plugins;learningframework;4.2/resources/pipelines/regexp/unwantedText4LDA.txt</uriString>
                   </gate.util.persistence.PersistenceManager-RRPersistence>
                 </entry>
               </localMap>
@@ -261,7 +261,7 @@
                 <entry>
                   <string>scriptURL</string>
                   <gate.util.persistence.PersistenceManager-RRPersistence>
-                    <uriString>creole://uk.ac.gate.plugins;learningframework;4.2-SNAPSHOT/resources/pipelines/groovy/removeUnwantedTokens4LDA.groovy</uriString>
+                    <uriString>creole://uk.ac.gate.plugins;learningframework;4.2/resources/pipelines/groovy/removeUnwantedTokens4LDA.groovy</uriString>
                   </gate.util.persistence.PersistenceManager-RRPersistence>
                 </entry>
               </localMap>

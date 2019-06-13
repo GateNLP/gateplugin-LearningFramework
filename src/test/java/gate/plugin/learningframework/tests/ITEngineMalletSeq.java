@@ -69,8 +69,8 @@ public class ITEngineMalletSeq extends GATEPluginTests {
   @BeforeClass
   public static void init() throws GateException {
     gate.Gate.init();
-    gate.Gate.getCreoleRegister().registerPlugin(new Plugin.Maven("uk.ac.gate.plugins", "format-fastinfoset", "8.5-SNAPSHOT"));
-    gate.Gate.getCreoleRegister().registerPlugin(new Plugin.Maven("uk.ac.gate.plugins", "evaluation", "0.8-SNAPSHOT"));
+    gate.Gate.getCreoleRegister().registerPlugin(new Plugin.Maven("uk.ac.gate.plugins", "format-fastinfoset", "8.5"));
+    gate.Gate.getCreoleRegister().registerPlugin(new Plugin.Maven("uk.ac.gate.plugins", "evaluation", "0.9"));
   }
   
   @Test
