@@ -5,7 +5,7 @@ This is the home page for the GateNLP LearningFramework plugin.
 The GATE LearningFramework plugin is a plugin for the [GATE](https://gate.ac.uk/) NLP platform.
 It supports a number of machine learning tasks relevant to NLP (classification, sequence tagging, topic models, regression)
 and provides a consistent way to use a broad range of machine learning algorithms from
-several libraries to perform to tasks.
+several libraries to perform those tasks.
 
 NOTE: This web site provides the most recent documentation for the plugin. We try
 to keep the documentation up-to-date with the most recent version of the plugin.
@@ -32,7 +32,7 @@ Overview of the documentation:
   * [LF_EvaluateRegression](LF_EvaluateRegression) estimate regression quality
   * [LF_GenFeatures_Affixes](LF_GenFeatures_Affixes) generate features from prefixes and suffixes
   * [LF_GenFeatures_Misc](LF_GenFeatures_Misc) generate other features like word shape
-* [Using Neural Networks](UsingNeuralNetworks)
+* [Using Neural Networks](DNN/UsingNeuralNetworks)
 * [Tutorials](tutorials/)
 
 Additional information:

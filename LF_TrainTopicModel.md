@@ -23,8 +23,6 @@ This algorithm is part of Mallet and directly included with the plugin. It uses 
 in-memory representaiton of the training data, so it is limited by the amount of
 available RAM.
 
-(NOTE: this algorithm appears to only support symmetric dirichlet priors, but still have to check!)
-
 The following parameters can be specified in the `algorithmParameters` field:
 * -t/-topics (integer, default: 10) - the number of topics to use
 * -T/-stopics (integer, default: 10) - maximum number of topics to show per document in the topTopicsPerDoc.txt file
@@ -44,11 +42,12 @@ The following parameters can be specified in the `algorithmParameters` field:
 If the `applyAfterTraining` parameter is `true` and all conditions for application to run are met,
 then after training the model, the topic distributions are applied to each document. This is done by
 adding features to the instance annotations as specified throught the `instanceType` parameter or
-by using instead any "Document" annotation in the default set, or if none is found, adding one that spans
+by using instead any "Document" annotation in the `inputAS` set, or if none is found, adding one that spans
 the whole GATE document. The following features are added:
-* `LF_MBTopicsLDA_MLTopic_train`: integer, most prominent/likely topic for this document
-* `LF_MBTopicsLDA_MLTopicProb_train`: float, the probability of the most likely topic for this document
-* `LF_MBTopicsLDA_TopicDist_train`: a list of as many float values as there are topics, representing the probabilities for each of the topics in the document.
+* the value set for parameter `featurePrefix` is put in front of the following feature names:
+* `BestTopic`: integer, index of most prominent/likely topic for this document
+* `BestTopicProb`: float, the probability of the most likely topic for this document
+* `TopicDist`: a list of as many float values as there are topics, representing the probabilities for each of the topics in the document.
 Note that the values of these features can differ from what would be the result of
 applying the model using the `LF_ApplyTopicModel` PR, because the latter is the result of a new
 iteration of Gibbs sampling. 

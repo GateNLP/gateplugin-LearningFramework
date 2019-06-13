@@ -15,9 +15,10 @@ token annotation type and optional feature.
 If the `instanceType`  parameter is empty, then the algorithm will check if the input annotation set contains any "Document" annotations and if yes, will use them. If there are no Document annotations, the algorithm will create one Document annotation that covers the whole GATE document and use that.
 
 The following features are set in each of the "Document" or instanceType annotations:
-* `LF_MBTopicsLDA_MLTopic`: integer, most prominent/likely topic for this document
-* `LF_MBTopicsLDA_MLTopicProb`: float, the probability of the most likely topic for this document
-* `LF_MBTopicsLDA_TopicDist`: a list of as many float values as there are topics, representing the probabilities for each of the topics in the document.
+* whatever is specified for parameter `featurePrefix` is put in front of the following feature names:
+* `BestTopic`: integer, index of most prominent/likely topic for this document
+* `BestTopicProb`: float, the probability of the most likely topic for this document
+* `TopicDist`: a list of as many float values as there are topics, representing the probabilities for each of the topics in the document.
 
 
 ## AlgorithmParameters
@@ -27,7 +28,8 @@ The following features are set in each of the "Document" or instanceType annotat
 The algorithm supports the following parameters for application:
 * `-i/-iters` (int, default 10) -- total number of iterations for Gibbs sampling 
 * `-B/-burnin` (int, default 10) -- number of iterations before first sample 
-* `-Tthinning` (int, default 0) -- number of iterations between saved samples
+* `-T/-thinning` (int, default 0) -- number of iterations between saved samples
+* `-s/0seed` (int, default 0) -- random seed to use
 
 ### Algorithm `GensimLDA_CLUS_DR`
 
