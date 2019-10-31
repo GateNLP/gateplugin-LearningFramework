@@ -155,6 +155,7 @@ public class LF_ApplyChunking extends LearningFrameworkPRBase {
     String classAnnotationType = engine.getInfo().classAnnotationType;
     
     ModelApplication.addSurroundingAnnotations(tmpAS, tmpInstanceAS, outputAS, classAnnotationType, getConfidenceThreshold(), seqEncoder);
+    tmpAS.clear();
   }
 
   @Override
