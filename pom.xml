@@ -37,13 +37,13 @@
   <parent>
     <groupId>uk.ac.gate</groupId>
     <artifactId>gate-plugin-base</artifactId>
-    <version>8.6</version>
+    <version>8.6.1</version>
     <relativePath/>
   </parent>
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <gate-core.version>8.6</gate-core.version>
+    <gate-core.version>8.6.1</gate-core.version>
   </properties>
   <licenses>
     <license>
