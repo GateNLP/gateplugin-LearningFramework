@@ -205,31 +205,23 @@ public class ModelApplication {
   }
   
   /**
-   * From an annotation set with e.g. BIO class annotations on the instances,
+   * Create the Chunk annotations.
+   * From an annotation set with e.g.BIO class annotations on the instances,
    * create an output annotation set with the actual sequence annotations.
-   * 
-   * 
-   * TODO/NOTE: for some reasons this passes on intputAS but we do not use it.
+   * <p>
    * TODO/NOTE: we should really also get the sequence annotation and limit
-   * resolving BIO to within each sequence.
+   * resolving BIO to within each sequence. 
+   * <p>
+   * NOTE: originally, this was just using B/I/O, we now changed to using 
+   * Type|B, Type|I and O. However, this should really get moved to the 
+   * corresponding SeqEncode subclass.
    * 
-   * NOTE: originally, this was just using B/I/O, we now changed to using Type|B
-   * Type|I and O. However, this should really get moved to the corresponding SeqEncode subclass.
-   * 
-   * @param unused currently unused, API will change
    * @param instanceAS instance annotation set
    * @param outputAS output annotation set
-   * @param outputAnnType output annotation type
-   * @param minConfidence minimum confidence for making prediction, if null always
-   * @param seqEncoder sequence encoder instance 
+   * @param minConfidence minimum confidence for making prediction, if null always 
    */
   public static void addSurroundingAnnotations( 
-          AnnotationSet unused, 
-          AnnotationSet instanceAS, 
-          AnnotationSet outputAS,
-          String outputAnnType,
-          Double minConfidence,
-          SeqEncoder seqEncoder) {
+          AnnotationSet instanceAS, AnnotationSet outputAS, Double minConfidence) {
 
 
     // TODO!! we need to delegate this to the proper method of seqEncoder, in a way

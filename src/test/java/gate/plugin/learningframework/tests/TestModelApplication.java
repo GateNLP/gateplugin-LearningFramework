@@ -101,7 +101,7 @@ public class TestModelApplication extends GATEPluginTests {
     
     
     SeqEncoder seqEncoder = new SeqEncoder_SimpleBIO();
-    ModelApplication.addSurroundingAnnotations(null, instSet, outSet, null, 0.5, null); 
+    ModelApplication.addSurroundingAnnotations(instSet, outSet, 0.5); 
     
     System.err.println("!!!!!! OUTPUT SET="+outSet);
     List<Annotation> outseqs = outSet.inDocumentOrder();

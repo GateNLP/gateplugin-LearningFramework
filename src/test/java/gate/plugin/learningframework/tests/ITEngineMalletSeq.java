@@ -180,7 +180,7 @@ public class ITEngineMalletSeq extends GATEPluginTests {
       AnnotationSet outputAS = doc.getAnnotations("LF");
       String outputType = "Link";
       instanceAS = lfAS;
-      ModelApplication.addSurroundingAnnotations(inputAS, instanceAS, outputAS, outputType, null, new SeqEncoder_SimpleBIO());
+      ModelApplication.addSurroundingAnnotations(instanceAS, outputAS, null);
       System.out.println("Doc="+doc.getName()+", Links: "+outputAS.get("Link").size());
       
       AnnotationDifferTagging docDiffer = new AnnotationDifferTagging(
