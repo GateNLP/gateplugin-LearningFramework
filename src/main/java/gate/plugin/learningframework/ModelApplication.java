@@ -365,6 +365,17 @@ public class ModelApplication {
       } // if we do not have CODE_OUTSIDE
       
     } // for all instance annotations
+    // if we end the last sequence annotation with an inside annoation 
+    // we may still have open annotations to add, do this here    
+    Iterator<Map.Entry<String, AnnToAdd>> it = annsToAdd.entrySet().iterator();
+    while(it.hasNext()) {
+      Map.Entry<String,AnnToAdd> entry = it.next();          
+      //System.err.println("Finishing because of O "+entry.getValue().thisEnd);
+      addSequenceAnn(entry.getValue(), outputAS, minConfidence);
+      it.remove();
+    }
+    
+    
   }
   
   /**
