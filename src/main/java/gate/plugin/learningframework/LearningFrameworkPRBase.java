@@ -91,9 +91,21 @@ public abstract class LearningFrameworkPRBase
     return tmp;
   }
     
-  @Override 
-  public void controllerFinished(Controller ctrl, Throwable thrw) {
-    // System.err.println("DEBUG: running controller finished for duplicateId="+duplicateId);
+  protected boolean debug = false;
+  @RunTime
+  @Optional
+  @CreoleParameter(comment = "Enable debugging", defaultValue = "false")
+  public void setDebug(Boolean value) {
+    debug = value;
+  }
+  
+  public Boolean getDebug() {
+    return debug;
+  }
+  
+  @Override
+  public void controllerFinished(Controller ctl, Throwable t) {
+    
   }
   
 }

@@ -7,7 +7,8 @@
   <name>Learning Framework</name>
   <description>
     A GATE plugin that provides many different machine learning
-    algorithms for a wide range of NLP-related machine learning tasks like
+    algorithms for a wide range of 
+    NLP-related machine learning tasks like
     text classification, tagging, or chunking.
   </description>
   <url>https://gatenlp.github.io/gateplugin-LearningFramework/</url>
