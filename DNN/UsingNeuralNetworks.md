@@ -14,7 +14,7 @@ and sequence tagging through two different backends:
 
 ## Documentation for Using Neural Networks
 
-* Installation (below)
+* [Installation/Preparation](Preparation)
 * Overview (below)
 * [PytorchWrapper](Dnn_PytorchWrapper) -- how to use the PytorchWrapper (algorithms `PytorchWrapper_CL_DR` and `PytorchWrapper_SEQ_DR`)
 * [KerasWrapper](Dnn_KerasWrapper) -- (NOT YET) how to use the KerasWrapper (algorithms `KerasWrapper_CL_DR` and `KerasWrapper_SEQ_DR`)
@@ -25,30 +25,6 @@ and sequence tagging through two different backends:
 * NOTE: the `gate-lf-` libraries are included in the plugin and do NOT need to
   get installed seaparately!
 
-## Installation
-
-IMPORTANT: at the moment, only Linux and MacOS are supported, however
-Windows support is planned to get added soon!
-
-For both backends:
-* For both backends, Python version 3.5 or newer must be installed
-* The Python interpreter must be on the path as either `python` or `python3`
-* If a GPU should get used, the driver for the GPU mist be installed
-* Note: CUDA or cuDNN do not have to be installed for Pytorch, but need to
-  installed correctly for Keras (see Pytorch/Keras specific instructions below)
-  However installing the CUDA toolkit separately provides useful commands
-  and support for monitoring the GPU
-
-Installation of Python:
-* Python and python packages can be installed in many different ways, use whatever
-  method you prefer
-* The developers have found that using Anaconda or Miniconda to install and
-  use Python has a number of advantages:
-  * easy to install by the user, even if installation for the whole system by an administrator
-    is not possible
-  * can install versions of Python or the python package which may not be available for the OS release
-  * some packages come with optimized maths libraries
-  * can use conda install for conda-supported packages and pip install for other packages
 
 ### Installation for PytorchWrapper
 

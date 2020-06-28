@@ -9,7 +9,9 @@ does no require any specific way of installing Python and the packages, as long 
 requriements are met:
 
 * Python version 3.5 or newer, 64bit
-* For the Pytorch backend: Pytorch 4.1 or newer installed, optionally with CUDA support of a 
+* For the LearningFramework version 4.2:
+  * Python packages `configsimple` and `loguru`
+* For the Pytorch backend: Pytorch 0.4.1 or newer installed, optionally with CUDA support of a 
   supported GPU is available
 * For the Keras backend: Keras 1.2 and Tensorflow 1.0 or newer installed, optionally with everything installed in 
   addition to support CUDA, if a GPU is available. 
@@ -38,6 +40,7 @@ The following installation instructions show how to prepare the system by using 
   quired for this! The following steps will automatically download the required packages and all dependencies
   and install them into your Miniconda environment)
   * `conda install -y python=3.6`
+  * `pip install configsimple loguru`
   * For Pytorch: `conda install -y pytorch torchvision -c pytorch`
   * For Keras, with GPU: `conda install -y tensorflow-gpu keras-gpu h5py`
   * For Keras, without GPU: `conda install -y tensorflow keras h5py`
@@ -64,6 +67,7 @@ The following installation instructions show how to prepare the system by using 
   quired for this! The following steps will automatically download the required packages and all dependencies
   and install them into your Miniconda environment)
   * `conda install -y python=3.6`
+  * `pip install configsimple loguru`
   * For Pytorch: `conda install -y pytorch torchvision -c pytorch`
   * For Keras, with GPU: `conda install -y tensorflow-gpu keras-gpu h5py`
   * For Keras, without GPU: `conda install -y tensorflow keras h5py`
@@ -89,6 +93,7 @@ The following installation instructions show how to prepare the system by using 
   quired for this! The following steps will automatically download the required packages and all dependencies
   and install them into your Miniconda environment)
   * `conda install -y python=3.6`
+  * `pip install configsimple loguru`
   * For Pytorch: `conda install -y pytorch torchvision -c pytorch`
   * For Keras, with GPU: `conda install -y tensorflow-gpu keras-gpu h5py`
   * For Keras, without GPU: `conda install -y tensorflow keras h5py`
