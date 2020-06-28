@@ -26,22 +26,6 @@ and sequence tagging through two different backends:
   get installed seaparately!
 
 
-### Installation for PytorchWrapper
-
-* Install Pytorch version 0.4 or newer. There are various version of Pytorch
-  available for different versions of Python and coming with different versions of CUDA.
-  If you already have CUDA installed on your system, it is best to pick the version
-  that matches the CUDA version. Otherwise, use the most recent version of CUDA unless
-  you have no GPU or you have old GPU hardware which is only supported by earlier CUDA versions.
-  * For anaconda Python, Python version 3.6 use `conda install pytorch torchvision -c pytorch`
-* Python package numpy is required but may already get installed as a dependency of Pytorch
-
-### Installation for KerasWrapper
-
-* Install Keras version 2.1 or newer. This will automatically also install a number of additional
-  packages, including Tensorflow and Tensorboard
-* For GPU support under Keras: TO BE DONE!!!
-
 ## Overview
 
 Support for neural networks through the Pytorch and Keras wrappers follows the same basic
