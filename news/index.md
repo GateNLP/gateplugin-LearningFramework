@@ -2,6 +2,20 @@
 
 List of changes in reverse order of date:
 
+## 2019-06-13
+
+Version 4.2:
+* pytorch backend updated: support for ELMO based models, bugs fixed, better reproducability
+* Bug fixes in the LF
+* NOTE: the Pytorch backend needs installation of python package `configsimple` 
+  See [DNN Preparation](../DNN/Preparation)
+
+## 2019-04-20
+
+Version 4.1.1 released
+* Many bug fixes and improvements to the LF 
+* Many bug fixes and improvements to the pytorch backend
+
 ## 2018-09-05
 
 Version 4.1.1-SNAPSHOT contains these improvements:
@@ -11,7 +25,6 @@ Version 4.1.1-SNAPSHOT contains these improvements:
 ## 2018-06-06
 
 * Version 4.0-alpha1 released.
-* Initial version of Deep Neural Network support through the Keras and Pytorch wrappers
 
 ## 2018-05-15
 
