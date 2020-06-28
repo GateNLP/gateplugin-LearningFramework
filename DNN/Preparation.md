@@ -8,8 +8,8 @@ there are one or more ways of how to install the required packages. The Learning
 does no require any specific way of installing Python and the packages, as long as the following
 requriements are met:
 
-* Python version 3.5 or newer, 64bit
-* For the LearningFramework version 4.2:
+* Python version 3.6 or newer, 64bit
+* For the LearningFramework version 4.2 and 4.2-SNAPSHOT:
   * Python packages `configsimple` and `loguru`
 * For the Pytorch backend: Pytorch 0.4.1 or newer installed, optionally with CUDA support of a 
   supported GPU is available
