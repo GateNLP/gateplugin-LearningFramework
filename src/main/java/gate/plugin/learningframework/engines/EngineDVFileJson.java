@@ -159,12 +159,13 @@ public abstract class EngineDVFileJson extends EngineDV {
   @SuppressWarnings("unchecked")
   public Map<String,String> getWrapperConfig() {
     File wrapperInfoFile = new File(dataDir,WRAPPER_NAME+".yaml");
+    System.err.println("DEBUG: looking for wrapper config file: "+wrapperInfoFile.getAbsolutePath());
     if(!wrapperInfoFile.exists()) {
       // Windows is just insane and hides a txt extension if a user creates 
       // a "text file" with a yaml extensions, so lets allow .yaml.txt as well
       wrapperInfoFile = new File(dataDir,WRAPPER_NAME+".yaml.txt");
     }
-    // System.err.println("DEBUG: wrapper file: "+wrapperInfoFile.getAbsolutePath());
+    
     if(wrapperInfoFile.exists()) {
       // System.err.println("DEBUG: seems to exist ...");
       Yaml yaml = new Yaml();
@@ -177,13 +178,13 @@ public abstract class EngineDVFileJson extends EngineDV {
       Map<String,String> map = null;
       if(obj instanceof Map) {
         map = (Map<String,String>)obj;
-        // System.err.println("DEBUG: got map: "+map);
+        System.err.println("DEBUG: info.yaml file loaded, got config map: "+map);
       } else {
         throw new GateRuntimeException("Info file has strange format: "+wrapperInfoFile.getAbsolutePath());
       }
       return map;
     } else {
-      // System.err.println("DEBUG: does not exist, returning empty map");
+      System.err.println("DEBUG: config file did not exist, returning empty map");
       return new HashMap<>();
     }
     
@@ -356,15 +357,20 @@ public abstract class EngineDVFileJson extends EngineDV {
     String pythonbin = config.get("PYTHON_BIN");
     // System.err.println("DEBUG: config python bin: "+pythonbin);
     if (pythonbin != null) {
-      // System.err.println("DEBUG: python bin from config: "+pythonbin);
+      System.err.println("DEBUG: python bin from config: "+pythonbin);
       env.put("PYTHON_BIN", pythonbin);
     } else {
       env.put("PYTHON_BIN", getDefaultPythonBin());
-      // System.err.println("DEBUG: python bin from default: "+getDefaultPythonBin());
+      System.err.println("DEBUG: python bin from default: "+getDefaultPythonBin());
     }    
+    System.err.println("RUNNING COMMAND: "+finalCommand);
     process = ProcessSimple.create(dataDir,env,finalCommand);
-    process.waitFor();
-    
+    int ret = process.waitFor();
+    System.err.println("COMMAND FINISHED, returned: "+ret);
+    if (ret != 0) {
+      throw new GateRuntimeException("External command returned non-zero code: "+
+              ret+" command was: "+finalCommand+" environment: "+env);
+    }
     // we also need to save the updated info file
     info.nrTrainingInstances = corpusRepresentation.nrInstances();
     info.engineClass = this.getClass().getName();
