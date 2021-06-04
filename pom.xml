@@ -79,7 +79,7 @@
     <dependency>
       <groupId>org.yaml</groupId>
       <artifactId>snakeyaml</artifactId>
-      <version>1.24</version>
+      <version>1.26</version>
     </dependency>
     <!-- https://mvnrepository.com/artifact/com.mashape.unirest/unirest-java -->
     <!-- NOTE: temporary dependency as long as we include a copy of gatelib-interaction -->
