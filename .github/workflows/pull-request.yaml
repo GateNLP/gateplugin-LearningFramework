@@ -1,0 +1,13 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  common-pr:
+    uses: GateNLP/gate-top/.github/workflows/standard-module-pr.yml@master
+    with:
+      # Full rather than shallow clone
+      fetch_depth: "0"
