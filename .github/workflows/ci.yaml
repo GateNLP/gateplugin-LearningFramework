@@ -5,6 +5,14 @@ on:
     branches:
       - master
 
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  checks: write
+  pull-requests: write
+
 jobs:
   common-build:
     uses: GateNLP/gate-top/.github/workflows/standard-module.yml@master

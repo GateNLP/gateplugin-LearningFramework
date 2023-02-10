@@ -1,0 +1,17 @@
+name: Test Reports (PR)
+
+on:
+  workflow_run:
+    workflows: ["Pull Request"]
+    types:
+      - completed
+
+permissions:
+  contents: read
+  actions: read
+  checks: write
+  pull-requests: write
+
+jobs:
+  common-pr:
+    uses: GateNLP/gate-top/.github/workflows/standard-module-pr-test-report.yml@master
